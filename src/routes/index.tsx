@@ -141,9 +141,12 @@ function HomeScreen() {
         </Card>
       </section>
 
+      <ForYou />
+
       <div className="mt-5">
         <ReverifyBanner />
       </div>
+
 
       <div className="pb-8" />
 
