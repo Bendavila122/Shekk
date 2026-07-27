@@ -185,11 +185,22 @@ export function ScreenHeader({
   subtitle?: string;
   back?: string;
 }) {
+  const router = useRouter();
+  const canGoBack = useCanGoBack();
+  const navigate = useNavigate();
   return (
     <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-border bg-background/90 px-4 py-3 backdrop-blur">
-      <Link to={back} className="tap rounded-full bg-muted p-2 text-foreground">
+      <button
+        type="button"
+        aria-label="Go back"
+        onClick={() => {
+          if (canGoBack) router.history.back();
+          else navigate({ to: back });
+        }}
+        className="tap rounded-full bg-muted p-2 text-foreground"
+      >
         <ChevronLeft className="size-5" />
-      </Link>
+      </button>
       <div>
         <h1 className="text-lg font-semibold">{title}</h1>
         {subtitle ? <p className="text-xs text-muted-foreground">{subtitle}</p> : null}
@@ -197,6 +208,7 @@ export function ScreenHeader({
     </header>
   );
 }
+
 
 export function ReverifyBanner() {
   const { daysLeft } = useApp();
