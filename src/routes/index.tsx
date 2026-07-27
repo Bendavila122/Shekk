@@ -100,16 +100,6 @@ function HomeScreen() {
         </section>
 
 
-        <Link
-          to="/explore"
-          className="tap flex items-center justify-between rounded-2xl bg-muted px-4 py-3 text-sm font-semibold"
-        >
-          <span className="flex items-center gap-2">
-            <Grid3X3 className="size-4 text-primary" /> All apps &amp; guides
-          </span>
-          <ChevronRight className="size-4 text-muted-foreground" />
-        </Link>
-
         <p className="text-center text-[11px] text-muted-foreground">
           Tap a logo and it opens inside Shekk. You never pay the partner directly — we do, and the shekel-token
           equivalent comes off your balance. {STATUS_LABEL.integrating} apps open their guide for now.
