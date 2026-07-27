@@ -4,6 +4,7 @@ import { Users, QrCode } from "lucide-react";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { ForYou } from "@/components/ForYou";
+import { ActiveNow } from "@/components/ActiveNow";
 
 import { QRCode } from "@/components/QRCode";
 import { Avatar } from "@/components/Avatar";
@@ -107,6 +108,8 @@ function HomeScreen() {
         </section>
 
       </div>
+
+      <ActiveNow />
 
       {/* Paying people */}
       <section className="px-4 pt-6">
