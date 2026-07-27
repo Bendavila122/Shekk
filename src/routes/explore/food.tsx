@@ -34,7 +34,7 @@ function Food() {
   if (placed && rest) {
     return (
       <AppShell>
-        <ScreenHeader title="Order placed" subtitle={rest.name} back="/explore" />
+        <ScreenHeader title="Order placed" subtitle={rest.name} onBack={() => { setPlaced(false); setOpenId(null); setCart({}); }} />
         <div className="space-y-4 px-4 py-8 text-center">
           <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-success-soft">
             <Check className="size-10 text-success" />
@@ -62,7 +62,7 @@ function Food() {
   if (rest) {
     return (
       <AppShell>
-        <ScreenHeader title={rest.name} subtitle={`${rest.tag} · ${rest.eta}`} back="/explore/food" />
+        <ScreenHeader title={rest.name} subtitle={`${rest.tag} · ${rest.eta}`} onBack={() => setOpenId(null)} />
         <div className="space-y-3 px-4 py-4 pb-40">
           {shabbat && rest.closedShabbat && (
             <Card className="bg-warning-soft text-sm text-warning-foreground">

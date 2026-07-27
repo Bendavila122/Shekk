@@ -28,7 +28,7 @@ function Events() {
   if (ticket) {
     return (
       <AppShell>
-        <ScreenHeader title="Your ticket" subtitle={ticket.name} back="/explore/events" />
+        <ScreenHeader title="Your ticket" subtitle={ticket.name} onBack={() => { setTicketFor(null); setOpenId(null); }} />
         <div className="px-4 py-6">
           <Card className="flex flex-col items-center gap-3 text-center">
             <span className="text-3xl">{ticket.emoji}</span>

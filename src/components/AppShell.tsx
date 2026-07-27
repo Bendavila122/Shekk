@@ -180,10 +180,12 @@ export function ScreenHeader({
   title,
   subtitle,
   back = "/explore",
+  onBack,
 }: {
   title: string;
   subtitle?: string;
   back?: string;
+  onBack?: () => void;
 }) {
   const router = useRouter();
   const canGoBack = useCanGoBack();
@@ -194,6 +196,7 @@ export function ScreenHeader({
         type="button"
         aria-label="Go back"
         onClick={() => {
+          if (onBack) { onBack(); return; }
           if (canGoBack) router.history.back();
           else navigate({ to: back });
         }}
