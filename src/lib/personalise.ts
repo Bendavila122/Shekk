@@ -61,19 +61,47 @@ const JEWISH_CALENDAR: Record<string, JewishDay> = {
   "09-26": { label: "Sukkot", kind: "chag", blurb: "Sukkah hopping across the city" },
 };
 
-const CITY_PROFILE: Record<string, { candle: string; havdalah: string; sunrise: string; sunset: string }> = {
-  Jerusalem: { candle: "16:38", havdalah: "17:53", sunrise: "06:38", sunset: "16:58" },
-  "Tel Aviv": { candle: "16:53", havdalah: "17:55", sunrise: "06:36", sunset: "17:00" },
-  Default: { candle: "16:45", havdalah: "17:54", sunrise: "06:37", sunset: "16:59" },
+const CITY_PROFILE: Record<string, { candle: string; havdalah: string; sunrise: string; sunset: string; base: number }> = {
+  Jerusalem: { candle: "16:38", havdalah: "17:53", sunrise: "06:38", sunset: "16:58", base: 19 },
+  "Tel Aviv": { candle: "16:53", havdalah: "17:55", sunrise: "06:36", sunset: "17:00", base: 23 },
+  Haifa: { candle: "16:44", havdalah: "17:54", sunrise: "06:35", sunset: "16:59", base: 22 },
+  "Beer Sheva": { candle: "16:52", havdalah: "17:54", sunrise: "06:37", sunset: "17:01", base: 25 },
+  Tzfat: { candle: "16:41", havdalah: "17:52", sunrise: "06:34", sunset: "16:57", base: 16 },
+  Netanya: { candle: "16:52", havdalah: "17:55", sunrise: "06:36", sunset: "17:00", base: 22 },
+  Eilat: { candle: "16:56", havdalah: "17:56", sunrise: "06:29", sunset: "16:54", base: 29 },
+  "Tel Aviv Port": { candle: "16:53", havdalah: "17:55", sunrise: "06:36", sunset: "17:00", base: 23 },
+  Israel: { candle: "16:45", havdalah: "17:54", sunrise: "06:37", sunset: "16:59", base: 21 },
+  Default: { candle: "16:45", havdalah: "17:54", sunrise: "06:37", sunset: "16:59", base: 21 },
 };
 
-const CONDITIONS = [
-  { label: "Clear", emoji: "☀️" },
-  { label: "Mostly sunny", emoji: "🌤" },
-  { label: "Partly cloudy", emoji: "⛅️" },
-  { label: "Light rain", emoji: "🌦" },
-  { label: "Hamsin haze", emoji: "🌫" },
-] as const;
+/** Cities the student can switch the weather widget to. */
+export const WEATHER_CITIES = ["Jerusalem", "Tel Aviv", "Haifa", "Beer Sheva", "Tzfat", "Netanya", "Eilat"] as const;
+
+/** Weekly sedra cycle — approximate, cycles from Simchat Torah. */
+const PARSHIYOT = [
+  "Bereishit", "Noach", "Lech Lecha", "Vayera", "Chayei Sarah", "Toldot", "Vayetzei", "Vayishlach", "Vayeshev",
+  "Miketz", "Vayigash", "Vayechi", "Shemot", "Vaera", "Bo", "Beshalach", "Yitro", "Mishpatim", "Terumah",
+  "Tetzaveh", "Ki Tisa", "Vayakhel", "Pekudei", "Vayikra", "Tzav", "Shemini", "Tazria", "Metzora", "Acharei Mot",
+  "Kedoshim", "Emor", "Behar", "Bechukotai", "Bamidbar", "Naso", "Beha'alotcha", "Shlach", "Korach", "Chukat",
+  "Balak", "Pinchas", "Matot", "Masei", "Devarim", "Vaetchanan", "Eikev", "Re'eh", "Shoftim", "Ki Teitzei",
+  "Ki Tavo", "Nitzavim", "Vayelech", "Ha'azinu", "V'Zot HaBracha",
+];
+
+function sedraFor(d: Date): string {
+  const anchor = new Date(d.getFullYear(), 9, 12); // ~Simchat Torah
+  const start = d < anchor ? new Date(d.getFullYear() - 1, 9, 12) : anchor;
+  const weeks = Math.floor((d.getTime() - start.getTime()) / (7 * 86400000));
+  return PARSHIYOT[weeks % PARSHIYOT.length];
+}
+
+function hebrewDate(d: Date): string {
+  try {
+    return new Intl.DateTimeFormat("en-u-ca-hebrew", { day: "numeric", month: "long", year: "numeric" }).format(d);
+  } catch {
+    return "";
+  }
+}
+
 
 /* ---------------------------------------------------------------- types */
 
