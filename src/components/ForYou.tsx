@@ -96,18 +96,21 @@ function DetailSheet({
       <button className="absolute inset-0 bg-foreground/40" aria-label="Close" onClick={onClose} />
       <div className="animate-fade-in relative w-full max-w-md rounded-t-[2rem] border border-border bg-card p-6 pb-8 shadow-card sm:rounded-[2rem]">
         <header className="flex items-start gap-3">
-          <span className={`${def.gradient} flex size-12 items-center justify-center rounded-2xl text-2xl`}>{def.emoji}</span>
+          <span className={`${def.gradient} widget-tile flex size-12 shrink-0 items-center justify-center rounded-2xl text-2xl`}>
+            {def.emoji}
+          </span>
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">{def.title}</p>
-            <p className="truncate text-xl font-bold leading-tight">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{def.title}</p>
+            <p className="text-[17px] font-bold leading-tight">
               {def.id === "wallet" ? ils(balance) : content.headline}
             </p>
-            {content.sub ? <p className="mt-0.5 text-xs text-muted-foreground">{content.sub}</p> : null}
+            {content.sub ? <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">{content.sub}</p> : null}
           </div>
           <button onClick={onClose} className="tap rounded-full bg-muted p-2" aria-label="Close">
             <X className="size-4" />
           </button>
         </header>
+
 
         <ul className="mt-5 space-y-3">
           {content.rows.map((r, i) => (
