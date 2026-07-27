@@ -20,6 +20,8 @@ export type WidgetDef = {
   title: string;
   emoji: string;
   gradient: string;
+  /** Content-reactive gradient (e.g. sunny = gold, rainy = slate). */
+  gradientFor?: (ctx: UserContext) => string;
   relevance: (ctx: UserContext) => number;
   build: (ctx: UserContext) => WidgetContent;
 };
@@ -70,6 +72,23 @@ export const WIDGETS: WidgetDef[] = [
     title: "Today",
     emoji: "🌤",
     gradient: "grad-sky",
+    gradientFor: (c) => {
+      const night = c.timeOfDay === "late" || c.hour >= 20 || c.hour < 5;
+      if (night) return "grad-night";
+      if (c.weather.rain > 50 || c.weather.condition === "Light rain") return "grad-rain";
+      switch (c.weather.condition) {
+        case "Clear":
+          return "grad-sun";
+        case "Mostly sunny":
+          return c.weather.temp >= 30 ? "grad-sun" : "grad-partly";
+        case "Partly cloudy":
+          return "grad-cloud";
+        case "Hamsin haze":
+          return "grad-haze";
+        default:
+          return "grad-partly";
+      }
+    },
     relevance: (c) => clamp(52 + (c.timeOfDay === "morning" ? 40 : c.timeOfDay === "early" ? 30 : 6) + (c.weather.rain > 50 ? 15 : 0)),
     build: (c) => ({
       headline: `${c.weather.temp}° ${c.weather.condition}`,
@@ -96,6 +115,8 @@ export const WIDGETS: WidgetDef[] = [
     title: "Jewish Life",
     emoji: "🕍",
     gradient: "grad-jewish",
+    gradientFor: (c) =>
+      c.jewishDay?.kind === "fast" ? "grad-fast" : c.jewishDay ? "grad-chag" : c.isErevShabbat || c.isShabbat ? "grad-night" : "grad-jewish",
     relevance: (c) =>
       clamp(
         45 +
@@ -222,6 +243,7 @@ export const WIDGETS: WidgetDef[] = [
     title: "Requests",
     emoji: "👥",
     gradient: "grad-social",
+    gradientFor: (c) => (c.signals.pendingSplits ? "grad-alert" : "grad-social"),
     relevance: (c) => clamp(40 + (c.signals.pendingSplits ? 38 : 0) + (c.timeOfDay === "evening" ? 12 : 0)),
     build: (c) => ({
       headline: c.signals.pendingSplits ? `${ils(c.signals.requestedTotal)} requested` : "All settled",
@@ -254,6 +276,7 @@ export const WIDGETS: WidgetDef[] = [
     title: "Israel Today",
     emoji: "📰",
     gradient: "grad-news",
+    gradientFor: (c) => (c.weather.rain > 60 ? "grad-alert" : "grad-news"),
     relevance: (c) => clamp(24 + (c.timeOfDay === "morning" ? 22 : 8)),
     build: (c) => {
       const start = Math.floor(rand(`${c.signals.seed}|news`) * HEADLINES.length);
