@@ -86,19 +86,6 @@ function Me() {
           </Link>
         </Card>
 
-        <Card className="space-y-3">
-          <h2 className="text-base font-semibold">Demo controls</h2>
-          <p className="text-xs text-muted-foreground">Prototype only — fire the annual re-verification cycle.</p>
-          <button
-            onClick={triggerReverify}
-            className="tap w-full rounded-2xl bg-warning px-4 py-3 text-sm font-semibold text-warning-foreground"
-          >
-            Trigger annual re-verification
-          </button>
-          <button onClick={reset} className="tap w-full rounded-2xl bg-muted px-4 py-3 text-sm font-semibold">
-            Reset demo (back to sign up)
-          </button>
-        </Card>
       </div>
     </AppShell>
   );
