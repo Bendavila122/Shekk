@@ -36,16 +36,19 @@ const SECTIONS: { h: string; p: string[] }[] = [
   {
     h: "3. Non-refundable, non-withdrawable",
     p: [
-      "Credits are non-refundable and non-withdrawable. They may be spent within the ShekelPay app or with participating partner merchants. They cannot be redeemed for cash, transferred to a bank account, or sold to another person.",
+      "Credits are non-refundable and non-withdrawable. They may be used to instruct ShekelPay to pay for goods and services on your behalf through the partner apps available inside ShekelPay. They cannot be redeemed for cash, transferred to a bank account, or sold to another person.",
       "Credits do not earn interest and are not insured as a deposit would be.",
     ],
   },
   {
-    h: "4. Spending",
+    h: "4. How spending works",
     p: [
-      "Each spend is recorded in your Activity with merchant name, category, amount in shekels and the date. A US dollar reference amount is shown for convenience only and does not represent a redeemable value.",
+      "When you order or pay for something through a partner app inside ShekelPay, ShekelPay is the party that pays the partner. You are not paying the partner directly and no card of yours is charged at that moment.",
+      "Once the partner confirms the order, ShekelPay deducts the shekel-token equivalent of that order from your preloaded credit balance. If your balance is lower than the order total, the order cannot be placed.",
+      "Each spend is recorded in your Activity with the partner name, category, amount in shekels and the date. A US dollar reference amount is shown for convenience only and does not represent a redeemable value.",
     ],
   },
+
   {
     h: "5. Annual verification requirement",
     p: [
