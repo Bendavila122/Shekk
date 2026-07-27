@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TopupRouteImport } from './routes/topup'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SocialRouteImport } from './routes/social'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ReverifyRouteImport } from './routes/reverify'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MeRouteImport } from './routes/me'
@@ -41,6 +42,11 @@ const TermsRoute = TermsRouteImport.update({
 const SocialRoute = SocialRouteImport.update({
   id: '/social',
   path: '/social',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReverifyRoute = ReverifyRouteImport.update({
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
   '/reverify': typeof ReverifyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
   '/reverify': typeof ReverifyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
@@ -165,6 +173,7 @@ export interface FileRoutesById {
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
   '/reverify': typeof ReverifyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/me'
     | '/onboarding'
     | '/reverify'
+    | '/sitemap.xml'
     | '/social'
     | '/terms'
     | '/topup'
@@ -207,6 +217,7 @@ export interface FileRouteTypes {
     | '/me'
     | '/onboarding'
     | '/reverify'
+    | '/sitemap.xml'
     | '/social'
     | '/terms'
     | '/topup'
@@ -227,6 +238,7 @@ export interface FileRouteTypes {
     | '/me'
     | '/onboarding'
     | '/reverify'
+    | '/sitemap.xml'
     | '/social'
     | '/terms'
     | '/topup'
@@ -248,6 +260,7 @@ export interface RootRouteChildren {
   MeRoute: typeof MeRoute
   OnboardingRoute: typeof OnboardingRoute
   ReverifyRoute: typeof ReverifyRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SocialRoute: typeof SocialRoute
   TermsRoute: typeof TermsRoute
   TopupRoute: typeof TopupRoute
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/social'
       fullPath: '/social'
       preLoaderRoute: typeof SocialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reverify': {
@@ -400,6 +420,7 @@ const rootRouteChildren: RootRouteChildren = {
   MeRoute: MeRoute,
   OnboardingRoute: OnboardingRoute,
   ReverifyRoute: ReverifyRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SocialRoute: SocialRoute,
   TermsRoute: TermsRoute,
   TopupRoute: TopupRoute,
