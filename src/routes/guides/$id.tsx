@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { GUIDES, getGuide } from "@/lib/guides";
+import { GUIDES, getGuide, type Guide, type GuideSection } from "@/lib/guides";
 
 export const Route = createFileRoute("/guides/$id")({
   loader: ({ params }) => {
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/guides/$id")({
 });
 
 function GuideDetail() {
-  const { guide } = Route.useLoaderData();
+  const { guide } = Route.useLoaderData() as { guide: Guide };
   const router = useRouter();
   const others = GUIDES.filter((g) => g.id !== guide.id).slice(0, 3);
 
@@ -52,7 +52,7 @@ function GuideDetail() {
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{guide.intro}</p>
 
         <div className="mt-7 space-y-6">
-          {guide.sections.map((s) => (
+          {guide.sections.map((s: GuideSection) => (
             <section key={s.heading}>
               <h2 className="text-[15px] font-bold leading-tight">{s.heading}</h2>
               <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">{s.body}</p>
