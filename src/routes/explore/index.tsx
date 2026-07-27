@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Search, ChevronRight } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { EVENTS, ils } from "@/lib/mock";
-import { SERVICE_CATEGORIES, STATUS_LABEL, type Service } from "@/lib/services";
+import { SERVICE_CATEGORIES, FEATURED_SERVICES, STATUS_LABEL, type Service } from "@/lib/services";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 
 export const Route = createFileRoute("/explore/")({
@@ -80,7 +80,8 @@ function Explore() {
       <header className="px-5 pt-7">
         <h1 className="text-3xl font-bold">Explore</h1>
         <p className="text-sm text-muted-foreground">
-          We integrate the platforms — Wolt, Gett, Moovit, Rav-Kav, Bit — so you never sign up venue by venue.
+          The Israeli apps you already use — Wolt, Gett, Rav-Kav, Go-To, Israel Railways — open inside ShekelPay and
+          are paid with your tokens. No individual bars, restaurants or shops yet.
         </p>
         <label className="mt-4 flex items-center gap-2 rounded-2xl bg-muted px-4 py-3 text-sm">
           <Search className="size-4 text-muted-foreground" />
@@ -109,17 +110,21 @@ function Explore() {
         </section>
       ) : (
         <section className="px-4 py-5">
-          <div className="grid grid-cols-2 gap-3">
-            <Link to="/explore/transit" className="tap rounded-2xl bg-ink p-4 text-ink-foreground shadow-card">
-              <p className="text-2xl">🚌</p>
-              <p className="mt-2 text-sm font-semibold">Bus 74 in 3 min</p>
-              <p className="text-xs opacity-70">Rav-Kav · Moovit · Rakevet</p>
-            </Link>
-            <Link to="/explore/food" className="tap rounded-2xl bg-accent p-4 text-accent-foreground shadow-card">
-              <p className="text-2xl">🛵</p>
-              <p className="mt-2 text-sm font-semibold">Wolt, kosher filter on</p>
-              <p className="text-xs opacity-80">Order before 14:00 erev Shabbat</p>
-            </Link>
+          <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            The five that matter
+          </p>
+          <div className="grid grid-cols-5 gap-2">
+            {FEATURED_SERVICES.map((s) => (
+              <Link
+                key={s.id}
+                to="/explore/service/$id"
+                params={{ id: s.id }}
+                className="tap flex flex-col items-center gap-1.5 rounded-2xl bg-card px-1 py-3 shadow-card"
+              >
+                <span className="text-2xl leading-none">{s.emoji}</span>
+                <span className="text-center text-[10px] font-semibold leading-tight">{s.name}</span>
+              </Link>
+            ))}
           </div>
 
           {SERVICE_CATEGORIES.map((cat) => (

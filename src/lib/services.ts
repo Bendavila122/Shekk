@@ -18,6 +18,7 @@ export type Service = {
   emoji: string;
   blurb: string;
   status: ServiceStatus;
+  featured?: boolean; // one of the definitive five apps
   to?: LinkProps["to"]; // in-app deep flow when status === "live"
   detail?: string[];
 };
@@ -43,10 +44,11 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     emoji: "🚌",
     tagline: "One Rav-Kav, one fare, one balance.",
     services: [
-      { id: "ravkav", name: "Rav-Kav", partner: "Rav-Kav Online", emoji: "🎫", blurb: "Load your travel card with credits", status: "live", to: "/explore/transit", detail: ["Top up any Rav-Kav from your credit balance", "Student profile discounts applied automatically", "Balance shown next to your ShekelPay credits"] },
+      { id: "ravkav", name: "Rav-Kav", partner: "Rav-Kav Online", emoji: "🎫", blurb: "Load your travel card with tokens", status: "live", featured: true, to: "/explore/transit", detail: ["Top up any Rav-Kav from your credit balance", "Student profile discounts applied automatically", "Balance shown next to your ShekelPay credits"] },
       { id: "moovit", name: "Moovit", partner: "Moovit", emoji: "🧭", blurb: "Live bus, light rail & sherut times", status: "live", to: "/explore/transit", detail: ["Real-time departures embedded in the Transit screen", "Line alerts for chagim and Shabbat timetables"] },
-      { id: "rail", name: "Israel Railways", partner: "Rakevet Israel", emoji: "🚆", blurb: "Book intercity train tickets", status: "live", to: "/explore/transit", detail: ["Jerusalem ↔ Tel Aviv ↔ Haifa ↔ Be'er Sheva", "Ticket lives in your wallet as a QR"] },
-      { id: "gett", name: "Gett", partner: "Gett", emoji: "🚕", blurb: "Order a taxi, pay with credits", status: "live", to: "/explore/rides" },
+      { id: "rail", name: "Israel Railways", partner: "Rakevet Israel", emoji: "🚆", blurb: "Book intercity train tickets", status: "live", featured: true, to: "/explore/transit", detail: ["Jerusalem ↔ Tel Aviv ↔ Haifa ↔ Be'er Sheva", "Ticket lives in your wallet as a QR"] },
+      { id: "gett", name: "Gett", partner: "Gett", emoji: "🚕", blurb: "Order a taxi, pay with tokens", status: "live", featured: true, to: "/explore/rides", detail: ["The real Gett booking flow, running inside ShekelPay", "Fare settles straight from your token balance"] },
+      { id: "goto", name: "Go-To", partner: "Go To Global", emoji: "🚙", blurb: "Car & scooter sharing by the minute", status: "live", featured: true, to: "/explore/rides", detail: ["Unlock a Go-To car or scooter without leaving ShekelPay", "Minutes billed to your token balance"] },
       { id: "waze", name: "Waze", partner: "Waze", emoji: "📍", blurb: "Navigate, with in-app handoff", status: "integrating" },
       { id: "gmaps", name: "Google Maps", partner: "Google", emoji: "🗺️", blurb: "Places, routes and hotspot map", status: "integrating" },
       { id: "pango", name: "Pango", partner: "Pango", emoji: "🅿️", blurb: "Street parking, paid by the minute", status: "integrating" },
@@ -60,7 +62,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     emoji: "🥙",
     tagline: "Platforms, not one-by-one venue signups.",
     services: [
-      { id: "wolt", name: "Wolt", partner: "Wolt", emoji: "🛵", blurb: "Full delivery catalogue, kosher filter on", status: "live", to: "/explore/food", detail: ["Every Wolt restaurant, ordered without leaving ShekelPay", "Kosher / Badatz / dairy-meat filters", "Erev Shabbat cut-off reminders"] },
+      { id: "wolt", name: "Wolt", partner: "Wolt", emoji: "🛵", blurb: "Full delivery catalogue, kosher filter on", status: "live", featured: true, to: "/explore/food", detail: ["Every Wolt restaurant, ordered without leaving ShekelPay", "Kosher / Badatz / dairy-meat filters", "Erev Shabbat cut-off reminders"] },
       { id: "cibus", name: "Cibus", partner: "Cibus", emoji: "🍱", blurb: "Meal credit at thousands of spots", status: "integrating" },
       { id: "10bis", name: "Tenbis", partner: "10bis", emoji: "🍽️", blurb: "Lunch ordering and pickup", status: "integrating" },
       { id: "reserve", name: "Table reservations", partner: "Ontopo", emoji: "📖", blurb: "Book restaurants, bars & cafés", status: "live", to: "/explore/reserve" },
@@ -152,6 +154,10 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     ],
   },
 ];
+
+export const FEATURED_SERVICES: Service[] = SERVICE_CATEGORIES.flatMap((c) => c.services).filter(
+  (s) => s.featured,
+);
 
 export const ALL_SERVICES: Service[] = SERVICE_CATEGORIES.flatMap((c) => c.services);
 
