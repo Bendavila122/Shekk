@@ -112,15 +112,19 @@ function DetailSheet({
         </header>
 
 
-        <ul className="mt-5 space-y-3">
+        <ul className="mt-5 space-y-2">
           {content.rows.map((r, i) => (
-            <li key={`${r.label}-${i}`} className="flex items-center gap-3 text-sm">
+            <li
+              key={`${r.label}-${i}`}
+              className="flex items-center gap-3 rounded-xl bg-muted/60 px-3 py-2.5 text-[13px] leading-snug"
+            >
               <span className="w-5 shrink-0 text-center">{r.icon}</span>
               <span className="min-w-0 flex-1">{r.label}</span>
-              {r.value ? <span className="shrink-0 text-xs font-semibold text-muted-foreground">{r.value}</span> : null}
+              {r.value ? <span className="shrink-0 text-[13px] font-semibold text-muted-foreground">{r.value}</span> : null}
             </li>
           ))}
         </ul>
+
 
         {def.id === "today" ? (
           <div className="mt-5">
