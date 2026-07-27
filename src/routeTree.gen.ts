@@ -17,6 +17,7 @@ import { Route as ReverifyRouteImport } from './routes/reverify'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as HelpRouteImport } from './routes/help'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
@@ -76,6 +77,11 @@ const McpRoute = McpRouteImport.update({
 const HelpRoute = HelpRouteImport.update({
   id: '/help',
   path: '/help',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ActivityRoute = ActivityRouteImport.update({
@@ -185,6 +191,7 @@ const Char91DotmcpChar93InvokeToolToolRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/activity': typeof ActivityRoute
+  '/auth': typeof AuthRoute
   '/help': typeof HelpRoute
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
@@ -215,6 +222,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activity': typeof ActivityRoute
+  '/auth': typeof AuthRoute
   '/help': typeof HelpRoute
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
@@ -246,6 +254,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/activity': typeof ActivityRoute
+  '/auth': typeof AuthRoute
   '/help': typeof HelpRoute
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
@@ -278,6 +287,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/activity'
+    | '/auth'
     | '/help'
     | '/mcp'
     | '/me'
@@ -308,6 +318,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/activity'
+    | '/auth'
     | '/help'
     | '/mcp'
     | '/me'
@@ -338,6 +349,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/activity'
+    | '/auth'
     | '/help'
     | '/mcp'
     | '/me'
@@ -369,6 +381,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ActivityRoute: typeof ActivityRoute
+  AuthRoute: typeof AuthRoute
   HelpRoute: typeof HelpRoute
   McpRoute: typeof McpRoute
   MeRoute: typeof MeRoute
@@ -453,6 +466,13 @@ declare module '@tanstack/react-router' {
       path: '/help'
       fullPath: '/help'
       preLoaderRoute: typeof HelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/activity': {
@@ -601,6 +621,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivityRoute: ActivityRoute,
+  AuthRoute: AuthRoute,
   HelpRoute: HelpRoute,
   McpRoute: McpRoute,
   MeRoute: MeRoute,
