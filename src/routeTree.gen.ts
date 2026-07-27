@@ -13,6 +13,7 @@ import { Route as TopupRouteImport } from './routes/topup'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SocialRouteImport } from './routes/social'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReverifyRouteImport } from './routes/reverify'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -58,6 +59,11 @@ const SocialRoute = SocialRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReverifyRoute = ReverifyRouteImport.update({
@@ -202,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/reverify': typeof ReverifyRoute
+  '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
@@ -234,6 +241,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/reverify': typeof ReverifyRoute
+  '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
@@ -267,6 +275,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/reverify': typeof ReverifyRoute
+  '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
@@ -301,6 +310,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/reverify'
+    | '/settings'
     | '/sitemap.xml'
     | '/social'
     | '/terms'
@@ -333,6 +343,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/reverify'
+    | '/settings'
     | '/sitemap.xml'
     | '/social'
     | '/terms'
@@ -365,6 +376,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/reverify'
+    | '/settings'
     | '/sitemap.xml'
     | '/social'
     | '/terms'
@@ -398,6 +410,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   MeRoute: typeof MeRoute
   ReverifyRoute: typeof ReverifyRoute
+  SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SocialRoute: typeof SocialRoute
   TermsRoute: typeof TermsRoute
@@ -451,6 +464,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reverify': {
@@ -646,6 +666,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   MeRoute: MeRoute,
   ReverifyRoute: ReverifyRoute,
+  SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SocialRoute: SocialRoute,
   TermsRoute: TermsRoute,
