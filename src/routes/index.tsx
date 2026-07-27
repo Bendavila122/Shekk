@@ -73,9 +73,20 @@ function HomeScreen() {
 
   return (
     <AppShell>
-      <div className="px-5 pb-2 pt-7">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground">Shalom, {firstName}</p>
+      <div className="px-5 pb-2 pt-6">
+        <div className="flex items-center gap-2">
+          <img
+            src="/favicon.png"
+            alt="Shekk logo"
+            width={30}
+            height={30}
+            className="size-[30px] rounded-lg border border-border bg-white"
+          />
+          <span className="font-display text-xl font-bold leading-none tracking-tight text-primary">Shekk</span>
+        </div>
+        <p className="mt-2 text-xs uppercase tracking-widest text-muted-foreground">Shalom, {firstName}</p>
       </div>
+
 
 
       {/* Search into the full catalogue */}
