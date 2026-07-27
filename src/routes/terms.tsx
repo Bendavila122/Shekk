@@ -44,7 +44,7 @@ const SECTIONS: { h: string; p: string[] }[] = [
     h: "4. How spending works",
     p: [
       "When you order or pay for something through a partner app inside Shekk, Shekk is the party that pays the partner. You are not paying the partner directly and no card of yours is charged at that moment.",
-      "Once the partner confirms the order, Shekk deducts the shekel-token equivalent of that order from your preloaded credit balance. If your balance is lower than the order total, the order cannot be placed.",
+      "Once the partner confirms the order, Shekk deducts the Shekk equivalent of that order from your preloaded credit balance. If your balance is lower than the order total, the order cannot be placed.",
       "Each spend is recorded in your Activity with the partner name, category, amount in shekels and the date. A US dollar reference amount is shown for convenience only and does not represent a redeemable value.",
     ],
   },
@@ -67,7 +67,7 @@ const SECTIONS: { h: string; p: string[] }[] = [
   {
     h: "7. Support and disputes",
     p: [
-      "Because Shekk pays the partner on your behalf, issues with an order (late delivery, wrong item, cancelled ride) are raised with Shekk first; Shekk takes it up with the partner and, where the partner refunds, returns the shekel-token equivalent to your balance as credits. Errors in a credit purchase should be reported within 30 days.",
+      "Because Shekk pays the partner on your behalf, issues with an order (late delivery, wrong item, cancelled ride) are raised with Shekk first; Shekk takes it up with the partner and, where the partner refunds, returns the Shekk equivalent to your balance as credits. Errors in a credit purchase should be reported within 30 days.",
     ],
   },
 

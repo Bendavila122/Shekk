@@ -83,9 +83,9 @@ function ServicePage() {
           <p className="text-sm font-semibold">How the integration works</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {service.status === "live"
-              ? `The ${service.partner ?? service.name} app runs inside Shekk — you book in their own flow, Shekk pays ${service.partner ?? service.name} for the order, and the shekel-token equivalent comes off your preloaded balance.`
+              ? `The ${service.partner ?? service.name} app runs inside Shekk — you book in their own flow, Shekk pays ${service.partner ?? service.name} for the order, and the Shekk equivalent comes off your preloaded balance.`
               : service.status === "integrating"
-                ? `We're connecting ${service.partner ?? "this platform"} directly, so you book inside Shekk, we settle the bill with them, and your tokens are deducted.`
+                ? `We're connecting ${service.partner ?? "this platform"} directly, so you book inside Shekk, we settle the bill with them, and your Shekk is deducted.`
                 : "A plain-English guide written for gap-year students, kept current with the Israeli calendar."}
           </p>
         </Card>
@@ -102,7 +102,7 @@ function ServicePage() {
 
         <p className="px-1 text-xs text-muted-foreground">
           We integrate whole platforms, not individual bars, restaurants, hotels or shops — those aren't onboarded
-          yet. You can also send tokens to, or split a bill with, anyone else on Shekk.
+          yet. You can also send Shekk to, or split a bill with, anyone else on Shekk.
         </p>
       </div>
     </AppShell>

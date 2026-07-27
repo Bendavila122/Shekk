@@ -108,7 +108,7 @@ function Me() {
             <li>• You buy credits — it's a purchase, not a deposit. We're not a bank and we don't hold your money.</li>
             <li>• Credits are in shekels, non-refundable and non-withdrawable.</li>
             <li>• Order through a partner app inside Shekk and <span className="font-medium text-foreground">we pay them</span> — your card is never charged at checkout.</li>
-            <li>• We then deduct the shekel-token equivalent of that order from your preloaded balance.</li>
+            <li>• We then deduct the Shekk equivalent of that order from your preloaded balance.</li>
             <li>• Every top up shows the Shekk rate and the exact credits you get before you confirm.</li>
             <li>• Re-verify your ID once a year to keep the account active.</li>
           </ul>

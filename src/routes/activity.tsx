@@ -13,7 +13,7 @@ export const Route = createFileRoute("/activity")({
       {
         name: "description",
         content:
-          "Your full Shekk history: every top-up, partner-app order and token transfer, with shekel and USD reference amounts.",
+          "Your full Shekk history: every top-up, partner-app order and Shekk transfer, with shekel and USD reference amounts.",
       },
       { property: "og:title", content: "Activity · Shekk" },
       { property: "og:description", content: "Every top-up, order and transfer in one statement." },
@@ -97,7 +97,7 @@ function ActivityScreen() {
                 to="/topup"
                 className="tap mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
               >
-                <Plus className="size-3.5" /> Top up tokens
+                <Plus className="size-3.5" /> Top up Shekk
               </Link>
             </div>
           ) : (
@@ -127,7 +127,7 @@ function ActivityScreen() {
           className="tap mt-4 flex items-center gap-2 rounded-2xl border border-notice-border bg-notice-soft px-4 py-3 text-xs text-notice-foreground"
         >
           <IdCard className="size-4 shrink-0 text-notice" />
-          Tokens are shekel-denominated, non-refundable and non-withdrawable — spendable inside the partner apps in
+          Shekk is shekel-denominated, non-refundable and non-withdrawable — spendable inside the partner apps in
           Shekk and with other Shekk users. Read the terms.
         </Link>
       </section>

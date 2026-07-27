@@ -82,13 +82,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Shekk is the super-app for American gap-year students in Israel: preload shekel tokens, then Wolt, Gett, Rav-Kav, Go-To and Israel Railways run inside the app and we pay them for you.",
+          "Shekk is the super-app for American gap-year students in Israel: preload Shekk, then Wolt, Gett, Rav-Kav, Go-To and Israel Railways run inside the app and we pay them for you.",
       },
       { name: "author", content: "Shekk" },
       { property: "og:title", content: "Shekk — one wallet for your year in Israel" },
       {
         property: "og:description",
-        content: "Preload shekel tokens once — Shekk pays the partner apps for you and deducts the tokens.",
+        content: "Preload Shekk once — Shekk pays the partner apps for you and deducts the tokens.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
