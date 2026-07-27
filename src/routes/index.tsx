@@ -99,11 +99,6 @@ function HomeScreen() {
           </div>
         </section>
 
-
-        <p className="text-center text-[11px] text-muted-foreground">
-          Tap a logo and it opens inside Shekk. You never pay the partner directly — we do, and the Shekk
-          equivalent comes off your balance. {STATUS_LABEL.integrating} apps open their guide for now.
-        </p>
       </div>
 
       {/* Paying people */}
