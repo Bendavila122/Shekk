@@ -34,6 +34,9 @@ export type Settings = {
   showPhotoToMerchants: boolean;
   homeCity: string;
   hebrewDates: boolean;
+  /** Display language for the whole app. */
+  appLanguage: "en" | "he" | "es" | "fr" | "ru";
+  /** How much transliterated Hebrew slang shows up in English copy. */
   language: "en" | "en-heb";
 };
 
@@ -56,6 +59,7 @@ export const defaultSettings: Settings = {
   showPhotoToMerchants: true,
   homeCity: "Jerusalem",
   hebrewDates: true,
+  appLanguage: "en",
   language: "en-heb",
 };
 
@@ -151,6 +155,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
   }, [hydrated, state.settings.theme]);
+
+  // Display language drives lang/dir on the document.
+  useEffect(() => {
+    if (!hydrated || typeof window === "undefined") return;
+    const lang = state.settings.appLanguage;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "he" ? "rtl" : "ltr";
+  }, [hydrated, state.settings.appLanguage]);
 
   // Motion preference is a single class the utilities can hang off.
   useEffect(() => {
