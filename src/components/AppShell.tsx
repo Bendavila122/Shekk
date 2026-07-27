@@ -169,10 +169,11 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
       <Link
         to="/topup"
         onClick={onNavigate}
-        className="tap mt-3 flex items-center justify-center gap-1.5 rounded-full bg-accent px-3 py-2 text-xs font-semibold text-accent-foreground"
+        className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-card px-4 py-3 text-sm font-bold uppercase tracking-wide text-primary shadow-lift ring-2 ring-card/60 transition-transform hover:scale-[1.03] active:scale-[0.98]"
       >
-        <Plus className="size-4" /> Top up
+        <Plus className="size-4" strokeWidth={3} /> Top up
       </Link>
+
     </div>
   );
 }
