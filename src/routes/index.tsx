@@ -1,31 +1,52 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowUpRight, Plus, IdCard, Users, ChevronRight, QrCode } from "lucide-react";
+import { ArrowUpRight, Plus, IdCard, Users, ChevronRight, QrCode, Search, Grid3X3 } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { QRCode } from "@/components/QRCode";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { ils, usdRef } from "@/lib/mock";
-import { FEATURED_SERVICES, serviceLinkProps } from "@/lib/services";
+import { HOME_SECTIONS, STATUS_LABEL, serviceLinkProps, type Service } from "@/lib/services";
 import { ServiceLogo } from "@/components/ServiceLogo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Wallet · ShekelPay" },
+      { title: "Home · ShekelPay" },
       {
         name: "description",
         content:
-          "Your shekel tokens, the Israeli apps you actually use — Wolt, Gett, Rav-Kav, Go-To, Israel Railways — and one-tap transfers to friends.",
+          "Your Israeli phone, inside your phone: Wolt, Gett, Rav-Kav, Israel Railways, Go-To and more — all paid with shekel tokens.",
       },
-      { property: "og:title", content: "Wallet · ShekelPay" },
-      { property: "og:description", content: "Tokens in, apps inside, friends paid in a tap." },
+      { property: "og:title", content: "Home · ShekelPay" },
+      { property: "og:description", content: "One home screen for every Israeli app a gap-year student needs." },
     ],
   }),
-  component: PayTab,
+  component: HomeScreen;
 });
 
-function PayTab() {
+function AppIcon({ service }: { service: Service }) {
+  return (
+    <Link
+      {...serviceLinkProps(service)}
+      className="tap group flex flex-col items-center gap-1.5"
+    >
+      <span className="relative">
+        <ServiceLogo service={service} size={58} className="rounded-[1.15rem] shadow-card" />
+        {service.status !== "live" ? (
+          <span className="absolute -right-1 -top-1 rounded-full bg-ink px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide text-ink-foreground">
+            {service.status === "integrating" ? "soon" : "info"}
+          </span>
+        ) : null}
+      </span>
+      <span className="line-clamp-2 text-center text-[11px] font-medium leading-tight text-foreground">
+        {service.name}
+      </span>
+    </Link>
+  );
+}
+
+function HomeScreen() {
   const ready = useOnboardedGate();
   const { state } = useApp();
   const [showCode, setShowCode] = useState(false);
@@ -38,13 +59,17 @@ function PayTab() {
     );
   }
 
+  const firstName = (state.name || "there").split(" ")[0];
+
   return (
     <AppShell>
-      <div className="bg-ink px-5 pb-10 pt-6 text-ink-foreground">
-        <div className="flex items-center justify-between">
+      {/* Status strip + wallet */}
+      <div className="bg-ink px-5 pb-8 pt-6 text-ink-foreground">
+        <p className="text-xs uppercase tracking-widest opacity-60">Shalom, {firstName}</p>
+        <div className="mt-3 flex items-end justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-widest opacity-60">Token balance</p>
-            <p className="font-display text-4xl font-bold">{ils(state.balance)}</p>
+            <p className="text-[11px] uppercase tracking-widest opacity-60">Token balance</p>
+            <p className="font-display text-4xl font-bold leading-tight">{ils(state.balance)}</p>
             <p className="text-xs opacity-60">≈ {usdRef(state.balance)} reference value</p>
           </div>
           <Link
@@ -56,53 +81,53 @@ function PayTab() {
         </div>
       </div>
 
-      <div className="-mt-6 px-4">
-        <div className="rounded-3xl border border-border bg-card p-4 shadow-card">
-          <div className="mb-3 flex items-baseline justify-between">
-            <h2 className="text-base font-semibold">Your apps</h2>
-            <Link to="/explore" className="text-xs font-semibold text-primary">
-              All services <ChevronRight className="inline size-3" />
-            </Link>
-          </div>
-          <p className="mb-3 text-xs text-muted-foreground">
-            Tap a logo and it opens straight into that app, inside ShekelPay. You never pay them directly — we do.
-          </p>
-          <div className="grid grid-cols-5 gap-2">
-            {FEATURED_SERVICES.map((s) => (
-              <Link
-                key={s.id}
-                {...serviceLinkProps(s)}
-                className="tap flex flex-col items-center gap-1.5 rounded-2xl bg-muted px-1 py-3"
-              >
-                <ServiceLogo service={s} size={36} />
-                <span className="text-center text-[10px] font-semibold leading-tight">{s.name}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
+      {/* Search into the full catalogue */}
+      <div className="-mt-5 px-4">
+        <Link
+          to="/explore"
+          className="tap flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground shadow-card"
+        >
+          <Search className="size-4 shrink-0" />
+          Search apps, guides and services
+        </Link>
       </div>
 
-      <section className="px-4 pt-4">
-        <Card className="space-y-3">
-          <h2 className="text-base font-semibold">How paying works</h2>
-          <ol className="space-y-2 text-sm text-muted-foreground">
-            <li className="flex gap-2">
-              <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary-soft text-[11px] font-bold text-primary">1</span>
-              You preload tokens once with Apple Pay.
-            </li>
-            <li className="flex gap-2">
-              <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary-soft text-[11px] font-bold text-primary">2</span>
-              Order inside Wolt, Gett, Rav-Kav, Go-To or Israel Railways — <span className="font-medium text-foreground">ShekelPay pays them</span>, not your card.
-            </li>
-            <li className="flex gap-2">
-              <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary-soft text-[11px] font-bold text-primary">3</span>
-              The shekel-token equivalent comes straight off your balance and lands in Activity.
-            </li>
-          </ol>
-        </Card>
-      </section>
+      {/* Springboard */}
+      <div className="space-y-6 px-4 pt-6">
+        {HOME_SECTIONS.map((section) => (
+          <section key={section.label}>
+            <div className="mb-3 flex items-baseline justify-between gap-3">
+              <div>
+                <h2 className="text-sm font-semibold">{section.label}</h2>
+                <p className="text-[11px] text-muted-foreground">{section.hint}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-4 gap-x-2 gap-y-5 sm:grid-cols-5 lg:grid-cols-8">
+              {section.services.map((s) => (
+                <AppIcon key={s.id} service={s} />
+              ))}
+            </div>
+          </section>
+        ))}
 
-      <section className="px-4 pt-4">
+        <Link
+          to="/explore"
+          className="tap flex items-center justify-between rounded-2xl bg-muted px-4 py-3 text-sm font-semibold"
+        >
+          <span className="flex items-center gap-2">
+            <Grid3X3 className="size-4 text-primary" /> All apps &amp; guides
+          </span>
+          <ChevronRight className="size-4 text-muted-foreground" />
+        </Link>
+
+        <p className="text-center text-[11px] text-muted-foreground">
+          Tap a logo and it opens inside ShekelPay. You never pay the partner directly — we do, and the shekel-token
+          equivalent comes off your balance. {STATUS_LABEL.integrating} apps open their guide for now.
+        </p>
+      </div>
+
+      {/* Paying people */}
+      <section className="px-4 pt-6">
         <Card className="p-0">
           <div className="flex items-center gap-3 p-4">
             <span className="flex size-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
@@ -122,10 +147,7 @@ function PayTab() {
             >
               Send tokens
             </Link>
-            <Link
-              to="/social"
-              className="tap rounded-xl bg-muted px-2 py-2.5 text-center text-xs font-semibold"
-            >
+            <Link to="/social" className="tap rounded-xl bg-muted px-2 py-2.5 text-center text-xs font-semibold">
               Split a bill
             </Link>
             <button
@@ -151,7 +173,8 @@ function PayTab() {
         <ReverifyBanner />
       </div>
 
-      <section className="px-4 pb-6">
+      {/* Activity */}
+      <section className="px-4 pb-6 pt-5">
         <div className="mb-2 flex items-center justify-between">
           <h2 className="text-base font-semibold">Activity</h2>
           <Link to="/me" className="text-xs font-semibold text-primary">
@@ -164,7 +187,7 @@ function PayTab() {
               Nothing yet — top up tokens and your first spend shows here.
             </p>
           ) : (
-            state.txns.slice(0, 8).map((t) => (
+            state.txns.slice(0, 6).map((t) => (
               <div key={t.id} className="flex items-center gap-3 p-3.5">
                 <span className="flex size-10 items-center justify-center rounded-xl bg-muted text-lg">{t.icon}</span>
                 <div className="min-w-0 flex-1">
