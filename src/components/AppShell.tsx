@@ -41,7 +41,7 @@ export function FocusScreen({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen justify-center bg-ink/95 px-0 py-0 sm:px-4 sm:py-8 lg:bg-ink/[0.03] lg:px-8 lg:py-12">
       <div className="relative flex min-h-screen w-full max-w-[430px] flex-col overflow-hidden bg-background shadow-lift sm:min-h-[860px] sm:rounded-[2.5rem] sm:border-8 sm:border-ink lg:min-h-0 lg:max-w-2xl lg:rounded-3xl lg:border lg:border-border lg:shadow-card">
         {children}
-        <MobileNav floatingButton />
+        <MobileNav />
       </div>
     </div>
   );
@@ -72,7 +72,7 @@ export function Notice({
 }
 
 /** Menu button + slide-in drawer, shared by every screen. */
-export function MobileNav({ floatingButton = false }: { floatingButton?: boolean }) {
+export function MobileNav() {
   const isActive = useActive();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -88,9 +88,7 @@ export function MobileNav({ floatingButton = false }: { floatingButton?: boolean
         aria-label="Open menu"
         aria-expanded={menuOpen}
         onClick={() => setMenuOpen(true)}
-        className={`tap absolute right-4 top-4 z-30 flex size-11 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-card lg:hidden ${
-          floatingButton ? "" : ""
-        }`}
+        className="tap absolute right-4 top-4 z-30 flex size-11 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-card lg:hidden"
       >
         <Menu className="size-5" />
       </button>
@@ -273,7 +271,7 @@ export function ReverifyBanner() {
         <p className="text-sm font-semibold">{daysLeft} days left to re-verify</p>
         <p className="text-xs opacity-80">Annual ID check — keeps your credits spendable.</p>
       </div>
-      <span className="rounded-full bg-notice px-3 py-1.5 text-xs font-semibold text-notice-foreground">
+      <span className="rounded-full bg-notice-foreground px-3 py-1.5 text-xs font-semibold text-notice-soft">
         Re-verify
       </span>
     </Link>
