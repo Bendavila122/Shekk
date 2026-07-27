@@ -114,15 +114,18 @@ export function QuickMenu() {
 
   return (
     <div className="lg:hidden">
-      <button
-        type="button"
-        aria-label={open ? "Close quick menu" : "Open quick menu"}
-        aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-        className="tap fixed right-3 top-3 z-50 rounded-full border border-border bg-card p-2.5 text-foreground shadow-card"
-      >
-        {open ? <X className="size-5" /> : <Menu className="size-5" />}
-      </button>
+      <div className="pointer-events-none fixed left-1/2 top-0 z-50 w-full max-w-[430px] -translate-x-1/2">
+        <button
+          type="button"
+          aria-label={open ? "Close quick menu" : "Open quick menu"}
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+          className="tap pointer-events-auto absolute right-3 top-3 rounded-full border border-border bg-card p-2.5 text-foreground shadow-card"
+        >
+          {open ? <X className="size-5" /> : <Menu className="size-5" />}
+        </button>
+      </div>
+
 
       {open ? (
         <>
