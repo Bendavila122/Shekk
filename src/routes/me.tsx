@@ -17,7 +17,7 @@ export const Route = createFileRoute("/me")({
       { property: "og:description", content: "Your ShekelPay account, verification status and credit terms." },
     ],
   }),
-  component: Me;
+  component: Me,
 });
 
 function Me() {
