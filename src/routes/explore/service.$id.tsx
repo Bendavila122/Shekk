@@ -84,7 +84,7 @@ function ServicePage() {
           <p className="text-sm font-semibold">How the integration works</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {service.status === "live"
-              ? "Booked and paid inside ShekelPay with your credits — no second app, no second card."
+              ? `The ${service.partner ?? service.name} app runs inside ShekelPay — you book in their own flow and pay with your shekel tokens.`
               : service.status === "integrating"
                 ? `We're connecting ${service.partner ?? "this platform"} directly, so bookings and payment happen in ShekelPay rather than bouncing you out to another app.`
                 : "A plain-English guide written for gap-year students, kept current with the Israeli calendar."}
@@ -102,8 +102,8 @@ function ServicePage() {
         )}
 
         <p className="px-1 text-xs text-muted-foreground">
-          Individual restaurants, clubs, hostels and shops come in through their platform — they don't sign up
-          with ShekelPay one by one.
+          We integrate whole platforms, not individual bars, restaurants, hotels or shops — those aren't onboarded
+          yet. You can also send tokens to, or split a bill with, anyone else on ShekelPay.
         </p>
       </div>
     </AppShell>
