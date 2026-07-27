@@ -67,9 +67,10 @@ const SECTIONS: { h: string; p: string[] }[] = [
   {
     h: "7. Support and disputes",
     p: [
-      "Merchant disputes are handled between you and the merchant; ShekelPay may assist with transaction records. Errors in a credit purchase should be reported within 30 days.",
+      "Because ShekelPay pays the partner on your behalf, issues with an order (late delivery, wrong item, cancelled ride) are raised with ShekelPay first; ShekelPay takes it up with the partner and, where the partner refunds, returns the shekel-token equivalent to your balance as credits. Errors in a credit purchase should be reported within 30 days.",
     ],
   },
+
 ];
 
 function Terms() {
