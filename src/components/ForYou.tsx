@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { SlidersHorizontal, RefreshCw, Sparkles, X } from "lucide-react";
+import { SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { useUserContext, WEATHER_CITIES } from "@/lib/personalise";
-import { orderWidgets, sampleTip, type WidgetDef } from "@/lib/widgets";
+import { orderWidgets, type WidgetDef } from "@/lib/widgets";
+
 import { useForYouPrefs, haptic } from "@/lib/foryou-prefs";
 import { ForYouSettings } from "@/components/ForYouSettings";
 import { ils } from "@/lib/mock";
