@@ -88,7 +88,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Shekk — one wallet for your year in Israel" },
       {
         property: "og:description",
-        content: "Preload Shekk once — Shekk pays the partner apps for you and deducts the tokens.",
+        content: "Preload Shekk once — Shekk pays the partner apps for you and deducts them.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

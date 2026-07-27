@@ -145,7 +145,7 @@ function HomeScreen() {
                 <p className="text-xs font-semibold">{state.name || "Your"} · friend code</p>
               </div>
               <p className="text-center text-[11px] text-muted-foreground">
-                A friend scans this to send you tokens. It isn't a merchant payment code.
+                A friend scans this to send you Shekk. It isn't a merchant payment code.
               </p>
             </div>
           ) : null}
