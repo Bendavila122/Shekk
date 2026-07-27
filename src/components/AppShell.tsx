@@ -248,25 +248,30 @@ export function ScreenHeader({
   const canGoBack = useCanGoBack();
   const navigate = useNavigate();
   return (
-    <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-border bg-background/90 px-4 py-3 backdrop-blur">
-      <button
-        type="button"
-        aria-label="Go back"
-        onClick={() => {
-          if (onBack) { onBack(); return; }
-          if (canGoBack) router.history.back();
-          else navigate({ to: back });
-        }}
-        className="tap rounded-full bg-muted p-2 text-foreground"
-      >
-        <ChevronLeft className="size-5" />
-      </button>
-      <div>
-        <h1 className="text-lg font-semibold">{title}</h1>
-        {subtitle ? <p className="text-xs text-muted-foreground">{subtitle}</p> : null}
-      </div>
-    </header>
+    <>
+      {/* spacer keeps content clear of the fixed header on mobile */}
+      <div className="h-[60px] lg:hidden" aria-hidden />
+      <header className="fixed left-1/2 top-0 z-40 flex w-full max-w-[430px] -translate-x-1/2 items-center gap-3 border-b border-border bg-card px-4 py-3 pr-16 lg:sticky lg:left-auto lg:max-w-none lg:translate-x-0 lg:pr-4">
+        <button
+          type="button"
+          aria-label="Go back"
+          onClick={() => {
+            if (onBack) { onBack(); return; }
+            if (canGoBack) router.history.back();
+            else navigate({ to: back });
+          }}
+          className="tap shrink-0 rounded-full bg-muted p-2 text-foreground"
+        >
+          <ChevronLeft className="size-5" />
+        </button>
+        <div className="min-w-0">
+          <h1 className="truncate text-lg font-semibold">{title}</h1>
+          {subtitle ? <p className="truncate text-xs text-muted-foreground">{subtitle}</p> : null}
+        </div>
+      </header>
+    </>
   );
+
 }
 
 
