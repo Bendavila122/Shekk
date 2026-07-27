@@ -73,7 +73,7 @@ export const WIDGETS: WidgetDef[] = [
     relevance: (c) => clamp(52 + (c.timeOfDay === "morning" ? 40 : c.timeOfDay === "early" ? 30 : 6) + (c.weather.rain > 50 ? 15 : 0)),
     build: (c) => ({
       headline: `${c.weather.temp}° ${c.weather.condition}`,
-      sub: `${c.city} · feels ${c.weather.feels}° · H ${c.weather.high}° / L ${c.weather.low}°`,
+      sub: `${c.weatherCity} · feels ${c.weather.feels}° · H ${c.weather.high}° / L ${c.weather.low}°`,
       rows: c.isFriday
         ? [
             { icon: "🕯", label: "Candle lighting", value: c.zmanim.candle },
@@ -88,28 +88,7 @@ export const WIDGETS: WidgetDef[] = [
             { icon: "☂️", label: "Rain chance", value: `${c.weather.rain}%` },
             { icon: "🫁", label: "Air quality", value: `AQI ${c.weather.aqi}` },
           ],
-      ctas: [{ label: "View forecast", to: "/explore" }],
-    }),
-  },
-  {
-    id: "wallet",
-    title: "Wallet",
-    emoji: "💳",
-    gradient: "grad-wallet",
-    relevance: (c) => clamp(58 + (c.signals.pendingSplits ? 22 : 0) + (c.timeOfDay === "morning" ? 12 : 0)),
-    build: (c) => ({
-      headline: "Your Shekk",
-      sub: `Spent ${ils(c.signals.spentThisWeek)} this week`,
-      rows: [
-        { icon: "💰", label: "Cashback earned", value: ils(c.signals.cashback) },
-        { icon: "👥", label: "Pending split requests", value: `${c.signals.pendingSplits}` },
-        { icon: "🏷", label: "Promo codes available", value: "3" },
-      ],
-      ctas: [
-        { label: "Add Credits", to: "/topup" },
-        { label: "Split Bill", to: "/social" },
-        { label: "View Activity", to: "/activity" },
-      ],
+      ctas: [],
     }),
   },
   {
@@ -119,18 +98,23 @@ export const WIDGETS: WidgetDef[] = [
     gradient: "grad-jewish",
     relevance: (c) =>
       clamp(
-        30 +
-          (c.isErevShabbat ? 60 : 0) +
+        45 +
+          (c.isErevShabbat ? 55 : 0) +
           (c.isFriday ? 25 : 0) +
-          (c.jewishDay ? (c.jewishDay.kind === "fast" ? 55 : 45) : 0) +
+          (c.jewishDay ? (c.jewishDay.kind === "fast" ? 45 : 35) : 0) +
           (c.isShabbat ? 20 : 0),
       ),
     build: (c) => {
+      const base = [
+        { icon: "📜", label: "This week's sedra", value: `Parashat ${c.sedra}` },
+        { icon: "🗓", label: "Today", value: c.hebrewDate },
+      ];
       if (c.jewishDay?.kind === "fast") {
         return {
           headline: c.jewishDay.label,
-          sub: c.jewishDay.blurb,
+          sub: c.hebrewDate,
           rows: [
+            ...base,
             { icon: "🌑", label: "Fast begins", value: c.zmanim.sunrise },
             { icon: "✨", label: "Fast ends", value: c.zmanim.havdalah },
             { icon: "🕍", label: SHULS[0].name, value: "Kinot 09:00" },
@@ -141,20 +125,22 @@ export const WIDGETS: WidgetDef[] = [
       if (c.jewishDay) {
         return {
           headline: c.jewishDay.label,
-          sub: c.jewishDay.blurb,
+          sub: c.hebrewDate,
           rows: [
+            ...base,
             { icon: "🎉", label: "Nearby events", value: `${EVENTS.length} listed` },
-            { icon: "📖", label: "Holiday guide", value: "5 min read" },
             { icon: "🕯", label: "Candle lighting", value: c.zmanim.candle },
           ],
           ctas: [{ label: "View Details", to: "/explore/community" }],
         };
       }
       return {
-        headline: c.isFriday ? "Erev Shabbat" : "This week",
-        sub: c.isFriday ? `Candles ${c.zmanim.candle} in ${c.city}` : `Minyanim and meals near ${c.city}`,
+        headline: `Parashat ${c.sedra}`,
+        sub: c.hebrewDate,
         rows: [
+          ...base,
           { icon: "🕯", label: "Candle lighting", value: c.zmanim.candle },
+          { icon: "🍷", label: "Havdalah", value: c.zmanim.havdalah },
           { icon: "🍽", label: "Friday night meals nearby", value: "7 open" },
           ...SHULS.slice(0, 2).map((s) => ({ icon: s.emoji, label: s.name, value: undefined })),
         ],
@@ -163,47 +149,54 @@ export const WIDGETS: WidgetDef[] = [
     },
   },
   {
-    id: "travel",
-    title: "Travel",
-    emoji: "🚍",
-    gradient: "grad-travel",
-    relevance: (c) => clamp(40 + (c.timeOfDay === "morning" ? 38 : c.timeOfDay === "afternoon" ? 18 : 4) + (c.signals.ravKavLow ? 18 : 0)),
+    id: "promo-event",
+    title: "Featured Event",
+    emoji: "🎟",
+    gradient: "grad-events",
+    relevance: (c) => clamp(62 + (c.timeOfDay === "evening" ? 18 : 8) + (c.dayOfWeek === 0 || c.dayOfWeek === 1 ? 10 : 0)),
     build: (c) => {
-      const rail = BUS_LINES.find((b) => b.line.startsWith("Rail")) ?? BUS_LINES[0];
-      const bus = BUS_LINES[0];
+      const e = EVENTS[0];
+      const promo = Math.round(e.price * 0.7);
       return {
-        headline: `Next train in ${rail.mins + 23} min`,
-        sub: rail.dest,
+        headline: `${e.name} — ₪${promo}`,
+        sub: `30% off with Shekk · was ${ils(e.price)}`,
         rows: [
-          { icon: "🚌", label: `Line ${bus.line} · ${bus.dest}`, value: `${bus.mins} min` },
-          c.signals.ravKavLow
-            ? { icon: "💳", label: "Rav-Kav balance is low", value: "Top up" }
-            : { icon: "💳", label: "Rav-Kav balance", value: ils(c.signals.lastTransitSpend) },
-          { icon: "🚗", label: "Traffic to Tel Aviv", value: rand(`${c.signals.seed}|traffic`) > 0.5 ? "Heavy" : "Clear" },
-          { icon: "🚕", label: "Taxi prices right now", value: rand(`${c.signals.seed}|taxi`) > 0.5 ? "Cheaper" : "Normal" },
+          { icon: e.emoji, label: e.name, value: `₪${promo}` },
+          { icon: "🏫", label: e.host, value: e.when },
+          { icon: "🎫", label: "Spots left", value: `${e.spots}` },
+          { icon: "🏷", label: "Code SHEKK30 applied at checkout", value: "Ends Thu" },
+          { icon: "📍", label: `Buses leave ${c.city} 13:30`, value: "Included" },
         ],
-        ctas: [{ label: "Plan Journey", to: "/explore/transit" }],
+        ctas: [
+          { label: "Get ticket", to: "/explore/events" },
+          { label: "All events", to: "/explore/events" },
+        ],
       };
     },
   },
   {
     id: "deals",
-    title: "Deals For You",
-    emoji: "🍔",
+    title: "Food Deal",
+    emoji: "🍕",
     gradient: "grad-deals",
-    relevance: (c) => clamp(34 + (c.timeOfDay === "afternoon" ? 42 : c.timeOfDay === "evening" ? 26 : 6)),
+    relevance: (c) => clamp(50 + (c.timeOfDay === "afternoon" ? 32 : c.timeOfDay === "evening" ? 30 : 8)),
     build: (c) => {
-      const favRestaurant = RESTAURANTS.find((r) => c.signals.topCategory.toLowerCase().includes("food")) ?? RESTAURANTS[0];
+      const r = RESTAURANTS[0];
+      const item = r.items[0];
+      const deal = Math.round(item.price * 0.5);
       return {
-        headline: `Because you love ${c.signals.favouriteMerchant}`,
-        sub: `Picked from your ${c.signals.topCategory.toLowerCase()} spending`,
+        headline: `2 for 1 at ${r.name}`,
+        sub: `${item.name} ₪${deal} each tonight · ${r.eta}`,
         rows: [
-          { icon: favRestaurant.emoji, label: `20% off ${favRestaurant.name}`, value: "Today" },
-          { icon: "🎓", label: `${SHOPS[0].name} — ${SHOPS[0].promo}`, value: "Nearby" },
-          { icon: "🛵", label: "Free delivery tonight on Wolt", value: "Until 23:00" },
-          { icon: "🏷", label: `${SHOPS[1].name} — ${SHOPS[1].promo}`, value: "This week" },
+          { icon: r.emoji, label: `${item.name} — was ₪${item.price}`, value: `₪${deal}` },
+          { icon: "🛵", label: "Free delivery over ₪60", value: "Until 23:00" },
+          { icon: "🥙", label: `${RESTAURANTS[1].name} — 20% student discount`, value: "Today" },
+          { icon: "🏷", label: `Because you love ${c.signals.favouriteMerchant}`, value: "Picked" },
         ],
-        ctas: [{ label: "See deals", to: "/explore/shops" }],
+        ctas: [
+          { label: "Order now", to: "/explore/food" },
+          { label: "More deals", to: "/explore/shops" },
+        ],
       };
     },
   },
@@ -226,20 +219,23 @@ export const WIDGETS: WidgetDef[] = [
   },
   {
     id: "social",
-    title: "Social",
+    title: "Requests",
     emoji: "👥",
     gradient: "grad-social",
-    relevance: (c) => clamp(30 + (c.signals.pendingSplits ? 30 : 0) + (c.timeOfDay === "evening" ? 16 : 0)),
+    relevance: (c) => clamp(40 + (c.signals.pendingSplits ? 38 : 0) + (c.timeOfDay === "evening" ? 12 : 0)),
     build: (c) => ({
-      headline: c.signals.pendingSplits ? `${c.signals.pendingSplits} split requests waiting` : "Your cohort",
-      sub: "From friends on Shekk",
+      headline: c.signals.pendingSplits ? `${ils(c.signals.requestedTotal)} requested` : "All settled",
+      sub: c.signals.pendingSplits
+        ? `${c.signals.pendingSplits} friend${c.signals.pendingSplits > 1 ? "s" : ""} waiting to be paid back`
+        : "No one is waiting on you",
       rows: [
-        ...FEED.slice(0, 3).map((f) => ({ icon: f.emoji, label: `${f.who} ${f.what}`, value: f.when })),
-        { icon: "📣", label: "Programme announcement from your madrich", value: "New" },
+        ...c.signals.requests.map((r) => ({ icon: "🙋", label: `${r.from} · ${r.reason}`, value: ils(r.amount) })),
+        ...FEED.slice(0, 2).map((f) => ({ icon: f.emoji, label: `${f.who} ${f.what}`, value: f.when })),
       ],
-      ctas: [{ label: "Open", to: "/social" }],
+      ctas: [{ label: "Pay back", to: "/social" }],
     }),
   },
+
   {
     id: "discover",
     title: "Discover",
