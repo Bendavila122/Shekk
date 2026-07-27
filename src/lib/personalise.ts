@@ -183,7 +183,6 @@ function signalsFrom(txns: Txn[], seed: string) {
     spentThisWeek: +spentThisWeek.toFixed(2),
     lastTransitSpend,
     ravKavLow: lastTransitSpend < 60,
-    cashback: +(spentThisWeek * 0.012).toFixed(2),
     seed,
   };
 }
@@ -192,9 +191,10 @@ function signalsFrom(txns: Txn[], seed: string) {
 
 /**
  * Reads the clock only after mount so SSR and hydration agree.
- * `refreshKey` lets pull-to-refresh re-seed the simulated live values.
+ * `refreshKey` re-seeds the simulated live values; `weatherCityOverride`
+ * lets the student point the weather widget at another Israeli city.
  */
-export function useUserContext(refreshKey = 0): UserContext {
+export function useUserContext(refreshKey = 0, weatherCityOverride?: string | null): UserContext {
   const { state } = useApp();
   const [now, setNow] = useState<Date | null>(null);
 
@@ -211,11 +211,15 @@ export function useUserContext(refreshKey = 0): UserContext {
     const mmdd = `${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     const programCity = PROGRAMS.find((p) => p.id === state.programId)?.city ?? "Jerusalem";
     const city = programCity.includes("Tel Aviv") ? "Tel Aviv" : programCity.includes("Jerusalem") ? "Jerusalem" : "Israel";
-    const zmanim = CITY_PROFILE[city] ?? CITY_PROFILE.Default;
+    const weatherCity = weatherCityOverride && CITY_PROFILE[weatherCityOverride] ? weatherCityOverride : city;
+    const zmanim = CITY_PROFILE[weatherCity] ?? CITY_PROFILE.Default;
 
     const seed = `${state.name}|${city}|${mmdd}|${refreshKey}`;
-    const condition = pick(CONDITIONS, `${seed}|cond`);
-    const temp = between(`${seed}|temp`, city === "Tel Aviv" ? 17 : 13, city === "Tel Aviv" ? 29 : 26);
+    const wSeed = `${seed}|${weatherCity}`;
+    const condition = pick(CONDITIONS, `${wSeed}|cond`);
+    const base = (CITY_PROFILE[weatherCity] ?? CITY_PROFILE.Default).base;
+    const temp = between(`${wSeed}|temp`, base - 5, base + 5);
+    const unpaid = state.splits.filter((s) => !s.paid);
 
     return {
       ready: now !== null,
@@ -228,23 +232,29 @@ export function useUserContext(refreshKey = 0): UserContext {
       isShabbat: (dayOfWeek === 5 && hour >= 17) || (dayOfWeek === 6 && hour < 18),
       isMotzash: dayOfWeek === 6 && hour >= 18,
       jewishDay: JEWISH_CALENDAR[mmdd] ?? null,
+      sedra: sedraFor(d),
+      hebrewDate: hebrewDate(d),
       city,
+      weatherCity,
       zmanim,
       weather: {
         temp,
-        feels: temp + between(`${seed}|feels`, -2, 3),
+        feels: temp + between(`${wSeed}|feels`, -2, 3),
         condition: condition.label,
         emoji: condition.emoji,
-        uv: between(`${seed}|uv`, 2, 9),
-        rain: between(`${seed}|rain`, 0, condition.label === "Light rain" ? 80 : 25),
-        aqi: between(`${seed}|aqi`, 18, 74),
-        high: temp + between(`${seed}|hi`, 1, 5),
-        low: temp - between(`${seed}|lo`, 3, 8),
+        uv: between(`${wSeed}|uv`, 2, 9),
+        rain: between(`${wSeed}|rain`, 0, condition.label === "Light rain" ? 80 : 25),
+        aqi: between(`${wSeed}|aqi`, 18, 74),
+        high: temp + between(`${wSeed}|hi`, 1, 5),
+        low: temp - between(`${wSeed}|lo`, 3, 8),
       },
       signals: {
         ...signalsFrom(state.txns, seed),
-        pendingSplits: state.splits.filter((s) => !s.paid).length,
+        pendingSplits: unpaid.length,
+        requests: unpaid.map((s) => ({ from: s.from, reason: s.reason, amount: s.amount })),
+        requestedTotal: +unpaid.reduce((sum, s) => sum + s.amount, 0).toFixed(2),
       },
     };
-  }, [now, refreshKey, state.name, state.programId, state.txns, state.splits]);
+  }, [now, refreshKey, weatherCityOverride, state.name, state.programId, state.txns, state.splits]);
+
 }
