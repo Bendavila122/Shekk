@@ -7,6 +7,8 @@
  * merchant-by-merchant.
  */
 
+import type { LinkProps } from "@tanstack/react-router";
+
 export type ServiceStatus = "live" | "integrating" | "guide";
 
 export type Service = {
@@ -16,7 +18,7 @@ export type Service = {
   emoji: string;
   blurb: string;
   status: ServiceStatus;
-  to?: string; // in-app deep flow when status === "live"
+  to?: LinkProps["to"]; // in-app deep flow when status === "live"
   detail?: string[];
 };
 
