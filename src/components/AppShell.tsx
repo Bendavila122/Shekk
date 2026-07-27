@@ -12,37 +12,68 @@ const TABS = [
 
 export function PhoneFrame({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen justify-center bg-ink/95 px-0 py-0 sm:px-4 sm:py-8">
-      <div className="relative flex min-h-screen w-full max-w-[430px] flex-col overflow-hidden bg-background shadow-lift sm:min-h-[860px] sm:rounded-[2.5rem] sm:border-8 sm:border-ink">
+    <div className="flex min-h-screen justify-center bg-ink/95 px-0 py-0 sm:px-4 sm:py-8 lg:bg-background lg:px-0 lg:py-0">
+      <div className="relative flex min-h-screen w-full max-w-[430px] flex-col overflow-hidden bg-background shadow-lift sm:min-h-[860px] sm:rounded-[2.5rem] sm:border-8 sm:border-ink lg:min-h-screen lg:max-w-none lg:rounded-none lg:border-0 lg:shadow-none">
         {children}
       </div>
     </div>
   );
 }
 
-export function AppShell({ children }: { children: ReactNode }) {
+function useActive() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  return (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
+}
+
+export function AppShell({ children }: { children: ReactNode }) {
+  const isActive = useActive();
   return (
-    <PhoneFrame>
-      <div className="flex-1 pb-6">{children}</div>
-      <nav className="sticky bottom-0 z-20 grid grid-cols-4 border-t border-border bg-card/95 px-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 backdrop-blur">
+    <div className="lg:flex lg:min-h-screen lg:bg-ink/[0.03]">
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:gap-1 lg:border-r lg:border-border lg:bg-card lg:px-4 lg:py-8">
+        <p className="mb-6 px-3 font-display text-xl font-bold">ShekelPay</p>
         {TABS.map(({ to, label, Icon }) => {
-          const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
+          const active = isActive(to);
           return (
             <Link
               key={to}
               to={to}
-              className={`tap flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-medium ${
-                active ? "text-primary" : "text-muted-foreground"
+              className={`tap flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold ${
+                active ? "bg-primary-soft text-primary" : "text-muted-foreground hover:bg-muted"
               }`}
             >
-              <Icon className="size-5" strokeWidth={active ? 2.4 : 1.8} />
-              {label}
+              <Icon className="size-5 shrink-0" strokeWidth={active ? 2.4 : 1.8} />
+              <span className="truncate">{label}</span>
             </Link>
           );
         })}
-      </nav>
-    </PhoneFrame>
+      </aside>
+
+      <div className="lg:flex lg:min-w-0 lg:flex-1 lg:justify-center lg:px-8 lg:py-8">
+        <div className="lg:w-full lg:max-w-3xl lg:overflow-hidden lg:rounded-3xl lg:border lg:border-border lg:bg-background lg:shadow-card">
+          <PhoneFrame>
+            <div className="flex-1 pb-6">{children}</div>
+            <nav className="sticky bottom-0 z-20 grid grid-cols-4 border-t border-border bg-card/95 px-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 backdrop-blur lg:hidden">
+              {TABS.map(({ to, label, Icon }) => {
+                const active = isActive(to);
+                return (
+                  <Link
+                    key={to}
+                    to={to}
+                    className={`tap flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-medium ${
+                      active ? "text-primary" : "text-muted-foreground"
+                    }`}
+                  >
+                    <Icon className="size-5" strokeWidth={active ? 2.4 : 1.8} />
+                    {label}
+                  </Link>
+                );
+              })}
+            </nav>
+          </PhoneFrame>
+        </div>
+      </div>
+    </div>
   );
 }
 
