@@ -248,8 +248,9 @@ export function ForYou() {
       ) : (
         <div className="mt-3 grid grid-cols-2 gap-3 px-5 sm:grid-cols-3">
           {widgets.map((w, i) => {
-            // Boxless guide teaser slotted between rows of tiles.
-            const guide = i > 0 && i % 4 === 0 ? GUIDES[(i / 4 - 1) % GUIDES.length] : null;
+            // Boxless guide teasers slotted between varying runs of tiles.
+            const guide = guideAt.get(i) ?? null;
+
             return (
               <Fragment key={w.id}>
                 {guide ? (
