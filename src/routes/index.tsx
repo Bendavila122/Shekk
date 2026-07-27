@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Users, QrCode } from "lucide-react";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
+import { ForYou } from "@/components/ForYou";
+
 import { QRCode } from "@/components/QRCode";
 import { Avatar } from "@/components/Avatar";
 import { useApp } from "@/lib/store";
@@ -141,9 +143,12 @@ function HomeScreen() {
         </Card>
       </section>
 
+      <ForYou />
+
       <div className="mt-5">
         <ReverifyBanner />
       </div>
+
 
       <div className="pb-8" />
 

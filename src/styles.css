@@ -200,3 +200,58 @@
   }
 }
 
+
+/* --- For You widget surfaces: soft, flag-blue-family gradients ---------- */
+:root {
+  --grad-sky: linear-gradient(160deg, oklch(0.97 0.03 240), oklch(0.99 0.012 264.5));
+  --grad-wallet: linear-gradient(160deg, oklch(0.95 0.05 264.5), oklch(0.995 0.008 264.5));
+  --grad-events: linear-gradient(160deg, oklch(0.96 0.045 300), oklch(0.99 0.012 264.5));
+  --grad-travel: linear-gradient(160deg, oklch(0.96 0.04 200), oklch(0.99 0.012 264.5));
+  --grad-deals: linear-gradient(160deg, oklch(0.97 0.05 90), oklch(0.99 0.012 264.5));
+  --grad-news: linear-gradient(160deg, oklch(0.965 0.018 264.5), oklch(0.995 0.006 264.5));
+  --grad-jewish: linear-gradient(160deg, oklch(0.96 0.06 82), oklch(0.99 0.012 264.5));
+  --grad-social: linear-gradient(160deg, oklch(0.96 0.045 330), oklch(0.99 0.012 264.5));
+  --grad-discover: linear-gradient(160deg, oklch(0.96 0.045 160), oklch(0.99 0.012 264.5));
+}
+
+.dark {
+  --grad-sky: linear-gradient(160deg, oklch(0.34 0.14 240), oklch(0.28 0.16 264.5));
+  --grad-wallet: linear-gradient(160deg, oklch(0.38 0.18 264.5), oklch(0.28 0.16 264.5));
+  --grad-events: linear-gradient(160deg, oklch(0.35 0.15 300), oklch(0.28 0.16 264.5));
+  --grad-travel: linear-gradient(160deg, oklch(0.34 0.13 200), oklch(0.28 0.16 264.5));
+  --grad-deals: linear-gradient(160deg, oklch(0.36 0.12 90), oklch(0.28 0.16 264.5));
+  --grad-news: linear-gradient(160deg, oklch(0.33 0.15 264.5), oklch(0.28 0.16 264.5));
+  --grad-jewish: linear-gradient(160deg, oklch(0.37 0.11 82), oklch(0.28 0.16 264.5));
+  --grad-social: linear-gradient(160deg, oklch(0.35 0.14 330), oklch(0.28 0.16 264.5));
+  --grad-discover: linear-gradient(160deg, oklch(0.34 0.13 160), oklch(0.28 0.16 264.5));
+}
+
+@utility grad-sky { background-image: var(--grad-sky); }
+@utility grad-wallet { background-image: var(--grad-wallet); }
+@utility grad-events { background-image: var(--grad-events); }
+@utility grad-travel { background-image: var(--grad-travel); }
+@utility grad-deals { background-image: var(--grad-deals); }
+@utility grad-news { background-image: var(--grad-news); }
+@utility grad-jewish { background-image: var(--grad-jewish); }
+@utility grad-social { background-image: var(--grad-social); }
+@utility grad-discover { background-image: var(--grad-discover); }
+
+@utility shimmer {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, var(--color-card), transparent);
+    opacity: 0.55;
+    transform: translateX(-100%);
+    animation: shekk-shimmer 1.4s infinite;
+  }
+}
+
+@keyframes shekk-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
