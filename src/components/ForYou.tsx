@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { SlidersHorizontal, RefreshCw, Sparkles, X } from "lucide-react";
-import { useUserContext } from "@/lib/personalise";
+import { useUserContext, WEATHER_CITIES } from "@/lib/personalise";
 import { orderWidgets, sampleTip, type WidgetDef } from "@/lib/widgets";
 import { useForYouPrefs, haptic } from "@/lib/foryou-prefs";
 import { ForYouSettings } from "@/components/ForYouSettings";
@@ -74,7 +74,21 @@ function Tile({
   );
 }
 
-function DetailSheet({ def, ctx, balance, onClose }: { def: WidgetDef; ctx: Ctx; balance: number; onClose: () => void }) {
+function DetailSheet({
+  def,
+  ctx,
+  balance,
+  weatherCity,
+  setWeatherCity,
+  onClose,
+}: {
+  def: WidgetDef;
+  ctx: Ctx;
+  balance: number;
+  weatherCity: string;
+  setWeatherCity: (c: string) => void;
+  onClose: () => void;
+}) {
   const content = def.build(ctx);
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" role="dialog" aria-modal="true">
@@ -104,6 +118,28 @@ function DetailSheet({ def, ctx, balance, onClose }: { def: WidgetDef; ctx: Ctx;
           ))}
         </ul>
 
+        {def.id === "today" ? (
+          <div className="mt-5">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Change city</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {WEATHER_CITIES.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => {
+                    haptic();
+                    setWeatherCity(c);
+                  }}
+                  className={`tap rounded-full px-3.5 py-2 text-xs font-semibold ${
+                    c === weatherCity ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
         {content.ctas.length ? (
           <div className="mt-6 flex flex-wrap gap-2">
             {content.ctas.map((cta, i) => (
@@ -131,8 +167,8 @@ function DetailSheet({ def, ctx, balance, onClose }: { def: WidgetDef; ctx: Ctx;
 export function ForYou() {
   const { state } = useApp();
   const [refreshKey, setRefreshKey] = useState(0);
-  const ctx = useUserContext(refreshKey);
-  const { prefs, togglePin, toggleHide, move, setSize, reset } = useForYouPrefs();
+  const ctx = useUserContext(refreshKey, prefs.weatherCity);
+  const { prefs, togglePin, toggleHide, move, setSize, setWeatherCity, reset } = useForYouPrefs();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -198,7 +234,16 @@ export function ForYou() {
         </div>
       )}
 
-      {openDef ? <DetailSheet def={openDef} ctx={ctx} balance={state.balance} onClose={() => setOpenId(null)} /> : null}
+      {openDef ? (
+        <DetailSheet
+          def={openDef}
+          ctx={ctx}
+          balance={state.balance}
+          weatherCity={ctx.weatherCity}
+          setWeatherCity={setWeatherCity}
+          onClose={() => setOpenId(null)}
+        />
+      ) : null}
 
       <ForYouSettings
         open={settingsOpen}
