@@ -153,7 +153,7 @@ export function ActiveNow() {
         </span>
       </div>
 
-      <div className="no-scrollbar mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1">
+      <div className="no-scrollbar mt-3 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-1">
         {items.map((item) => {
           const inner = (
             <>
