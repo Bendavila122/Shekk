@@ -53,6 +53,13 @@ function useActive() {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const isActive = useActive();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
   return (
     <div className="lg:flex lg:min-h-screen lg:bg-ink/[0.03]">
       {/* Desktop sidebar */}
@@ -78,30 +85,71 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="lg:flex lg:min-w-0 lg:flex-1 lg:justify-center lg:px-8 lg:py-8">
         <div className="lg:w-full lg:max-w-3xl lg:overflow-hidden lg:rounded-3xl lg:border lg:border-border lg:bg-background lg:shadow-card">
           <PhoneFrame wide>
+            {/* Mobile menu button — top right */}
+            <button
+              type="button"
+              aria-label="Open menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen(true)}
+              className="tap absolute right-4 top-4 z-30 flex size-11 items-center justify-center rounded-full border border-border bg-card/90 text-foreground shadow-card backdrop-blur lg:hidden"
+            >
+              <Menu className="size-5" />
+            </button>
+
             <div className="flex-1 pb-6">{children}</div>
-            <nav className="sticky bottom-0 z-20 grid grid-cols-4 border-t border-border bg-card/95 px-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 backdrop-blur lg:hidden">
-              {TABS.map(({ to, label, Icon }) => {
-                const active = isActive(to);
-                return (
-                  <Link
-                    key={to}
-                    to={to}
-                    className={`tap flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-medium ${
-                      active ? "text-primary" : "text-muted-foreground"
-                    }`}
+
+            {/* Slide-in navigation drawer */}
+            <div
+              className={`absolute inset-0 z-40 lg:hidden ${menuOpen ? "" : "pointer-events-none"}`}
+              aria-hidden={!menuOpen}
+            >
+              <div
+                onClick={() => setMenuOpen(false)}
+                className={`absolute inset-0 bg-ink/40 transition-opacity duration-200 ${
+                  menuOpen ? "opacity-100" : "opacity-0"
+                }`}
+              />
+              <nav
+                className={`absolute right-0 top-0 flex h-full w-64 max-w-[78%] flex-col gap-1 border-l border-border bg-card px-4 py-6 shadow-lift transition-transform duration-300 ease-out ${
+                  menuOpen ? "translate-x-0" : "translate-x-full"
+                }`}
+              >
+                <div className="mb-4 flex items-center justify-between">
+                  <p className="font-display text-lg font-bold">ShekelPay</p>
+                  <button
+                    type="button"
+                    aria-label="Close menu"
+                    onClick={() => setMenuOpen(false)}
+                    className="tap rounded-full bg-muted p-2 text-foreground"
                   >
-                    <Icon className="size-5" strokeWidth={active ? 2.4 : 1.8} />
-                    {label}
-                  </Link>
-                );
-              })}
-            </nav>
+                    <X className="size-4" />
+                  </button>
+                </div>
+                {TABS.map(({ to, label, Icon }) => {
+                  const active = isActive(to);
+                  return (
+                    <Link
+                      key={to}
+                      to={to}
+                      onClick={() => setMenuOpen(false)}
+                      className={`tap flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold ${
+                        active ? "bg-primary-soft text-primary" : "text-muted-foreground"
+                      }`}
+                    >
+                      <Icon className="size-5 shrink-0" strokeWidth={active ? 2.4 : 1.8} />
+                      <span className="truncate">{label}</span>
+                    </Link>
+                  );
+                })}
+              </nav>
+            </div>
           </PhoneFrame>
         </div>
       </div>
     </div>
   );
 }
+
 
 export function ScreenHeader({
   title,
