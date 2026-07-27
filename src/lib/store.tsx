@@ -24,7 +24,7 @@ type State = {
   feedOptIn: boolean;
 };
 
-const STORAGE_KEY = "shekelpay.state.v2";
+const STORAGE_KEY = "shekk.state.v2";
 
 const initialState: State = {
   onboarded: true,

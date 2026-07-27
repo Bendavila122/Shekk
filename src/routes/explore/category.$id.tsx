@@ -7,10 +7,10 @@ import { recordServiceUse } from "@/lib/recents";
 export const Route = createFileRoute("/explore/category/$id")({
   head: ({ params }) => {
     const cat = SERVICE_CATEGORIES.find((c) => c.id === params.id);
-    const title = cat ? `${cat.label} · ShekelPay` : "Category · ShekelPay";
+    const title = cat ? `${cat.label} · Shekk` : "Category · Shekk";
     const description = cat
-      ? `${cat.tagline} Every ${cat.label.toLowerCase()} app integrated inside ShekelPay.`
-      : "Service category inside ShekelPay.";
+      ? `${cat.tagline} Every ${cat.label.toLowerCase()} app integrated inside Shekk.`
+      : "Service category inside Shekk.";
     return {
       meta: [
         { title },

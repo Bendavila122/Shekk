@@ -6,9 +6,9 @@ import { SHOPS } from "@/lib/mock";
 export const Route = createFileRoute("/explore/shops")({
   head: () => ({
     meta: [
-      { title: "Shops & discounts · ShekelPay" },
-      { name: "description", content: "Student promo codes applied automatically when you order through partner apps inside ShekelPay." },
-      { property: "og:title", content: "Shops & discounts · ShekelPay" },
+      { title: "Shops & discounts · Shekk" },
+      { name: "description", content: "Student promo codes applied automatically when you order through partner apps inside Shekk." },
+      { property: "og:title", content: "Shops & discounts · Shekk" },
       { property: "og:description", content: "Student discounts around Jerusalem, no coupon app required." },
     ],
   }),
@@ -40,7 +40,7 @@ function Shops() {
           </Card>
         ))}
         <Card className="text-xs text-muted-foreground">
-          Discounts apply automatically when you order through a partner app inside ShekelPay — we pay them and deduct the discounted amount in tokens.
+          Discounts apply automatically when you order through a partner app inside Shekk — we pay them and deduct the discounted amount in tokens.
         </Card>
       </div>
     </AppShell>

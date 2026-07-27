@@ -7,9 +7,9 @@ import { useApp } from "@/lib/store";
 export const Route = createFileRoute("/explore/rides")({
   head: () => ({
     meta: [
-      { title: "Rides · ShekelPay" },
+      { title: "Rides · Shekk" },
       { name: "description", content: "Book and track a taxi across Jerusalem and pay with your credits." },
-      { property: "og:title", content: "Rides · ShekelPay" },
+      { property: "og:title", content: "Rides · Shekk" },
       { property: "og:description", content: "In-app taxi booking with no cash at the curb." },
     ],
   }),

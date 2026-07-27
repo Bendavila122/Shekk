@@ -8,9 +8,9 @@ import { useApp } from "@/lib/store";
 export const Route = createFileRoute("/explore/events")({
   head: () => ({
     meta: [
-      { title: "Events & tickets · ShekelPay" },
+      { title: "Events & tickets · Shekk" },
       { name: "description", content: "Shabbatons, tiyulim, shiurim and Thursday nights — booked and paid in-app." },
-      { property: "og:title", content: "Events & tickets · ShekelPay" },
+      { property: "og:title", content: "Events & tickets · Shekk" },
       { property: "og:description", content: "Grab a spot on the next tiyul or Shabbaton." },
     ],
   }),
@@ -90,7 +90,7 @@ function Events() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Paid from</span>
-                <span className="font-semibold">ShekelPay credits</span>
+                <span className="font-semibold">Shekk credits</span>
               </div>
             </div>
             <div className="mt-5 space-y-2">

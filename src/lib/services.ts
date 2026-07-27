@@ -1,5 +1,5 @@
 /**
- * The ShekelPay service catalogue.
+ * The Shekk service catalogue.
  *
  * Principle: we integrate PLATFORMS and NETWORKS (Wolt, Gett, Moovit, Rav-Kav,
  * Israel Railways, Bit, Pango…), not individual venues. Restaurants, clubs,
@@ -46,11 +46,11 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     emoji: "🚌",
     tagline: "One Rav-Kav, one fare, one balance.",
     services: [
-      { id: "ravkav", name: "Rav-Kav", partner: "Rav-Kav Online", emoji: "🎫", domain: "ravkavonline.co.il", blurb: "Load your travel card with tokens", status: "live", featured: true, to: "/explore/transit", detail: ["Top up any Rav-Kav from your credit balance", "Student profile discounts applied automatically", "Balance shown next to your ShekelPay credits"] },
+      { id: "ravkav", name: "Rav-Kav", partner: "Rav-Kav Online", emoji: "🎫", domain: "ravkavonline.co.il", blurb: "Load your travel card with tokens", status: "live", featured: true, to: "/explore/transit", detail: ["Top up any Rav-Kav from your credit balance", "Student profile discounts applied automatically", "Balance shown next to your Shekk credits"] },
       { id: "moovit", name: "Moovit", partner: "Moovit", emoji: "🧭", domain: "moovit.com", blurb: "Live bus, light rail & sherut times", status: "live", to: "/explore/transit", detail: ["Real-time departures embedded in the Transit screen", "Line alerts for chagim and Shabbat timetables"] },
       { id: "rail", name: "Israel Railways", partner: "Rakevet Israel", emoji: "🚆", domain: "rail.co.il", blurb: "Book intercity train tickets", status: "live", featured: true, to: "/explore/transit", detail: ["Jerusalem ↔ Tel Aviv ↔ Haifa ↔ Be'er Sheva", "Ticket lives in your wallet as a QR"] },
-      { id: "gett", name: "Gett", partner: "Gett", emoji: "🚕", domain: "gett.com", blurb: "Order a taxi, pay with tokens", status: "live", featured: true, to: "/explore/rides", detail: ["The real Gett booking flow, running inside ShekelPay", "Fare settles straight from your token balance"] },
-      { id: "goto", name: "Go-To", partner: "Go To Global", emoji: "🚙", domain: "go-to.global", blurb: "Car & scooter sharing by the minute", status: "live", featured: true, to: "/explore/rides", detail: ["Unlock a Go-To car or scooter without leaving ShekelPay", "Minutes billed to your token balance"] },
+      { id: "gett", name: "Gett", partner: "Gett", emoji: "🚕", domain: "gett.com", blurb: "Order a taxi, pay with tokens", status: "live", featured: true, to: "/explore/rides", detail: ["The real Gett booking flow, running inside Shekk", "Fare settles straight from your token balance"] },
+      { id: "goto", name: "Go-To", partner: "Go To Global", emoji: "🚙", domain: "go-to.global", blurb: "Car & scooter sharing by the minute", status: "live", featured: true, to: "/explore/rides", detail: ["Unlock a Go-To car or scooter without leaving Shekk", "Minutes billed to your token balance"] },
       { id: "waze", name: "Waze", partner: "Waze", emoji: "📍", domain: "waze.com", blurb: "Navigate, with in-app handoff", status: "integrating" },
       { id: "gmaps", name: "Google Maps", partner: "Google", emoji: "🗺️", domain: "google.com", blurb: "Places, routes and hotspot map", status: "integrating" },
       { id: "pango", name: "Pango", partner: "Pango", emoji: "🅿️", domain: "pango.co.il", blurb: "Street parking, paid by the minute", status: "integrating" },
@@ -64,7 +64,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     emoji: "🥙",
     tagline: "Platforms, not one-by-one venue signups.",
     services: [
-      { id: "wolt", name: "Wolt", partner: "Wolt", emoji: "🛵", domain: "wolt.com", blurb: "Full delivery catalogue, kosher filter on", status: "live", featured: true, to: "/explore/food", detail: ["Every Wolt restaurant, ordered without leaving ShekelPay", "Kosher / Badatz / dairy-meat filters", "Erev Shabbat cut-off reminders"] },
+      { id: "wolt", name: "Wolt", partner: "Wolt", emoji: "🛵", domain: "wolt.com", blurb: "Full delivery catalogue, kosher filter on", status: "live", featured: true, to: "/explore/food", detail: ["Every Wolt restaurant, ordered without leaving Shekk", "Kosher / Badatz / dairy-meat filters", "Erev Shabbat cut-off reminders"] },
       { id: "cibus", name: "Cibus", partner: "Cibus", emoji: "🍱", domain: "cibus.co.il", blurb: "Meal credit at thousands of spots", status: "integrating" },
       { id: "10bis", name: "Tenbis", partner: "10bis", emoji: "🍽️", domain: "10bis.co.il", blurb: "Lunch ordering and pickup", status: "integrating" },
       { id: "reserve", name: "Table reservations", partner: "Ontopo", emoji: "📖", domain: "ontopo.com", blurb: "Book restaurants, bars & cafés", status: "live", to: "/explore/reserve" },
@@ -100,7 +100,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
       { id: "arnona", name: "Arnona & taxes", partner: "Municipality", emoji: "🧾", blurb: "Council tax and student exemptions", status: "guide" },
       { id: "sim", name: "SIM cards", partner: "Partner · Cellcom · Pelephone", emoji: "📱", domain: "partner.co.il", blurb: "eSIM in minutes, no Israeli ID needed", status: "integrating" },
       { id: "shops", name: "Shops & discounts", partner: "student network", emoji: "🏷️", blurb: "Promo codes and where to find things", status: "live", to: "/explore/shops" },
-      { id: "cash", name: "Cash & exchange", emoji: "💵", blurb: "How to get cash, what a fair rate is", status: "guide", detail: ["ShekelPay rate vs street changers", "Which ATMs skip the double conversion", "Where cash is still king (shuk, sherut, monit)"] },
+      { id: "cash", name: "Cash & exchange", emoji: "💵", blurb: "How to get cash, what a fair rate is", status: "guide", detail: ["Shekk rate vs street changers", "Which ATMs skip the double conversion", "Where cash is still king (shuk, sherut, monit)"] },
     ],
   },
   {
@@ -182,7 +182,7 @@ export function serviceLinkProps(service: Service): {
 }
 
 /**
- * The ShekelPay home screen — a springboard of the Israeli apps a student
+ * The Shekk home screen — a springboard of the Israeli apps a student
  * actually opens, grouped like pages on a phone.
  */
 const HOME_LAYOUT: { label: string; hint: string; ids: string[] }[] = [

@@ -5,9 +5,9 @@ import { CheckCircle2, Clock, FileText } from "lucide-react";
 export const Route = createFileRoute("/explore/admin")({
   head: () => ({
     meta: [
-      { title: "Admin · ShekelPay" },
+      { title: "Admin · Shekk" },
       { name: "description", content: "Track your student visa status and keep program documents in one place." },
-      { property: "og:title", content: "Admin · ShekelPay" },
+      { property: "og:title", content: "Admin · Shekk" },
       { property: "og:description", content: "Visa tracker and document storage for your program year." },
     ],
   }),

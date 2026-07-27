@@ -14,13 +14,13 @@ import { ServiceLogo } from "@/components/ServiceLogo";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Home · ShekelPay" },
+      { title: "Home · Shekk" },
       {
         name: "description",
         content:
           "Your Israeli phone, inside your phone: Wolt, Gett, Rav-Kav, Israel Railways, Go-To and more — all paid with shekel tokens.",
       },
-      { property: "og:title", content: "Home · ShekelPay" },
+      { property: "og:title", content: "Home · Shekk" },
       { property: "og:description", content: "One home screen for every Israeli app a gap-year student needs." },
     ],
   }),
@@ -114,7 +114,7 @@ function HomeScreen() {
         </Link>
 
         <p className="text-center text-[11px] text-muted-foreground">
-          Tap a logo and it opens inside ShekelPay. You never pay the partner directly — we do, and the shekel-token
+          Tap a logo and it opens inside Shekk. You never pay the partner directly — we do, and the shekel-token
           equivalent comes off your balance. {STATUS_LABEL.integrating} apps open their guide for now.
         </p>
       </div>
@@ -129,7 +129,7 @@ function HomeScreen() {
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold">Paying people</p>
               <p className="text-xs text-muted-foreground">
-                Send tokens to friends on ShekelPay or split a bill with your cohort.
+                Send tokens to friends on Shekk or split a bill with your cohort.
               </p>
             </div>
           </div>
@@ -152,7 +152,7 @@ function HomeScreen() {
           </div>
           {showCode ? (
             <div className="flex flex-col items-center border-t border-border p-4">
-              <QRCode value={`shekelpay:${state.name || "student"}:${state.cohort}`} className="h-36 w-36" />
+              <QRCode value={`shekk:${state.name || "student"}:${state.cohort}`} className="h-36 w-36" />
               <p className="mt-2 text-xs font-semibold">{state.name || "Your"} · friend code</p>
               <p className="text-center text-[11px] text-muted-foreground">
                 A friend scans this to send you tokens. It isn't a merchant payment code.
@@ -184,7 +184,7 @@ function HomeScreen() {
         >
           <IdCard className="size-4 shrink-0 text-primary" />
           Tokens are shekel-denominated, non-refundable and non-withdrawable — spendable inside the partner apps in
-          ShekelPay and with other ShekelPay users. Read the terms.
+          Shekk and with other Shekk users. Read the terms.
         </Link>
       </section>
 

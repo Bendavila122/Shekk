@@ -9,13 +9,13 @@ import { ils, usdRef } from "@/lib/mock";
 export const Route = createFileRoute("/activity")({
   head: () => ({
     meta: [
-      { title: "Activity · ShekelPay" },
+      { title: "Activity · Shekk" },
       {
         name: "description",
         content:
-          "Your full ShekelPay history: every top-up, partner-app order and token transfer, with shekel and USD reference amounts.",
+          "Your full Shekk history: every top-up, partner-app order and token transfer, with shekel and USD reference amounts.",
       },
-      { property: "og:title", content: "Activity · ShekelPay" },
+      { property: "og:title", content: "Activity · Shekk" },
       { property: "og:description", content: "Every top-up, order and transfer in one statement." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -134,7 +134,7 @@ function ActivityScreen() {
         >
           <IdCard className="size-4 shrink-0 text-primary" />
           Tokens are shekel-denominated, non-refundable and non-withdrawable — spendable inside the partner apps in
-          ShekelPay and with other ShekelPay users. Read the terms.
+          Shekk and with other Shekk users. Read the terms.
         </Link>
       </section>
     </AppShell>

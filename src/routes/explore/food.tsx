@@ -8,9 +8,9 @@ import { useApp } from "@/lib/store";
 export const Route = createFileRoute("/explore/food")({
   head: () => ({
     meta: [
-      { title: "Food delivery · ShekelPay" },
+      { title: "Food delivery · Shekk" },
       { name: "description", content: "Order kosher food to your dorm — kosher filter on by default, Shabbat-aware." },
-      { property: "og:title", content: "Food delivery · ShekelPay" },
+      { property: "og:title", content: "Food delivery · Shekk" },
       { property: "og:description", content: "Kosher-first delivery paid with your credits." },
     ],
   }),

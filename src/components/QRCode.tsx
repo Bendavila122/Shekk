@@ -25,7 +25,7 @@ export function QRCode({ value, className = "" }: { value: string; className?: s
     (r < 8 && c < 8) || (r < 8 && c >= size - 8) || (r >= size - 8 && c < 8);
 
   return (
-    <svg viewBox={`0 0 ${size} ${size}`} className={className} role="img" aria-label="Your ShekelPay pay code">
+    <svg viewBox={`0 0 ${size} ${size}`} className={className} role="img" aria-label="Your Shekk pay code">
       <rect width={size} height={size} fill="var(--card)" />
       {cells.map((on, i) => {
         const r = Math.floor(i / size);

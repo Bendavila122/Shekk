@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ALL_SERVICES, type Service } from "./services";
 
-const KEY = "shekelpay.recents.v1";
+const KEY = "shekk.recents.v1";
 const MAX = 5;
 
 /** Sensible starting point before the student has opened anything. */
@@ -23,7 +23,7 @@ export function recordServiceUse(id: string) {
   if (typeof window === "undefined") return;
   const next = [id, ...read().filter((x) => x !== id)].slice(0, MAX);
   window.localStorage.setItem(KEY, JSON.stringify(next));
-  window.dispatchEvent(new Event("shekelpay:recents"));
+  window.dispatchEvent(new Event("shekk:recents"));
 }
 
 export function useRecentServices(): Service[] {
@@ -33,8 +33,8 @@ export function useRecentServices(): Service[] {
 
   useEffect(() => {
     sync();
-    window.addEventListener("shekelpay:recents", sync);
-    return () => window.removeEventListener("shekelpay:recents", sync);
+    window.addEventListener("shekk:recents", sync);
+    return () => window.removeEventListener("shekk:recents", sync);
   }, [sync]);
 
   return ids

@@ -8,12 +8,12 @@ import { useApp } from "@/lib/store";
 export const Route = createFileRoute("/topup")({
   head: () => ({
     meta: [
-      { title: "Top up credits · ShekelPay" },
+      { title: "Top up credits · Shekk" },
       {
         name: "description",
         content: "Buy shekel credits with Apple Pay and see the rate, the fee and your final credit amount before you confirm.",
       },
-      { property: "og:title", content: "Top up credits · ShekelPay" },
+      { property: "og:title", content: "Top up credits · Shekk" },
       { property: "og:description", content: "Transparent pricing on every credit purchase." },
     ],
   }),
@@ -115,7 +115,7 @@ function TopUp() {
 
         <Card className="mt-4 space-y-2.5 text-sm">
           <Row label="Amount paid" value={usd(q.usd)} />
-          <Row label="ShekelPay rate" value={`$1 = ₪${q.rate.toFixed(3)}`} muted />
+          <Row label="Shekk rate" value={`$1 = ₪${q.rate.toFixed(3)}`} muted />
           <div className="border-t border-border pt-2.5">
             <Row label="Credits you receive" value={ils(q.credits)} bold />
           </div>
@@ -125,8 +125,8 @@ function TopUp() {
         <div className="mt-4 flex gap-2 rounded-2xl bg-warning-soft p-4 text-xs text-warning-foreground">
           <Info className="mt-0.5 size-4 shrink-0" />
           <p>
-            This is a purchase of ShekelPay credits, not a deposit. Credits are non-refundable and non-withdrawable —
-            when you order through a partner app inside ShekelPay, we pay them and deduct the token equivalent.{" "}
+            This is a purchase of Shekk credits, not a deposit. Credits are non-refundable and non-withdrawable —
+            when you order through a partner app inside Shekk, we pay them and deduct the token equivalent.{" "}
             <Link to="/terms" className="font-semibold underline">
               Terms & Conditions
             </Link>
@@ -149,7 +149,7 @@ function TopUp() {
               <Apple className="size-5" /> Apple Pay
             </div>
             <div className="mt-4 space-y-2 text-sm">
-              <Row label="ShekelPay" value={usd(q.usd)} />
+              <Row label="Shekk" value={usd(q.usd)} />
               <Row label="Card" value="•••• 4417 · Visa" muted />
               <Row label="You receive" value={`${ils(q.credits)} credits`} bold />
             </div>

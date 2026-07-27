@@ -7,9 +7,9 @@ import { ils } from "@/lib/mock";
 export const Route = createFileRoute("/explore/reserve")({
   head: () => ({
     meta: [
-      { title: "Reservations · ShekelPay" },
+      { title: "Reservations · Shekk" },
       { name: "description", content: "Book a table or a full Shabbaton group reservation, kosher-aware by default." },
-      { property: "og:title", content: "Reservations · ShekelPay" },
+      { property: "og:title", content: "Reservations · Shekk" },
       { property: "og:description", content: "Tables for two or Shabbaton tables for twenty." },
     ],
   }),

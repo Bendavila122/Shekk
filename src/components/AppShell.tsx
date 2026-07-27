@@ -85,7 +85,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="lg:flex lg:min-h-screen lg:bg-ink/[0.03]">
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:gap-1 lg:border-r lg:border-border lg:bg-card lg:px-4 lg:py-8">
-        <p className="mb-4 px-3 font-display text-xl font-bold">ShekelPay</p>
+        <p className="mb-4 px-3 font-display text-xl font-bold">Shekk</p>
 
         {TABS.map(({ to, label, Icon }) => {
           const active = isActive(to);
@@ -138,7 +138,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 }`}
               >
                 <div className="mb-4 flex items-center justify-between">
-                  <p className="font-display text-lg font-bold">ShekelPay</p>
+                  <p className="font-display text-lg font-bold">Shekk</p>
                   <button
                     type="button"
                     aria-label="Close menu"

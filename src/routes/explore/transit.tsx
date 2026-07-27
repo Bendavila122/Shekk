@@ -7,9 +7,9 @@ import { useApp } from "@/lib/store";
 export const Route = createFileRoute("/explore/transit")({
   head: () => ({
     meta: [
-      { title: "Transit · ShekelPay" },
+      { title: "Transit · Shekk" },
       { name: "description", content: "Live bus and rail times, in-app ticket purchase and Rav-Kav top-up." },
-      { property: "og:title", content: "Transit · ShekelPay" },
+      { property: "og:title", content: "Transit · Shekk" },
       { property: "og:description", content: "Buy a bus ticket or load your Rav-Kav with credits." },
     ],
   }),
@@ -112,7 +112,7 @@ function Transit() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Paid from</span>
-                <span className="font-semibold">ShekelPay credits</span>
+                <span className="font-semibold">Shekk credits</span>
               </div>
             </div>
             <div className="mt-5 space-y-2">
