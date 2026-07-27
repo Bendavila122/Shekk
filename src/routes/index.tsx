@@ -71,8 +71,8 @@ function HomeScreen() {
     <AppShell>
       <div className="px-5 pb-2 pt-7">
         <p className="text-xs uppercase tracking-widest text-muted-foreground">Shalom, {firstName}</p>
-        <h1 className="font-display text-3xl font-bold tracking-tight">Your Israeli home screen</h1>
       </div>
+
 
       {/* Search into the full catalogue */}
       <div className="px-4 pt-3">
