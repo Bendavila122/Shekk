@@ -14,6 +14,7 @@ function logoUrl(domain: string, px: number) {
     size: String(size),
     format: "png",
     retina: "true",
+    fallback: "404",
   });
   return `https://img.logo.dev/${domain}?${params.toString()}`;
 }
