@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { useUserContext, WEATHER_CITIES } from "@/lib/personalise";
@@ -8,6 +8,8 @@ import { useForYouPrefs, haptic } from "@/lib/foryou-prefs";
 import { ForYouSettings } from "@/components/ForYouSettings";
 import { ils } from "@/lib/mock";
 import { useApp } from "@/lib/store";
+import { GUIDES } from "@/lib/guides";
+import { GuideStrip } from "@/components/GuideStrip";
 
 function Skeleton() {
   return (
@@ -229,17 +231,25 @@ export function ForYou() {
         </div>
       ) : (
         <div className="mt-3 grid grid-cols-2 gap-3 px-5 sm:grid-cols-3">
-          {widgets.map((w, i) => (
-            <Tile
-              key={w.id}
-              def={w}
-              ctx={ctx}
-              balance={state.balance}
-              wide={isWide(i)}
-              index={i}
-              onOpen={() => setOpenId(w.id)}
-            />
-          ))}
+          {widgets.map((w, i) => {
+            // Boxless guide teaser slotted between rows of tiles.
+            const guide = i > 0 && i % 4 === 0 ? GUIDES[(i / 4 - 1) % GUIDES.length] : null;
+            return (
+              <Fragment key={w.id}>
+                {guide ? (
+                  <GuideStrip guide={guide} className="col-span-2 py-2 sm:col-span-3" />
+                ) : null}
+                <Tile
+                  def={w}
+                  ctx={ctx}
+                  balance={state.balance}
+                  wide={isWide(i)}
+                  index={i}
+                  onOpen={() => setOpenId(w.id)}
+                />
+              </Fragment>
+            );
+          })}
         </div>
       )}
 
