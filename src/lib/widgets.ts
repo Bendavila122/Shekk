@@ -88,7 +88,7 @@ export const WIDGETS: WidgetDef[] = [
             { icon: "☂️", label: "Rain chance", value: `${c.weather.rain}%` },
             { icon: "🫁", label: "Air quality", value: `AQI ${c.weather.aqi}` },
           ],
-      ctas: [{ label: "View forecast", to: "/explore/category/$id" }],
+      ctas: [{ label: "View forecast", to: "/explore" }],
     }),
   },
   {
