@@ -181,12 +181,7 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const isActive = useActive();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
 
   return (
     <div className="lg:flex lg:min-h-screen lg:bg-ink/[0.03]">
