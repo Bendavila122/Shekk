@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Apple, Info, Check } from "lucide-react";
 import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
 import { ils, quoteTopUp, usd } from "@/lib/mock";
@@ -28,9 +28,11 @@ function TopUp() {
   const [done, setDone] = useState(false);
   const { addCredits } = useApp();
   const navigate = useNavigate();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const value = Math.max(0, Number(amount) || 0);
   const q = quoteTopUp(value);
+  const isCustom = !PRESETS.includes(value);
 
   if (done) {
     return (
