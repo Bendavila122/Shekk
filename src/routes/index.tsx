@@ -96,23 +96,22 @@ function HomeScreen() {
         </Link>
       </div>
 
-      {/* Springboard */}
+      {/* Recents */}
       <div className="space-y-6 px-4 pt-6">
-        {HOME_SECTIONS.map((section) => (
-          <section key={section.label}>
-            <div className="mb-3 flex items-baseline justify-between gap-3">
-              <div>
-                <h2 className="text-sm font-semibold">{section.label}</h2>
-                <p className="text-[11px] text-muted-foreground">{section.hint}</p>
-              </div>
+        <section>
+          <div className="mb-3 flex items-baseline justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold">Recently used</h2>
+              <p className="text-[11px] text-muted-foreground">The last five apps you opened.</p>
             </div>
-            <div className="grid grid-cols-4 gap-x-2 gap-y-5 sm:grid-cols-5 lg:grid-cols-8">
-              {section.services.map((s) => (
-                <AppIcon key={s.id} service={s} />
-              ))}
-            </div>
-          </section>
-        ))}
+          </div>
+          <div className="grid grid-cols-5 gap-x-2 gap-y-5">
+            {recents.map((s) => (
+              <AppIcon key={s.id} service={s} />
+            ))}
+          </div>
+        </section>
+
 
         <Link
           to="/explore"
