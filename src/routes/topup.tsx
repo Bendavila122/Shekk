@@ -67,15 +67,22 @@ function TopUp() {
 
         <div className="mt-6 rounded-3xl border border-border bg-card p-5 shadow-card">
           <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">You pay</span>
-          <div className="mt-1 flex items-baseline gap-2">
+          <button
+            type="button"
+            onClick={() => inputRef.current?.focus()}
+            className="mt-1 flex w-full items-baseline gap-2 text-left"
+          >
             <span className="font-display text-4xl font-bold">$</span>
             <input
+              ref={inputRef}
               inputMode="decimal"
               value={amount}
+              onFocus={(e) => e.currentTarget.select()}
               onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
               className="w-full bg-transparent font-display text-5xl font-bold outline-none"
             />
-          </div>
+          </button>
+          <p className="text-xs text-muted-foreground">Tap the amount to enter your own.</p>
           <div className="mt-4 grid grid-cols-4 gap-2">
             {PRESETS.map((p) => (
               <button
@@ -89,7 +96,20 @@ function TopUp() {
               </button>
             ))}
           </div>
+          <button
+            type="button"
+            onClick={() => {
+              setAmount("");
+              setTimeout(() => inputRef.current?.focus(), 0);
+            }}
+            className={`tap mt-2 w-full rounded-xl py-2 text-sm font-semibold ${
+              isCustom ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+            }`}
+          >
+            Custom amount
+          </button>
         </div>
+
 
         <Card className="mt-4 space-y-2.5 text-sm">
           <Row label="Amount paid" value={usd(q.usd)} />
