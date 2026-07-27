@@ -64,7 +64,7 @@ function PayTab() {
             </Link>
           </div>
           <p className="mb-3 text-xs text-muted-foreground">
-            The Israeli apps you already use, running inside ShekelPay and paid with your tokens.
+            The Israeli apps you already use, running inside ShekelPay. You never pay them directly — we do.
           </p>
           <div className="grid grid-cols-5 gap-2">
             {FEATURED_SERVICES.map((s) => (
@@ -81,6 +81,26 @@ function PayTab() {
           </div>
         </div>
       </div>
+
+      <section className="px-4 pt-4">
+        <Card className="space-y-3">
+          <h2 className="text-base font-semibold">How paying works</h2>
+          <ol className="space-y-2 text-sm text-muted-foreground">
+            <li className="flex gap-2">
+              <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary-soft text-[11px] font-bold text-primary">1</span>
+              You preload tokens once with Apple Pay.
+            </li>
+            <li className="flex gap-2">
+              <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary-soft text-[11px] font-bold text-primary">2</span>
+              Order inside Wolt, Gett, Rav-Kav, Go-To or Israel Railways — <span className="font-medium text-foreground">ShekelPay pays them</span>, not your card.
+            </li>
+            <li className="flex gap-2">
+              <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary-soft text-[11px] font-bold text-primary">3</span>
+              The shekel-token equivalent comes straight off your balance and lands in Activity.
+            </li>
+          </ol>
+        </Card>
+      </section>
 
       <section className="px-4 pt-4">
         <Card className="p-0">

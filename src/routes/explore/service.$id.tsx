@@ -84,9 +84,9 @@ function ServicePage() {
           <p className="text-sm font-semibold">How the integration works</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {service.status === "live"
-              ? `The ${service.partner ?? service.name} app runs inside ShekelPay — you book in their own flow and pay with your shekel tokens.`
+              ? `The ${service.partner ?? service.name} app runs inside ShekelPay — you book in their own flow, ShekelPay pays ${service.partner ?? service.name} for the order, and the shekel-token equivalent comes off your preloaded balance.`
               : service.status === "integrating"
-                ? `We're connecting ${service.partner ?? "this platform"} directly, so bookings and payment happen in ShekelPay rather than bouncing you out to another app.`
+                ? `We're connecting ${service.partner ?? "this platform"} directly, so you book inside ShekelPay, we settle the bill with them, and your tokens are deducted.`
                 : "A plain-English guide written for gap-year students, kept current with the Israeli calendar."}
           </p>
         </Card>
