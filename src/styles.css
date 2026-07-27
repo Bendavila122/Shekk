@@ -165,4 +165,38 @@
   &:active {
     transform: scale(0.97);
   }
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: scale(1.03);
+    }
+  }
 }
+
+@utility tap-icon {
+  transition:
+    transform 150ms ease,
+    opacity 150ms ease;
+  &:active {
+    transform: scale(0.95);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: scale(1.08);
+    }
+  }
+}
+
+@utility tap-flat {
+  transition:
+    opacity 150ms ease,
+    background-color 150ms ease;
+  &:active {
+    opacity: 0.7;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      opacity: 0.75;
+    }
+  }
+}
+
