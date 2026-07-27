@@ -102,25 +102,24 @@ function Explore() {
         </section>
       ) : (
         <section className="space-y-8 px-4 py-6">
+          {/* Category folders — one big icon each */}
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {SERVICE_CATEGORIES.map((cat) => (
+              <Link
+                key={cat.id}
+                to="/explore/category/$id"
+                params={{ id: cat.id }}
+                className="tap flex flex-col items-center gap-3 rounded-[1.75rem] bg-muted/70 px-3 py-6 text-center"
+              >
+                <span className="flex size-20 items-center justify-center rounded-[1.6rem] bg-card text-4xl shadow-card">
+                  {cat.emoji}
+                </span>
+                <span className="text-sm font-semibold leading-tight">{cat.label}</span>
+                <span className="text-[11px] text-muted-foreground">{cat.services.length} apps</span>
+              </Link>
+            ))}
+          </div>
 
-
-          {/* Category folders */}
-          {SERVICE_CATEGORIES.map((cat) => (
-            <div key={cat.id}>
-              <div className="mb-3 flex items-baseline gap-2 px-1">
-                <span className="text-xl">{cat.emoji}</span>
-                <h2 className="text-xl font-semibold tracking-tight">{cat.label}</h2>
-              </div>
-              <div className="rounded-[1.75rem] bg-muted/70 p-4">
-                <p className="mb-4 text-xs text-muted-foreground">{cat.tagline}</p>
-                <div className="grid grid-cols-4 gap-x-3 gap-y-6 sm:grid-cols-5 lg:grid-cols-8">
-                  {cat.services.map((s) => (
-                    <AppTile key={s.id} service={s} />
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
 
           {/* This week */}
           <div>
