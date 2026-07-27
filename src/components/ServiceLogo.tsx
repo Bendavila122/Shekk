@@ -33,7 +33,14 @@ export function ServiceLogo({
   className?: string;
 }) {
   const [failed, setFailed] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
   const src = service.domain && !failed ? logoUrl(service.domain, size) : null;
+
+  // An image that errored before hydration never fires onError — catch it here.
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth === 0) setFailed(true);
+  }, [src]);
 
   return (
     <span
@@ -46,13 +53,15 @@ export function ServiceLogo({
     >
       {src ? (
         <img
+          ref={imgRef}
           src={src}
-          alt={`${service.name} app icon`}
+          alt=""
           loading="lazy"
           decoding="async"
           onError={() => setFailed(true)}
           className="h-full w-full scale-[1.02] object-cover"
         />
+
       ) : (
 
         <span
