@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Search, ChevronRight } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { EVENTS, ils } from "@/lib/mock";
-import { SERVICE_CATEGORIES, FEATURED_SERVICES, STATUS_LABEL, serviceLinkProps, type Service } from "@/lib/services";
+import { SERVICE_CATEGORIES, FEATURED_SERVICES, serviceLinkProps, type Service } from "@/lib/services";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 
@@ -23,33 +23,19 @@ export const Route = createFileRoute("/explore/")({
   component: Explore,
 });
 
-function StatusChip({ status }: { status: Service["status"] }) {
-  const tone =
-    status === "live"
-      ? "bg-primary-soft text-primary"
-      : status === "integrating"
-        ? "bg-muted text-muted-foreground"
-        : "bg-accent/20 text-accent-foreground";
+/** One app icon, iPhone-home-screen scale. */
+function AppTile({ service, size = 60 }: { service: Service; size?: number }) {
   return (
-    <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${tone}`}>
-      {STATUS_LABEL[status]}
-    </span>
-  );
-}
-
-function ServiceRow({ service }: { service: Service }) {
-  return (
-    <Link
-      {...serviceLinkProps(service)}
-      className="tap flex items-center gap-3 rounded-2xl bg-card p-3 shadow-card"
-    >
-      <ServiceLogo service={service} />
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold">{service.name}</p>
-        <p className="truncate text-xs text-muted-foreground">{service.blurb}</p>
-      </div>
-      <StatusChip status={service.status} />
-      <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+    <Link {...serviceLinkProps(service)} className="tap flex flex-col items-center gap-2">
+      <span className="relative">
+        <ServiceLogo service={service} size={size} className="rounded-[1.2rem] shadow-card" />
+        {service.status !== "live" ? (
+          <span className="absolute -right-1 -top-1 rounded-full bg-ink px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide text-ink-foreground">
+            {service.status === "integrating" ? "soon" : "info"}
+          </span>
+        ) : null}
+      </span>
+      <span className="line-clamp-2 text-center text-[11px] font-medium leading-tight">{service.name}</span>
     </Link>
   );
 }
@@ -76,86 +62,102 @@ function Explore() {
   return (
     <AppShell>
       <header className="px-5 pt-7">
-        <h1 className="text-3xl font-bold">Explore</h1>
-        <p className="text-sm text-muted-foreground">
-          The Israeli apps you already use — Wolt, Gett, Rav-Kav, Go-To, Israel Railways — open inside ShekelPay and
-          are paid with your tokens. No individual bars, restaurants or shops yet.
+        <h1 className="font-display text-4xl font-bold tracking-tight">Explore</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Every Israeli app you need, sorted into folders. Tap one and it opens inside ShekelPay.
         </p>
         <label className="mt-4 flex items-center gap-2 rounded-2xl bg-muted px-4 py-3 text-sm">
-          <Search className="size-4 text-muted-foreground" />
+          <Search className="size-4 shrink-0 text-muted-foreground" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search Wolt, Rav-Kav, visa, shuk, Bit…"
-            className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
+            className="w-full min-w-0 bg-transparent outline-none placeholder:text-muted-foreground"
           />
+          {query ? (
+            <button onClick={() => setQuery("")} className="tap shrink-0 text-muted-foreground">
+              <X className="size-4" />
+            </button>
+          ) : null}
         </label>
       </header>
 
       {results ? (
-        <section className="space-y-2 px-4 py-5">
-          <p className="px-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <section className="px-4 py-6">
+          <p className="mb-4 px-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             {results.length} result{results.length === 1 ? "" : "s"}
           </p>
-          {results.map((s) => (
-            <ServiceRow key={s.id} service={s} />
-          ))}
           {results.length === 0 ? (
             <Card className="text-sm text-muted-foreground">
               Not integrated yet. Tell us what you're missing and we'll chase the partner.
             </Card>
-          ) : null}
+          ) : (
+            <div className="grid grid-cols-4 gap-x-3 gap-y-6 sm:grid-cols-5 lg:grid-cols-8">
+              {results.map((s) => (
+                <AppTile key={s.id} service={s} />
+              ))}
+            </div>
+          )}
         </section>
       ) : (
-        <section className="px-4 py-5">
-          <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            The five that matter
-          </p>
-          <div className="grid grid-cols-5 gap-2">
-            {FEATURED_SERVICES.map((s) => (
-              <Link
-                key={s.id}
-                {...serviceLinkProps(s)}
-                className="tap flex flex-col items-center gap-1.5 rounded-2xl bg-card px-1 py-3 shadow-card"
-              >
-                <ServiceLogo service={s} size={36} className="bg-muted shadow-none" />
-                <span className="text-center text-[10px] font-semibold leading-tight">{s.name}</span>
-              </Link>
-            ))}
+        <section className="space-y-8 px-4 py-6">
+          {/* The definitive five, oversized */}
+          <div>
+            <h2 className="mb-4 px-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              The five that matter
+            </h2>
+            <div className="grid grid-cols-5 gap-x-3 gap-y-5">
+              {FEATURED_SERVICES.map((s) => (
+                <AppTile key={s.id} service={s} size={62} />
+              ))}
+            </div>
           </div>
 
+          {/* Category folders */}
           {SERVICE_CATEGORIES.map((cat) => (
-            <div key={cat.id} className="mt-7">
-              <div className="mb-2 flex items-baseline gap-2 px-1">
-                <span className="text-lg">{cat.emoji}</span>
-                <h2 className="text-base font-semibold">{cat.label}</h2>
+            <div key={cat.id}>
+              <div className="mb-3 flex items-baseline gap-2 px-1">
+                <span className="text-xl">{cat.emoji}</span>
+                <h2 className="text-xl font-semibold tracking-tight">{cat.label}</h2>
               </div>
-              <p className="mb-3 px-1 text-xs text-muted-foreground">{cat.tagline}</p>
-              <div className="space-y-2">
-                {cat.services.map((s) => (
-                  <ServiceRow key={s.id} service={s} />
-                ))}
+              <div className="rounded-[1.75rem] bg-muted/70 p-4">
+                <p className="mb-4 text-xs text-muted-foreground">{cat.tagline}</p>
+                <div className="grid grid-cols-4 gap-x-3 gap-y-6 sm:grid-cols-5 lg:grid-cols-8">
+                  {cat.services.map((s) => (
+                    <AppTile key={s.id} service={s} />
+                  ))}
+                </div>
               </div>
             </div>
           ))}
 
-          <h2 className="mb-2 mt-7 px-1 text-base font-semibold">This week</h2>
-          <div className="space-y-2">
-            {EVENTS.slice(0, 3).map((e) => (
-              <Link key={e.id} to="/explore/events">
-                <Card className="flex items-center gap-3">
-                  <span className="flex size-11 items-center justify-center rounded-xl bg-muted text-xl">{e.emoji}</span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold">{e.name}</p>
-                    <p className="truncate text-xs text-muted-foreground">
-                      {e.host} · {e.when}
-                    </p>
-                  </div>
-                  <span className="text-sm font-semibold">{e.price === 0 ? "Free" : ils(e.price)}</span>
-                </Card>
-              </Link>
-            ))}
+          {/* This week */}
+          <div>
+            <h2 className="mb-3 px-1 text-xl font-semibold tracking-tight">This week</h2>
+            <div className="space-y-2">
+              {EVENTS.slice(0, 3).map((e) => (
+                <Link key={e.id} to="/explore/events">
+                  <Card className="flex items-center gap-3">
+                    <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-muted text-xl">
+                      {e.emoji}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold">{e.name}</p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {e.host} · {e.when}
+                      </p>
+                    </div>
+                    <span className="shrink-0 text-sm font-semibold">{e.price === 0 ? "Free" : ils(e.price)}</span>
+                  </Card>
+                </Link>
+              ))}
+            </div>
           </div>
+
+          <p className="px-1 text-center text-[11px] text-muted-foreground">
+            We integrate platforms, not individual venues — restaurants, bars and shops arrive through Wolt, Ontopo and
+            friends. Apps marked “soon” open a guide for now.
+          </p>
         </section>
       )}
     </AppShell>
