@@ -19,7 +19,9 @@ import { Route as McpRouteImport } from './routes/mcp'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
+import { Route as GuidesIdRouteImport } from './routes/guides/$id'
 import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
 import { Route as ExploreShopsRouteImport } from './routes/explore/shops'
 import { Route as ExploreRidesRouteImport } from './routes/explore/rides'
@@ -86,9 +88,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuidesIndexRoute = GuidesIndexRouteImport.update({
+  id: '/guides/',
+  path: '/guides/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreIndexRoute = ExploreIndexRouteImport.update({
   id: '/explore/',
   path: '/explore/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesIdRoute = GuidesIdRouteImport.update({
+  id: '/guides/$id',
+  path: '/guides/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreTransitRoute = ExploreTransitRouteImport.update({
@@ -193,7 +205,9 @@ export interface FileRoutesByFullPath {
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
+  '/guides/$id': typeof GuidesIdRoute
   '/explore/': typeof ExploreIndexRoute
+  '/guides/': typeof GuidesIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
@@ -221,7 +235,9 @@ export interface FileRoutesByTo {
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
+  '/guides/$id': typeof GuidesIdRoute
   '/explore': typeof ExploreIndexRoute
+  '/guides': typeof GuidesIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
@@ -250,7 +266,9 @@ export interface FileRoutesById {
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
+  '/guides/$id': typeof GuidesIdRoute
   '/explore/': typeof ExploreIndexRoute
+  '/guides/': typeof GuidesIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
@@ -280,7 +298,9 @@ export interface FileRouteTypes {
     | '/explore/rides'
     | '/explore/shops'
     | '/explore/transit'
+    | '/guides/$id'
     | '/explore/'
+    | '/guides/'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/service/$id'
@@ -308,7 +328,9 @@ export interface FileRouteTypes {
     | '/explore/rides'
     | '/explore/shops'
     | '/explore/transit'
+    | '/guides/$id'
     | '/explore'
+    | '/guides'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/service/$id'
@@ -336,7 +358,9 @@ export interface FileRouteTypes {
     | '/explore/rides'
     | '/explore/shops'
     | '/explore/transit'
+    | '/guides/$id'
     | '/explore/'
+    | '/guides/'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/service/$id'
@@ -365,7 +389,9 @@ export interface RootRouteChildren {
   ExploreRidesRoute: typeof ExploreRidesRoute
   ExploreShopsRoute: typeof ExploreShopsRoute
   ExploreTransitRoute: typeof ExploreTransitRoute
+  GuidesIdRoute: typeof GuidesIdRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
+  GuidesIndexRoute: typeof GuidesIndexRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
@@ -443,11 +469,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guides/': {
+      id: '/guides/'
+      path: '/guides'
+      fullPath: '/guides/'
+      preLoaderRoute: typeof GuidesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/': {
       id: '/explore/'
       path: '/explore'
       fullPath: '/explore/'
       preLoaderRoute: typeof ExploreIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/$id': {
+      id: '/guides/$id'
+      path: '/guides/$id'
+      fullPath: '/guides/$id'
+      preLoaderRoute: typeof GuidesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore/transit': {
@@ -582,7 +622,9 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreRidesRoute: ExploreRidesRoute,
   ExploreShopsRoute: ExploreShopsRoute,
   ExploreTransitRoute: ExploreTransitRoute,
+  GuidesIdRoute: GuidesIdRoute,
   ExploreIndexRoute: ExploreIndexRoute,
+  GuidesIndexRoute: GuidesIndexRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ExploreCategoryIdRoute: ExploreCategoryIdRoute,
   ExploreServiceIdRoute: ExploreServiceIdRoute,

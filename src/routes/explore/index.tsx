@@ -7,6 +7,8 @@ import { SERVICE_CATEGORIES, serviceLinkProps, type Service } from "@/lib/servic
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { recordServiceUse } from "@/lib/recents";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
+import { GUIDES } from "@/lib/guides";
+import { GuideStrip } from "@/components/GuideStrip";
 
 export const Route = createFileRoute("/explore/")({
   head: () => ({
@@ -121,6 +123,19 @@ function Explore() {
           </div>
 
 
+
+          {/* Boxless guides & tips */}
+          <div className="space-y-6 px-1">
+            <div className="flex items-baseline justify-between">
+              <h2 className="font-display text-lg font-bold tracking-tight">Guides & tips</h2>
+              <Link to="/guides" className="tap-flat text-[12px] font-semibold text-primary">
+                All guides
+              </Link>
+            </div>
+            {GUIDES.slice(0, 4).map((g) => (
+              <GuideStrip key={g.id} guide={g} />
+            ))}
+          </div>
 
           <p className="px-1 text-center text-[11px] text-muted-foreground">
             We integrate platforms, not individual venues — restaurants, bars and shops arrive through Wolt, Ontopo and
