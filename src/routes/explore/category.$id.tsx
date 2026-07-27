@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { AppShell, Card, ScreenHeader } from "@/components/AppShell";
 import { ServiceLogo } from "@/components/ServiceLogo";
-import { SERVICE_CATEGORIES, serviceLinkProps, type Service } from "@/lib/services";
+import { SERVICE_CATEGORIES, serviceLinkProps, type Service, type ServiceCategory } from "@/lib/services";
 import { recordServiceUse } from "@/lib/recents";
 
 export const Route = createFileRoute("/explore/category/$id")({
