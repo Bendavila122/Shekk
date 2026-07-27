@@ -14,6 +14,7 @@ export type SplitRequest = {
 type State = {
   onboarded: boolean;
   name: string;
+  avatar: string | null;
   programId: string;
   cohort: string;
   balance: number;
@@ -29,6 +30,7 @@ const STORAGE_KEY = "shekk.state.v2";
 const initialState: State = {
   onboarded: true,
   name: "Ari Feldman",
+  avatar: null,
   programId: "aish",
   cohort: "J26 · Fall–Spring",
   balance: 640.5,
@@ -56,6 +58,7 @@ type Ctx = {
   payFriend: (id: string) => void;
   addSplit: (s: SplitRequest) => void;
   setFeedOptIn: (v: boolean) => void;
+  setAvatar: (dataUrl: string | null) => void;
   reset: () => void;
 };
 
@@ -163,6 +166,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }),
     addSplit: (s2) => setState((s) => ({ ...s, splits: [s2, ...s.splits] })),
     setFeedOptIn: (v) => setState((s) => ({ ...s, feedOptIn: v })),
+    setAvatar: (avatar) => setState((s) => ({ ...s, avatar })),
     reset: () => setState(initialState),
   };
 
