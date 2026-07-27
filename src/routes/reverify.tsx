@@ -145,7 +145,7 @@ function Reverify() {
               </p>
             </div>
             <div className="space-y-2">
-              <PrimaryButton onClick={() => navigate({ to: "/" })}>Back to my pay code</PrimaryButton>
+              <PrimaryButton onClick={() => navigate({ to: "/" })}>Back to my wallet</PrimaryButton>
               <Link to="/me" className="tap block rounded-2xl bg-muted py-4 text-center text-sm font-semibold">
                 View my status
               </Link>

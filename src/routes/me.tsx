@@ -75,10 +75,12 @@ function Me() {
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li>• You buy credits — it's a purchase, not a deposit. We're not a bank and we don't hold your money.</li>
             <li>• Credits are in shekels, non-refundable and non-withdrawable.</li>
-            <li>• Spend them in-app or at any partner merchant with your pay code.</li>
+            <li>• Order through a partner app inside ShekelPay and <span className="font-medium text-foreground">we pay them</span> — your card is never charged at checkout.</li>
+            <li>• We then deduct the shekel-token equivalent of that order from your preloaded balance.</li>
             <li>• Every top up shows the ShekelPay rate and the exact credits you get before you confirm.</li>
             <li>• Re-verify your ID once a year to keep the account active.</li>
           </ul>
+
           <Link to="/terms" className="inline-block pt-1 text-sm font-semibold text-primary">
             Read the full terms →
           </Link>

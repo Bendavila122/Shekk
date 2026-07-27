@@ -82,13 +82,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "ShekelPay is the super-app for American gap-year students in Israel: one pay code, shekel credits, transit, kosher food, events and split-the-bill.",
+          "ShekelPay is the super-app for American gap-year students in Israel: preload shekel tokens, then Wolt, Gett, Rav-Kav, Go-To and Israel Railways run inside the app and we pay them for you.",
       },
       { name: "author", content: "ShekelPay" },
       { property: "og:title", content: "ShekelPay — one wallet for your year in Israel" },
       {
         property: "og:description",
-        content: "One pay code, shekel credits and every gap-year mini-program in a single app.",
+        content: "Preload shekel tokens once — ShekelPay pays the partner apps for you and deducts the tokens.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

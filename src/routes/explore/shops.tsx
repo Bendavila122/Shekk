@@ -7,7 +7,7 @@ export const Route = createFileRoute("/explore/shops")({
   head: () => ({
     meta: [
       { title: "Shops & discounts · ShekelPay" },
-      { name: "description", content: "Local merchant directory with student promo codes you can apply at your pay code." },
+      { name: "description", content: "Student promo codes applied automatically when you order through partner apps inside ShekelPay." },
       { property: "og:title", content: "Shops & discounts · ShekelPay" },
       { property: "og:description", content: "Student discounts around Jerusalem, no coupon app required." },
     ],
@@ -40,7 +40,7 @@ function Shops() {
           </Card>
         ))}
         <Card className="text-xs text-muted-foreground">
-          Discounts apply automatically when the merchant scans your pay code — no coupon codes to remember.
+          Discounts apply automatically when you order through a partner app inside ShekelPay — we pay them and deduct the discounted amount in tokens.
         </Card>
       </div>
     </AppShell>
