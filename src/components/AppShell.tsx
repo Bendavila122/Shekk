@@ -2,7 +2,8 @@ import { Link, useRouterState, useRouter, useCanGoBack, useNavigate } from "@tan
 import { useEffect, useState, type ReactNode } from "react";
 import { Wallet, Compass, Receipt, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy } from "lucide-react";
 import { useApp } from "@/lib/store";
-import { ils, usdRef } from "@/lib/mock";
+import { ils } from "@/lib/mock";
+import { refIn } from "@/lib/currencies";
 
 
 
@@ -139,7 +140,7 @@ export function QuickMenu() {
             <div className="border-b border-border bg-ink px-4 py-3 text-ink-foreground">
               <p className="text-[10px] uppercase tracking-widest opacity-60">Balance</p>
               <p className="font-display text-xl font-bold leading-tight">{ils(state.balance)}</p>
-              <p className="text-[11px] opacity-60">≈ {usdRef(state.balance)} reference</p>
+              <p className="text-[11px] opacity-60">≈ {refIn(state.settings.payCurrency, state.balance)} reference</p>
             </div>
             <Link
               to="/topup"
@@ -150,7 +151,7 @@ export function QuickMenu() {
             <Link to="/me" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <User className="size-4 text-muted-foreground" /> Me
             </Link>
-            <Link to="/me" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+            <Link to="/settings" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <Settings className="size-4 text-muted-foreground" /> Settings
             </Link>
             <Link to="/help" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
@@ -176,7 +177,7 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
     <div className="mt-auto rounded-2xl bg-ink px-4 py-3 text-ink-foreground">
       <p className="text-[10px] uppercase tracking-widest opacity-60">Balance</p>
       <p className="font-display text-2xl font-bold leading-tight">{ils(state.balance)}</p>
-      <p className="text-[11px] opacity-60">≈ {usdRef(state.balance)} reference</p>
+      <p className="text-[11px] opacity-60">≈ {refIn(state.settings.payCurrency, state.balance)} reference</p>
       <Link
         to="/topup"
         onClick={onNavigate}
