@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "sdk_version": "0.24.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "shekk-mcp",
+      "version": "0.1.0",
+      "title": "Shekk"
+    },
+    "tools": [
+      {
+        "name": "list_categories",
+        "title": "List categories",
+        "description": "List the Shekk explore categories (getting around, food, housing, admin, and so on) with their taglines and how many services each holds.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_services",
+        "title": "List services",
+        "description": "List the Israeli apps and services in the Shekk catalogue. Optionally filter by category id, status, or a free-text query.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "categoryId": {
+              "description": "Category id, e.g. transit, food, housing.",
+              "type": "string"
+            },
+            "status": {
+              "description": "Integration status filter.",
+              "type": "string",
+              "enum": [
+                "live",
+                "integrating",
+                "guide"
+              ]
+            },
+            "query": {
+              "description": "Free-text match against name, partner or blurb.",
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_service",
+        "title": "Get service details",
+        "description": "Get the full Shekk catalogue entry for one service by id: what it is, its category, integration status and the practical guide notes.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Service id, e.g. wolt, ravkav, rail."
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "quote_topup",
+        "title": "Quote a top up",
+        "description": "Preview a Shekk credit purchase: given a USD amount, return the mid-market reference rate, the spread taken and the shekel-denominated credits received. Credits are non-refundable and non-withdrawable.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "usd": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Amount paid in USD."
+            }
+          },
+          "required": [
+            "usd"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
