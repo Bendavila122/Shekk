@@ -178,40 +178,17 @@ function HomeScreen() {
         <ReverifyBanner />
       </div>
 
-      {/* Activity */}
-      <section className="px-4 pb-6 pt-5">
-        <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-base font-semibold">Activity</h2>
-          <Link to="/me" className="text-xs font-semibold text-primary">
-            Full history <ArrowUpRight className="inline size-3" />
-          </Link>
-        </div>
-        <Card className="divide-y divide-border p-0">
-          {state.txns.length === 0 ? (
-            <p className="p-4 text-sm text-muted-foreground">
-              Nothing yet — top up tokens and your first spend shows here.
-            </p>
-          ) : (
-            state.txns.slice(0, 6).map((t) => (
-              <div key={t.id} className="flex items-center gap-3 p-3.5">
-                <span className="flex size-10 items-center justify-center rounded-xl bg-muted text-lg">{t.icon}</span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold">{t.merchant}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {t.category} · {t.date}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className={`text-sm font-semibold ${t.amount > 0 ? "text-success" : ""}`}>
-                    {t.amount > 0 ? "+" : "−"}
-                    {ils(Math.abs(t.amount))}
-                  </p>
-                  <p className="text-[11px] text-muted-foreground">{usdRef(Math.abs(t.amount))}</p>
-                </div>
-              </div>
-            ))
-          )}
-        </Card>
+      {/* Activity lives in its own tab */}
+      <section className="px-4 pb-8 pt-5">
+        <Link
+          to="/activity"
+          className="tap flex items-center justify-between rounded-2xl bg-muted px-4 py-3 text-sm font-semibold"
+        >
+          <span className="flex items-center gap-2">
+            <Receipt className="size-4 text-primary" /> Activity &amp; history
+          </span>
+          <ArrowUpRight className="size-4 text-muted-foreground" />
+        </Link>
 
         <Link
           to="/terms"
@@ -222,6 +199,7 @@ function HomeScreen() {
           ShekelPay and with other ShekelPay users. Read the terms.
         </Link>
       </section>
+
     </AppShell>
   );
 }
