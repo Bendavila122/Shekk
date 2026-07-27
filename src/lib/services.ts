@@ -180,3 +180,33 @@ export function serviceLinkProps(service: Service): {
     ? { to: service.to }
     : { to: "/explore/service/$id", params: { id: service.id } };
 }
+
+/**
+ * The ShekelPay home screen — a springboard of the Israeli apps a student
+ * actually opens, grouped like pages on a phone.
+ */
+const HOME_LAYOUT: { label: string; hint: string; ids: string[] }[] = [
+  {
+    label: "Everyday",
+    hint: "The definitive five, plus what you open daily.",
+    ids: ["wolt", "gett", "ravkav", "rail", "goto", "cibus", "10bis", "pango"],
+  },
+  {
+    label: "Out & about",
+    hint: "Tiyulim, tickets, tables and Thursday nights.",
+    ids: ["events", "reserve", "moovit", "gmaps", "secrettlv", "thingstodo", "gyms", "flights"],
+  },
+  {
+    label: "Life in Israel",
+    hint: "The boring stuff nobody explains to you.",
+    ids: ["sim", "housing", "bills", "visa", "hospitalcard", "emergency", "community", "siddur"],
+  },
+];
+
+export const HOME_SECTIONS = HOME_LAYOUT.map((section) => ({
+  label: section.label,
+  hint: section.hint,
+  services: section.ids
+    .map((id) => ALL_SERVICES.find((s) => s.id === id))
+    .filter((s): s is Service => Boolean(s)),
+}));
