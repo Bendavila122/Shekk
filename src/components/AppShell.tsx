@@ -82,7 +82,7 @@ export function MobileNav() {
     <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[430px] -translate-x-1/2 border-t border-border bg-card lg:hidden">
 
       <nav className="flex items-stretch justify-between px-1 pb-[max(0.4rem,env(safe-area-inset-bottom))] pt-1.5">
-        {TABS.map(({ to, label, Icon }) => {
+        {TABS.filter((t) => t.to !== "/me").map(({ to, label, Icon }) => {
           const active = isActive(to);
           return (
             <Link
