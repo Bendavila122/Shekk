@@ -7,9 +7,10 @@ export type ForYouPrefs = {
   pinned: string[];
   hidden: string[];
   size: "compact" | "expanded";
+  weatherCity: string | null;
 };
 
-const DEFAULTS: ForYouPrefs = { pinned: [], hidden: [], size: "expanded" };
+const DEFAULTS: ForYouPrefs = { pinned: [], hidden: [], size: "expanded", weatherCity: null };
 
 function read(): ForYouPrefs {
   if (typeof window === "undefined") return DEFAULTS;
@@ -68,9 +69,11 @@ export function useForYouPrefs() {
 
   const setSize = useCallback((size: ForYouPrefs["size"]) => save({ ...prefs, size }), [prefs, save]);
 
+  const setWeatherCity = useCallback((weatherCity: string | null) => save({ ...prefs, weatherCity }), [prefs, save]);
+
   const reset = useCallback(() => save(DEFAULTS), [save]);
 
-  return { prefs, togglePin, toggleHide, move, setSize, reset };
+  return { prefs, togglePin, toggleHide, move, setSize, setWeatherCity, reset };
 }
 
 export function haptic(ms = 8) {
