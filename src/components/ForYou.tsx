@@ -203,24 +203,62 @@ export function ForYou() {
   const widgets = useMemo(() => orderWidgets(ctx, prefs.pinned, prefs.hidden), [ctx, prefs.pinned, prefs.hidden]);
   const openDef = widgets.find((w) => w.id === openId) ?? null;
 
-  // Randomised (but stable per day) mix: 2 widgets → guide → 1 widget → guide → 2 …
-  const guideAt = useMemo(() => {
+  /**
+   * Layout engine — mosaic of widget tiles and boxless guide tiles that share
+   * the exact same shapes (square or wide). A column cursor keeps every row
+   * complete, so wide items only start a fresh row and nothing ever orphans.
+   */
+  const items = useMemo(() => {
     const seed = Math.floor(Date.now() / 86_400_000);
-    let s = seed * 9301 + 49297;
+    let s = (seed * 9301 + 49297) % 233280;
     const rnd = () => ((s = (s * 9301 + 49297) % 233280) / 233280);
     const pool = [...GUIDES].sort(() => rnd() - 0.5);
-    const map = new Map<number, (typeof GUIDES)[number]>();
-    let i = 2 + Math.floor(rnd() * 2); // first break after 2–3 tiles
-    let g = 0;
-    while (i < widgets.length && g < pool.length) {
-      map.set(i, pool[g % pool.length]);
-      g += 1;
-      i += rnd() < 0.5 ? 1 : 2; // alternate 1 or 2 widgets between guides
-    }
-    return map;
-  }, [widgets.length]);
+    const compact = prefs.size === "compact";
 
-  const isWide = (i: number) => prefs.size !== "compact" && (i === 0 || i === 3);
+    type Item =
+      | { kind: "widget"; key: string; def: WidgetDef; wide: boolean }
+      | { kind: "guide"; key: string; guide: (typeof GUIDES)[number]; wide: boolean };
+
+    const out: Item[] = [];
+    let col = 0; // 0 = row start, 1 = row filled halfway
+    let sinceGuide = 0;
+    let gi = 0;
+    // Randomised run length between guides: 2 widgets, then 1, then 2 …
+    let run = 2 + Math.round(rnd());
+
+    const place = (make: (wide: boolean) => Item, canBeWide: boolean) => {
+      const wide = !compact && canBeWide && col === 0;
+      out.push(make(wide));
+      col = wide ? 0 : (col + 1) % 2;
+    };
+
+    widgets.forEach((w, i) => {
+      // Hero tile first, then an occasional wide widget to break the rhythm.
+      place((wide) => ({ kind: "widget", key: w.id, def: w, wide }), i === 0 || (i > 2 && i % 5 === 0));
+      sinceGuide += 1;
+
+      if (sinceGuide >= run && gi < pool.length && i < widgets.length - 1) {
+        const guide = pool[gi];
+        // A guide fills the slot next to a widget, or spans the row when it
+        // lands on a fresh row — same shapes as the tiles, just boxless.
+        place(
+          (wide) => ({ kind: "guide", key: `guide-${guide.id}`, guide, wide }),
+          gi % 2 === 1,
+        );
+        gi += 1;
+        sinceGuide = 0;
+        run = 1 + Math.round(rnd()); // 1 or 2 widgets before the next guide
+      }
+    });
+
+    // Never leave a half-empty last row: pad with one more guide if we can.
+    if (col === 1 && gi < pool.length) {
+      const guide = pool[gi];
+      out.push({ kind: "guide", key: `guide-${guide.id}`, guide, wide: false });
+    }
+
+    return out;
+  }, [widgets, prefs.size]);
 
   return (
     <section className="pt-7">
@@ -246,29 +284,25 @@ export function ForYou() {
           <Skeleton />
         </div>
       ) : (
-        <div className="mt-3 grid grid-cols-2 gap-3 px-5 sm:grid-cols-3">
-          {widgets.map((w, i) => {
-            // Boxless guide teasers slotted between varying runs of tiles.
-            const guide = guideAt.get(i) ?? null;
-
-            return (
-              <Fragment key={w.id}>
-                {guide ? (
-                  <GuideStrip guide={guide} className="col-span-2 py-2 sm:col-span-3" />
-                ) : null}
-                <Tile
-                  def={w}
-                  ctx={ctx}
-                  balance={state.balance}
-                  wide={isWide(i)}
-                  index={i}
-                  onOpen={() => setOpenId(w.id)}
-                />
-              </Fragment>
-            );
-          })}
+        <div className="mt-3 grid auto-rows-min grid-cols-2 gap-3 px-5">
+          {items.map((item, i) =>
+            item.kind === "guide" ? (
+              <GuideStrip key={item.key} guide={item.guide} wide={item.wide} index={i} />
+            ) : (
+              <Tile
+                key={item.key}
+                def={item.def}
+                ctx={ctx}
+                balance={state.balance}
+                wide={item.wide}
+                index={i}
+                onOpen={() => setOpenId(item.def.id)}
+              />
+            ),
+          )}
         </div>
       )}
+
 
       {openDef ? (
         <DetailSheet
