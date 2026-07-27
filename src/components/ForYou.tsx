@@ -203,7 +203,23 @@ export function ForYou() {
   const widgets = useMemo(() => orderWidgets(ctx, prefs.pinned, prefs.hidden), [ctx, prefs.pinned, prefs.hidden]);
   const openDef = widgets.find((w) => w.id === openId) ?? null;
 
-  // Expanded = the top widget gets a full-width tile; compact = all squares.
+  // Randomised (but stable per day) mix: 2 widgets → guide → 1 widget → guide → 2 …
+  const guideAt = useMemo(() => {
+    const seed = Math.floor(Date.now() / 86_400_000);
+    let s = seed * 9301 + 49297;
+    const rnd = () => ((s = (s * 9301 + 49297) % 233280) / 233280);
+    const pool = [...GUIDES].sort(() => rnd() - 0.5);
+    const map = new Map<number, (typeof GUIDES)[number]>();
+    let i = 2 + Math.floor(rnd() * 2); // first break after 2–3 tiles
+    let g = 0;
+    while (i < widgets.length && g < pool.length) {
+      map.set(i, pool[g % pool.length]);
+      g += 1;
+      i += rnd() < 0.5 ? 1 : 2; // alternate 1 or 2 widgets between guides
+    }
+    return map;
+  }, [widgets.length]);
+
   const isWide = (i: number) => prefs.size !== "compact" && (i === 0 || i === 3);
 
   return (
@@ -232,8 +248,9 @@ export function ForYou() {
       ) : (
         <div className="mt-3 grid grid-cols-2 gap-3 px-5 sm:grid-cols-3">
           {widgets.map((w, i) => {
-            // Boxless guide teaser slotted between rows of tiles.
-            const guide = i > 0 && i % 4 === 0 ? GUIDES[(i / 4 - 1) % GUIDES.length] : null;
+            // Boxless guide teasers slotted between varying runs of tiles.
+            const guide = guideAt.get(i) ?? null;
+
             return (
               <Fragment key={w.id}>
                 {guide ? (
