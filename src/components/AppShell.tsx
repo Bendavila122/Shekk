@@ -148,6 +148,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                     <X className="size-4" />
                   </button>
                 </div>
+                <NavBalance onNavigate={() => setMenuOpen(false)} />
+
                 {TABS.map(({ to, label, Icon }) => {
                   const active = isActive(to);
                   return (
