@@ -27,6 +27,7 @@ import { Route as ExploreFoodRouteImport } from './routes/explore/food'
 import { Route as ExploreEventsRouteImport } from './routes/explore/events'
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
 import { Route as ExploreAdminRouteImport } from './routes/explore/admin'
+import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
 
 const TopupRoute = TopupRouteImport.update({
   id: '/topup',
@@ -118,6 +119,11 @@ const ExploreAdminRoute = ExploreAdminRouteImport.update({
   path: '/explore/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
+  id: '/explore/service/$id',
+  path: '/explore/service/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -138,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore/': typeof ExploreIndexRoute
+  '/explore/service/$id': typeof ExploreServiceIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -158,6 +165,7 @@ export interface FileRoutesByTo {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore': typeof ExploreIndexRoute
+  '/explore/service/$id': typeof ExploreServiceIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -179,6 +187,7 @@ export interface FileRoutesById {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore/': typeof ExploreIndexRoute
+  '/explore/service/$id': typeof ExploreServiceIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -201,6 +210,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/explore/'
+    | '/explore/service/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -221,6 +231,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/explore'
+    | '/explore/service/$id'
   id:
     | '__root__'
     | '/'
@@ -241,6 +252,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/explore/'
+    | '/explore/service/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -262,6 +274,7 @@ export interface RootRouteChildren {
   ExploreShopsRoute: typeof ExploreShopsRoute
   ExploreTransitRoute: typeof ExploreTransitRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
+  ExploreServiceIdRoute: typeof ExploreServiceIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -392,6 +405,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/service/$id': {
+      id: '/explore/service/$id'
+      path: '/explore/service/$id'
+      fullPath: '/explore/service/$id'
+      preLoaderRoute: typeof ExploreServiceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -414,6 +434,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreShopsRoute: ExploreShopsRoute,
   ExploreTransitRoute: ExploreTransitRoute,
   ExploreIndexRoute: ExploreIndexRoute,
+  ExploreServiceIdRoute: ExploreServiceIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

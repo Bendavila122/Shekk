@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { AppShell, Card, PrimaryButton, ScreenHeader } from "@/components/AppShell";
-import { findService, STATUS_LABEL } from "@/lib/services";
+import { findService, STATUS_LABEL, type Service, type ServiceCategory } from "@/lib/services";
 
 export const Route = createFileRoute("/explore/service/$id")({
   head: ({ params }) => {
@@ -41,7 +41,7 @@ function ServiceMissing() {
 }
 
 function ServicePage() {
-  const { service, category } = Route.useLoaderData();
+  const { service, category } = Route.useLoaderData() as { service: Service; category: ServiceCategory };
 
   return (
     <AppShell>
@@ -70,7 +70,7 @@ function ServicePage() {
               What you can do
             </p>
             <ul className="space-y-2 text-sm">
-              {service.detail.map((d) => (
+              {service.detail.map((d: string) => (
                 <li key={d} className="flex gap-2">
                   <span className="text-primary">•</span>
                   <span>{d}</span>
