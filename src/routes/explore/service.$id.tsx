@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { AppShell, Card, PrimaryButton, ScreenHeader } from "@/components/AppShell";
+import { ServiceLogo } from "@/components/ServiceLogo";
 import { findService, STATUS_LABEL, type Service, type ServiceCategory } from "@/lib/services";
 
 export const Route = createFileRoute("/explore/service/$id")({
@@ -48,9 +49,7 @@ function ServicePage() {
       <ScreenHeader title={service.name} subtitle={category.label} />
       <div className="space-y-4 p-4">
         <Card className="flex items-center gap-4">
-          <span className="flex size-14 items-center justify-center rounded-2xl bg-primary-soft text-2xl">
-            {service.emoji}
-          </span>
+          <ServiceLogo service={service} size={56} className="rounded-2xl bg-primary-soft" />
           <div className="min-w-0">
             <p className="text-sm font-semibold">{service.blurb}</p>
             {service.partner ? (

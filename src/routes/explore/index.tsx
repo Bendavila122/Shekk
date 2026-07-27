@@ -3,7 +3,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Search, ChevronRight } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { EVENTS, ils } from "@/lib/mock";
-import { SERVICE_CATEGORIES, FEATURED_SERVICES, STATUS_LABEL, type Service } from "@/lib/services";
+import { SERVICE_CATEGORIES, FEATURED_SERVICES, STATUS_LABEL, serviceLinkProps, type Service } from "@/lib/services";
+import { ServiceLogo } from "@/components/ServiceLogo";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 
 export const Route = createFileRoute("/explore/")({
@@ -39,13 +40,10 @@ function StatusChip({ status }: { status: Service["status"] }) {
 function ServiceRow({ service }: { service: Service }) {
   return (
     <Link
-      to="/explore/service/$id"
-      params={{ id: service.id }}
+      {...serviceLinkProps(service)}
       className="tap flex items-center gap-3 rounded-2xl bg-card p-3 shadow-card"
     >
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-lg">
-        {service.emoji}
-      </span>
+      <ServiceLogo service={service} />
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-semibold">{service.name}</p>
         <p className="truncate text-xs text-muted-foreground">{service.blurb}</p>
@@ -117,11 +115,10 @@ function Explore() {
             {FEATURED_SERVICES.map((s) => (
               <Link
                 key={s.id}
-                to="/explore/service/$id"
-                params={{ id: s.id }}
+                {...serviceLinkProps(s)}
                 className="tap flex flex-col items-center gap-1.5 rounded-2xl bg-card px-1 py-3 shadow-card"
               >
-                <span className="text-2xl leading-none">{s.emoji}</span>
+                <ServiceLogo service={s} size={36} className="bg-muted shadow-none" />
                 <span className="text-center text-[10px] font-semibold leading-tight">{s.name}</span>
               </Link>
             ))}
