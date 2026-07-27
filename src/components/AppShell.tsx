@@ -74,27 +74,13 @@ export function Notice({
   );
 }
 
-/** Bottom tab bar + compact balance strip, shared by every screen (mobile). */
+/** Bottom tab bar, shared by every screen (mobile). */
 export function MobileNav() {
   const isActive = useActive();
-  const { state } = useApp();
 
   return (
     <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[430px] -translate-x-1/2 border-t border-border bg-card lg:hidden">
-      <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-2">
-        <div className="min-w-0">
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Token balance</p>
-          <p className="font-display text-sm font-bold leading-tight">
-            {ils(state.balance)} <span className="text-[10px] font-medium text-muted-foreground">≈ {usdRef(state.balance)}</span>
-          </p>
-        </div>
-        <Link
-          to="/topup"
-          className="tap flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-xs font-bold uppercase tracking-wide text-primary-foreground shadow-card"
-        >
-          <Plus className="size-4" strokeWidth={3} /> Top up
-        </Link>
-      </div>
+
       <nav className="flex items-stretch justify-between px-1 pb-[max(0.4rem,env(safe-area-inset-bottom))] pt-1.5">
         {TABS.map(({ to, label, Icon }) => {
           const active = isActive(to);
