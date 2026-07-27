@@ -167,8 +167,9 @@ function DetailSheet({
 export function ForYou() {
   const { state } = useApp();
   const [refreshKey, setRefreshKey] = useState(0);
-  const ctx = useUserContext(refreshKey, prefs.weatherCity);
   const { prefs, togglePin, toggleHide, move, setSize, setWeatherCity, reset } = useForYouPrefs();
+  const ctx = useUserContext(refreshKey, prefs.weatherCity);
+
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
