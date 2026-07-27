@@ -8,7 +8,7 @@ import { Avatar } from "@/components/Avatar";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 
-import { STATUS_LABEL, serviceLinkProps, type Service } from "@/lib/services";
+import { serviceLinkProps, type Service } from "@/lib/services";
 import { recordServiceUse, useRecentServices } from "@/lib/recents";
 import { ServiceLogo } from "@/components/ServiceLogo";
 
