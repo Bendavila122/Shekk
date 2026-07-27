@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, Plus } from "lucide-react";
 import { AppShell, Card, PrimaryButton } from "@/components/AppShell";
-import { COHORT_THREAD, FEED, FRIENDS, ils } from "@/lib/mock";
+import { COHORT_THREAD, FEED, FRIENDS, friendPhoto, ils } from "@/lib/mock";
+import { Avatar } from "@/components/Avatar";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 
@@ -67,9 +68,7 @@ function Social() {
               <Card className="divide-y divide-border p-0">
                 {state.splits.map((r) => (
                   <div key={r.id} className="flex items-center gap-3 p-4">
-                    <span className="flex size-10 items-center justify-center rounded-full bg-primary-soft text-sm font-semibold text-primary">
-                      {r.from.split(" ").map((n) => n[0]).join("")}
-                    </span>
+                    <Avatar name={r.from} src={friendPhoto(r.from)} />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold">{r.from}</p>
                       <p className="truncate text-xs text-muted-foreground">{r.reason}</p>
@@ -195,9 +194,7 @@ function SplitFlow() {
                     picked.includes(f.id) ? "border-primary bg-primary-soft" : "border-border"
                   }`}
                 >
-                  <span className="mx-auto mb-1 flex size-9 items-center justify-center rounded-full bg-muted text-xs font-semibold">
-                    {f.initials}
-                  </span>
+                  <Avatar name={f.name} src={f.photo} className="mx-auto mb-1 size-9" textClassName="text-xs" />
                   <span className="block truncate text-[11px] font-semibold">{f.name.split(" ")[0]}</span>
                 </button>
               ))}

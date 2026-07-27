@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText } from "lucide-react";
+import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText, Camera } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { PROGRAMS, ils, usdRef } from "@/lib/mock";
 import { useApp } from "@/lib/store";
@@ -22,8 +22,17 @@ export const Route = createFileRoute("/me")({
 
 function Me() {
   const ready = useOnboardedGate();
-  const { state, verification, daysLeft, triggerReverify, reset } = useApp();
+  const { state, verification, daysLeft, setAvatar } = useApp();
   const program = PROGRAMS.find((p) => p.id === state.programId);
+
+  const onPickPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setAvatar(String(reader.result));
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
 
   if (!ready) return <AppShell><div className="p-6 text-sm text-muted-foreground">Loading…</div></AppShell>;
 
@@ -38,16 +47,39 @@ function Me() {
     <AppShell>
       <header className="bg-ink px-5 pb-8 pt-7 text-ink-foreground">
         <div className="flex items-center gap-4">
-          <span className="flex size-16 items-center justify-center rounded-2xl bg-accent text-2xl font-bold text-accent-foreground">
-            {(state.name || "S").slice(0, 1).toUpperCase()}
-          </span>
+          <label className="tap relative cursor-pointer">
+            {state.avatar ? (
+              <img
+                src={state.avatar}
+                alt="Your profile photo"
+                className="size-16 rounded-2xl object-cover"
+              />
+            ) : (
+              <span className="flex size-16 items-center justify-center rounded-2xl bg-accent text-2xl font-bold text-accent-foreground">
+                {(state.name || "S").slice(0, 1).toUpperCase()}
+              </span>
+            )}
+            <span className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-card">
+              <Camera className="size-3.5" />
+            </span>
+            <input type="file" accept="image/*" className="hidden" onChange={onPickPhoto} />
+          </label>
           <div>
             <h1 className="text-2xl font-bold">{state.name || "Student"}</h1>
             <p className="text-sm opacity-70">
               {program?.name} · {state.cohort}
             </p>
+            <p className="mt-1 text-xs opacity-60">
+              {state.avatar ? "Friends see this photo when you pay" : "Add a photo so friends recognise you"}
+              {state.avatar && (
+                <button onClick={() => setAvatar(null)} className="ml-2 underline">
+                  Remove
+                </button>
+              )}
+            </p>
           </div>
         </div>
+
         <div className={`mt-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${badge.cls}`}>
           <badge.Icon className="size-4" /> {badge.label}
           {daysLeft !== null && <span>· {daysLeft} days left</span>}
@@ -86,19 +118,6 @@ function Me() {
           </Link>
         </Card>
 
-        <Card className="space-y-3">
-          <h2 className="text-base font-semibold">Demo controls</h2>
-          <p className="text-xs text-muted-foreground">Prototype only — fire the annual re-verification cycle.</p>
-          <button
-            onClick={triggerReverify}
-            className="tap w-full rounded-2xl bg-warning px-4 py-3 text-sm font-semibold text-warning-foreground"
-          >
-            Trigger annual re-verification
-          </button>
-          <button onClick={reset} className="tap w-full rounded-2xl bg-muted px-4 py-3 text-sm font-semibold">
-            Reset demo (back to sign up)
-          </button>
-        </Card>
       </div>
     </AppShell>
   );
