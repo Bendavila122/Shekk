@@ -100,7 +100,7 @@ type Ctx = {
   daysLeft: number | null;
   verification: VerificationStatus;
   completeOnboarding: (p: { name: string; programId: string }) => void;
-  addCredits: (credits: number, usdPaid: number) => void;
+  addCredits: (credits: number, paid: number, currencyLabel?: string) => void;
   spend: (merchant: string, category: string, amount: number, icon: string) => void;
   receive: (merchant: string, amount: number, icon: string) => void;
   triggerReverify: () => void;
@@ -177,14 +177,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     verification,
     completeOnboarding: ({ name, programId }) =>
       setState((s) => ({ ...s, onboarded: true, name, programId, txns: SEED_TXNS })),
-    addCredits: (credits, usdPaid) =>
+    addCredits: (credits, paid, currencyLabel) =>
       setState((s) => ({
         ...s,
         balance: +(s.balance + credits).toFixed(2),
         txns: [
           {
             id: `tx${Date.now()}`,
-            merchant: `Credits purchased · $${usdPaid.toFixed(2)} Apple Pay`,
+            merchant: `Credits purchased · ${currencyLabel ?? `$${paid.toFixed(2)}`} Apple Pay`,
             category: "Top up",
             amount: credits,
             date: "Just now",

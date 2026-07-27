@@ -161,7 +161,7 @@ function TopUp() {
             <div className="mt-5 space-y-2">
               <PrimaryButton
                 onClick={() => {
-                  addCredits(q.credits, q.amount);
+                  addCredits(q.credits, q.amount, money(cur.code, q.amount));
                   setSheet(false);
                   setDone(true);
                 }}

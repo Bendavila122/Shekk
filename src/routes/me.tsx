@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText, Camera } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
-import { PROGRAMS, ils, usdRef } from "@/lib/mock";
+import { PROGRAMS, ils } from "@/lib/mock";
+import { refIn } from "@/lib/currencies";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 
@@ -92,7 +93,7 @@ function Me() {
         <Card>
           <p className="text-xs uppercase tracking-wide text-muted-foreground">Credit balance</p>
           <p className="font-display text-3xl font-bold">{ils(state.balance)}</p>
-          <p className="text-xs text-muted-foreground">≈ {usdRef(state.balance)} reference · not withdrawable</p>
+          <p className="text-xs text-muted-foreground">≈ {refIn(state.settings.payCurrency, state.balance)} reference · not withdrawable</p>
         </Card>
 
         <Card className="p-0">

@@ -4,7 +4,8 @@ import { IdCard, Plus } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
-import { ils, usdRef } from "@/lib/mock";
+import { ils } from "@/lib/mock";
+import { refIn } from "@/lib/currencies";
 
 export const Route = createFileRoute("/activity")({
   head: () => ({
@@ -65,7 +66,7 @@ function ActivityScreen() {
         <Card className="p-4">
           <p className="text-[11px] uppercase tracking-widest text-muted-foreground">Balance</p>
           <p className="font-display text-2xl font-bold">{ils(state.balance)}</p>
-          <p className="text-[11px] text-muted-foreground">≈ {usdRef(state.balance)}</p>
+          <p className="text-[11px] text-muted-foreground">≈ {refIn(state.settings.payCurrency, state.balance)}</p>
         </Card>
         <Card className="p-4">
           <p className="text-[11px] uppercase tracking-widest text-muted-foreground">Spent so far</p>
@@ -115,7 +116,7 @@ function ActivityScreen() {
                     {t.amount > 0 ? "+" : "−"}
                     {ils(Math.abs(t.amount))}
                   </p>
-                  <p className="text-[11px] text-muted-foreground">{usdRef(Math.abs(t.amount))}</p>
+                  <p className="text-[11px] text-muted-foreground">{refIn(state.settings.payCurrency, Math.abs(t.amount))}</p>
                 </div>
               </div>
             ))
