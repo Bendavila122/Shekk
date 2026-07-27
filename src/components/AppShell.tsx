@@ -12,8 +12,8 @@ const TABS = [
 
 export function PhoneFrame({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen justify-center bg-ink/95 px-0 py-0 sm:px-4 sm:py-8 lg:bg-background lg:px-0 lg:py-0">
-      <div className="relative flex min-h-screen w-full max-w-[430px] flex-col overflow-hidden bg-background shadow-lift sm:min-h-[860px] sm:rounded-[2.5rem] sm:border-8 sm:border-ink lg:min-h-screen lg:max-w-none lg:rounded-none lg:border-0 lg:shadow-none">
+    <div className="flex min-h-screen justify-center bg-ink/95 px-0 py-0 sm:px-4 sm:py-8 lg:min-h-0 lg:bg-background lg:px-0 lg:py-0">
+      <div className="relative flex min-h-screen w-full max-w-[430px] flex-col overflow-hidden bg-background shadow-lift sm:min-h-[860px] sm:rounded-[2.5rem] sm:border-8 sm:border-ink lg:min-h-[75vh] lg:max-w-none lg:rounded-none lg:border-0 lg:shadow-none">
         {children}
       </div>
     </div>
