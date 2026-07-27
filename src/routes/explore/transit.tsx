@@ -28,7 +28,7 @@ function Transit() {
       <ScreenHeader title="Transit" subtitle="Jerusalem · live times" />
       <div className="space-y-4 px-4 py-4">
         <Card className="bg-primary-soft text-sm">
-          Credits: <strong>{ils(state.balance)}</strong> · tickets are validated with your pay code.
+          Tokens: <strong>{ils(state.balance)}</strong> · we pay the operator, then deduct the tokens.
         </Card>
 
         {ticket ? (

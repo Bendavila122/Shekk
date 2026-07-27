@@ -46,7 +46,7 @@ function TopUp() {
             </p>
           </div>
           <div className="space-y-3">
-            <PrimaryButton onClick={() => navigate({ to: "/" })}>Back to my pay code</PrimaryButton>
+            <PrimaryButton onClick={() => navigate({ to: "/" })}>Back to my wallet</PrimaryButton>
             <Link to="/explore" className="tap block rounded-2xl bg-muted py-4 text-center text-sm font-semibold">
               Explore mini-programs
             </Link>
@@ -104,7 +104,7 @@ function TopUp() {
           <Info className="mt-0.5 size-4 shrink-0" />
           <p>
             This is a purchase of ShekelPay credits, not a deposit. Credits are non-refundable and non-withdrawable —
-            spend them in-app or with partner merchants.{" "}
+            when you order through a partner app inside ShekelPay, we pay them and deduct the token equivalent.{" "}
             <Link to="/terms" className="font-semibold underline">
               Terms & Conditions
             </Link>
