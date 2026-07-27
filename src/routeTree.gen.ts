@@ -18,6 +18,10 @@ import { Route as MeRouteImport } from './routes/me'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
 import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
+import { Route as ExploreRidesRouteImport } from './routes/explore/rides'
+import { Route as ExploreReserveRouteImport } from './routes/explore/reserve'
+import { Route as ExploreHousingRouteImport } from './routes/explore/housing'
+import { Route as ExploreHealthRouteImport } from './routes/explore/health'
 import { Route as ExploreFoodRouteImport } from './routes/explore/food'
 import { Route as ExploreEventsRouteImport } from './routes/explore/events'
 
@@ -66,6 +70,26 @@ const ExploreTransitRoute = ExploreTransitRouteImport.update({
   path: '/explore/transit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreRidesRoute = ExploreRidesRouteImport.update({
+  id: '/explore/rides',
+  path: '/explore/rides',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreReserveRoute = ExploreReserveRouteImport.update({
+  id: '/explore/reserve',
+  path: '/explore/reserve',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreHousingRoute = ExploreHousingRouteImport.update({
+  id: '/explore/housing',
+  path: '/explore/housing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreHealthRoute = ExploreHealthRouteImport.update({
+  id: '/explore/health',
+  path: '/explore/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreFoodRoute = ExploreFoodRouteImport.update({
   id: '/explore/food',
   path: '/explore/food',
@@ -87,6 +111,10 @@ export interface FileRoutesByFullPath {
   '/topup': typeof TopupRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
+  '/explore/health': typeof ExploreHealthRoute
+  '/explore/housing': typeof ExploreHousingRoute
+  '/explore/reserve': typeof ExploreReserveRoute
+  '/explore/rides': typeof ExploreRidesRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore/': typeof ExploreIndexRoute
 }
@@ -100,6 +128,10 @@ export interface FileRoutesByTo {
   '/topup': typeof TopupRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
+  '/explore/health': typeof ExploreHealthRoute
+  '/explore/housing': typeof ExploreHousingRoute
+  '/explore/reserve': typeof ExploreReserveRoute
+  '/explore/rides': typeof ExploreRidesRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore': typeof ExploreIndexRoute
 }
@@ -114,6 +146,10 @@ export interface FileRoutesById {
   '/topup': typeof TopupRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
+  '/explore/health': typeof ExploreHealthRoute
+  '/explore/housing': typeof ExploreHousingRoute
+  '/explore/reserve': typeof ExploreReserveRoute
+  '/explore/rides': typeof ExploreRidesRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore/': typeof ExploreIndexRoute
 }
@@ -129,6 +165,10 @@ export interface FileRouteTypes {
     | '/topup'
     | '/explore/events'
     | '/explore/food'
+    | '/explore/health'
+    | '/explore/housing'
+    | '/explore/reserve'
+    | '/explore/rides'
     | '/explore/transit'
     | '/explore/'
   fileRoutesByTo: FileRoutesByTo
@@ -142,6 +182,10 @@ export interface FileRouteTypes {
     | '/topup'
     | '/explore/events'
     | '/explore/food'
+    | '/explore/health'
+    | '/explore/housing'
+    | '/explore/reserve'
+    | '/explore/rides'
     | '/explore/transit'
     | '/explore'
   id:
@@ -155,6 +199,10 @@ export interface FileRouteTypes {
     | '/topup'
     | '/explore/events'
     | '/explore/food'
+    | '/explore/health'
+    | '/explore/housing'
+    | '/explore/reserve'
+    | '/explore/rides'
     | '/explore/transit'
     | '/explore/'
   fileRoutesById: FileRoutesById
@@ -169,6 +217,10 @@ export interface RootRouteChildren {
   TopupRoute: typeof TopupRoute
   ExploreEventsRoute: typeof ExploreEventsRoute
   ExploreFoodRoute: typeof ExploreFoodRoute
+  ExploreHealthRoute: typeof ExploreHealthRoute
+  ExploreHousingRoute: typeof ExploreHousingRoute
+  ExploreReserveRoute: typeof ExploreReserveRoute
+  ExploreRidesRoute: typeof ExploreRidesRoute
   ExploreTransitRoute: typeof ExploreTransitRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
 }
@@ -238,6 +290,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreTransitRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/rides': {
+      id: '/explore/rides'
+      path: '/explore/rides'
+      fullPath: '/explore/rides'
+      preLoaderRoute: typeof ExploreRidesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/reserve': {
+      id: '/explore/reserve'
+      path: '/explore/reserve'
+      fullPath: '/explore/reserve'
+      preLoaderRoute: typeof ExploreReserveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/housing': {
+      id: '/explore/housing'
+      path: '/explore/housing'
+      fullPath: '/explore/housing'
+      preLoaderRoute: typeof ExploreHousingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/health': {
+      id: '/explore/health'
+      path: '/explore/health'
+      fullPath: '/explore/health'
+      preLoaderRoute: typeof ExploreHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/food': {
       id: '/explore/food'
       path: '/explore/food'
@@ -265,6 +345,10 @@ const rootRouteChildren: RootRouteChildren = {
   TopupRoute: TopupRoute,
   ExploreEventsRoute: ExploreEventsRoute,
   ExploreFoodRoute: ExploreFoodRoute,
+  ExploreHealthRoute: ExploreHealthRoute,
+  ExploreHousingRoute: ExploreHousingRoute,
+  ExploreReserveRoute: ExploreReserveRoute,
+  ExploreRidesRoute: ExploreRidesRoute,
   ExploreTransitRoute: ExploreTransitRoute,
   ExploreIndexRoute: ExploreIndexRoute,
 }
