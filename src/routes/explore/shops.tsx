@@ -40,7 +40,7 @@ function Shops() {
           </Card>
         ))}
         <Card className="text-xs text-muted-foreground">
-          Discounts apply automatically when you order through a partner app inside Shekk — we pay them and deduct the discounted amount in tokens.
+          Discounts apply automatically when you order through a partner app inside Shekk — we pay them and deduct the discounted amount in Shekk.
         </Card>
       </div>
     </AppShell>

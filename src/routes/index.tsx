@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Your Israeli phone, inside your phone: Wolt, Gett, Rav-Kav, Israel Railways, Go-To and more — all paid with shekel tokens.",
+          "Your Israeli phone, inside your phone: Wolt, Gett, Rav-Kav, Israel Railways, Go-To and more — all paid with Shekk.",
       },
       { property: "og:title", content: "Home · Shekk" },
       { property: "og:description", content: "One home screen for every Israeli app a gap-year student needs." },
@@ -101,7 +101,7 @@ function HomeScreen() {
 
 
         <p className="text-center text-[11px] text-muted-foreground">
-          Tap a logo and it opens inside Shekk. You never pay the partner directly — we do, and the shekel-token
+          Tap a logo and it opens inside Shekk. You never pay the partner directly — we do, and the Shekk
           equivalent comes off your balance. {STATUS_LABEL.integrating} apps open their guide for now.
         </p>
       </div>
@@ -116,7 +116,7 @@ function HomeScreen() {
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold">Paying people</p>
               <p className="text-xs text-muted-foreground">
-                Send tokens to friends on Shekk or split a bill with your cohort.
+                Send Shekk to friends on Shekk or split a bill with your cohort.
               </p>
             </div>
           </div>
@@ -125,7 +125,7 @@ function HomeScreen() {
               to="/social"
               className="tap rounded-xl bg-primary px-2 py-2.5 text-center text-xs font-semibold text-primary-foreground"
             >
-              Send tokens
+              Send Shekk
             </Link>
             <Link to="/social" className="tap rounded-xl bg-muted px-2 py-2.5 text-center text-xs font-semibold">
               Split a bill
@@ -145,7 +145,7 @@ function HomeScreen() {
                 <p className="text-xs font-semibold">{state.name || "Your"} · friend code</p>
               </div>
               <p className="text-center text-[11px] text-muted-foreground">
-                A friend scans this to send you tokens. It isn't a merchant payment code.
+                A friend scans this to send you Shekk. It isn't a merchant payment code.
               </p>
             </div>
           ) : null}

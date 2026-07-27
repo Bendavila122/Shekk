@@ -126,7 +126,7 @@ function TopUp() {
           <Info className="mt-0.5 size-4 shrink-0" />
           <p>
             This is a purchase of Shekk credits, not a deposit. Credits are non-refundable and non-withdrawable —
-            when you order through a partner app inside Shekk, we pay them and deduct the token equivalent.{" "}
+            when you order through a partner app inside Shekk, we pay them and deduct the Shekk equivalent.{" "}
             <Link to="/terms" className="font-semibold underline">
               Terms & Conditions
             </Link>
