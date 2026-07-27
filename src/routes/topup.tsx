@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Apple, Info, Check } from "lucide-react";
 import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
-import { MID_MARKET_RATE, ils, quoteTopUp, usd } from "@/lib/mock";
+import { ils, quoteTopUp, usd } from "@/lib/mock";
 import { useApp } from "@/lib/store";
 
 export const Route = createFileRoute("/topup")({
