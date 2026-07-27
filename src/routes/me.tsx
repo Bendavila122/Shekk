@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText } from "lucide-react";
+import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText, Camera } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { PROGRAMS, ils, usdRef } from "@/lib/mock";
 import { useApp } from "@/lib/store";
@@ -22,8 +22,17 @@ export const Route = createFileRoute("/me")({
 
 function Me() {
   const ready = useOnboardedGate();
-  const { state, verification, daysLeft, triggerReverify, reset } = useApp();
+  const { state, verification, daysLeft, setAvatar } = useApp();
   const program = PROGRAMS.find((p) => p.id === state.programId);
+
+  const onPickPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setAvatar(String(reader.result));
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
 
   if (!ready) return <AppShell><div className="p-6 text-sm text-muted-foreground">Loading…</div></AppShell>;
 
