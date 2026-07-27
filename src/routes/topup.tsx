@@ -128,8 +128,8 @@ function TopUp() {
         <div className="mt-4 flex gap-2 rounded-2xl border border-notice-border bg-notice-soft p-4 text-xs text-notice-foreground">
           <Info className="mt-0.5 size-4 shrink-0" />
           <p>
-            This is a purchase of Shekk credits, not a deposit. Credits are non-refundable and non-withdrawable —
-            when you order through a partner app inside Shekk, we pay them and deduct the Shekk equivalent.{" "}
+            Your Shekk balance is ready to spend straight away — order through any partner app inside Shekk and we
+            pay them, then deduct the Shekk equivalent.{" "}
             <Link to="/terms" className="font-semibold underline">
               Terms & Conditions
             </Link>

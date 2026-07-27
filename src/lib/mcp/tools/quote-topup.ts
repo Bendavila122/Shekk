@@ -8,7 +8,7 @@ export default defineTool({
   name: "quote_topup",
   title: "Quote a top up",
   description:
-    "Preview a Shekk credit purchase: given a USD amount, return the mid-market reference rate, the spread taken and the shekel-denominated credits received. Credits are non-refundable and non-withdrawable.",
+    "Preview a Shekk credit purchase: given a USD amount, return the mid-market reference rate, the spread taken and the shekel balance received.",
   inputSchema: { usd: z.number().positive().describe("Amount paid in USD.") },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: ({ usd }) => {
@@ -22,7 +22,7 @@ export default defineTool({
       feeIls: Math.round(fee * 100) / 100,
       creditsIls: credits,
       notice:
-        "Credits are shekel-denominated app credits — non-refundable and non-withdrawable, spendable inside Shekk partner apps or with other Shekk users.",
+        "Shekk balances are held in shekels and spend inside Shekk partner apps or with other Shekk users. Full credit terms are in the Shekk Terms & Conditions.",
     };
     return {
       content: [{ type: "text" as const, text: JSON.stringify(quote, null, 2) }],

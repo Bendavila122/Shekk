@@ -93,7 +93,7 @@
       {
         "name": "quote_topup",
         "title": "Quote a top up",
-        "description": "Preview a Shekk credit purchase: given a USD amount, return the mid-market reference rate, the spread taken and the shekel-denominated credits received. Credits are non-refundable and non-withdrawable.",
+        "description": "Preview a Shekk credit purchase: given a USD amount, return the mid-market reference rate, the spread taken and the shekel balance received.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,

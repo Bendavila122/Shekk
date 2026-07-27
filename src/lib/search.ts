@@ -22,7 +22,7 @@ const PAGES: { title: string; subtitle: string; emoji: string; to: LinkProps["to
   { title: "Social", subtitle: "Split a bill, cohort threads, feed", emoji: "👥", to: "/social", keywords: "social split bill friends cohort group chat feed pay friend" },
   { title: "Me", subtitle: "Profile, program, verification, settings", emoji: "🙋", to: "/me", keywords: "me profile settings account program cohort verification badge saved places photo" },
   { title: "Re-verify", subtitle: "Annual ID re-verification", emoji: "🪪", to: "/reverify", keywords: "reverify re-verify verification id passport annual kyc deadline" },
-  { title: "Terms & Conditions", subtitle: "Credit terms in full", emoji: "📄", to: "/terms", keywords: "terms conditions t&c legal credits non-refundable non-withdrawable policy" },
+  { title: "Terms & Conditions", subtitle: "Credit terms in full", emoji: "📄", to: "/terms", keywords: "terms conditions t&c legal credits policy" },
   { title: "Help", subtitle: "Support and FAQs", emoji: "🛟", to: "/help", keywords: "help support faq contact problem question" },
 ];
 
