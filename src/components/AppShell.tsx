@@ -1,8 +1,9 @@
 import { Link, useRouterState, useRouter, useCanGoBack, useNavigate } from "@tanstack/react-router";
-import { type ReactNode } from "react";
-import { Wallet, Compass, Receipt, Users, User, ChevronLeft, Plus, Info } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Wallet, Compass, Receipt, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { ils, usdRef } from "@/lib/mock";
+
 
 
 const TABS = [
