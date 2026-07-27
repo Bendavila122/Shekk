@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Search, X } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
-import { EVENTS, ils } from "@/lib/mock";
+
 import { SERVICE_CATEGORIES, serviceLinkProps, type Service } from "@/lib/services";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { recordServiceUse } from "@/lib/recents";
