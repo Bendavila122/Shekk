@@ -142,8 +142,9 @@ function TopUp() {
       </div>
 
       {sheet && (
-        <div className="absolute inset-0 z-30 flex flex-col justify-end bg-ink/60">
-          <div className="rounded-t-3xl bg-card p-6 pb-8">
+        <div className="fixed inset-0 z-50 flex flex-col justify-end bg-neutral-950/45">
+          <div className="animate-fade-in mx-auto w-full max-w-md rounded-t-3xl bg-card p-6 pb-8">
+
             <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-border" />
             <div className="flex items-center gap-2 text-lg font-semibold">
               <Apple className="size-5" /> Apple Pay
