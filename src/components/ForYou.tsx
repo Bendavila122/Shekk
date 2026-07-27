@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { SlidersHorizontal, RefreshCw, Sparkles } from "lucide-react";
+import { SlidersHorizontal, RefreshCw, Sparkles, X } from "lucide-react";
 import { useUserContext } from "@/lib/personalise";
 import { orderWidgets, sampleTip, type WidgetDef } from "@/lib/widgets";
 import { useForYouPrefs, haptic } from "@/lib/foryou-prefs";
@@ -10,73 +10,121 @@ import { useApp } from "@/lib/store";
 
 function Skeleton() {
   return (
-    <div className="flex gap-3 overflow-hidden px-4">
-      {[0, 1].map((i) => (
-        <div key={i} className="shimmer h-56 w-[84%] shrink-0 rounded-[1.75rem] bg-muted" />
-      ))}
+    <div className="grid grid-cols-2 gap-3 px-5">
+      <div className="shimmer col-span-2 h-28 rounded-[1.5rem] bg-muted" />
+      <div className="shimmer aspect-square rounded-[1.5rem] bg-muted" />
+      <div className="shimmer aspect-square rounded-[1.5rem] bg-muted" />
     </div>
   );
 }
 
-function WidgetCard({
+type Ctx = ReturnType<typeof useUserContext>;
+
+/** iPhone-style tile: one glance value, tap for the rest. */
+function Tile({
   def,
   ctx,
-  compact,
   balance,
+  wide,
   index,
+  onOpen,
 }: {
   def: WidgetDef;
-  ctx: ReturnType<typeof useUserContext>;
-  compact: boolean;
+  ctx: Ctx;
   balance: number;
+  wide: boolean;
   index: number;
+  onOpen: () => void;
 }) {
   const content = def.build(ctx);
-  const rows = compact ? content.rows.slice(0, 2) : content.rows.slice(0, 5);
+  const headline = def.id === "wallet" ? ils(balance) : content.headline;
+  const snap = content.rows[0];
 
   return (
-    <article
-      className={`${def.gradient} snap-center shrink-0 animate-fade-in rounded-[1.75rem] border border-border p-5 shadow-card`}
-      style={{ width: "84%", animationDelay: `${Math.min(index, 4) * 60}ms` }}
+    <button
+      type="button"
+      onClick={() => {
+        haptic();
+        onOpen();
+      }}
+      style={{ animationDelay: `${Math.min(index, 6) * 45}ms` }}
+      className={`${def.gradient} tap-icon animate-fade-in flex flex-col justify-between rounded-[1.5rem] border border-border p-4 text-left shadow-card ${
+        wide ? "col-span-2 min-h-28" : "aspect-square"
+      }`}
     >
-      <header className="flex items-start gap-3">
-        <span className="flex size-11 items-center justify-center rounded-2xl bg-card text-2xl shadow-card">{def.emoji}</span>
-        <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">{def.title}</p>
-          <p className="truncate text-lg font-bold leading-tight">
-            {def.id === "wallet" ? ils(balance) : content.headline}
+      <div className="flex items-center gap-2">
+        <span className="text-base leading-none">{def.emoji}</span>
+        <span className="truncate text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          {def.title}
+        </span>
+      </div>
+
+      <div className="min-w-0">
+        <p className={`truncate font-bold leading-tight ${wide ? "text-2xl" : "text-xl"}`}>{headline}</p>
+        {wide ? (
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">{content.sub ?? snap?.label}</p>
+        ) : snap ? (
+          <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
+            {snap.icon} {snap.label}
+            {snap.value ? ` · ${snap.value}` : ""}
           </p>
-          {content.sub ? <p className="mt-0.5 truncate text-xs text-muted-foreground">{content.sub}</p> : null}
-        </div>
-      </header>
+        ) : null}
+      </div>
+    </button>
+  );
+}
 
-      <ul className="mt-4 space-y-2">
-        {rows.map((r, i) => (
-          <li key={`${r.label}-${i}`} className="flex items-center gap-2.5 text-sm">
-            <span className="w-5 shrink-0 text-center">{r.icon}</span>
-            <span className="min-w-0 flex-1 truncate">{r.label}</span>
-            {r.value ? <span className="shrink-0 text-xs font-semibold text-muted-foreground">{r.value}</span> : null}
-          </li>
-        ))}
-      </ul>
+function DetailSheet({ def, ctx, balance, onClose }: { def: WidgetDef; ctx: Ctx; balance: number; onClose: () => void }) {
+  const content = def.build(ctx);
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" role="dialog" aria-modal="true">
+      <button className="absolute inset-0 bg-foreground/40" aria-label="Close" onClick={onClose} />
+      <div className="animate-fade-in relative w-full max-w-md rounded-t-[2rem] border border-border bg-card p-6 pb-8 shadow-card sm:rounded-[2rem]">
+        <header className="flex items-start gap-3">
+          <span className={`${def.gradient} flex size-12 items-center justify-center rounded-2xl text-2xl`}>{def.emoji}</span>
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">{def.title}</p>
+            <p className="truncate text-xl font-bold leading-tight">
+              {def.id === "wallet" ? ils(balance) : content.headline}
+            </p>
+            {content.sub ? <p className="mt-0.5 text-xs text-muted-foreground">{content.sub}</p> : null}
+          </div>
+          <button onClick={onClose} className="tap rounded-full bg-muted p-2" aria-label="Close">
+            <X className="size-4" />
+          </button>
+        </header>
 
-      {content.ctas.length ? (
-        <div className="mt-4 flex flex-wrap gap-2">
-          {content.ctas.map((cta, i) => (
-            <Link
-              key={cta.label}
-              to={cta.to}
-              onClick={() => haptic()}
-              className={`tap rounded-full px-3.5 py-2 text-xs font-semibold ${
-                i === 0 ? "bg-primary text-primary-foreground" : "bg-card text-foreground"
-              }`}
-            >
-              {cta.label}
-            </Link>
+        <ul className="mt-5 space-y-3">
+          {content.rows.map((r, i) => (
+            <li key={`${r.label}-${i}`} className="flex items-center gap-3 text-sm">
+              <span className="w-5 shrink-0 text-center">{r.icon}</span>
+              <span className="min-w-0 flex-1">{r.label}</span>
+              {r.value ? <span className="shrink-0 text-xs font-semibold text-muted-foreground">{r.value}</span> : null}
+            </li>
           ))}
-        </div>
-      ) : null}
-    </article>
+        </ul>
+
+        {content.ctas.length ? (
+          <div className="mt-6 flex flex-wrap gap-2">
+            {content.ctas.map((cta, i) => (
+              <Link
+                key={cta.label}
+                to={cta.to}
+                onClick={() => {
+                  haptic();
+                  onClose();
+                }}
+                className={`tap rounded-full px-4 py-2.5 text-xs font-semibold ${
+                  i === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+                }`}
+              >
+                {cta.label}
+              </Link>
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </div>
   );
 }
 
@@ -86,24 +134,11 @@ export function ForYou() {
   const ctx = useUserContext(refreshKey);
   const { prefs, togglePin, toggleHide, move, setSize, reset } = useForYouPrefs();
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [active, setActive] = useState(0);
-  const [pull, setPull] = useState(0);
+  const [openId, setOpenId] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const railRef = useRef<HTMLDivElement>(null);
-  const startY = useRef<number | null>(null);
 
   const widgets = useMemo(() => orderWidgets(ctx, prefs.pinned, prefs.hidden), [ctx, prefs.pinned, prefs.hidden]);
-
-  useEffect(() => {
-    const el = railRef.current;
-    if (!el) return;
-    const onScroll = () => {
-      const i = Math.round(el.scrollLeft / (el.clientWidth * 0.84 + 12));
-      setActive(Math.max(0, Math.min(widgets.length - 1, i)));
-    };
-    el.addEventListener("scroll", onScroll, { passive: true });
-    return () => el.removeEventListener("scroll", onScroll);
-  }, [widgets.length]);
+  const openDef = widgets.find((w) => w.id === openId) ?? null;
 
   const doRefresh = () => {
     haptic(12);
@@ -111,9 +146,11 @@ export function ForYou() {
     window.setTimeout(() => {
       setRefreshKey((k) => k + 1);
       setRefreshing(false);
-      setPull(0);
-    }, 700);
+    }, 600);
   };
+
+  // Expanded = the top widget gets a full-width tile; compact = all squares.
+  const isWide = (i: number) => prefs.size !== "compact" && (i === 0 || i === 3);
 
   return (
     <section className="pt-7">
@@ -141,57 +178,27 @@ export function ForYou() {
         </div>
       </div>
 
-      {/* pull-to-refresh affordance */}
-      <div
-        className="overflow-hidden transition-[height] duration-200"
-        style={{ height: refreshing ? 28 : pull }}
-      >
-        <p className="pt-1.5 text-center text-[11px] font-semibold text-muted-foreground">
-          {refreshing ? "Refreshing…" : pull > 40 ? "Release to refresh" : "Pull to refresh"}
-        </p>
-      </div>
-
       {!ctx.ready ? (
         <div className="pt-3">
           <Skeleton />
         </div>
       ) : (
-        <div
-          ref={railRef}
-          onTouchStart={(e) => {
-            startY.current = e.touches[0].clientY;
-          }}
-          onTouchMove={(e) => {
-            if (startY.current === null) return;
-            const dy = e.touches[0].clientY - startY.current;
-            if (dy > 0) setPull(Math.min(70, dy / 2));
-          }}
-          onTouchEnd={() => {
-            if (pull > 40) doRefresh();
-            else setPull(0);
-            startY.current = null;
-          }}
-          className="no-scrollbar mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth px-4 pb-1"
-        >
+        <div className="mt-3 grid grid-cols-2 gap-3 px-5 sm:grid-cols-3">
           {widgets.map((w, i) => (
-            <WidgetCard key={w.id} def={w} ctx={ctx} compact={prefs.size === "compact"} balance={state.balance} index={i} />
-          ))}
-          <div className="w-1 shrink-0" />
-        </div>
-      )}
-
-      {ctx.ready && widgets.length > 1 ? (
-        <div className="mt-3 flex justify-center gap-1.5">
-          {widgets.map((w, i) => (
-            <span
+            <Tile
               key={w.id}
-              className={`h-1.5 rounded-full transition-all duration-200 ${
-                i === active ? "w-4 bg-primary" : "w-1.5 bg-border"
-              }`}
+              def={w}
+              ctx={ctx}
+              balance={state.balance}
+              wide={isWide(i)}
+              index={i}
+              onOpen={() => setOpenId(w.id)}
             />
           ))}
         </div>
-      ) : null}
+      )}
+
+      {openDef ? <DetailSheet def={openDef} ctx={ctx} balance={state.balance} onClose={() => setOpenId(null)} /> : null}
 
       <ForYouSettings
         open={settingsOpen}
