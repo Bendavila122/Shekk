@@ -77,6 +77,13 @@ export function useForYouPrefs() {
 }
 
 export function haptic(ms = 8) {
+  // Respect the Settings › Appearance haptics switch.
+  try {
+    const raw = localStorage.getItem("shekk.state.v2");
+    if (raw && JSON.parse(raw)?.settings?.hapticFeedback === false) return;
+  } catch {
+    /* ignore */
+  }
   if (typeof navigator !== "undefined" && "vibrate" in navigator) {
     try {
       navigator.vibrate(ms);

@@ -100,7 +100,8 @@ function Me() {
           <RowLink to="/topup" Icon={Receipt} label="Order & top-up history" hint={`${state.txns.length} records`} />
           <RowLink to="/explore/shops" Icon={Bookmark} label="Saved places & discounts" hint="7 saved" />
           <RowLink to="/explore/admin" Icon={FileText} label="Program documents & visa" hint="Student visa A/2" />
-          <RowLink to="/terms" Icon={Settings} label="Full Terms & Conditions" hint="" />
+          <RowLink to="/settings" Icon={Settings} label="App settings" hint="Currency, theme, alerts" />
+          <RowLink to="/terms" Icon={FileText} label="Full Terms & Conditions" hint="" />
         </Card>
 
         <Card className="space-y-2">
