@@ -15,6 +15,7 @@ import { Route as SocialRouteImport } from './routes/social'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ReverifyRouteImport } from './routes/reverify'
 import { Route as MeRouteImport } from './routes/me'
+import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
 import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
@@ -57,6 +58,11 @@ const ReverifyRoute = ReverifyRouteImport.update({
 const MeRoute = MeRouteImport.update({
   id: '/me',
   path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ActivityRoute = ActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -127,6 +133,7 @@ const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activity': typeof ActivityRoute
   '/me': typeof MeRoute
   '/reverify': typeof ReverifyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -148,6 +155,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activity': typeof ActivityRoute
   '/me': typeof MeRoute
   '/reverify': typeof ReverifyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -170,6 +178,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/activity': typeof ActivityRoute
   '/me': typeof MeRoute
   '/reverify': typeof ReverifyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -193,6 +202,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/activity'
     | '/me'
     | '/reverify'
     | '/sitemap.xml'
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/activity'
     | '/me'
     | '/reverify'
     | '/sitemap.xml'
@@ -235,6 +246,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/activity'
     | '/me'
     | '/reverify'
     | '/sitemap.xml'
@@ -257,6 +269,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActivityRoute: typeof ActivityRoute
   MeRoute: typeof MeRoute
   ReverifyRoute: typeof ReverifyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -319,6 +332,13 @@ declare module '@tanstack/react-router' {
       path: '/me'
       fullPath: '/me'
       preLoaderRoute: typeof MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activity': {
+      id: '/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof ActivityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -417,6 +437,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActivityRoute: ActivityRoute,
   MeRoute: MeRoute,
   ReverifyRoute: ReverifyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
