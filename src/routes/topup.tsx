@@ -122,7 +122,7 @@ function TopUp() {
         </Card>
 
 
-        <div className="mt-4 flex gap-2 rounded-2xl bg-warning-soft p-4 text-xs text-warning-foreground">
+        <div className="mt-4 flex gap-2 rounded-2xl border border-notice-border bg-notice-soft p-4 text-xs text-notice-foreground">
           <Info className="mt-0.5 size-4 shrink-0" />
           <p>
             This is a purchase of Shekk credits, not a deposit. Credits are non-refundable and non-withdrawable —
