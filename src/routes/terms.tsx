@@ -28,8 +28,9 @@ const SECTIONS: { h: string; p: string[] }[] = [
   {
     h: "2. Buying credits",
     p: [
-      "Credits are purchased in US dollars via Apple Pay or another supported payment method. Before you confirm any purchase, the app displays: the amount paid, the mid-market reference rate used, the fee/spread applied by ShekelPay, and the exact credit amount you will receive.",
-      "The mid-market reference rate shown is indicative and refreshed periodically. The effective rate after the fee is displayed on the same screen.",
+      "Credits are purchased in US dollars via Apple Pay or another supported payment method. Before you confirm any purchase, the app displays the amount paid, the ShekelPay rate applied, and the exact credit amount you will receive.",
+      "ShekelPay sets its own conversion rate. That rate includes ShekelPay's margin and will differ from interbank or mid-market rates; no separate fee is charged on top of it. Rates are refreshed periodically and the rate shown at confirmation is the rate applied.",
+
     ],
   },
   {
