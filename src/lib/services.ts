@@ -172,8 +172,11 @@ export function findService(id: string) {
 }
 
 /** Direct-open link for a service: partner apps open straight into their flow. */
-export function serviceLinkProps(service: Service) {
+export function serviceLinkProps(service: Service): {
+  to: string;
+  params?: Record<string, string>;
+} {
   return service.to
-    ? ({ to: service.to } as const)
-    : ({ to: "/explore/service/$id", params: { id: service.id } } as const);
+    ? { to: service.to }
+    : { to: "/explore/service/$id", params: { id: service.id } };
 }
