@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowUpRight, IdCard, Users, ChevronRight, QrCode, Grid3X3, Receipt } from "lucide-react";
+import { ArrowUpRight, IdCard, Users, QrCode, Receipt } from "lucide-react";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { QRCode } from "@/components/QRCode";
@@ -99,16 +99,6 @@ function HomeScreen() {
           </div>
         </section>
 
-
-        <Link
-          to="/explore"
-          className="tap flex items-center justify-between rounded-2xl bg-muted px-4 py-3 text-sm font-semibold"
-        >
-          <span className="flex items-center gap-2">
-            <Grid3X3 className="size-4 text-primary" /> All apps &amp; guides
-          </span>
-          <ChevronRight className="size-4 text-muted-foreground" />
-        </Link>
 
         <p className="text-center text-[11px] text-muted-foreground">
           Tap a logo and it opens inside Shekk. You never pay the partner directly — we do, and the shekel-token
