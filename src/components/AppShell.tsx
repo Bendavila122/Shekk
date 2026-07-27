@@ -1,8 +1,9 @@
 import { Link, useRouterState, useRouter, useCanGoBack, useNavigate } from "@tanstack/react-router";
-import { type ReactNode } from "react";
-import { Wallet, Compass, Receipt, Users, User, ChevronLeft, Plus, Info } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Wallet, Compass, Receipt, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { ils, usdRef } from "@/lib/mock";
+
 
 
 const TABS = [
@@ -41,7 +42,9 @@ export function FocusScreen({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen justify-center bg-ink/95 px-0 py-0 sm:px-4 sm:py-8 lg:bg-ink/[0.03] lg:px-8 lg:py-12">
       <div className="relative flex min-h-screen w-full max-w-[430px] flex-col overflow-hidden bg-background shadow-lift sm:min-h-[860px] sm:rounded-[2.5rem] sm:border-8 sm:border-ink lg:min-h-0 lg:max-w-2xl lg:rounded-3xl lg:border lg:border-border lg:shadow-card">
         <div className="flex-1 pb-32 lg:pb-6">{children}</div>
+        <QuickMenu />
         <MobileNav />
+
       </div>
     </div>
   );
@@ -113,13 +116,69 @@ export function MobileNav() {
   );
 }
 
+/** Top-right quick menu (mobile): balance, top up, Me, Settings, Help. */
+export function QuickMenu() {
+  const [open, setOpen] = useState(false);
+  const { state } = useApp();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
+  return (
+    <div className="lg:hidden">
+      <button
+        type="button"
+        aria-label={open ? "Close quick menu" : "Open quick menu"}
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className="tap fixed right-3 top-3 z-50 rounded-full border border-border bg-card p-2.5 text-foreground shadow-card"
+      >
+        {open ? <X className="size-5" /> : <Menu className="size-5" />}
+      </button>
+
+      {open ? (
+        <>
+          <button
+            type="button"
+            aria-label="Close quick menu"
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-40 cursor-default"
+          />
+          <div className="fixed right-3 top-16 z-50 w-60 overflow-hidden rounded-2xl border border-border bg-card shadow-lift">
+            <div className="border-b border-border bg-ink px-4 py-3 text-ink-foreground">
+              <p className="text-[10px] uppercase tracking-widest opacity-60">Token balance</p>
+              <p className="font-display text-xl font-bold leading-tight">{ils(state.balance)}</p>
+              <p className="text-[11px] opacity-60">≈ {usdRef(state.balance)} reference</p>
+            </div>
+            <Link
+              to="/topup"
+              className="tap flex items-center gap-2 border-b border-border px-4 py-3 text-sm font-bold text-primary"
+            >
+              <Plus className="size-4" strokeWidth={3} /> Top up
+            </Link>
+            <Link to="/me" className="tap flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <User className="size-4 text-muted-foreground" /> Me
+            </Link>
+            <Link to="/me" className="tap flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <Settings className="size-4 text-muted-foreground" /> Settings
+            </Link>
+            <Link to="/help" className="tap flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <LifeBuoy className="size-4 text-muted-foreground" /> Help
+            </Link>
+          </div>
+        </>
+      ) : null}
+    </div>
+  );
+}
 
 function useActive() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 }
+
 
 /** Token balance + top up, shown inside the navigation. */
 function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
@@ -175,7 +234,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="lg:flex lg:min-w-0 lg:flex-1 lg:justify-center lg:px-8 lg:py-8">
         <div className="lg:w-full lg:max-w-3xl lg:overflow-hidden lg:rounded-3xl lg:border lg:border-border lg:bg-background lg:shadow-card">
           <PhoneFrame wide>
+            <QuickMenu />
             <MobileNav />
+
             <div className="flex-1 pb-32 lg:pb-6">{children}</div>
           </PhoneFrame>
 
