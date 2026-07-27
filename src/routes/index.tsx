@@ -1,22 +1,24 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowUpRight, Plus, ScanLine, IdCard } from "lucide-react";
+import { ArrowUpRight, Plus, IdCard, Users, ChevronRight, QrCode } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { QRCode } from "@/components/QRCode";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { ils, usdRef } from "@/lib/mock";
+import { FEATURED_SERVICES } from "@/lib/services";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Pay · ShekelPay" },
+      { title: "Wallet · ShekelPay" },
       {
         name: "description",
-        content: "Show your pay code, check your shekel credits and see every spend as a clean statement line.",
+        content:
+          "Your shekel tokens, the Israeli apps you actually use — Wolt, Gett, Rav-Kav, Go-To, Israel Railways — and one-tap transfers to friends.",
       },
-      { property: "og:title", content: "Pay · ShekelPay" },
-      { property: "og:description", content: "One code to pay anywhere your program goes." },
+      { property: "og:title", content: "Wallet · ShekelPay" },
+      { property: "og:description", content: "Tokens in, apps inside, friends paid in a tap." },
     ],
   }),
   component: PayTab,
@@ -25,7 +27,7 @@ export const Route = createFileRoute("/")({
 function PayTab() {
   const ready = useOnboardedGate();
   const { state } = useApp();
-  const [mode, setMode] = useState<"show" | "scan">("show");
+  const [showCode, setShowCode] = useState(false);
 
   if (!ready) {
     return (
@@ -40,7 +42,7 @@ function PayTab() {
       <div className="bg-ink px-5 pb-10 pt-6 text-ink-foreground">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs uppercase tracking-widest opacity-60">Credit balance</p>
+            <p className="text-xs uppercase tracking-widest opacity-60">Token balance</p>
             <p className="font-display text-4xl font-bold">{ils(state.balance)}</p>
             <p className="text-xs opacity-60">≈ {usdRef(state.balance)} reference value</p>
           </div>
@@ -53,39 +55,77 @@ function PayTab() {
         </div>
       </div>
 
-      <div className="-mt-6">
-        <div className="mx-4 rounded-3xl border border-border bg-card p-4 shadow-card">
-          <div className="mb-4 grid grid-cols-2 gap-1 rounded-2xl bg-muted p-1">
-            {(["show", "scan"] as const).map((m) => (
-              <button
-                key={m}
-                onClick={() => setMode(m)}
-                className={`tap rounded-xl py-2 text-sm font-semibold ${
-                  mode === m ? "bg-card text-foreground shadow-card" : "text-muted-foreground"
-                }`}
+      <div className="-mt-6 px-4">
+        <div className="rounded-3xl border border-border bg-card p-4 shadow-card">
+          <div className="mb-3 flex items-baseline justify-between">
+            <h2 className="text-base font-semibold">Your apps</h2>
+            <Link to="/explore" className="text-xs font-semibold text-primary">
+              All services <ChevronRight className="inline size-3" />
+            </Link>
+          </div>
+          <p className="mb-3 text-xs text-muted-foreground">
+            The Israeli apps you already use, running inside ShekelPay and paid with your tokens.
+          </p>
+          <div className="grid grid-cols-5 gap-2">
+            {FEATURED_SERVICES.map((s) => (
+              <Link
+                key={s.id}
+                to="/explore/service/$id"
+                params={{ id: s.id }}
+                className="tap flex flex-col items-center gap-1.5 rounded-2xl bg-muted px-1 py-3"
               >
-                {m === "show" ? "Show my code" : "Scan to pay"}
-              </button>
+                <span className="text-2xl leading-none">{s.emoji}</span>
+                <span className="text-center text-[10px] font-semibold leading-tight">{s.name}</span>
+              </Link>
             ))}
           </div>
-
-          {mode === "show" ? (
-            <div className="flex flex-col items-center">
-              <QRCode value={`shekelpay:${state.name || "student"}:${state.cohort}`} className="h-64 w-64" />
-              <p className="mt-3 text-sm font-semibold">{state.name || "Your"} · pay code</p>
-              <p className="text-xs text-muted-foreground">Merchant scans this. No cash, no cards, no shuk math.</p>
-            </div>
-          ) : (
-            <div className="flex h-64 flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-border bg-muted/50">
-              <ScanLine className="size-10 text-primary" />
-              <p className="text-sm font-semibold">Camera would open here</p>
-              <p className="max-w-[16rem] text-center text-xs text-muted-foreground">
-                Point at a merchant code to pay from credits. Prototype — scanning is mocked.
-              </p>
-            </div>
-          )}
         </div>
       </div>
+
+      <section className="px-4 pt-4">
+        <Card className="p-0">
+          <div className="flex items-center gap-3 p-4">
+            <span className="flex size-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
+              <Users className="size-5" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold">Paying people</p>
+              <p className="text-xs text-muted-foreground">
+                Send tokens to friends on ShekelPay or split a bill with your cohort.
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-2 border-t border-border p-3">
+            <Link
+              to="/social"
+              className="tap rounded-xl bg-primary px-2 py-2.5 text-center text-xs font-semibold text-primary-foreground"
+            >
+              Send tokens
+            </Link>
+            <Link
+              to="/social"
+              className="tap rounded-xl bg-muted px-2 py-2.5 text-center text-xs font-semibold"
+            >
+              Split a bill
+            </Link>
+            <button
+              onClick={() => setShowCode((v) => !v)}
+              className="tap flex items-center justify-center gap-1 rounded-xl bg-muted px-2 py-2.5 text-xs font-semibold"
+            >
+              <QrCode className="size-4" /> My code
+            </button>
+          </div>
+          {showCode ? (
+            <div className="flex flex-col items-center border-t border-border p-4">
+              <QRCode value={`shekelpay:${state.name || "student"}:${state.cohort}`} className="h-36 w-36" />
+              <p className="mt-2 text-xs font-semibold">{state.name || "Your"} · friend code</p>
+              <p className="text-center text-[11px] text-muted-foreground">
+                A friend scans this to send you tokens. It isn't a merchant payment code.
+              </p>
+            </div>
+          ) : null}
+        </Card>
+      </section>
 
       <div className="mt-5">
         <ReverifyBanner />
@@ -101,7 +141,7 @@ function PayTab() {
         <Card className="divide-y divide-border p-0">
           {state.txns.length === 0 ? (
             <p className="p-4 text-sm text-muted-foreground">
-              Nothing yet — top up credits and your first spend shows here.
+              Nothing yet — top up tokens and your first spend shows here.
             </p>
           ) : (
             state.txns.slice(0, 8).map((t) => (
@@ -130,8 +170,8 @@ function PayTab() {
           className="tap mt-4 flex items-center gap-2 rounded-2xl bg-primary-soft px-4 py-3 text-xs text-foreground"
         >
           <IdCard className="size-4 shrink-0 text-primary" />
-          Credits are shekel-denominated, non-refundable and non-withdrawable — spendable in-app and with partner
-          merchants. Read the terms.
+          Tokens are shekel-denominated, non-refundable and non-withdrawable — spendable inside the partner apps in
+          ShekelPay and with other ShekelPay users. Read the terms.
         </Link>
       </section>
     </AppShell>
