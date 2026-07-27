@@ -135,7 +135,7 @@ export function QuickMenu() {
             onClick={() => setOpen(false)}
             className="fixed inset-0 z-40 cursor-default"
           />
-          <div className="fixed right-3 top-16 z-50 w-60 overflow-hidden rounded-2xl border border-border bg-card shadow-lift">
+          <div className="fixed left-1/2 top-16 z-50 ml-[-15px] w-60 max-w-[calc(100vw-1.5rem)] translate-x-[calc(215px-100%)] overflow-hidden rounded-2xl border border-border bg-card shadow-lift">
             <div className="border-b border-border bg-ink px-4 py-3 text-ink-foreground">
               <p className="text-[10px] uppercase tracking-widest opacity-60">Token balance</p>
               <p className="font-display text-xl font-bold leading-tight">{ils(state.balance)}</p>
