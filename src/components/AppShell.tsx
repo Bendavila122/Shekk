@@ -267,13 +267,13 @@ export function ReverifyBanner() {
   return (
     <Link
       to="/reverify"
-      className="tap mx-4 mb-3 flex items-center justify-between gap-3 rounded-2xl bg-warning-soft px-4 py-3 text-warning-foreground"
+      className="tap mx-4 mb-3 flex items-center justify-between gap-3 rounded-2xl border border-notice-border bg-notice-soft px-4 py-3 text-notice-foreground"
     >
       <div>
         <p className="text-sm font-semibold">{daysLeft} days left to re-verify</p>
         <p className="text-xs opacity-80">Annual ID check — keeps your credits spendable.</p>
       </div>
-      <span className="rounded-full bg-warning px-3 py-1.5 text-xs font-semibold text-warning-foreground">
+      <span className="rounded-full bg-notice px-3 py-1.5 text-xs font-semibold text-notice-foreground">
         Re-verify
       </span>
     </Link>
