@@ -22,7 +22,7 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "One home screen for every Israeli app a gap-year student needs." },
     ],
   }),
-  component: HomeScreen;
+  component: HomeScreen,
 });
 
 function AppIcon({ service }: { service: Service }) {
