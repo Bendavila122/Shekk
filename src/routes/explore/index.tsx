@@ -101,17 +101,7 @@ function Explore() {
         </section>
       ) : (
         <section className="space-y-8 px-4 py-6">
-          {/* The definitive five, oversized */}
-          <div>
-            <h2 className="mb-4 px-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              The five that matter
-            </h2>
-            <div className="grid grid-cols-5 gap-x-3 gap-y-5">
-              {FEATURED_SERVICES.map((s) => (
-                <AppTile key={s.id} service={s} size={62} />
-              ))}
-            </div>
-          </div>
+
 
           {/* Category folders */}
           {SERVICE_CATEGORIES.map((cat) => (
