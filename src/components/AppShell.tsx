@@ -234,7 +234,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="lg:flex lg:min-w-0 lg:flex-1 lg:justify-center lg:px-8 lg:py-8">
         <div className="lg:w-full lg:max-w-3xl lg:overflow-hidden lg:rounded-3xl lg:border lg:border-border lg:bg-background lg:shadow-card">
           <PhoneFrame wide>
+            <QuickMenu />
             <MobileNav />
+
             <div className="flex-1 pb-32 lg:pb-6">{children}</div>
           </PhoneFrame>
 
