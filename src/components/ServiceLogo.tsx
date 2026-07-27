@@ -51,10 +51,10 @@ export function ServiceLogo({
           loading="lazy"
           decoding="async"
           onError={() => setFailed(true)}
-          className="h-full w-full object-contain"
-          style={{ padding: Math.max(2, Math.round(size * 0.14)) }}
+          className="h-full w-full scale-[1.02] object-cover"
         />
       ) : (
+
         <span
           aria-hidden
           className="grid h-full w-full place-items-center bg-primary-soft leading-none"
