@@ -53,7 +53,9 @@ function AppIcon({ service }: { service: Service }) {
 function HomeScreen() {
   const ready = useOnboardedGate();
   const { state } = useApp();
+  const recents = useRecentServices();
   const [showCode, setShowCode] = useState(false);
+
 
   if (!ready) {
     return (
