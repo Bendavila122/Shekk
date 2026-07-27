@@ -23,7 +23,7 @@ export function GuideStrip({
       to="/guides/$id"
       params={{ id: guide.id }}
       style={{ animationDelay: `${Math.min(index, 6) * 45}ms` }}
-      className={`tap-flat animate-fade-in flex flex-col p-1 text-left ${
+      className={`tap-flat animate-fade-in flex flex-col overflow-hidden p-1 text-left ${
         wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"
       } ${className}`}
     >
@@ -37,7 +37,7 @@ export function GuideStrip({
       <div className="mt-2 flex min-h-0 flex-1 flex-col justify-between">
         <div className="min-h-0">
           <h3 className="line-clamp-2 text-[15px] font-bold leading-[1.2]">{guide.title}</h3>
-          <p className={`mt-1 text-[11px] leading-snug text-muted-foreground ${wide ? "line-clamp-2" : "line-clamp-3"}`}>
+          <p className={`mt-1 text-[11px] leading-snug text-muted-foreground ${wide ? "line-clamp-2" : "line-clamp-2"}`}>
             {guide.blurb}
           </p>
         </div>
