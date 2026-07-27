@@ -20,7 +20,7 @@ function Skeleton() {
 
 type Ctx = ReturnType<typeof useUserContext>;
 
-/** iPhone-style tile: one glance value, tap for the rest. */
+/* iPhone-style tile: fixed frames, one type scale, one glance value. */
 function Tile({
   def,
   ctx,
@@ -39,6 +39,11 @@ function Tile({
   const content = def.build(ctx);
   const headline = def.id === "wallet" ? ils(balance) : content.headline;
   const snap = content.rows[0];
+  const footer = wide
+    ? content.sub ?? (snap ? `${snap.label}${snap.value ? ` · ${snap.value}` : ""}` : "")
+    : snap
+      ? `${snap.label}${snap.value ? ` · ${snap.value}` : ""}`
+      : (content.sub ?? "");
 
   return (
     <button
@@ -48,31 +53,27 @@ function Tile({
         onOpen();
       }}
       style={{ animationDelay: `${Math.min(index, 6) * 45}ms` }}
-      className={`${def.gradient} tap-icon animate-fade-in flex flex-col justify-between rounded-[1.5rem] border border-border p-4 text-left shadow-card ${
-        wide ? "col-span-2 min-h-28" : "aspect-square"
+      className={`${def.gradient} widget-tile tap-icon animate-fade-in flex flex-col gap-2 p-3 text-left ${
+        wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"
       }`}
     >
-      <div className="flex items-center gap-2">
-        <span className="text-base leading-none">{def.emoji}</span>
-        <span className="truncate text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-          {def.title}
-        </span>
+      {/* Header frame */}
+      <div className="widget-frame relative z-[1] flex items-center gap-1.5 px-2 py-1.5">
+        <span className="text-[13px] leading-none">{def.emoji}</span>
+        <span className="truncate text-[10px] font-semibold uppercase tracking-[0.14em]">{def.title}</span>
       </div>
 
-      <div className="min-w-0">
-        <p className={`truncate font-bold leading-tight ${wide ? "text-2xl" : "text-xl"}`}>{headline}</p>
-        {wide ? (
-          <p className="mt-0.5 truncate text-xs text-muted-foreground">{content.sub ?? snap?.label}</p>
-        ) : snap ? (
-          <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
-            {snap.icon} {snap.label}
-            {snap.value ? ` · ${snap.value}` : ""}
-          </p>
+      {/* Body frame — one type scale across every widget */}
+      <div className="widget-frame relative z-[1] flex min-h-0 flex-1 flex-col justify-between px-2.5 py-2">
+        <p className="line-clamp-2 text-[15px] font-bold leading-[1.2]">{headline}</p>
+        {footer ? (
+          <p className="mt-1 line-clamp-2 text-[11px] leading-snug opacity-80">{footer}</p>
         ) : null}
       </div>
     </button>
   );
 }
+
 
 function DetailSheet({
   def,
@@ -95,28 +96,35 @@ function DetailSheet({
       <button className="absolute inset-0 bg-foreground/40" aria-label="Close" onClick={onClose} />
       <div className="animate-fade-in relative w-full max-w-md rounded-t-[2rem] border border-border bg-card p-6 pb-8 shadow-card sm:rounded-[2rem]">
         <header className="flex items-start gap-3">
-          <span className={`${def.gradient} flex size-12 items-center justify-center rounded-2xl text-2xl`}>{def.emoji}</span>
+          <span className={`${def.gradient} widget-tile flex size-12 shrink-0 items-center justify-center rounded-2xl text-2xl`}>
+            {def.emoji}
+          </span>
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">{def.title}</p>
-            <p className="truncate text-xl font-bold leading-tight">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{def.title}</p>
+            <p className="text-[17px] font-bold leading-tight">
               {def.id === "wallet" ? ils(balance) : content.headline}
             </p>
-            {content.sub ? <p className="mt-0.5 text-xs text-muted-foreground">{content.sub}</p> : null}
+            {content.sub ? <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">{content.sub}</p> : null}
           </div>
           <button onClick={onClose} className="tap rounded-full bg-muted p-2" aria-label="Close">
             <X className="size-4" />
           </button>
         </header>
 
-        <ul className="mt-5 space-y-3">
+
+        <ul className="mt-5 space-y-2">
           {content.rows.map((r, i) => (
-            <li key={`${r.label}-${i}`} className="flex items-center gap-3 text-sm">
+            <li
+              key={`${r.label}-${i}`}
+              className="flex items-center gap-3 rounded-xl bg-muted/60 px-3 py-2.5 text-[13px] leading-snug"
+            >
               <span className="w-5 shrink-0 text-center">{r.icon}</span>
               <span className="min-w-0 flex-1">{r.label}</span>
-              {r.value ? <span className="shrink-0 text-xs font-semibold text-muted-foreground">{r.value}</span> : null}
+              {r.value ? <span className="shrink-0 text-[13px] font-semibold text-muted-foreground">{r.value}</span> : null}
             </li>
           ))}
         </ul>
+
 
         {def.id === "today" ? (
           <div className="mt-5">
