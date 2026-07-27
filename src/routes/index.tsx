@@ -89,7 +89,7 @@ function HomeScreen() {
           <div className="mb-3 flex items-baseline justify-between gap-3">
             <div>
               <h2 className="text-sm font-semibold">Recently used</h2>
-              <p className="text-[11px] text-muted-foreground">The last five apps you opened.</p>
+              
             </div>
           </div>
           <div className="grid grid-cols-5 gap-x-2 gap-y-5">
