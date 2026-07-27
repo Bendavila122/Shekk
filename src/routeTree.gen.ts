@@ -15,6 +15,7 @@ import { Route as SocialRouteImport } from './routes/social'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ReverifyRouteImport } from './routes/reverify'
 import { Route as MeRouteImport } from './routes/me'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as IndexRouteImport } from './routes/index'
@@ -29,8 +30,11 @@ import { Route as ExploreFoodRouteImport } from './routes/explore/food'
 import { Route as ExploreEventsRouteImport } from './routes/explore/events'
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
 import { Route as ExploreAdminRouteImport } from './routes/explore/admin'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
 import { Route as ExploreCategoryIdRouteImport } from './routes/explore/category.$id'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
 const TopupRoute = TopupRouteImport.update({
   id: '/topup',
@@ -60,6 +64,11 @@ const ReverifyRoute = ReverifyRouteImport.update({
 const MeRoute = MeRouteImport.update({
   id: '/me',
   path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HelpRoute = HelpRouteImport.update({
@@ -132,6 +141,18 @@ const ExploreAdminRoute = ExploreAdminRouteImport.update({
   path: '/explore/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
   id: '/explore/service/$id',
   path: '/explore/service/$id',
@@ -142,17 +163,26 @@ const ExploreCategoryIdRoute = ExploreCategoryIdRouteImport.update({
   path: '/explore/category/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/activity': typeof ActivityRoute
   '/help': typeof HelpRoute
+  '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/reverify': typeof ReverifyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
@@ -164,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore/': typeof ExploreIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
 }
@@ -171,12 +202,15 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activity': typeof ActivityRoute
   '/help': typeof HelpRoute
+  '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/reverify': typeof ReverifyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
@@ -188,6 +222,7 @@ export interface FileRoutesByTo {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore': typeof ExploreIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
 }
@@ -196,12 +231,15 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/activity': typeof ActivityRoute
   '/help': typeof HelpRoute
+  '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/reverify': typeof ReverifyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
@@ -213,6 +251,7 @@ export interface FileRoutesById {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore/': typeof ExploreIndexRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
 }
@@ -222,12 +261,15 @@ export interface FileRouteTypes {
     | '/'
     | '/activity'
     | '/help'
+    | '/mcp'
     | '/me'
     | '/reverify'
     | '/sitemap.xml'
     | '/social'
     | '/terms'
     | '/topup'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/explore/admin'
     | '/explore/community'
     | '/explore/events'
@@ -239,6 +281,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/explore/'
+    | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/service/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -246,12 +289,15 @@ export interface FileRouteTypes {
     | '/'
     | '/activity'
     | '/help'
+    | '/mcp'
     | '/me'
     | '/reverify'
     | '/sitemap.xml'
     | '/social'
     | '/terms'
     | '/topup'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/explore/admin'
     | '/explore/community'
     | '/explore/events'
@@ -263,6 +309,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/explore'
+    | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/service/$id'
   id:
@@ -270,12 +317,15 @@ export interface FileRouteTypes {
     | '/'
     | '/activity'
     | '/help'
+    | '/mcp'
     | '/me'
     | '/reverify'
     | '/sitemap.xml'
     | '/social'
     | '/terms'
     | '/topup'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/explore/admin'
     | '/explore/community'
     | '/explore/events'
@@ -287,6 +337,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/explore/'
+    | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/service/$id'
   fileRoutesById: FileRoutesById
@@ -295,12 +346,15 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ActivityRoute: typeof ActivityRoute
   HelpRoute: typeof HelpRoute
+  McpRoute: typeof McpRoute
   MeRoute: typeof MeRoute
   ReverifyRoute: typeof ReverifyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SocialRoute: typeof SocialRoute
   TermsRoute: typeof TermsRoute
   TopupRoute: typeof TopupRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ExploreAdminRoute: typeof ExploreAdminRoute
   ExploreCommunityRoute: typeof ExploreCommunityRoute
   ExploreEventsRoute: typeof ExploreEventsRoute
@@ -312,6 +366,7 @@ export interface RootRouteChildren {
   ExploreShopsRoute: typeof ExploreShopsRoute
   ExploreTransitRoute: typeof ExploreTransitRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
 }
@@ -358,6 +413,13 @@ declare module '@tanstack/react-router' {
       path: '/me'
       fullPath: '/me'
       preLoaderRoute: typeof MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/help': {
@@ -458,6 +520,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/service/$id': {
       id: '/explore/service/$id'
       path: '/explore/service/$id'
@@ -472,6 +548,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreCategoryIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -479,12 +562,16 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivityRoute: ActivityRoute,
   HelpRoute: HelpRoute,
+  McpRoute: McpRoute,
   MeRoute: MeRoute,
   ReverifyRoute: ReverifyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SocialRoute: SocialRoute,
   TermsRoute: TermsRoute,
   TopupRoute: TopupRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   ExploreAdminRoute: ExploreAdminRoute,
   ExploreCommunityRoute: ExploreCommunityRoute,
   ExploreEventsRoute: ExploreEventsRoute,
@@ -496,9 +583,20 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreShopsRoute: ExploreShopsRoute,
   ExploreTransitRoute: ExploreTransitRoute,
   ExploreIndexRoute: ExploreIndexRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ExploreCategoryIdRoute: ExploreCategoryIdRoute,
   ExploreServiceIdRoute: ExploreServiceIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
