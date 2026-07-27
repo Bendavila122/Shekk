@@ -57,7 +57,7 @@ function useActive() {
 function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
   const { state } = useApp();
   return (
-    <div className="mb-4 rounded-2xl bg-ink px-4 py-3 text-ink-foreground">
+    <div className="mt-auto rounded-2xl bg-ink px-4 py-3 text-ink-foreground">
       <p className="text-[10px] uppercase tracking-widest opacity-60">Token balance</p>
       <p className="font-display text-2xl font-bold leading-tight">{ils(state.balance)}</p>
       <p className="text-[11px] opacity-60">≈ {usdRef(state.balance)} reference</p>
@@ -86,7 +86,6 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:gap-1 lg:border-r lg:border-border lg:bg-card lg:px-4 lg:py-8">
         <p className="mb-4 px-3 font-display text-xl font-bold">ShekelPay</p>
-        <NavBalance />
 
         {TABS.map(({ to, label, Icon }) => {
           const active = isActive(to);
@@ -103,6 +102,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </Link>
           );
         })}
+        <NavBalance />
       </aside>
 
       <div className="lg:flex lg:min-w-0 lg:flex-1 lg:justify-center lg:px-8 lg:py-8">
@@ -148,8 +148,6 @@ export function AppShell({ children }: { children: ReactNode }) {
                     <X className="size-4" />
                   </button>
                 </div>
-                <NavBalance onNavigate={() => setMenuOpen(false)} />
-
                 {TABS.map(({ to, label, Icon }) => {
                   const active = isActive(to);
                   return (
@@ -166,6 +164,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     </Link>
                   );
                 })}
+                <NavBalance onNavigate={() => setMenuOpen(false)} />
               </nav>
             </div>
           </PhoneFrame>
