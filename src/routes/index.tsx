@@ -167,15 +167,6 @@ function HomeScreen() {
           </span>
           <ArrowUpRight className="size-4 text-muted-foreground" />
         </Link>
-
-        <Link
-          to="/terms"
-          className="tap mt-4 flex items-center gap-2 rounded-2xl border border-notice-border bg-notice-soft px-4 py-3 text-xs text-notice-foreground"
-        >
-          <IdCard className="size-4 shrink-0 text-notice" />
-          Tokens are shekel-denominated, non-refundable and non-withdrawable — spendable inside the partner apps in
-          Shekk and with other Shekk users. Read the terms.
-        </Link>
       </section>
 
     </AppShell>
