@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowUpRight, Users, QrCode, Receipt } from "lucide-react";
+import { Users, QrCode } from "lucide-react";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { QRCode } from "@/components/QRCode";
@@ -156,18 +156,7 @@ function HomeScreen() {
         <ReverifyBanner />
       </div>
 
-      {/* Activity lives in its own tab */}
-      <section className="px-4 pb-8 pt-5">
-        <Link
-          to="/activity"
-          className="tap flex items-center justify-between rounded-2xl bg-muted px-4 py-3 text-sm font-semibold"
-        >
-          <span className="flex items-center gap-2">
-            <Receipt className="size-4 text-primary" /> Activity &amp; history
-          </span>
-          <ArrowUpRight className="size-4 text-muted-foreground" />
-        </Link>
-      </section>
+      <div className="pb-8" />
 
     </AppShell>
   );
