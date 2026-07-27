@@ -93,7 +93,7 @@ function Me() {
         <Card>
           <p className="text-xs uppercase tracking-wide text-muted-foreground">Credit balance</p>
           <p className="font-display text-3xl font-bold">{ils(state.balance)}</p>
-          <p className="text-xs text-muted-foreground">≈ {refIn(state.settings.payCurrency, state.balance)} reference · not withdrawable</p>
+          <p className="text-xs text-muted-foreground">≈ {refIn(state.settings.payCurrency, state.balance)} reference</p>
         </Card>
 
         <Card className="p-0">
@@ -107,12 +107,12 @@ function Me() {
         <Card className="space-y-2">
           <h2 className="text-base font-semibold">How your credits work</h2>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>• You buy credits — it's a purchase, not a deposit. We're not a bank and we don't hold your money.</li>
-            <li>• Credits are in shekels, non-refundable and non-withdrawable.</li>
+            <li>• You top up with Apple Pay and your balance lands in shekels, ready to spend.</li>
             <li>• Order through a partner app inside Shekk and <span className="font-medium text-foreground">we pay them</span> — your card is never charged at checkout.</li>
             <li>• We then deduct the Shekk equivalent of that order from your preloaded balance.</li>
             <li>• Every top up shows the Shekk rate and the exact credits you get before you confirm.</li>
             <li>• Re-verify your ID once a year to keep the account active.</li>
+            <li>• The full credit terms live in the <span className="font-medium text-foreground">Terms & Conditions</span>.</li>
           </ul>
 
           <Link to="/terms" className="inline-block pt-1 text-sm font-semibold text-primary">

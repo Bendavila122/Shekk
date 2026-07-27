@@ -22,7 +22,7 @@ export const Route = createFileRoute("/help")({
 const FAQ = [
   {
     q: "What exactly are Shekk credits?",
-    a: "Shekel-denominated app credits you buy with Apple Pay. They are non-refundable and non-withdrawable, and are spendable inside Shekk partner apps or with other Shekk users.",
+    a: "Your Shekk balance is held in shekels. You top up with Apple Pay and spend it inside Shekk partner apps or with other Shekk users. Full credit terms are in the Terms & Conditions.",
   },
   {
     q: "How is the rate calculated?",

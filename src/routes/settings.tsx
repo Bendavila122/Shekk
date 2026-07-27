@@ -84,8 +84,8 @@ function SettingsPage() {
               ))}
             </div>
             <p className="mt-3 text-xs text-muted-foreground">
-              Balance reference: {refIn(s.payCurrency, state.balance)} — reference only, credits are non-refundable and
-              non-withdrawable.
+              Balance reference: {refIn(s.payCurrency, state.balance)} — shown for reference; your balance stays in
+              shekels.
             </p>
           </div>
 
@@ -346,7 +346,7 @@ function SettingsPage() {
         </Section>
 
         <p className="px-1 pb-2 text-center text-[11px] text-muted-foreground">
-          Shekk credits are a prepaid purchase, not a bank deposit. Non-refundable and non-withdrawable.
+          Shekk balances are held in shekels. See the Terms & Conditions for the full credit terms.
         </p>
       </div>
     </AppShell>
