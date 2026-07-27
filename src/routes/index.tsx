@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowUpRight, Plus, IdCard, Users, ChevronRight, QrCode, Search, Grid3X3 } from "lucide-react";
+import { ArrowUpRight, Plus, IdCard, Users, ChevronRight, QrCode, Search, Grid3X3, Receipt } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { QRCode } from "@/components/QRCode";
 import { useApp } from "@/lib/store";

@@ -1,11 +1,12 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Wallet, Compass, Users, User, ChevronLeft } from "lucide-react";
+import { Wallet, Compass, Receipt, Users, User, ChevronLeft } from "lucide-react";
 import { useApp } from "@/lib/store";
 
 const TABS = [
   { to: "/", label: "Home", Icon: Wallet },
   { to: "/explore", label: "Explore", Icon: Compass },
+  { to: "/activity", label: "Activity", Icon: Receipt },
   { to: "/social", label: "Social", Icon: Users },
   { to: "/me", label: "Me", Icon: User },
 ];
