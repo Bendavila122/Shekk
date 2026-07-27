@@ -124,7 +124,10 @@ export type UserContext = {
   isShabbat: boolean;
   isMotzash: boolean;
   jewishDay: JewishDay | null;
+  sedra: string;
+  hebrewDate: string;
   city: string;
+  weatherCity: string;
   zmanim: { candle: string; havdalah: string; sunrise: string; sunset: string };
   weather: {
     temp: number;
@@ -144,10 +147,12 @@ export type UserContext = {
     pendingSplits: number;
     lastTransitSpend: number;
     ravKavLow: boolean;
-    cashback: number;
+    requests: { from: string; reason: string; amount: number }[];
+    requestedTotal: number;
     seed: string;
   };
 };
+
 
 function timeOfDay(hour: number): TimeOfDay {
   if (hour < 6) return "early";
