@@ -54,7 +54,7 @@ function Tile({
         onOpen();
       }}
       style={{ animationDelay: `${Math.min(index, 6) * 45}ms` }}
-      className={`${def.gradient} widget-tile tap-icon animate-fade-in flex flex-col gap-2 p-3 text-left ${
+      className={`${def.gradientFor?.(ctx) ?? def.gradient} widget-tile tap-icon animate-fade-in flex flex-col gap-2 p-3 text-left ${
         wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"
       }`}
     >
@@ -97,7 +97,7 @@ function DetailSheet({
       <button className="absolute inset-0 bg-foreground/40" aria-label="Close" onClick={onClose} />
       <div className="animate-fade-in relative w-full max-w-md rounded-t-[2rem] border border-border bg-card p-6 pb-8 shadow-card sm:rounded-[2rem]">
         <header className="flex items-start gap-3">
-          <span className={`${def.gradient} widget-tile flex size-12 shrink-0 items-center justify-center rounded-2xl text-2xl`}>
+          <span className={`${def.gradientFor?.(ctx) ?? def.gradient} widget-tile flex size-12 shrink-0 items-center justify-center rounded-2xl text-2xl`}>
             {def.emoji}
           </span>
           <div className="min-w-0 flex-1">
