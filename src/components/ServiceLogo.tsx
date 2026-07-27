@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Service } from "@/lib/services";
 
 const LOGO_TOKEN = import.meta.env.VITE_LOVABLE_CONNECTOR_LOGO_DEV_API_KEY as
@@ -33,7 +33,14 @@ export function ServiceLogo({
   className?: string;
 }) {
   const [failed, setFailed] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
   const src = service.domain && !failed ? logoUrl(service.domain, size) : null;
+
+  // An image that errored before hydration never fires onError — catch it here.
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth === 0) setFailed(true);
+  }, [src]);
 
   return (
     <span
@@ -46,15 +53,17 @@ export function ServiceLogo({
     >
       {src ? (
         <img
+          ref={imgRef}
           src={src}
-          alt={`${service.name} app icon`}
+          alt=""
           loading="lazy"
           decoding="async"
           onError={() => setFailed(true)}
-          className="h-full w-full object-contain"
-          style={{ padding: Math.max(2, Math.round(size * 0.14)) }}
+          className="h-full w-full scale-[1.02] object-cover"
         />
+
       ) : (
+
         <span
           aria-hidden
           className="grid h-full w-full place-items-center bg-primary-soft leading-none"
