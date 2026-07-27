@@ -6,7 +6,8 @@ import { QRCode } from "@/components/QRCode";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { ils, usdRef } from "@/lib/mock";
-import { FEATURED_SERVICES } from "@/lib/services";
+import { FEATURED_SERVICES, serviceLinkProps } from "@/lib/services";
+import { ServiceLogo } from "@/components/ServiceLogo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -64,17 +65,16 @@ function PayTab() {
             </Link>
           </div>
           <p className="mb-3 text-xs text-muted-foreground">
-            The Israeli apps you already use, running inside ShekelPay. You never pay them directly — we do.
+            Tap a logo and it opens straight into that app, inside ShekelPay. You never pay them directly — we do.
           </p>
           <div className="grid grid-cols-5 gap-2">
             {FEATURED_SERVICES.map((s) => (
               <Link
                 key={s.id}
-                to="/explore/service/$id"
-                params={{ id: s.id }}
+                {...serviceLinkProps(s)}
                 className="tap flex flex-col items-center gap-1.5 rounded-2xl bg-muted px-1 py-3"
               >
-                <span className="text-2xl leading-none">{s.emoji}</span>
+                <ServiceLogo service={s} size={36} />
                 <span className="text-center text-[10px] font-semibold leading-tight">{s.name}</span>
               </Link>
             ))}
