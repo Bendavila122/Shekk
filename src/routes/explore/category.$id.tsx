@@ -43,7 +43,7 @@ function BigTile({ service }: { service: Service }) {
     <Link
       {...serviceLinkProps(service)}
       onClick={() => recordServiceUse(service.id)}
-      className="tap flex flex-col items-center gap-2.5"
+      className="tap-icon flex flex-col items-center gap-2.5"
     >
       <span className="relative">
         <ServiceLogo service={service} size={84} className="rounded-[1.6rem] shadow-card" />
@@ -64,7 +64,7 @@ function CategoryPage() {
   return (
     <AppShell>
       <header className="px-5 pb-2 pt-7">
-        <Link to="/explore" className="tap text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+        <Link to="/explore" className="tap-flat text-xs font-semibold uppercase tracking-widest text-muted-foreground">
           ← Explore
         </Link>
         <div className="mt-3 flex items-center gap-3">

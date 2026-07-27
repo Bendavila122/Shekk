@@ -88,7 +88,7 @@ export function MobileNav() {
             <Link
               key={to}
               to={to}
-              className={`tap flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1.5 text-[10px] font-semibold ${
+              className={`tap-flat flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1.5 text-[10px] font-semibold ${
                 active ? "text-primary" : "text-muted-foreground"
               }`}
             >
@@ -143,17 +143,17 @@ export function QuickMenu() {
             </div>
             <Link
               to="/topup"
-              className="tap flex items-center gap-2 border-b border-border px-4 py-3 text-sm font-bold text-primary"
+              className="tap-flat flex items-center gap-2 border-b border-border px-4 py-3 text-sm font-bold text-primary"
             >
               <Plus className="size-4" strokeWidth={3} /> Top up
             </Link>
-            <Link to="/me" className="tap flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+            <Link to="/me" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <User className="size-4 text-muted-foreground" /> Me
             </Link>
-            <Link to="/me" className="tap flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+            <Link to="/me" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <Settings className="size-4 text-muted-foreground" /> Settings
             </Link>
-            <Link to="/help" className="tap flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+            <Link to="/help" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <LifeBuoy className="size-4 text-muted-foreground" /> Help
             </Link>
           </div>
@@ -208,7 +208,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Link
               key={to}
               to={to}
-              className={`tap flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold ${
+              className={`tap-flat flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold ${
                 active ? "bg-primary-soft text-primary" : "text-muted-foreground hover:bg-muted"
               }`}
             >
