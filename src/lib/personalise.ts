@@ -102,6 +102,14 @@ function hebrewDate(d: Date): string {
   }
 }
 
+const CONDITIONS = [
+  { label: "Clear", emoji: "☀️" },
+  { label: "Mostly sunny", emoji: "🌤" },
+  { label: "Partly cloudy", emoji: "⛅️" },
+  { label: "Light rain", emoji: "🌦" },
+  { label: "Hamsin haze", emoji: "🌫" },
+] as const;
+
 
 /* ---------------------------------------------------------------- types */
 
