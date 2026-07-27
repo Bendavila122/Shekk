@@ -13,7 +13,7 @@ const TABS = [
 export function PhoneFrame({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen justify-center bg-ink/95 px-0 py-0 sm:px-4 sm:py-8">
-      <div className="relative flex w-full max-w-[430px] flex-col overflow-hidden bg-background shadow-lift sm:rounded-[2.5rem] sm:border-8 sm:border-ink">
+      <div className="relative flex min-h-screen w-full max-w-[430px] flex-col overflow-hidden bg-background shadow-lift sm:min-h-[860px] sm:rounded-[2.5rem] sm:border-8 sm:border-ink">
         {children}
       </div>
     </div>
@@ -24,7 +24,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
     <PhoneFrame>
-      <div className="min-h-[calc(100vh-0px)] pb-24 sm:min-h-[860px]">{children}</div>
+      <div className="flex-1 pb-6">{children}</div>
       <nav className="sticky bottom-0 z-20 grid grid-cols-4 border-t border-border bg-card/95 px-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 backdrop-blur">
         {TABS.map(({ to, label, Icon }) => {
           const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
