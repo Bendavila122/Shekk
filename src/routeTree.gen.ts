@@ -12,9 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TopupRouteImport } from './routes/topup'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SocialRouteImport } from './routes/social'
+import { Route as ReverifyRouteImport } from './routes/reverify'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ExploreIndexRouteImport } from './routes/explore/index'
 
 const TopupRoute = TopupRouteImport.update({
   id: '/topup',
@@ -29,6 +31,11 @@ const TermsRoute = TermsRouteImport.update({
 const SocialRoute = SocialRouteImport.update({
   id: '/social',
   path: '/social',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReverifyRoute = ReverifyRouteImport.update({
+  id: '/reverify',
+  path: '/reverify',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -46,47 +53,85 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreIndexRoute = ExploreIndexRouteImport.update({
+  id: '/explore/',
+  path: '/explore/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
+  '/reverify': typeof ReverifyRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/explore/': typeof ExploreIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
+  '/reverify': typeof ReverifyRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/explore': typeof ExploreIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
+  '/reverify': typeof ReverifyRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/explore/': typeof ExploreIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/me' | '/onboarding' | '/social' | '/terms' | '/topup'
+  fullPaths:
+    | '/'
+    | '/me'
+    | '/onboarding'
+    | '/reverify'
+    | '/social'
+    | '/terms'
+    | '/topup'
+    | '/explore/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/me' | '/onboarding' | '/social' | '/terms' | '/topup'
-  id: '__root__' | '/' | '/me' | '/onboarding' | '/social' | '/terms' | '/topup'
+  to:
+    | '/'
+    | '/me'
+    | '/onboarding'
+    | '/reverify'
+    | '/social'
+    | '/terms'
+    | '/topup'
+    | '/explore'
+  id:
+    | '__root__'
+    | '/'
+    | '/me'
+    | '/onboarding'
+    | '/reverify'
+    | '/social'
+    | '/terms'
+    | '/topup'
+    | '/explore/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MeRoute: typeof MeRoute
   OnboardingRoute: typeof OnboardingRoute
+  ReverifyRoute: typeof ReverifyRoute
   SocialRoute: typeof SocialRoute
   TermsRoute: typeof TermsRoute
   TopupRoute: typeof TopupRoute
+  ExploreIndexRoute: typeof ExploreIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -112,6 +157,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SocialRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reverify': {
+      id: '/reverify'
+      path: '/reverify'
+      fullPath: '/reverify'
+      preLoaderRoute: typeof ReverifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding': {
       id: '/onboarding'
       path: '/onboarding'
@@ -133,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/': {
+      id: '/explore/'
+      path: '/explore'
+      fullPath: '/explore/'
+      preLoaderRoute: typeof ExploreIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -140,9 +199,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MeRoute: MeRoute,
   OnboardingRoute: OnboardingRoute,
+  ReverifyRoute: ReverifyRoute,
   SocialRoute: SocialRoute,
   TermsRoute: TermsRoute,
   TopupRoute: TopupRoute,
+  ExploreIndexRoute: ExploreIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
