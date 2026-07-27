@@ -9,12 +9,12 @@ import { useOnboardedGate } from "@/lib/useOnboardedGate";
 export const Route = createFileRoute("/social")({
   head: () => ({
     meta: [
-      { title: "Social · ShekelPay" },
+      { title: "Social · Shekk" },
       {
         name: "description",
         content: "Split a bill with your cohort, follow an opt-in activity feed and keep up with your program thread.",
       },
-      { property: "og:title", content: "Social · ShekelPay" },
+      { property: "og:title", content: "Social · Shekk" },
       { property: "og:description", content: "Split the bill and stay in the loop with your cohort." },
     ],
   }),

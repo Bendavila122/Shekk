@@ -6,10 +6,10 @@ import { findService, STATUS_LABEL, type Service, type ServiceCategory } from "@
 export const Route = createFileRoute("/explore/service/$id")({
   head: ({ params }) => {
     const found = findService(params.id);
-    const title = found ? `${found.service.name} · ShekelPay` : "Service · ShekelPay";
+    const title = found ? `${found.service.name} · Shekk` : "Service · Shekk";
     const description = found
-      ? `${found.service.blurb} — ${STATUS_LABEL[found.service.status]} inside ShekelPay.`
-      : "Partner service inside ShekelPay.";
+      ? `${found.service.blurb} — ${STATUS_LABEL[found.service.status]} inside Shekk.`
+      : "Partner service inside Shekk.";
     return {
       meta: [
         { title },
@@ -55,7 +55,7 @@ function ServicePage() {
             {service.partner ? (
               <p className="text-xs text-muted-foreground">Powered by {service.partner}</p>
             ) : (
-              <p className="text-xs text-muted-foreground">Built by ShekelPay</p>
+              <p className="text-xs text-muted-foreground">Built by Shekk</p>
             )}
             <span className="mt-1 inline-block rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold">
               {STATUS_LABEL[service.status]}
@@ -83,9 +83,9 @@ function ServicePage() {
           <p className="text-sm font-semibold">How the integration works</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {service.status === "live"
-              ? `The ${service.partner ?? service.name} app runs inside ShekelPay — you book in their own flow, ShekelPay pays ${service.partner ?? service.name} for the order, and the shekel-token equivalent comes off your preloaded balance.`
+              ? `The ${service.partner ?? service.name} app runs inside Shekk — you book in their own flow, Shekk pays ${service.partner ?? service.name} for the order, and the shekel-token equivalent comes off your preloaded balance.`
               : service.status === "integrating"
-                ? `We're connecting ${service.partner ?? "this platform"} directly, so you book inside ShekelPay, we settle the bill with them, and your tokens are deducted.`
+                ? `We're connecting ${service.partner ?? "this platform"} directly, so you book inside Shekk, we settle the bill with them, and your tokens are deducted.`
                 : "A plain-English guide written for gap-year students, kept current with the Israeli calendar."}
           </p>
         </Card>
@@ -102,7 +102,7 @@ function ServicePage() {
 
         <p className="px-1 text-xs text-muted-foreground">
           We integrate whole platforms, not individual bars, restaurants, hotels or shops — those aren't onboarded
-          yet. You can also send tokens to, or split a bill with, anyone else on ShekelPay.
+          yet. You can also send tokens to, or split a bill with, anyone else on Shekk.
         </p>
       </div>
     </AppShell>

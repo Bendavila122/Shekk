@@ -8,13 +8,13 @@ import { useOnboardedGate } from "@/lib/useOnboardedGate";
 export const Route = createFileRoute("/me")({
   head: () => ({
     meta: [
-      { title: "Me · ShekelPay" },
+      { title: "Me · Shekk" },
       {
         name: "description",
         content: "Verification badge, program and cohort details, order history and plain-language credit terms.",
       },
-      { property: "og:title", content: "Me · ShekelPay" },
-      { property: "og:description", content: "Your ShekelPay account, verification status and credit terms." },
+      { property: "og:title", content: "Me · Shekk" },
+      { property: "og:description", content: "Your Shekk account, verification status and credit terms." },
     ],
   }),
   component: Me,
@@ -75,9 +75,9 @@ function Me() {
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li>• You buy credits — it's a purchase, not a deposit. We're not a bank and we don't hold your money.</li>
             <li>• Credits are in shekels, non-refundable and non-withdrawable.</li>
-            <li>• Order through a partner app inside ShekelPay and <span className="font-medium text-foreground">we pay them</span> — your card is never charged at checkout.</li>
+            <li>• Order through a partner app inside Shekk and <span className="font-medium text-foreground">we pay them</span> — your card is never charged at checkout.</li>
             <li>• We then deduct the shekel-token equivalent of that order from your preloaded balance.</li>
-            <li>• Every top up shows the ShekelPay rate and the exact credits you get before you confirm.</li>
+            <li>• Every top up shows the Shekk rate and the exact credits you get before you confirm.</li>
             <li>• Re-verify your ID once a year to keep the account active.</li>
           </ul>
 

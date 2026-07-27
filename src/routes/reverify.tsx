@@ -7,13 +7,13 @@ import { useApp } from "@/lib/store";
 export const Route = createFileRoute("/reverify")({
   head: () => ({
     meta: [
-      { title: "Annual re-verification · ShekelPay" },
+      { title: "Annual re-verification · Shekk" },
       {
         name: "description",
-        content: "Re-confirm your ID within 30 days to keep your ShekelPay account active and your credits spendable.",
+        content: "Re-confirm your ID within 30 days to keep your Shekk account active and your credits spendable.",
       },
-      { property: "og:title", content: "Annual re-verification · ShekelPay" },
-      { property: "og:description", content: "One-tap annual ID re-verification for ShekelPay accounts." },
+      { property: "og:title", content: "Annual re-verification · Shekk" },
+      { property: "og:description", content: "One-tap annual ID re-verification for Shekk accounts." },
     ],
   }),
   component: Reverify,
@@ -53,7 +53,7 @@ function Reverify() {
                   <Mail className="size-5" />
                 </span>
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold">ShekelPay &lt;no-reply@shekelpay.app&gt;</p>
+                  <p className="truncate text-sm font-semibold">Shekk &lt;no-reply@shekk.app&gt;</p>
                   <p className="truncate text-xs text-muted-foreground">
                     Action needed: re-verify your ID by {deadline}
                   </p>
@@ -62,7 +62,7 @@ function Reverify() {
               <div className="space-y-3 p-5 text-sm leading-relaxed">
                 <p className="font-semibold">Hey {state.name?.split(" ")[0] || "there"} —</p>
                 <p>
-                  It's been a year since we verified your ID. To keep your ShekelPay account active, we need one fresh
+                  It's been a year since we verified your ID. To keep your Shekk account active, we need one fresh
                   photo of your passport page and a quick selfie.
                 </p>
                 <p>

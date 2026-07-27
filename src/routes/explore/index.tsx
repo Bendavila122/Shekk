@@ -11,13 +11,13 @@ import { useOnboardedGate } from "@/lib/useOnboardedGate";
 export const Route = createFileRoute("/explore/")({
   head: () => ({
     meta: [
-      { title: "Explore · ShekelPay" },
+      { title: "Explore · Shekk" },
       {
         name: "description",
         content:
           "Wolt, Gett, Moovit, Rav-Kav, Israel Railways, Bit, Pango and more — every gap-year service integrated inside one app.",
       },
-      { property: "og:title", content: "Explore · ShekelPay" },
+      { property: "og:title", content: "Explore · Shekk" },
       { property: "og:description", content: "Every gap-year errand, booked inside one app." },
     ],
   }),
@@ -65,7 +65,7 @@ function Explore() {
       <header className="px-5 pt-7">
         <h1 className="font-display text-4xl font-bold tracking-tight">Explore</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Every Israeli app you need, sorted into folders. Tap one and it opens inside ShekelPay.
+          Every Israeli app you need, sorted into folders. Tap one and it opens inside Shekk.
         </p>
         <label className="mt-4 flex items-center gap-2 rounded-2xl bg-muted px-4 py-3 text-sm">
           <Search className="size-4 shrink-0 text-muted-foreground" />

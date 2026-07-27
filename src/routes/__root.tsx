@@ -78,17 +78,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ShekelPay — one wallet for your year in Israel" },
+      { title: "Shekk — one wallet for your year in Israel" },
       {
         name: "description",
         content:
-          "ShekelPay is the super-app for American gap-year students in Israel: preload shekel tokens, then Wolt, Gett, Rav-Kav, Go-To and Israel Railways run inside the app and we pay them for you.",
+          "Shekk is the super-app for American gap-year students in Israel: preload shekel tokens, then Wolt, Gett, Rav-Kav, Go-To and Israel Railways run inside the app and we pay them for you.",
       },
-      { name: "author", content: "ShekelPay" },
-      { property: "og:title", content: "ShekelPay — one wallet for your year in Israel" },
+      { name: "author", content: "Shekk" },
+      { property: "og:title", content: "Shekk — one wallet for your year in Israel" },
       {
         property: "og:description",
-        content: "Preload shekel tokens once — ShekelPay pays the partner apps for you and deducts the tokens.",
+        content: "Preload shekel tokens once — Shekk pays the partner apps for you and deducts the tokens.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -101,7 +101,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap",
       },
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
   }),
   shellComponent: RootShell,

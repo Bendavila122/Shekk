@@ -6,9 +6,9 @@ import { SHULS } from "@/lib/mock";
 export const Route = createFileRoute("/explore/community")({
   head: () => ({
     meta: [
-      { title: "Community · ShekelPay" },
+      { title: "Community · Shekk" },
       { name: "description", content: "Shul finder, candle-lighting times, Chabad and Aish calendars, and a siddur reader." },
-      { property: "og:title", content: "Community · ShekelPay" },
+      { property: "og:title", content: "Community · Shekk" },
       { property: "og:description", content: "Zmanim, shuls and community events wherever you are in Israel." },
     ],
   }),

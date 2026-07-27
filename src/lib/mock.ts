@@ -1,12 +1,12 @@
 export const MID_MARKET_RATE = 3.68; // ILS per USD (internal reference only — never shown)
 export const SPREAD_PCT = 0.03; // ~3% spread, built into the rate. Not itemised to users.
 
-/** The single public number: ShekelPay's own rate, ~3% below mid-market. */
-export const SHEKELPAY_RATE = +(MID_MARKET_RATE * (1 - SPREAD_PCT)).toFixed(4);
+/** The single public number: Shekk's own rate, ~3% below mid-market. */
+export const SHEKK_RATE = +(MID_MARKET_RATE * (1 - SPREAD_PCT)).toFixed(4);
 
 export function quoteTopUp(usd: number) {
-  const credits = +(usd * SHEKELPAY_RATE).toFixed(2);
-  return { usd, credits, rate: SHEKELPAY_RATE };
+  const credits = +(usd * SHEKK_RATE).toFixed(2);
+  return { usd, credits, rate: SHEKK_RATE };
 }
 
 

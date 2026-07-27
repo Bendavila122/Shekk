@@ -5,13 +5,13 @@ import { ChevronLeft } from "lucide-react";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms & Conditions · ShekelPay" },
+      { title: "Terms & Conditions · Shekk" },
       {
         name: "description",
-        content: "ShekelPay credit purchase terms, annual verification requirement and account status policy.",
+        content: "Shekk credit purchase terms, annual verification requirement and account status policy.",
       },
-      { property: "og:title", content: "Terms & Conditions · ShekelPay" },
-      { property: "og:description", content: "How ShekelPay credits, verification and account status work." },
+      { property: "og:title", content: "Terms & Conditions · Shekk" },
+      { property: "og:description", content: "How Shekk credits, verification and account status work." },
     ],
   }),
   component: Terms,
@@ -19,32 +19,32 @@ export const Route = createFileRoute("/terms")({
 
 const SECTIONS: { h: string; p: string[] }[] = [
   {
-    h: "1. What ShekelPay is",
+    h: "1. What Shekk is",
     p: [
-      "ShekelPay operates a closed-loop credit system for participants in study programs in Israel. ShekelPay is not a bank, does not offer deposit accounts, and does not hold currency on your behalf.",
-      "When you top up, you are purchasing ShekelPay credits denominated in new Israeli shekels. The transaction is a sale of credits, completed at the moment of purchase.",
+      "Shekk operates a closed-loop credit system for participants in study programs in Israel. Shekk is not a bank, does not offer deposit accounts, and does not hold currency on your behalf.",
+      "When you top up, you are purchasing Shekk credits denominated in new Israeli shekels. The transaction is a sale of credits, completed at the moment of purchase.",
     ],
   },
   {
     h: "2. Buying credits",
     p: [
-      "Credits are purchased in US dollars via Apple Pay or another supported payment method. Before you confirm any purchase, the app displays the amount paid, the ShekelPay rate applied, and the exact credit amount you will receive.",
-      "ShekelPay sets its own conversion rate. That rate includes ShekelPay's margin and will differ from interbank or mid-market rates; no separate fee is charged on top of it. Rates are refreshed periodically and the rate shown at confirmation is the rate applied.",
+      "Credits are purchased in US dollars via Apple Pay or another supported payment method. Before you confirm any purchase, the app displays the amount paid, the Shekk rate applied, and the exact credit amount you will receive.",
+      "Shekk sets its own conversion rate. That rate includes Shekk's margin and will differ from interbank or mid-market rates; no separate fee is charged on top of it. Rates are refreshed periodically and the rate shown at confirmation is the rate applied.",
 
     ],
   },
   {
     h: "3. Non-refundable, non-withdrawable",
     p: [
-      "Credits are non-refundable and non-withdrawable. They may be used to instruct ShekelPay to pay for goods and services on your behalf through the partner apps available inside ShekelPay. They cannot be redeemed for cash, transferred to a bank account, or sold to another person.",
+      "Credits are non-refundable and non-withdrawable. They may be used to instruct Shekk to pay for goods and services on your behalf through the partner apps available inside Shekk. They cannot be redeemed for cash, transferred to a bank account, or sold to another person.",
       "Credits do not earn interest and are not insured as a deposit would be.",
     ],
   },
   {
     h: "4. How spending works",
     p: [
-      "When you order or pay for something through a partner app inside ShekelPay, ShekelPay is the party that pays the partner. You are not paying the partner directly and no card of yours is charged at that moment.",
-      "Once the partner confirms the order, ShekelPay deducts the shekel-token equivalent of that order from your preloaded credit balance. If your balance is lower than the order total, the order cannot be placed.",
+      "When you order or pay for something through a partner app inside Shekk, Shekk is the party that pays the partner. You are not paying the partner directly and no card of yours is charged at that moment.",
+      "Once the partner confirms the order, Shekk deducts the shekel-token equivalent of that order from your preloaded credit balance. If your balance is lower than the order total, the order cannot be placed.",
       "Each spend is recorded in your Activity with the partner name, category, amount in shekels and the date. A US dollar reference amount is shown for convenience only and does not represent a redeemable value.",
     ],
   },
@@ -61,13 +61,13 @@ const SECTIONS: { h: string; p: string[] }[] = [
     p: [
       "Accounts are Verified, Expiring soon (re-verification requested, deadline not passed), or Needs update (deadline passed or documents rejected).",
       "An account in Needs update status is limited: no new credit purchases and no new spends may be made. Existing credits remain associated with the account and become spendable again once verification is completed.",
-      "ShekelPay may suspend an account for suspected fraud, credit reselling, or use by someone other than the registered student.",
+      "Shekk may suspend an account for suspected fraud, credit reselling, or use by someone other than the registered student.",
     ],
   },
   {
     h: "7. Support and disputes",
     p: [
-      "Because ShekelPay pays the partner on your behalf, issues with an order (late delivery, wrong item, cancelled ride) are raised with ShekelPay first; ShekelPay takes it up with the partner and, where the partner refunds, returns the shekel-token equivalent to your balance as credits. Errors in a credit purchase should be reported within 30 days.",
+      "Because Shekk pays the partner on your behalf, issues with an order (late delivery, wrong item, cancelled ride) are raised with Shekk first; Shekk takes it up with the partner and, where the partner refunds, returns the shekel-token equivalent to your balance as credits. Errors in a credit purchase should be reported within 30 days.",
     ],
   },
 

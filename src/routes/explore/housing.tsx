@@ -5,9 +5,9 @@ import { HOUSING } from "@/lib/mock";
 export const Route = createFileRoute("/explore/housing")({
   head: () => ({
     meta: [
-      { title: "Housing · ShekelPay" },
+      { title: "Housing · Shekk" },
       { name: "description", content: "Dorm swaps, apartment shares and roommate listings from other program students." },
-      { property: "og:title", content: "Housing · ShekelPay" },
+      { property: "og:title", content: "Housing · Shekk" },
       { property: "og:description", content: "Find a room or a roommate for the rest of the year." },
     ],
   }),

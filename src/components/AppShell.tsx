@@ -85,7 +85,10 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="lg:flex lg:min-h-screen lg:bg-ink/[0.03]">
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:gap-1 lg:border-r lg:border-border lg:bg-card lg:px-4 lg:py-8">
-        <p className="mb-4 px-3 font-display text-xl font-bold">ShekelPay</p>
+        <div className="mb-4 flex items-center gap-2 px-3">
+          <img src="/favicon.png" alt="Shekk logo" width={32} height={32} className="size-8 rounded-lg border border-border bg-white" />
+          <p className="font-display text-xl font-bold">Shekk</p>
+        </div>
 
         {TABS.map(({ to, label, Icon }) => {
           const active = isActive(to);
@@ -138,7 +141,10 @@ export function AppShell({ children }: { children: ReactNode }) {
                 }`}
               >
                 <div className="mb-4 flex items-center justify-between">
-                  <p className="font-display text-lg font-bold">ShekelPay</p>
+                  <div className="flex items-center gap-2">
+                    <img src="/favicon.png" alt="Shekk logo" width={28} height={28} className="size-7 rounded-lg border border-border bg-white" />
+                    <p className="font-display text-lg font-bold">Shekk</p>
+                  </div>
                   <button
                     type="button"
                     aria-label="Close menu"

@@ -6,9 +6,9 @@ import { useApp } from "@/lib/store";
 export const Route = createFileRoute("/explore/health")({
   head: () => ({
     meta: [
-      { title: "Health · ShekelPay" },
+      { title: "Health · Shekk" },
       { name: "description", content: "Your student insurance card, nearby clinics and in-app appointment booking." },
-      { property: "og:title", content: "Health · ShekelPay" },
+      { property: "og:title", content: "Health · Shekk" },
       { property: "og:description", content: "Insurance card and clinic booking for your year abroad." },
     ],
   }),
