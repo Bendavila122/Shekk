@@ -17,6 +17,9 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
+import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
+import { Route as ExploreFoodRouteImport } from './routes/explore/food'
+import { Route as ExploreEventsRouteImport } from './routes/explore/events'
 
 const TopupRoute = TopupRouteImport.update({
   id: '/topup',
@@ -58,6 +61,21 @@ const ExploreIndexRoute = ExploreIndexRouteImport.update({
   path: '/explore/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreTransitRoute = ExploreTransitRouteImport.update({
+  id: '/explore/transit',
+  path: '/explore/transit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreFoodRoute = ExploreFoodRouteImport.update({
+  id: '/explore/food',
+  path: '/explore/food',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreEventsRoute = ExploreEventsRouteImport.update({
+  id: '/explore/events',
+  path: '/explore/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -67,6 +85,9 @@ export interface FileRoutesByFullPath {
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/explore/events': typeof ExploreEventsRoute
+  '/explore/food': typeof ExploreFoodRoute
+  '/explore/transit': typeof ExploreTransitRoute
   '/explore/': typeof ExploreIndexRoute
 }
 export interface FileRoutesByTo {
@@ -77,6 +98,9 @@ export interface FileRoutesByTo {
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/explore/events': typeof ExploreEventsRoute
+  '/explore/food': typeof ExploreFoodRoute
+  '/explore/transit': typeof ExploreTransitRoute
   '/explore': typeof ExploreIndexRoute
 }
 export interface FileRoutesById {
@@ -88,6 +112,9 @@ export interface FileRoutesById {
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/explore/events': typeof ExploreEventsRoute
+  '/explore/food': typeof ExploreFoodRoute
+  '/explore/transit': typeof ExploreTransitRoute
   '/explore/': typeof ExploreIndexRoute
 }
 export interface FileRouteTypes {
@@ -100,6 +127,9 @@ export interface FileRouteTypes {
     | '/social'
     | '/terms'
     | '/topup'
+    | '/explore/events'
+    | '/explore/food'
+    | '/explore/transit'
     | '/explore/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -110,6 +140,9 @@ export interface FileRouteTypes {
     | '/social'
     | '/terms'
     | '/topup'
+    | '/explore/events'
+    | '/explore/food'
+    | '/explore/transit'
     | '/explore'
   id:
     | '__root__'
@@ -120,6 +153,9 @@ export interface FileRouteTypes {
     | '/social'
     | '/terms'
     | '/topup'
+    | '/explore/events'
+    | '/explore/food'
+    | '/explore/transit'
     | '/explore/'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +167,9 @@ export interface RootRouteChildren {
   SocialRoute: typeof SocialRoute
   TermsRoute: typeof TermsRoute
   TopupRoute: typeof TopupRoute
+  ExploreEventsRoute: typeof ExploreEventsRoute
+  ExploreFoodRoute: typeof ExploreFoodRoute
+  ExploreTransitRoute: typeof ExploreTransitRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
 }
 
@@ -192,6 +231,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/transit': {
+      id: '/explore/transit'
+      path: '/explore/transit'
+      fullPath: '/explore/transit'
+      preLoaderRoute: typeof ExploreTransitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/food': {
+      id: '/explore/food'
+      path: '/explore/food'
+      fullPath: '/explore/food'
+      preLoaderRoute: typeof ExploreFoodRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/events': {
+      id: '/explore/events'
+      path: '/explore/events'
+      fullPath: '/explore/events'
+      preLoaderRoute: typeof ExploreEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -203,6 +263,9 @@ const rootRouteChildren: RootRouteChildren = {
   SocialRoute: SocialRoute,
   TermsRoute: TermsRoute,
   TopupRoute: TopupRoute,
+  ExploreEventsRoute: ExploreEventsRoute,
+  ExploreFoodRoute: ExploreFoodRoute,
+  ExploreTransitRoute: ExploreTransitRoute,
   ExploreIndexRoute: ExploreIndexRoute,
 }
 export const routeTree = rootRouteImport
