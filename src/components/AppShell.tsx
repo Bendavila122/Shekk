@@ -59,7 +59,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <div className="lg:flex lg:min-w-0 lg:flex-1 lg:justify-center lg:px-8 lg:py-8">
         <div className="lg:w-full lg:max-w-3xl lg:overflow-hidden lg:rounded-3xl lg:border lg:border-border lg:bg-background lg:shadow-card">
-          <PhoneFrame>
+          <PhoneFrame wide>
             <div className="flex-1 pb-6">{children}</div>
             <nav className="sticky bottom-0 z-20 grid grid-cols-4 border-t border-border bg-card/95 px-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 backdrop-blur lg:hidden">
               {TABS.map(({ to, label, Icon }) => {
