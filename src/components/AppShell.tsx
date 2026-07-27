@@ -77,7 +77,7 @@ export function MobileNav() {
   const { state } = useApp();
 
   return (
-    <div className="absolute inset-x-0 bottom-0 z-30 border-t border-border bg-card lg:hidden">
+    <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[430px] -translate-x-1/2 border-t border-border bg-card lg:hidden">
       <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-2">
         <div className="min-w-0">
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Token balance</p>
