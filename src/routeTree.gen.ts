@@ -19,6 +19,7 @@ import { Route as McpRouteImport } from './routes/mcp'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
 import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
 import { Route as ExploreShopsRouteImport } from './routes/explore/shops'
@@ -84,6 +85,11 @@ const ActivityRoute = ActivityRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesIndexRoute = GuidesIndexRouteImport.update({
+  id: '/guides/',
+  path: '/guides/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreIndexRoute = ExploreIndexRouteImport.update({
@@ -194,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore/': typeof ExploreIndexRoute
+  '/guides/': typeof GuidesIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
@@ -222,6 +229,7 @@ export interface FileRoutesByTo {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore': typeof ExploreIndexRoute
+  '/guides': typeof GuidesIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
@@ -251,6 +259,7 @@ export interface FileRoutesById {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore/': typeof ExploreIndexRoute
+  '/guides/': typeof GuidesIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
@@ -281,6 +290,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/explore/'
+    | '/guides/'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/service/$id'
@@ -309,6 +319,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/explore'
+    | '/guides'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/service/$id'
@@ -337,6 +348,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/explore/'
+    | '/guides/'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/service/$id'
@@ -366,6 +378,7 @@ export interface RootRouteChildren {
   ExploreShopsRoute: typeof ExploreShopsRoute
   ExploreTransitRoute: typeof ExploreTransitRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
+  GuidesIndexRoute: typeof GuidesIndexRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
@@ -441,6 +454,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/': {
+      id: '/guides/'
+      path: '/guides'
+      fullPath: '/guides/'
+      preLoaderRoute: typeof GuidesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore/': {
@@ -583,6 +603,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreShopsRoute: ExploreShopsRoute,
   ExploreTransitRoute: ExploreTransitRoute,
   ExploreIndexRoute: ExploreIndexRoute,
+  GuidesIndexRoute: GuidesIndexRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ExploreCategoryIdRoute: ExploreCategoryIdRoute,
   ExploreServiceIdRoute: ExploreServiceIdRoute,
