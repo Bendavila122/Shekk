@@ -71,85 +71,48 @@ export function Notice({
   );
 }
 
-/** Menu button + slide-in drawer, shared by every screen. */
+/** Bottom tab bar + compact balance strip, shared by every screen (mobile). */
 export function MobileNav() {
   const isActive = useActive();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
+  const { state } = useApp();
 
   return (
-    <>
-      <button
-        type="button"
-        aria-label="Open menu"
-        aria-expanded={menuOpen}
-        onClick={() => setMenuOpen(true)}
-        className="tap absolute right-4 top-4 z-30 flex size-11 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-card lg:hidden"
-      >
-        <Menu className="size-5" />
-      </button>
-
-      <div
-        className={`absolute inset-0 z-40 lg:hidden ${menuOpen ? "" : "pointer-events-none"}`}
-        aria-hidden={!menuOpen}
-      >
-        <div
-          onClick={() => setMenuOpen(false)}
-          className={`absolute inset-0 bg-transparent transition-opacity duration-200 ${
-            menuOpen ? "opacity-100" : "opacity-0"
-          }`}
-        />
-        <nav
-          className={`absolute right-0 top-0 flex h-full w-64 max-w-[78%] flex-col gap-1 border-l border-border bg-card px-4 py-6 shadow-lift transition-transform duration-300 ease-out ${
-            menuOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+    <div className="absolute inset-x-0 bottom-0 z-30 border-t border-border bg-card lg:hidden">
+      <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-2">
+        <div className="min-w-0">
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Token balance</p>
+          <p className="font-display text-sm font-bold leading-tight">
+            {ils(state.balance)} <span className="text-[10px] font-medium text-muted-foreground">≈ {usdRef(state.balance)}</span>
+          </p>
+        </div>
+        <Link
+          to="/topup"
+          className="tap flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-xs font-bold uppercase tracking-wide text-primary-foreground shadow-card"
         >
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <img
-                src="/favicon.png"
-                alt="Shekk logo"
-                width={28}
-                height={28}
-                className="size-7 rounded-lg border border-border"
-              />
-              <p className="font-display text-lg font-bold">Shekk</p>
-            </div>
-            <button
-              type="button"
-              aria-label="Close menu"
-              onClick={() => setMenuOpen(false)}
-              className="tap rounded-full bg-muted p-2 text-foreground"
-            >
-              <X className="size-4" />
-            </button>
-          </div>
-          {TABS.map(({ to, label, Icon }) => {
-            const active = isActive(to);
-            return (
-              <Link
-                key={to}
-                to={to}
-                onClick={() => setMenuOpen(false)}
-                className={`tap flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold ${
-                  active ? "bg-primary-soft text-primary" : "text-muted-foreground"
-                }`}
-              >
-                <Icon className="size-5 shrink-0" strokeWidth={active ? 2.4 : 1.8} />
-                <span className="truncate">{label}</span>
-              </Link>
-            );
-          })}
-          <NavBalance onNavigate={() => setMenuOpen(false)} />
-        </nav>
+          <Plus className="size-4" strokeWidth={3} /> Top up
+        </Link>
       </div>
-    </>
+      <nav className="flex items-stretch justify-between px-1 pb-[max(0.4rem,env(safe-area-inset-bottom))] pt-1.5">
+        {TABS.map(({ to, label, Icon }) => {
+          const active = isActive(to);
+          return (
+            <Link
+              key={to}
+              to={to}
+              className={`tap flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1.5 text-[10px] font-semibold ${
+                active ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
+              <Icon className="size-5" strokeWidth={active ? 2.6 : 1.8} />
+              <span>{label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
   );
 }
+
 
 
 
