@@ -1,5 +1,4 @@
 import { defineTool } from "@lovable.dev/mcp-js";
-import { z } from "zod";
 import { SERVICE_CATEGORIES } from "@/lib/services";
 
 export default defineTool({
@@ -23,4 +22,3 @@ export default defineTool({
   },
 });
 
-export const _unused = z;
