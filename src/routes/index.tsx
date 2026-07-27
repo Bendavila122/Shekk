@@ -6,8 +6,10 @@ import { QRCode } from "@/components/QRCode";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { ils, usdRef } from "@/lib/mock";
-import { HOME_SECTIONS, STATUS_LABEL, serviceLinkProps, type Service } from "@/lib/services";
+import { STATUS_LABEL, serviceLinkProps, type Service } from "@/lib/services";
+import { recordServiceUse, useRecentServices } from "@/lib/recents";
 import { ServiceLogo } from "@/components/ServiceLogo";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -29,8 +31,10 @@ function AppIcon({ service }: { service: Service }) {
   return (
     <Link
       {...serviceLinkProps(service)}
+      onClick={() => recordServiceUse(service.id)}
       className="tap group flex flex-col items-center gap-1.5"
     >
+
       <span className="relative">
         <ServiceLogo service={service} size={58} className="rounded-[1.15rem] shadow-card" />
         {service.status !== "live" ? (
@@ -49,7 +53,9 @@ function AppIcon({ service }: { service: Service }) {
 function HomeScreen() {
   const ready = useOnboardedGate();
   const { state } = useApp();
+  const recents = useRecentServices();
   const [showCode, setShowCode] = useState(false);
+
 
   if (!ready) {
     return (
@@ -92,23 +98,22 @@ function HomeScreen() {
         </Link>
       </div>
 
-      {/* Springboard */}
+      {/* Recents */}
       <div className="space-y-6 px-4 pt-6">
-        {HOME_SECTIONS.map((section) => (
-          <section key={section.label}>
-            <div className="mb-3 flex items-baseline justify-between gap-3">
-              <div>
-                <h2 className="text-sm font-semibold">{section.label}</h2>
-                <p className="text-[11px] text-muted-foreground">{section.hint}</p>
-              </div>
+        <section>
+          <div className="mb-3 flex items-baseline justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold">Recently used</h2>
+              <p className="text-[11px] text-muted-foreground">The last five apps you opened.</p>
             </div>
-            <div className="grid grid-cols-4 gap-x-2 gap-y-5 sm:grid-cols-5 lg:grid-cols-8">
-              {section.services.map((s) => (
-                <AppIcon key={s.id} service={s} />
-              ))}
-            </div>
-          </section>
-        ))}
+          </div>
+          <div className="grid grid-cols-5 gap-x-2 gap-y-5">
+            {recents.map((s) => (
+              <AppIcon key={s.id} service={s} />
+            ))}
+          </div>
+        </section>
+
 
         <Link
           to="/explore"
