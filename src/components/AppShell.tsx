@@ -41,7 +41,7 @@ export function FocusScreen({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen justify-center bg-ink/95 px-0 py-0 sm:px-4 sm:py-8 lg:bg-ink/[0.03] lg:px-8 lg:py-12">
       <div className="relative flex min-h-screen w-full max-w-[430px] flex-col overflow-hidden bg-background shadow-lift sm:min-h-[860px] sm:rounded-[2.5rem] sm:border-8 sm:border-ink lg:min-h-0 lg:max-w-2xl lg:rounded-3xl lg:border lg:border-border lg:shadow-card">
-        <div className="flex-1 pb-32 lg:pb-6">{children}</div>
+        <div className="flex-1 pb-24 lg:pb-6">{children}</div>
         <QuickMenu />
         <MobileNav />
 
@@ -74,27 +74,13 @@ export function Notice({
   );
 }
 
-/** Bottom tab bar + compact balance strip, shared by every screen (mobile). */
+/** Bottom tab bar, shared by every screen (mobile). */
 export function MobileNav() {
   const isActive = useActive();
-  const { state } = useApp();
 
   return (
     <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[430px] -translate-x-1/2 border-t border-border bg-card lg:hidden">
-      <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-2">
-        <div className="min-w-0">
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Token balance</p>
-          <p className="font-display text-sm font-bold leading-tight">
-            {ils(state.balance)} <span className="text-[10px] font-medium text-muted-foreground">≈ {usdRef(state.balance)}</span>
-          </p>
-        </div>
-        <Link
-          to="/topup"
-          className="tap flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-xs font-bold uppercase tracking-wide text-primary-foreground shadow-card"
-        >
-          <Plus className="size-4" strokeWidth={3} /> Top up
-        </Link>
-      </div>
+
       <nav className="flex items-stretch justify-between px-1 pb-[max(0.4rem,env(safe-area-inset-bottom))] pt-1.5">
         {TABS.map(({ to, label, Icon }) => {
           const active = isActive(to);
@@ -237,7 +223,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <QuickMenu />
             <MobileNav />
 
-            <div className="flex-1 pb-32 lg:pb-6">{children}</div>
+            <div className="flex-1 pb-24 lg:pb-6">{children}</div>
           </PhoneFrame>
 
         </div>
