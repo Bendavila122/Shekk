@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, LoaderCircle, MapPin, Navigation } from "lucide-react";
 import { LOCATION_CITIES, useLocation } from "@/lib/location";
 import { useApp } from "@/lib/store";
@@ -22,9 +22,15 @@ export function LocationBar() {
   }, [asked, place, status, detect]);
 
   // Keep weather / Shabbat times in step with where the student actually is.
+  const syncedCity = useRef<string | null>(null);
   useEffect(() => {
-    if (place?.city) setSetting("homeCity", place.city);
-  }, [place?.city, setSetting]);
+    const city = place?.city;
+    if (!city || syncedCity.current === city) return;
+    syncedCity.current = city;
+    setSetting("homeCity", city);
+    // setSetting identity is not stable; the ref guard keeps this to one write per city.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [place?.city]);
 
   const label = place ? place.city : loading ? "Finding you…" : "Set your location";
   const sub = place?.area
