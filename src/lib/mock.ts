@@ -44,13 +44,16 @@ export const SEED_TXNS: Txn[] = [
 ];
 
 export const FRIENDS = [
-  { id: "f1", name: "Ari Lieber", program: "Ohr Somayach", initials: "AL" },
-  { id: "f2", name: "Tova Klein", program: "Michlala", initials: "TK" },
-  { id: "f3", name: "Shua Berman", program: "Aish HaTorah", initials: "SB" },
-  { id: "f4", name: "Rivki Stein", program: "Michlala", initials: "RS" },
-  { id: "f5", name: "Yoni Adler", program: "Meor", initials: "YA" },
-  { id: "f6", name: "Miri Gold", program: "Meor", initials: "MG" },
+  { id: "f1", name: "Ari Lieber", program: "Ohr Somayach", initials: "AL", photo: "https://i.pravatar.cc/160?img=12" },
+  { id: "f2", name: "Tova Klein", program: "Michlala", initials: "TK", photo: "https://i.pravatar.cc/160?img=45" },
+  { id: "f3", name: "Shua Berman", program: "Aish HaTorah", initials: "SB", photo: "https://i.pravatar.cc/160?img=33" },
+  { id: "f4", name: "Rivki Stein", program: "Michlala", initials: "RS", photo: "https://i.pravatar.cc/160?img=47" },
+  { id: "f5", name: "Yoni Adler", program: "Meor", initials: "YA", photo: "https://i.pravatar.cc/160?img=15" },
+  { id: "f6", name: "Miri Gold", program: "Meor", initials: "MG", photo: "https://i.pravatar.cc/160?img=26" },
 ];
+
+export const friendPhoto = (name: string) => FRIENDS.find((f) => f.name === name)?.photo ?? null;
+
 
 export const MINI_PROGRAMS = [
   { id: "transit", label: "Transit", emoji: "🚌", blurb: "Bus, rail & Rav-Kav", to: "/explore/transit" },
