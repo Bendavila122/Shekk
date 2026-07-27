@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, Mail, Upload, ShieldCheck } from "lucide-react";
-import { PhoneFrame, PrimaryButton, Card } from "@/components/AppShell";
+import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
 import { useApp } from "@/lib/store";
 
 export const Route = createFileRoute("/reverify")({
@@ -34,7 +34,7 @@ function Reverify() {
       });
 
   return (
-    <PhoneFrame>
+    <FocusScreen>
       <div className="min-h-screen px-5 pb-10 pt-7 sm:min-h-[860px]">
         <Link to="/" className="text-sm font-semibold text-muted-foreground">
           ← Back to Pay
@@ -153,6 +153,6 @@ function Reverify() {
           </div>
         )}
       </div>
-    </PhoneFrame>
+    </FocusScreen>
   );
 }

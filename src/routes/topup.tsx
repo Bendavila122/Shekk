@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Apple, Info, Check } from "lucide-react";
-import { PhoneFrame, PrimaryButton, Card } from "@/components/AppShell";
+import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
 import { MID_MARKET_RATE, ils, quoteTopUp, usd } from "@/lib/mock";
 import { useApp } from "@/lib/store";
 
@@ -34,7 +34,7 @@ function TopUp() {
 
   if (done) {
     return (
-      <PhoneFrame>
+      <FocusScreen>
         <div className="flex min-h-screen flex-col justify-between px-6 pb-10 pt-24 sm:min-h-[860px]">
           <div className="text-center">
             <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-success-soft">
@@ -52,12 +52,12 @@ function TopUp() {
             </Link>
           </div>
         </div>
-      </PhoneFrame>
+      </FocusScreen>
     );
   }
 
   return (
-    <PhoneFrame>
+    <FocusScreen>
       <div className="flex min-h-screen flex-col px-6 pb-10 pt-8 sm:min-h-[860px]">
         <Link to="/" className="text-sm font-semibold text-muted-foreground">
           Cancel
@@ -150,7 +150,7 @@ function TopUp() {
           </div>
         </div>
       )}
-    </PhoneFrame>
+    </FocusScreen>
   );
 }
 

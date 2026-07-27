@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PhoneFrame } from "@/components/AppShell";
+import { FocusScreen } from "@/components/AppShell";
 import { ChevronLeft } from "lucide-react";
 
 export const Route = createFileRoute("/terms")({
@@ -70,7 +70,7 @@ const SECTIONS: { h: string; p: string[] }[] = [
 
 function Terms() {
   return (
-    <PhoneFrame>
+    <FocusScreen>
       <div className="min-h-screen sm:min-h-[860px]">
         <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-border bg-background/90 px-4 py-3 backdrop-blur">
           <Link to="/me" className="tap rounded-full bg-muted p-2">
@@ -97,6 +97,6 @@ function Terms() {
           </Link>
         </div>
       </div>
-    </PhoneFrame>
+    </FocusScreen>
   );
 }
