@@ -150,7 +150,7 @@ export function QuickMenu() {
             <Link to="/me" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <User className="size-4 text-muted-foreground" /> Me
             </Link>
-            <Link to="/me" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+            <Link to="/settings" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <Settings className="size-4 text-muted-foreground" /> Settings
             </Link>
             <Link to="/help" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">

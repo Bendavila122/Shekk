@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { Apple, Info, Check } from "lucide-react";
 import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
-import { ils, quoteTopUp, usd } from "@/lib/mock";
+import { ils } from "@/lib/mock";
+import { currency, money, quoteTopUpIn } from "@/lib/currencies";
 import { useApp } from "@/lib/store";
 
 export const Route = createFileRoute("/topup")({
@@ -26,12 +27,13 @@ function TopUp() {
   const [amount, setAmount] = useState("100");
   const [sheet, setSheet] = useState(false);
   const [done, setDone] = useState(false);
-  const { addCredits } = useApp();
+  const { addCredits, state } = useApp();
+  const cur = currency(state.settings.payCurrency);
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const value = Math.max(0, Number(amount) || 0);
-  const q = quoteTopUp(value);
+  const q = quoteTopUpIn(state.settings.payCurrency, value);
   const isCustom = !PRESETS.includes(value);
 
   if (done) {
@@ -44,7 +46,7 @@ function TopUp() {
             </div>
             <h1 className="mt-6 text-3xl font-bold">{ils(q.credits)} credits added</h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Paid {usd(q.usd)} with Apple Pay. Receipt is in your Activity.
+              Paid {money(cur.code, q.amount)} with Apple Pay. Receipt is in your Activity.
             </p>
           </div>
           <div className="space-y-3">
@@ -65,7 +67,7 @@ function TopUp() {
           Cancel
         </Link>
         <h1 className="mt-4 text-3xl font-bold">Add credits</h1>
-        <p className="mt-1 text-sm text-muted-foreground">You pay in USD. You receive shekel credits.</p>
+        <p className="mt-1 text-sm text-muted-foreground">{`You pay in ${cur.code}. You receive shekel credits.`}</p>
 
         <div className="mt-6 rounded-3xl border border-border bg-card p-5 shadow-card">
           <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">You pay</span>
@@ -74,7 +76,7 @@ function TopUp() {
             onClick={() => inputRef.current?.focus()}
             className="mt-1 flex w-full items-baseline gap-2 text-left"
           >
-            <span className="font-display text-4xl font-bold">$</span>
+            <span className="font-display text-4xl font-bold">{cur.symbol}</span>
             <input
               ref={inputRef}
               inputMode="decimal"
@@ -94,7 +96,8 @@ function TopUp() {
                   Number(amount) === p ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
                 }`}
               >
-                ${p}
+                {cur.symbol}
+                {p}
               </button>
             ))}
           </div>
@@ -114,8 +117,8 @@ function TopUp() {
 
 
         <Card className="mt-4 space-y-2.5 text-sm">
-          <Row label="Amount paid" value={usd(q.usd)} />
-          <Row label="Shekk rate" value={`$1 = ₪${q.rate.toFixed(3)}`} muted />
+          <Row label="Amount paid" value={money(cur.code, q.amount)} />
+          <Row label="Shekk rate" value={`${cur.symbol}1 = ₪${q.rate.toFixed(3)}`} muted />
           <div className="border-t border-border pt-2.5">
             <Row label="Credits you receive" value={ils(q.credits)} bold />
           </div>
@@ -136,7 +139,7 @@ function TopUp() {
 
         <div className="mt-auto pt-6">
           <PrimaryButton disabled={value <= 0} onClick={() => setSheet(true)} className="flex items-center justify-center gap-2">
-            <Apple className="size-5" /> Pay {usd(q.usd)}
+            <Apple className="size-5" /> Pay {money(cur.code, q.amount)}
           </PrimaryButton>
         </div>
       </div>
@@ -150,7 +153,7 @@ function TopUp() {
               <Apple className="size-5" /> Apple Pay
             </div>
             <div className="mt-4 space-y-2 text-sm">
-              <Row label="Shekk" value={usd(q.usd)} />
+              <Row label="Shekk" value={money(cur.code, q.amount)} />
               <Row label="Card" value="•••• 4417 · Visa" muted />
               <Row label="You receive" value={`${ils(q.credits)} credits`} bold />
             </div>
@@ -158,7 +161,7 @@ function TopUp() {
             <div className="mt-5 space-y-2">
               <PrimaryButton
                 onClick={() => {
-                  addCredits(q.credits, q.usd);
+                  addCredits(q.credits, q.amount);
                   setSheet(false);
                   setDone(true);
                 }}
