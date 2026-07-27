@@ -31,8 +31,10 @@ function AppIcon({ service }: { service: Service }) {
   return (
     <Link
       {...serviceLinkProps(service)}
+      onClick={() => recordServiceUse(service.id)}
       className="tap group flex flex-col items-center gap-1.5"
     >
+
       <span className="relative">
         <ServiceLogo service={service} size={58} className="rounded-[1.15rem] shadow-card" />
         {service.status !== "live" ? (
