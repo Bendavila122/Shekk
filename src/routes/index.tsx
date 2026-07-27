@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ArrowUpRight, IdCard, Users, ChevronRight, QrCode, Search, Grid3X3, Receipt } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { QRCode } from "@/components/QRCode";
+import { Avatar } from "@/components/Avatar";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 
@@ -153,7 +154,10 @@ function HomeScreen() {
           {showCode ? (
             <div className="flex flex-col items-center border-t border-border p-4">
               <QRCode value={`shekk:${state.name || "student"}:${state.cohort}`} className="h-36 w-36" />
-              <p className="mt-2 text-xs font-semibold">{state.name || "Your"} · friend code</p>
+              <div className="mt-2 flex items-center gap-2">
+                <Avatar name={state.name || "You"} src={state.avatar} className="size-7" textClassName="text-[10px]" />
+                <p className="text-xs font-semibold">{state.name || "Your"} · friend code</p>
+              </div>
               <p className="text-center text-[11px] text-muted-foreground">
                 A friend scans this to send you tokens. It isn't a merchant payment code.
               </p>
