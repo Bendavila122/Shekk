@@ -6,8 +6,10 @@ import { QRCode } from "@/components/QRCode";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { ils, usdRef } from "@/lib/mock";
-import { HOME_SECTIONS, STATUS_LABEL, serviceLinkProps, type Service } from "@/lib/services";
+import { STATUS_LABEL, serviceLinkProps, type Service } from "@/lib/services";
+import { recordServiceUse, useRecentServices } from "@/lib/recents";
 import { ServiceLogo } from "@/components/ServiceLogo";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
