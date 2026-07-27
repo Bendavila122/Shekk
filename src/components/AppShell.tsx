@@ -4,7 +4,7 @@ import { Wallet, Compass, Users, User, ChevronLeft } from "lucide-react";
 import { useApp } from "@/lib/store";
 
 const TABS = [
-  { to: "/", label: "Wallet", Icon: Wallet },
+  { to: "/", label: "Home", Icon: Wallet },
   { to: "/explore", label: "Explore", Icon: Compass },
   { to: "/social", label: "Social", Icon: Users },
   { to: "/me", label: "Me", Icon: User },
