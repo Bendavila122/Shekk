@@ -39,7 +39,7 @@ const CITIES = ["Jerusalem", "Tel Aviv", "Beit Shemesh", "Efrat", "Tzfat", "Haif
 
 function SettingsPage() {
   const ready = useOnboardedGate();
-  const { state, setSetting, resetSettings } = useApp();
+  const { state, setSetting, resetSettings, setFeedOptIn } = useApp();
   const s = state.settings;
 
   if (!ready)
@@ -248,7 +248,7 @@ function SettingsPage() {
             label="Activity feed"
             hint="Opt in to the lightweight friends feed"
             checked={state.feedOptIn}
-            onChange={(v) => useAppFeed(v)}
+            onChange={setFeedOptIn}
           />
         </Section>
 
@@ -322,11 +322,6 @@ function SettingsPage() {
       </div>
     </AppShell>
   );
-}
-
-/* Feed opt-in lives on the root state, not in settings. */
-function useAppFeed(_v: boolean) {
-  /* replaced below by inline handler */
 }
 
 function Section({
