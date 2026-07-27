@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { SEED_TXNS, type Txn } from "./mock";
+import type { CurrencyCode } from "./currencies";
 
 export type VerificationStatus = "verified" | "expiring" | "needs-update";
 
@@ -9,6 +10,53 @@ export type SplitRequest = {
   reason: string;
   amount: number;
   paid: boolean;
+};
+
+export type ThemePref = "system" | "light" | "dark";
+
+export type Settings = {
+  /** Every account is held in shekels — this is the currency you pay from. */
+  payCurrency: CurrencyCode;
+  theme: ThemePref;
+  hideBalance: boolean;
+  reduceMotion: boolean;
+  hapticFeedback: boolean;
+  faceIdOnPay: boolean;
+  confirmOver: number | null;
+  autoTopUp: boolean;
+  autoTopUpFloor: number;
+  notifSplits: boolean;
+  notifReceipts: boolean;
+  notifDeals: boolean;
+  notifReverify: boolean;
+  shabbatQuiet: boolean;
+  discoverable: boolean;
+  showPhotoToMerchants: boolean;
+  homeCity: string;
+  hebrewDates: boolean;
+  language: "en" | "en-heb";
+};
+
+export const defaultSettings: Settings = {
+  payCurrency: "USD",
+  theme: "system",
+  hideBalance: false,
+  reduceMotion: false,
+  hapticFeedback: true,
+  faceIdOnPay: true,
+  confirmOver: 200,
+  autoTopUp: false,
+  autoTopUpFloor: 100,
+  notifSplits: true,
+  notifReceipts: true,
+  notifDeals: false,
+  notifReverify: true,
+  shabbatQuiet: true,
+  discoverable: true,
+  showPhotoToMerchants: true,
+  homeCity: "Jerusalem",
+  hebrewDates: true,
+  language: "en-heb",
 };
 
 type State = {
@@ -23,6 +71,7 @@ type State = {
   reverifyDone: boolean;
   splits: SplitRequest[];
   feedOptIn: boolean;
+  settings: Settings;
 };
 
 const STORAGE_KEY = "shekk.state.v2";
@@ -42,6 +91,7 @@ const initialState: State = {
     { id: "sp2", from: "Yoni Adler", reason: "Pizza Kefar — motzei Shabbat", amount: 34.0, paid: false },
   ],
   feedOptIn: true,
+  settings: defaultSettings,
 };
 
 type Ctx = {
@@ -58,6 +108,8 @@ type Ctx = {
   payFriend: (id: string) => void;
   addSplit: (s: SplitRequest) => void;
   setFeedOptIn: (v: boolean) => void;
+  setSetting: <K extends keyof Settings>(key: K, value: Settings[K]) => void;
+  resetSettings: () => void;
   setAvatar: (dataUrl: string | null) => void;
   reset: () => void;
 };
@@ -71,7 +123,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setState({ ...initialState, ...JSON.parse(raw) });
+      if (raw) {
+        const saved = JSON.parse(raw) as Partial<State>;
+        setState({ ...initialState, ...saved, settings: { ...defaultSettings, ...(saved.settings ?? {}) } });
+      }
     } catch {
       /* ignore */
     }
@@ -82,6 +137,26 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (!hydrated) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, hydrated]);
+
+  // Theme preference drives the document class (system follows the OS).
+  useEffect(() => {
+    if (!hydrated || typeof window === "undefined") return;
+    const root = document.documentElement;
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const apply = () => {
+      const dark = state.settings.theme === "dark" || (state.settings.theme === "system" && mq.matches);
+      root.classList.toggle("dark", dark);
+    };
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, [hydrated, state.settings.theme]);
+
+  // Motion preference is a single class the utilities can hang off.
+  useEffect(() => {
+    if (!hydrated || typeof window === "undefined") return;
+    document.documentElement.classList.toggle("reduce-motion", state.settings.reduceMotion);
+  }, [hydrated, state.settings.reduceMotion]);
 
   const daysLeft = useMemo(() => {
     if (!state.reverifyDueISO || state.reverifyDone) return null;
@@ -166,6 +241,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }),
     addSplit: (s2) => setState((s) => ({ ...s, splits: [s2, ...s.splits] })),
     setFeedOptIn: (v) => setState((s) => ({ ...s, feedOptIn: v })),
+    setSetting: (key, value) => setState((s) => ({ ...s, settings: { ...s.settings, [key]: value } })),
+    resetSettings: () => setState((s) => ({ ...s, settings: defaultSettings })),
     setAvatar: (avatar) => setState((s) => ({ ...s, avatar })),
     reset: () => setState(initialState),
   };
