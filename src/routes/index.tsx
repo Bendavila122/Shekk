@@ -86,12 +86,6 @@ function HomeScreen() {
       {/* Recents */}
       <div className="space-y-6 px-4 pt-6">
         <section>
-          <div className="mb-3 flex items-baseline justify-between gap-3">
-            <div>
-              <h2 className="text-sm font-semibold">Recently used</h2>
-              
-            </div>
-          </div>
           <div className="grid grid-cols-5 gap-x-2 gap-y-5">
             {recents.map((s) => (
               <AppIcon key={s.id} service={s} />
