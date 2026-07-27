@@ -29,6 +29,7 @@ import { Route as ExploreEventsRouteImport } from './routes/explore/events'
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
 import { Route as ExploreAdminRouteImport } from './routes/explore/admin'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
+import { Route as ExploreCategoryIdRouteImport } from './routes/explore/category.$id'
 
 const TopupRoute = TopupRouteImport.update({
   id: '/topup',
@@ -130,6 +131,11 @@ const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
   path: '/explore/service/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreCategoryIdRoute = ExploreCategoryIdRouteImport.update({
+  id: '/explore/category/$id',
+  path: '/explore/category/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore/': typeof ExploreIndexRoute
+  '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
 }
 export interface FileRoutesByTo {
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore': typeof ExploreIndexRoute
+  '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
 }
 export interface FileRoutesById {
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/explore/': typeof ExploreIndexRoute
+  '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
 }
 export interface FileRouteTypes {
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/explore/'
+    | '/explore/category/$id'
     | '/explore/service/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/explore'
+    | '/explore/category/$id'
     | '/explore/service/$id'
   id:
     | '__root__'
@@ -264,6 +275,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/explore/'
+    | '/explore/category/$id'
     | '/explore/service/$id'
   fileRoutesById: FileRoutesById
 }
@@ -287,6 +299,7 @@ export interface RootRouteChildren {
   ExploreShopsRoute: typeof ExploreShopsRoute
   ExploreTransitRoute: typeof ExploreTransitRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
+  ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
 }
 
@@ -432,6 +445,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreServiceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/category/$id': {
+      id: '/explore/category/$id'
+      path: '/explore/category/$id'
+      fullPath: '/explore/category/$id'
+      preLoaderRoute: typeof ExploreCategoryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -455,6 +475,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreShopsRoute: ExploreShopsRoute,
   ExploreTransitRoute: ExploreTransitRoute,
   ExploreIndexRoute: ExploreIndexRoute,
+  ExploreCategoryIdRoute: ExploreCategoryIdRoute,
   ExploreServiceIdRoute: ExploreServiceIdRoute,
 }
 export const routeTree = rootRouteImport

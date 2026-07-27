@@ -59,7 +59,7 @@ function BigTile({ service }: { service: Service }) {
 }
 
 function CategoryPage() {
-  const cat = Route.useLoaderData();
+  const cat = Route.useLoaderData() as ServiceCategory;
 
   return (
     <AppShell>
