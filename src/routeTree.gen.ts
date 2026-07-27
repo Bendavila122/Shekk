@@ -9,38 +9,325 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TopupRouteImport } from './routes/topup'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SocialRouteImport } from './routes/social'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ReverifyRouteImport } from './routes/reverify'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as MeRouteImport } from './routes/me'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ExploreIndexRouteImport } from './routes/explore/index'
+import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
+import { Route as ExploreShopsRouteImport } from './routes/explore/shops'
+import { Route as ExploreRidesRouteImport } from './routes/explore/rides'
+import { Route as ExploreReserveRouteImport } from './routes/explore/reserve'
+import { Route as ExploreHousingRouteImport } from './routes/explore/housing'
+import { Route as ExploreHealthRouteImport } from './routes/explore/health'
+import { Route as ExploreFoodRouteImport } from './routes/explore/food'
+import { Route as ExploreEventsRouteImport } from './routes/explore/events'
+import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
+import { Route as ExploreAdminRouteImport } from './routes/explore/admin'
 
+const TopupRoute = TopupRouteImport.update({
+  id: '/topup',
+  path: '/topup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SocialRoute = SocialRouteImport.update({
+  id: '/social',
+  path: '/social',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReverifyRoute = ReverifyRouteImport.update({
+  id: '/reverify',
+  path: '/reverify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeRoute = MeRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreIndexRoute = ExploreIndexRouteImport.update({
+  id: '/explore/',
+  path: '/explore/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreTransitRoute = ExploreTransitRouteImport.update({
+  id: '/explore/transit',
+  path: '/explore/transit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreShopsRoute = ExploreShopsRouteImport.update({
+  id: '/explore/shops',
+  path: '/explore/shops',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreRidesRoute = ExploreRidesRouteImport.update({
+  id: '/explore/rides',
+  path: '/explore/rides',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreReserveRoute = ExploreReserveRouteImport.update({
+  id: '/explore/reserve',
+  path: '/explore/reserve',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreHousingRoute = ExploreHousingRouteImport.update({
+  id: '/explore/housing',
+  path: '/explore/housing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreHealthRoute = ExploreHealthRouteImport.update({
+  id: '/explore/health',
+  path: '/explore/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreFoodRoute = ExploreFoodRouteImport.update({
+  id: '/explore/food',
+  path: '/explore/food',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreEventsRoute = ExploreEventsRouteImport.update({
+  id: '/explore/events',
+  path: '/explore/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreCommunityRoute = ExploreCommunityRouteImport.update({
+  id: '/explore/community',
+  path: '/explore/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreAdminRoute = ExploreAdminRouteImport.update({
+  id: '/explore/admin',
+  path: '/explore/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/me': typeof MeRoute
+  '/onboarding': typeof OnboardingRoute
+  '/reverify': typeof ReverifyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/social': typeof SocialRoute
+  '/terms': typeof TermsRoute
+  '/topup': typeof TopupRoute
+  '/explore/admin': typeof ExploreAdminRoute
+  '/explore/community': typeof ExploreCommunityRoute
+  '/explore/events': typeof ExploreEventsRoute
+  '/explore/food': typeof ExploreFoodRoute
+  '/explore/health': typeof ExploreHealthRoute
+  '/explore/housing': typeof ExploreHousingRoute
+  '/explore/reserve': typeof ExploreReserveRoute
+  '/explore/rides': typeof ExploreRidesRoute
+  '/explore/shops': typeof ExploreShopsRoute
+  '/explore/transit': typeof ExploreTransitRoute
+  '/explore/': typeof ExploreIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/me': typeof MeRoute
+  '/onboarding': typeof OnboardingRoute
+  '/reverify': typeof ReverifyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/social': typeof SocialRoute
+  '/terms': typeof TermsRoute
+  '/topup': typeof TopupRoute
+  '/explore/admin': typeof ExploreAdminRoute
+  '/explore/community': typeof ExploreCommunityRoute
+  '/explore/events': typeof ExploreEventsRoute
+  '/explore/food': typeof ExploreFoodRoute
+  '/explore/health': typeof ExploreHealthRoute
+  '/explore/housing': typeof ExploreHousingRoute
+  '/explore/reserve': typeof ExploreReserveRoute
+  '/explore/rides': typeof ExploreRidesRoute
+  '/explore/shops': typeof ExploreShopsRoute
+  '/explore/transit': typeof ExploreTransitRoute
+  '/explore': typeof ExploreIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/me': typeof MeRoute
+  '/onboarding': typeof OnboardingRoute
+  '/reverify': typeof ReverifyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/social': typeof SocialRoute
+  '/terms': typeof TermsRoute
+  '/topup': typeof TopupRoute
+  '/explore/admin': typeof ExploreAdminRoute
+  '/explore/community': typeof ExploreCommunityRoute
+  '/explore/events': typeof ExploreEventsRoute
+  '/explore/food': typeof ExploreFoodRoute
+  '/explore/health': typeof ExploreHealthRoute
+  '/explore/housing': typeof ExploreHousingRoute
+  '/explore/reserve': typeof ExploreReserveRoute
+  '/explore/rides': typeof ExploreRidesRoute
+  '/explore/shops': typeof ExploreShopsRoute
+  '/explore/transit': typeof ExploreTransitRoute
+  '/explore/': typeof ExploreIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/me'
+    | '/onboarding'
+    | '/reverify'
+    | '/sitemap.xml'
+    | '/social'
+    | '/terms'
+    | '/topup'
+    | '/explore/admin'
+    | '/explore/community'
+    | '/explore/events'
+    | '/explore/food'
+    | '/explore/health'
+    | '/explore/housing'
+    | '/explore/reserve'
+    | '/explore/rides'
+    | '/explore/shops'
+    | '/explore/transit'
+    | '/explore/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/me'
+    | '/onboarding'
+    | '/reverify'
+    | '/sitemap.xml'
+    | '/social'
+    | '/terms'
+    | '/topup'
+    | '/explore/admin'
+    | '/explore/community'
+    | '/explore/events'
+    | '/explore/food'
+    | '/explore/health'
+    | '/explore/housing'
+    | '/explore/reserve'
+    | '/explore/rides'
+    | '/explore/shops'
+    | '/explore/transit'
+    | '/explore'
+  id:
+    | '__root__'
+    | '/'
+    | '/me'
+    | '/onboarding'
+    | '/reverify'
+    | '/sitemap.xml'
+    | '/social'
+    | '/terms'
+    | '/topup'
+    | '/explore/admin'
+    | '/explore/community'
+    | '/explore/events'
+    | '/explore/food'
+    | '/explore/health'
+    | '/explore/housing'
+    | '/explore/reserve'
+    | '/explore/rides'
+    | '/explore/shops'
+    | '/explore/transit'
+    | '/explore/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MeRoute: typeof MeRoute
+  OnboardingRoute: typeof OnboardingRoute
+  ReverifyRoute: typeof ReverifyRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SocialRoute: typeof SocialRoute
+  TermsRoute: typeof TermsRoute
+  TopupRoute: typeof TopupRoute
+  ExploreAdminRoute: typeof ExploreAdminRoute
+  ExploreCommunityRoute: typeof ExploreCommunityRoute
+  ExploreEventsRoute: typeof ExploreEventsRoute
+  ExploreFoodRoute: typeof ExploreFoodRoute
+  ExploreHealthRoute: typeof ExploreHealthRoute
+  ExploreHousingRoute: typeof ExploreHousingRoute
+  ExploreReserveRoute: typeof ExploreReserveRoute
+  ExploreRidesRoute: typeof ExploreRidesRoute
+  ExploreShopsRoute: typeof ExploreShopsRoute
+  ExploreTransitRoute: typeof ExploreTransitRoute
+  ExploreIndexRoute: typeof ExploreIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/topup': {
+      id: '/topup'
+      path: '/topup'
+      fullPath: '/topup'
+      preLoaderRoute: typeof TopupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/social': {
+      id: '/social'
+      path: '/social'
+      fullPath: '/social'
+      preLoaderRoute: typeof SocialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reverify': {
+      id: '/reverify'
+      path: '/reverify'
+      fullPath: '/reverify'
+      preLoaderRoute: typeof ReverifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/me': {
+      id: '/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +335,107 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/': {
+      id: '/explore/'
+      path: '/explore'
+      fullPath: '/explore/'
+      preLoaderRoute: typeof ExploreIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/transit': {
+      id: '/explore/transit'
+      path: '/explore/transit'
+      fullPath: '/explore/transit'
+      preLoaderRoute: typeof ExploreTransitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/shops': {
+      id: '/explore/shops'
+      path: '/explore/shops'
+      fullPath: '/explore/shops'
+      preLoaderRoute: typeof ExploreShopsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/rides': {
+      id: '/explore/rides'
+      path: '/explore/rides'
+      fullPath: '/explore/rides'
+      preLoaderRoute: typeof ExploreRidesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/reserve': {
+      id: '/explore/reserve'
+      path: '/explore/reserve'
+      fullPath: '/explore/reserve'
+      preLoaderRoute: typeof ExploreReserveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/housing': {
+      id: '/explore/housing'
+      path: '/explore/housing'
+      fullPath: '/explore/housing'
+      preLoaderRoute: typeof ExploreHousingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/health': {
+      id: '/explore/health'
+      path: '/explore/health'
+      fullPath: '/explore/health'
+      preLoaderRoute: typeof ExploreHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/food': {
+      id: '/explore/food'
+      path: '/explore/food'
+      fullPath: '/explore/food'
+      preLoaderRoute: typeof ExploreFoodRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/events': {
+      id: '/explore/events'
+      path: '/explore/events'
+      fullPath: '/explore/events'
+      preLoaderRoute: typeof ExploreEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/community': {
+      id: '/explore/community'
+      path: '/explore/community'
+      fullPath: '/explore/community'
+      preLoaderRoute: typeof ExploreCommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/admin': {
+      id: '/explore/admin'
+      path: '/explore/admin'
+      fullPath: '/explore/admin'
+      preLoaderRoute: typeof ExploreAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MeRoute: MeRoute,
+  OnboardingRoute: OnboardingRoute,
+  ReverifyRoute: ReverifyRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SocialRoute: SocialRoute,
+  TermsRoute: TermsRoute,
+  TopupRoute: TopupRoute,
+  ExploreAdminRoute: ExploreAdminRoute,
+  ExploreCommunityRoute: ExploreCommunityRoute,
+  ExploreEventsRoute: ExploreEventsRoute,
+  ExploreFoodRoute: ExploreFoodRoute,
+  ExploreHealthRoute: ExploreHealthRoute,
+  ExploreHousingRoute: ExploreHousingRoute,
+  ExploreReserveRoute: ExploreReserveRoute,
+  ExploreRidesRoute: ExploreRidesRoute,
+  ExploreShopsRoute: ExploreShopsRoute,
+  ExploreTransitRoute: ExploreTransitRoute,
+  ExploreIndexRoute: ExploreIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
