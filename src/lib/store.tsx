@@ -24,15 +24,15 @@ type State = {
   feedOptIn: boolean;
 };
 
-const STORAGE_KEY = "shekelpay.state.v1";
+const STORAGE_KEY = "shekelpay.state.v2";
 
 const initialState: State = {
-  onboarded: false,
-  name: "",
+  onboarded: true,
+  name: "Ari Feldman",
   programId: "aish",
   cohort: "J26 · Fall–Spring",
-  balance: 0,
-  txns: [],
+  balance: 640.5,
+  txns: SEED_TXNS,
   reverifyDueISO: null,
   reverifyDone: true,
   splits: [
