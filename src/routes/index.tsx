@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowUpRight, IdCard, Users, ChevronRight, QrCode, Search, Grid3X3, Receipt } from "lucide-react";
+import { ArrowUpRight, IdCard, Users, ChevronRight, QrCode, Grid3X3, Receipt } from "lucide-react";
+import { GlobalSearch } from "@/components/GlobalSearch";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { QRCode } from "@/components/QRCode";
 import { Avatar } from "@/components/Avatar";
@@ -77,14 +78,9 @@ function HomeScreen() {
 
       {/* Search into the full catalogue */}
       <div className="px-4 pt-3">
-        <Link
-          to="/explore"
-          className="tap flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground shadow-card"
-        >
-          <Search className="size-4 shrink-0" />
-          Search apps, guides and services
-        </Link>
+        <GlobalSearch />
       </div>
+
 
 
       {/* Recents */}
