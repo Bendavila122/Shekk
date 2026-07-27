@@ -174,54 +174,53 @@ function DetailSheet({
 
 export function ForYou() {
   const { state } = useApp();
-  const [refreshKey, setRefreshKey] = useState(0);
+  // Live: re-derive context on a timer and whenever the tab regains focus.
+  const [tick, setTick] = useState(0);
   const { prefs, togglePin, toggleHide, move, setSize, setWeatherCity, reset } = useForYouPrefs();
-  const ctx = useUserContext(refreshKey, prefs.weatherCity);
+  const ctx = useUserContext(tick, prefs.weatherCity);
 
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    const bump = () => setTick((t) => t + 1);
+    const id = window.setInterval(bump, 60_000);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") bump();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", bump);
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", bump);
+    };
+  }, []);
 
   const widgets = useMemo(() => orderWidgets(ctx, prefs.pinned, prefs.hidden), [ctx, prefs.pinned, prefs.hidden]);
   const openDef = widgets.find((w) => w.id === openId) ?? null;
-
-  const doRefresh = () => {
-    haptic(12);
-    setRefreshing(true);
-    window.setTimeout(() => {
-      setRefreshKey((k) => k + 1);
-      setRefreshing(false);
-    }, 600);
-  };
 
   // Expanded = the top widget gets a full-width tile; compact = all squares.
   const isWide = (i: number) => prefs.size !== "compact" && (i === 0 || i === 3);
 
   return (
     <section className="pt-7">
-      <div className="flex items-end justify-between px-5">
-        <div>
-          <h2 className="flex items-center gap-1.5 text-base font-bold">
-            <Sparkles className="size-4 text-primary" /> For You
-          </h2>
-          <p className="text-[11px] text-muted-foreground">{ctx.ready ? sampleTip(ctx) : "Personalising…"}</p>
-        </div>
-        <div className="flex items-center gap-1">
-          <button onClick={doRefresh} className="tap rounded-full bg-muted p-2" aria-label="Refresh widgets">
-            <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
-          </button>
-          <button
-            onClick={() => {
-              haptic();
-              setSettingsOpen(true);
-            }}
-            className="tap rounded-full bg-muted p-2"
-            aria-label="Customise For You"
-          >
-            <SlidersHorizontal className="size-4" />
-          </button>
-        </div>
+      <div className="flex items-center justify-between px-5">
+        <h2 className="flex items-center gap-1.5 text-base font-bold">
+          <Sparkles className="size-4 text-primary" /> For You
+        </h2>
+        <button
+          onClick={() => {
+            haptic();
+            setSettingsOpen(true);
+          }}
+          className="tap rounded-full bg-muted p-2"
+          aria-label="Customise For You"
+        >
+          <SlidersHorizontal className="size-4" />
+        </button>
       </div>
+
 
       {!ctx.ready ? (
         <div className="pt-3">
