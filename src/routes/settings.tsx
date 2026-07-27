@@ -273,7 +273,36 @@ function SettingsPage() {
           </div>
           <Divider />
           <div className="p-4">
-            <p className="text-sm font-semibold">Language</p>
+            <p className="text-sm font-semibold">App language</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Default language for every screen. Hebrew switches the app to right-to-left.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {(
+                [
+                  { id: "en", label: "English", note: "" },
+                  { id: "he", label: "עברית", note: "Hebrew" },
+                  { id: "es", label: "Español", note: "Spanish" },
+                  { id: "fr", label: "Français", note: "French" },
+                  { id: "ru", label: "Русский", note: "Russian" },
+                ] as { id: SettingsShape["appLanguage"]; label: string; note: string }[]
+              ).map(({ id, label, note }) => (
+                <button
+                  key={id}
+                  onClick={() => setSetting("appLanguage", id)}
+                  className={`tap rounded-full px-3 py-1.5 text-xs font-semibold ${
+                    s.appLanguage === id ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+                  }`}
+                  title={note}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <Divider />
+          <div className="p-4">
+            <p className="text-sm font-semibold">Hebrew slang in English copy</p>
             <div className="mt-2 flex gap-2">
               {(
                 [
