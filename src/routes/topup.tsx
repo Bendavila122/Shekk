@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Apple, Info, Check } from "lucide-react";
 import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
-import { MID_MARKET_RATE, ils, quoteTopUp, usd } from "@/lib/mock";
+import { ils, quoteTopUp, usd } from "@/lib/mock";
 import { useApp } from "@/lib/store";
 
 export const Route = createFileRoute("/topup")({
@@ -93,13 +93,12 @@ function TopUp() {
 
         <Card className="mt-4 space-y-2.5 text-sm">
           <Row label="Amount paid" value={usd(q.usd)} />
-          <Row label="Mid-market reference rate" value={`$1 = ₪${MID_MARKET_RATE.toFixed(2)}`} />
-          <Row label="ShekelPay fee / spread (1.9%)" value={`− ${usd(q.feeUsd)}`} muted />
-          <Row label="Converted at" value={`$1 = ₪${q.effectiveRate.toFixed(3)} effective`} muted />
+          <Row label="ShekelPay rate" value={`$1 = ₪${q.rate.toFixed(3)}`} muted />
           <div className="border-t border-border pt-2.5">
             <Row label="Credits you receive" value={ils(q.credits)} bold />
           </div>
         </Card>
+
 
         <div className="mt-4 flex gap-2 rounded-2xl bg-warning-soft p-4 text-xs text-warning-foreground">
           <Info className="mt-0.5 size-4 shrink-0" />
