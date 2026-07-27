@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowUpRight, Plus, IdCard, Users, ChevronRight, QrCode, Search, Grid3X3, Receipt } from "lucide-react";
+import { ArrowUpRight, IdCard, Users, ChevronRight, QrCode, Search, Grid3X3, Receipt } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { QRCode } from "@/components/QRCode";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
-import { ils, usdRef } from "@/lib/mock";
+
 import { STATUS_LABEL, serviceLinkProps, type Service } from "@/lib/services";
 import { recordServiceUse, useRecentServices } from "@/lib/recents";
 import { ServiceLogo } from "@/components/ServiceLogo";
