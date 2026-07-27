@@ -141,7 +141,10 @@ export function AppShell({ children }: { children: ReactNode }) {
                 }`}
               >
                 <div className="mb-4 flex items-center justify-between">
-                  <p className="font-display text-lg font-bold">Shekk</p>
+                  <div className="flex items-center gap-2">
+                    <img src="/favicon.png" alt="Shekk logo" width={28} height={28} className="size-7 rounded-lg border border-border bg-white" />
+                    <p className="font-display text-lg font-bold">Shekk</p>
+                  </div>
                   <button
                     type="button"
                     aria-label="Close menu"
