@@ -137,7 +137,7 @@ export function QuickMenu() {
           />
           <div className="fixed left-1/2 top-16 z-50 ml-[-15px] w-60 max-w-[calc(100vw-1.5rem)] translate-x-[calc(215px-100%)] overflow-hidden rounded-2xl border border-border bg-card shadow-lift">
             <div className="border-b border-border bg-ink px-4 py-3 text-ink-foreground">
-              <p className="text-[10px] uppercase tracking-widest opacity-60">Token balance</p>
+              <p className="text-[10px] uppercase tracking-widest opacity-60">Balance</p>
               <p className="font-display text-xl font-bold leading-tight">{ils(state.balance)}</p>
               <p className="text-[11px] opacity-60">≈ {usdRef(state.balance)} reference</p>
             </div>
@@ -169,12 +169,12 @@ function useActive() {
 }
 
 
-/** Token balance + top up, shown inside the navigation. */
+/** Balance + top up, shown inside the navigation. */
 function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
   const { state } = useApp();
   return (
     <div className="mt-auto rounded-2xl bg-ink px-4 py-3 text-ink-foreground">
-      <p className="text-[10px] uppercase tracking-widest opacity-60">Token balance</p>
+      <p className="text-[10px] uppercase tracking-widest opacity-60">Balance</p>
       <p className="font-display text-2xl font-bold leading-tight">{ils(state.balance)}</p>
       <p className="text-[11px] opacity-60">≈ {usdRef(state.balance)} reference</p>
       <Link
