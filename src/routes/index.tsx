@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowUpRight, Plus, IdCard, Users, ChevronRight, QrCode, Search, Grid3X3, Receipt } from "lucide-react";
+import { ArrowUpRight, IdCard, Users, ChevronRight, QrCode, Search, Grid3X3, Receipt } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { QRCode } from "@/components/QRCode";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
-import { ils, usdRef } from "@/lib/mock";
+
 import { STATUS_LABEL, serviceLinkProps, type Service } from "@/lib/services";
 import { recordServiceUse, useRecentServices } from "@/lib/recents";
 import { ServiceLogo } from "@/components/ServiceLogo";
@@ -69,26 +69,13 @@ function HomeScreen() {
 
   return (
     <AppShell>
-      {/* Status strip + wallet */}
-      <div className="bg-ink px-5 pb-8 pt-6 text-ink-foreground">
-        <p className="text-xs uppercase tracking-widest opacity-60">Shalom, {firstName}</p>
-        <div className="mt-3 flex items-end justify-between gap-4">
-          <div>
-            <p className="text-[11px] uppercase tracking-widest opacity-60">Token balance</p>
-            <p className="font-display text-4xl font-bold leading-tight">{ils(state.balance)}</p>
-            <p className="text-xs opacity-60">≈ {usdRef(state.balance)} reference value</p>
-          </div>
-          <Link
-            to="/topup"
-            className="tap flex items-center gap-1.5 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground"
-          >
-            <Plus className="size-4" /> Top up
-          </Link>
-        </div>
+      <div className="px-5 pb-2 pt-7">
+        <p className="text-xs uppercase tracking-widest text-muted-foreground">Shalom, {firstName}</p>
+        <h1 className="font-display text-3xl font-bold tracking-tight">Your Israeli home screen</h1>
       </div>
 
       {/* Search into the full catalogue */}
-      <div className="-mt-5 px-4">
+      <div className="px-4 pt-3">
         <Link
           to="/explore"
           className="tap flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground shadow-card"
@@ -97,6 +84,7 @@ function HomeScreen() {
           Search apps, guides and services
         </Link>
       </div>
+
 
       {/* Recents */}
       <div className="space-y-6 px-4 pt-6">

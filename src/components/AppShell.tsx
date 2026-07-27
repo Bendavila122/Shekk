@@ -1,7 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Wallet, Compass, Receipt, Users, User, ChevronLeft, Menu, X } from "lucide-react";
+import { Wallet, Compass, Receipt, Users, User, ChevronLeft, Menu, X, Plus } from "lucide-react";
 import { useApp } from "@/lib/store";
+import { ils, usdRef } from "@/lib/mock";
+
 
 const TABS = [
   { to: "/", label: "Home", Icon: Wallet },
@@ -51,6 +53,25 @@ function useActive() {
   return (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 }
 
+/** Token balance + top up, shown inside the navigation. */
+function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
+  const { state } = useApp();
+  return (
+    <div className="mb-4 rounded-2xl bg-ink px-4 py-3 text-ink-foreground">
+      <p className="text-[10px] uppercase tracking-widest opacity-60">Token balance</p>
+      <p className="font-display text-2xl font-bold leading-tight">{ils(state.balance)}</p>
+      <p className="text-[11px] opacity-60">≈ {usdRef(state.balance)} reference</p>
+      <Link
+        to="/topup"
+        onClick={onNavigate}
+        className="tap mt-3 flex items-center justify-center gap-1.5 rounded-full bg-accent px-3 py-2 text-xs font-semibold text-accent-foreground"
+      >
+        <Plus className="size-4" /> Top up
+      </Link>
+    </div>
+  );
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
   const isActive = useActive();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -64,7 +85,9 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="lg:flex lg:min-h-screen lg:bg-ink/[0.03]">
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:gap-1 lg:border-r lg:border-border lg:bg-card lg:px-4 lg:py-8">
-        <p className="mb-6 px-3 font-display text-xl font-bold">ShekelPay</p>
+        <p className="mb-4 px-3 font-display text-xl font-bold">ShekelPay</p>
+        <NavBalance />
+
         {TABS.map(({ to, label, Icon }) => {
           const active = isActive(to);
           return (
@@ -125,6 +148,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                     <X className="size-4" />
                   </button>
                 </div>
+                <NavBalance onNavigate={() => setMenuOpen(false)} />
+
                 {TABS.map(({ to, label, Icon }) => {
                   const active = isActive(to);
                   return (
