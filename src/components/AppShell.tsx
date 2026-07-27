@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import type { ReactNode } from "react";
-import { Wallet, Compass, Receipt, Users, User, ChevronLeft } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Wallet, Compass, Receipt, Users, User, ChevronLeft, Menu, X } from "lucide-react";
 import { useApp } from "@/lib/store";
 
 const TABS = [
@@ -10,6 +10,7 @@ const TABS = [
   { to: "/social", label: "Social", Icon: Users },
   { to: "/me", label: "Me", Icon: User },
 ];
+
 
 export function PhoneFrame({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
   return (
