@@ -41,8 +41,115 @@ export function FocusScreen({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen justify-center bg-ink/95 px-0 py-0 sm:px-4 sm:py-8 lg:bg-ink/[0.03] lg:px-8 lg:py-12">
       <div className="relative flex min-h-screen w-full max-w-[430px] flex-col overflow-hidden bg-background shadow-lift sm:min-h-[860px] sm:rounded-[2.5rem] sm:border-8 sm:border-ink lg:min-h-0 lg:max-w-2xl lg:rounded-3xl lg:border lg:border-border lg:shadow-card">
         {children}
+        <MobileNav floatingButton />
       </div>
     </div>
+  );
+}
+
+/** Highlighted notice / key-info block — deliberately off-palette so it stands out. */
+export function Notice({
+  children,
+  title,
+  className = "",
+}: {
+  children: ReactNode;
+  title?: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`rounded-2xl border border-notice-border bg-notice-soft px-4 py-3 text-notice-foreground ${className}`}
+    >
+      {title ? (
+        <p className="mb-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide">
+          <Info className="size-3.5" /> {title}
+        </p>
+      ) : null}
+      <div className="text-xs leading-relaxed">{children}</div>
+    </div>
+  );
+}
+
+/** Menu button + slide-in drawer, shared by every screen. */
+export function MobileNav({ floatingButton = false }: { floatingButton?: boolean }) {
+  const isActive = useActive();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  return (
+    <>
+      <button
+        type="button"
+        aria-label="Open menu"
+        aria-expanded={menuOpen}
+        onClick={() => setMenuOpen(true)}
+        className={`tap absolute right-4 top-4 z-30 flex size-11 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-card lg:hidden ${
+          floatingButton ? "" : ""
+        }`}
+      >
+        <Menu className="size-5" />
+      </button>
+
+      <div
+        className={`absolute inset-0 z-40 lg:hidden ${menuOpen ? "" : "pointer-events-none"}`}
+        aria-hidden={!menuOpen}
+      >
+        <div
+          onClick={() => setMenuOpen(false)}
+          className={`absolute inset-0 bg-transparent transition-opacity duration-200 ${
+            menuOpen ? "opacity-100" : "opacity-0"
+          }`}
+        />
+        <nav
+          className={`absolute right-0 top-0 flex h-full w-64 max-w-[78%] flex-col gap-1 border-l border-border bg-card px-4 py-6 shadow-lift transition-transform duration-300 ease-out ${
+            menuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <img
+                src="/favicon.png"
+                alt="Shekk logo"
+                width={28}
+                height={28}
+                className="size-7 rounded-lg border border-border"
+              />
+              <p className="font-display text-lg font-bold">Shekk</p>
+            </div>
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setMenuOpen(false)}
+              className="tap rounded-full bg-muted p-2 text-foreground"
+            >
+              <X className="size-4" />
+            </button>
+          </div>
+          {TABS.map(({ to, label, Icon }) => {
+            const active = isActive(to);
+            return (
+              <Link
+                key={to}
+                to={to}
+                onClick={() => setMenuOpen(false)}
+                className={`tap flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold ${
+                  active ? "bg-primary-soft text-primary" : "text-muted-foreground"
+                }`}
+              >
+                <Icon className="size-5 shrink-0" strokeWidth={active ? 2.4 : 1.8} />
+                <span className="truncate">{label}</span>
+              </Link>
+            );
+          })}
+          <NavBalance onNavigate={() => setMenuOpen(false)} />
+        </nav>
+      </div>
+    </>
   );
 }
 
