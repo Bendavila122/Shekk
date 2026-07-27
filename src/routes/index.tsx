@@ -34,7 +34,7 @@ function AppIcon({ service }: { service: Service }) {
     <Link
       {...serviceLinkProps(service)}
       onClick={() => recordServiceUse(service.id)}
-      className="tap group flex flex-col items-center gap-1.5"
+      className="tap-icon group flex flex-col items-center gap-1.5"
     >
 
       <span className="relative">

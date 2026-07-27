@@ -27,7 +27,7 @@ export const Route = createFileRoute("/explore/")({
 /** One app icon, iPhone-home-screen scale. */
 function AppTile({ service, size = 60 }: { service: Service; size?: number }) {
   return (
-    <Link {...serviceLinkProps(service)} onClick={() => recordServiceUse(service.id)} className="tap flex flex-col items-center gap-2">
+    <Link {...serviceLinkProps(service)} onClick={() => recordServiceUse(service.id)} className="tap-icon flex flex-col items-center gap-2">
       <span className="relative">
         <ServiceLogo service={service} size={size} className="rounded-[1.2rem] shadow-card" />
         {service.status !== "live" ? (
@@ -76,7 +76,7 @@ function Explore() {
             className="w-full min-w-0 bg-transparent outline-none placeholder:text-muted-foreground"
           />
           {query ? (
-            <button onClick={() => setQuery("")} className="tap shrink-0 text-muted-foreground">
+            <button onClick={() => setQuery("")} className="tap-flat shrink-0 text-muted-foreground">
               <X className="size-4" />
             </button>
           ) : null}
@@ -109,7 +109,7 @@ function Explore() {
                 key={cat.id}
                 to="/explore/category/$id"
                 params={{ id: cat.id }}
-                className="tap flex flex-col items-center gap-3 rounded-[1.75rem] bg-muted/70 px-3 py-6 text-center"
+                className="tap-icon flex flex-col items-center gap-3 rounded-[1.75rem] bg-muted/70 px-3 py-6 text-center"
               >
                 <span className="flex size-20 items-center justify-center rounded-[1.6rem] bg-card text-4xl shadow-card">
                   {cat.emoji}

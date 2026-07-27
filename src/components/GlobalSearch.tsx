@@ -13,7 +13,7 @@ export function GlobalSearch({ placeholder = "Search apps, guides and services" 
 
   return (
     <div className="relative">
-      <label className="tap flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm shadow-card">
+      <label className="flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm shadow-card">
         <Search className="size-4 shrink-0 text-muted-foreground" />
         <input
           value={query}
@@ -27,7 +27,7 @@ export function GlobalSearch({ placeholder = "Search apps, guides and services" 
             type="button"
             aria-label="Clear search"
             onClick={() => setQuery("")}
-            className="tap shrink-0 text-muted-foreground"
+            className="tap-flat shrink-0 text-muted-foreground"
           >
             <X className="size-4" />
           </button>
@@ -50,7 +50,7 @@ export function GlobalSearch({ placeholder = "Search apps, guides and services" 
                   if (r.service) recordServiceUse(r.service.id);
                   setQuery("");
                 }}
-                className="tap flex items-center gap-3 border-b border-border px-3 py-2.5 last:border-b-0"
+                className="tap-flat flex items-center gap-3 border-b border-border px-3 py-2.5 last:border-b-0"
               >
                 {r.service ? (
                   <ServiceLogo service={r.service} size={36} className="rounded-xl" />
