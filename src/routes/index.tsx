@@ -5,6 +5,7 @@ import { GlobalSearch } from "@/components/GlobalSearch";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { ForYou } from "@/components/ForYou";
 import { ActiveNow } from "@/components/ActiveNow";
+import { LocationBar } from "@/components/LocationBar";
 
 import { QRCode } from "@/components/QRCode";
 import { Avatar } from "@/components/Avatar";
@@ -87,6 +88,8 @@ function HomeScreen() {
         </div>
         <p className="mt-2 text-xs uppercase tracking-widest text-muted-foreground">Shalom, {firstName}</p>
       </div>
+
+      <LocationBar />
 
 
 
