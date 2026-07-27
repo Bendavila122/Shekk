@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Search, X } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
-import { EVENTS, ils } from "@/lib/mock";
+
 import { SERVICE_CATEGORIES, serviceLinkProps, type Service } from "@/lib/services";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { recordServiceUse } from "@/lib/recents";
@@ -121,28 +121,6 @@ function Explore() {
           </div>
 
 
-          {/* This week */}
-          <div>
-            <h2 className="mb-3 px-1 text-xl font-semibold tracking-tight">This week</h2>
-            <div className="space-y-2">
-              {EVENTS.slice(0, 3).map((e) => (
-                <Link key={e.id} to="/explore/events">
-                  <Card className="flex items-center gap-3">
-                    <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-muted text-xl">
-                      {e.emoji}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold">{e.name}</p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {e.host} · {e.when}
-                      </p>
-                    </div>
-                    <span className="shrink-0 text-sm font-semibold">{e.price === 0 ? "Free" : ils(e.price)}</span>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          </div>
 
           <p className="px-1 text-center text-[11px] text-muted-foreground">
             We integrate platforms, not individual venues — restaurants, bars and shops arrive through Wolt, Ontopo and

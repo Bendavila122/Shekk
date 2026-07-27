@@ -60,12 +60,6 @@ function ActivityScreen() {
 
   return (
     <AppShell>
-      <header className="px-5 pt-7">
-        <h1 className="font-display text-4xl font-bold tracking-tight">Activity</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Every top-up, partner-app order and token transfer, newest first.
-        </p>
-      </header>
 
       <section className="grid grid-cols-2 gap-3 px-4 pt-5">
         <Card className="p-4">
