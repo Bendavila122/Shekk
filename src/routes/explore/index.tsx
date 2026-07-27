@@ -3,8 +3,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Search, X } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { EVENTS, ils } from "@/lib/mock";
-import { SERVICE_CATEGORIES, FEATURED_SERVICES, serviceLinkProps, type Service } from "@/lib/services";
+import { SERVICE_CATEGORIES, serviceLinkProps, type Service } from "@/lib/services";
 import { ServiceLogo } from "@/components/ServiceLogo";
+import { recordServiceUse } from "@/lib/recents";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 
 export const Route = createFileRoute("/explore/")({
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/explore/")({
 /** One app icon, iPhone-home-screen scale. */
 function AppTile({ service, size = 60 }: { service: Service; size?: number }) {
   return (
-    <Link {...serviceLinkProps(service)} className="tap flex flex-col items-center gap-2">
+    <Link {...serviceLinkProps(service)} onClick={() => recordServiceUse(service.id)} className="tap flex flex-col items-center gap-2">
       <span className="relative">
         <ServiceLogo service={service} size={size} className="rounded-[1.2rem] shadow-card" />
         {service.status !== "live" ? (
