@@ -132,9 +132,12 @@ function Explore() {
                 All guides
               </Link>
             </div>
-            {GUIDES.slice(0, 4).map((g) => (
-              <GuideStrip key={g.id} guide={g} />
-            ))}
+            <div className="grid auto-rows-min grid-cols-2 gap-3">
+              {GUIDES.slice(0, 4).map((g, i) => (
+                <GuideStrip key={g.id} guide={g} index={i} />
+              ))}
+            </div>
+
           </div>
 
           <p className="px-1 text-center text-[11px] text-muted-foreground">
