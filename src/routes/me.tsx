@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText, Camera, Crown, CreditCard } from "lucide-react";
+import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText, Camera, Crown, CreditCard, Sparkles } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { PROGRAMS, ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
@@ -103,6 +103,7 @@ function Me() {
           <RowLink to="/explore/shops" Icon={Bookmark} label="Saved places & discounts" hint="7 saved" />
           <RowLink to="/explore/admin" Icon={FileText} label="Program documents & visa" hint="Student visa A/2" />
           <RowLink to="/settings" Icon={Settings} label="App settings" hint="Currency, theme, alerts" />
+          <RowLink to="/welcome" Icon={Sparkles} label="Redo account setup" hint="Programme, city, currency" />
           <RowLink to="/terms" Icon={FileText} label="Full Terms & Conditions" hint="" />
         </Card>
 
