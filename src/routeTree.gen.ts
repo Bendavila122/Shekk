@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as TopupRouteImport } from './routes/topup'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -47,6 +48,11 @@ import { Route as ExploreCategoryIdRouteImport } from './routes/explore/category
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WalletRoute = WalletRouteImport.update({
   id: '/wallet',
   path: '/wallet',
@@ -253,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
   '/wallet': typeof WalletRoute
+  '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/benefits/$id': typeof BenefitsIdRoute
@@ -292,6 +299,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
   '/wallet': typeof WalletRoute
+  '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/benefits/$id': typeof BenefitsIdRoute
@@ -332,6 +340,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
   '/wallet': typeof WalletRoute
+  '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/benefits/$id': typeof BenefitsIdRoute
@@ -373,6 +382,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/topup'
     | '/wallet'
+    | '/welcome'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/benefits/$id'
@@ -412,6 +422,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/topup'
     | '/wallet'
+    | '/welcome'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/benefits/$id'
@@ -451,6 +462,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/topup'
     | '/wallet'
+    | '/welcome'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/benefits/$id'
@@ -491,6 +503,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   TopupRoute: typeof TopupRoute
   WalletRoute: typeof WalletRoute
+  WelcomeRoute: typeof WelcomeRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   BenefitsIdRoute: typeof BenefitsIdRoute
@@ -516,6 +529,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/wallet': {
       id: '/wallet'
       path: '/wallet'
@@ -795,6 +815,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   TopupRoute: TopupRoute,
   WalletRoute: WalletRoute,
+  WelcomeRoute: WelcomeRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
