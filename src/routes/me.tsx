@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText, Camera } from "lucide-react";
+import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText, Camera, Crown, CreditCard } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { PROGRAMS, ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/me")({
 
 function Me() {
   const ready = useOnboardedGate();
-  const { state, verification, daysLeft, setAvatar } = useApp();
+  const { state, verification, daysLeft, setAvatar, isPremium } = useApp();
   const program = PROGRAMS.find((p) => p.id === state.programId);
 
   const onPickPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
