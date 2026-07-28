@@ -1,6 +1,6 @@
 import { Link, useRouterState, useRouter, useCanGoBack, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Wallet, Compass, Receipt, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy } from "lucide-react";
+import { Wallet, Compass, Tag, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy, Home } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
@@ -8,9 +8,10 @@ import { refIn } from "@/lib/currencies";
 
 
 const TABS = [
-  { to: "/", label: "Home", Icon: Wallet },
+  { to: "/", label: "Home", Icon: Home },
+  { to: "/wallet", label: "Wallet", Icon: Wallet },
   { to: "/explore", label: "Explore", Icon: Compass },
-  { to: "/activity", label: "Activity", Icon: Receipt },
+  { to: "/benefits", label: "Benefits", Icon: Tag },
   { to: "/social", label: "Social", Icon: Users },
   { to: "/me", label: "Me", Icon: User },
 ];
