@@ -139,7 +139,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     services: [
       { id: "community", name: "Shuls & minyanim", partner: "Aish · Chabad", emoji: "🕍", blurb: "Minyan times near you", status: "live", to: "/explore/community" },
       { id: "programs", name: "Yeshivas, sems & schools", emoji: "📚", blurb: "Program directory and open shiurim", status: "guide" },
-      { id: "siddur", name: "Siddur & Tikkun", emoji: "📖", blurb: "Nusach-aware siddur, offline", status: "live", to: "/explore/community" },
+      { id: "siddur", name: "Siddur", emoji: "📖", blurb: "Nusach-aware siddur, Hebrew & English", status: "live", to: "/siddur", detail: ["Shacharit, Mincha, Maariv, bedtime Shema", "Tefilat HaDerech, Birkat Hamazon, brachot, Havdalah", "Pick your nusach, text size and translation"] },
       { id: "chagim", name: "Chagim & national holidays", emoji: "🕯️", blurb: "What closes, when, and where to be", status: "guide", detail: ["Public transport stops before Shabbat and chag", "Yom HaZikaron / Yom HaAtzmaut siren times", "Chol HaMoed opening hours"] },
     ],
   },
