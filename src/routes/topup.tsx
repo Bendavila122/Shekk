@@ -1,39 +1,42 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { Apple, Info, Check } from "lucide-react";
+import { Apple, Building2, Check, ShieldCheck } from "lucide-react";
 import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
 import { ils } from "@/lib/mock";
-import { currency, money, quoteTopUpIn } from "@/lib/currencies";
+import { CURRENCIES, currency, money } from "@/lib/currencies";
+import { quoteFx } from "@/lib/banking";
 import { useApp } from "@/lib/store";
 
 export const Route = createFileRoute("/topup")({
   head: () => ({
     meta: [
-      { title: "Top up credits · Shekk" },
+      { title: "Add money · Shekk" },
       {
         name: "description",
-        content: "Buy shekel credits with Apple Pay and see the rate, the fee and your final credit amount before you confirm.",
+        content:
+          "Add money to your Shekk account from six currencies and see the interbank rate, the conversion cost and the shekels you receive before you confirm.",
       },
-      { property: "og:title", content: "Top up credits · Shekk" },
-      { property: "og:description", content: "Transparent pricing on every credit purchase." },
+      { property: "og:title", content: "Add money · Shekk" },
+      { property: "og:description", content: "Transparent conversion on every transfer into your shekel account." },
     ],
   }),
-  component: TopUp,
+  component: AddMoney,
 });
 
 const PRESETS = [50, 100, 250, 500];
 
-function TopUp() {
+function AddMoney() {
+  const { addMoney, state } = useApp();
   const [amount, setAmount] = useState("100");
-  const [sheet, setSheet] = useState(false);
+  const [source, setSource] = useState(state.settings.payCurrency);
+  const [sheet, setSheet] = useState<"apple" | "bank" | null>(null);
   const [done, setDone] = useState(false);
-  const { addCredits, state } = useApp();
-  const cur = currency(state.settings.payCurrency);
+  const cur = currency(source);
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const value = Math.max(0, Number(amount) || 0);
-  const q = quoteTopUpIn(state.settings.payCurrency, value);
+  const q = quoteFx(source, value);
   const isCustom = !PRESETS.includes(value);
 
   if (done) {
@@ -44,15 +47,15 @@ function TopUp() {
             <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-success-soft">
               <Check className="size-10 text-success" />
             </div>
-            <h1 className="mt-6 text-3xl font-bold">{ils(q.credits)} credits added</h1>
+            <h1 className="mt-6 font-display text-3xl font-bold">{ils(q.shekels)} added</h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Paid {money(cur.code, q.amount)} with Apple Pay. Receipt is in your Activity.
+              {money(cur.code, q.amount)} converted and settled into your Shekk balance. The receipt is in Activity.
             </p>
           </div>
           <div className="space-y-3">
-            <PrimaryButton onClick={() => navigate({ to: "/" })}>Back to my wallet</PrimaryButton>
+            <PrimaryButton onClick={() => navigate({ to: "/wallet" })}>Back to wallet</PrimaryButton>
             <Link to="/explore" className="tap block rounded-2xl bg-muted py-4 text-center text-sm font-semibold">
-              Explore mini-programs
+              Explore Israel
             </Link>
           </div>
         </div>
@@ -63,13 +66,30 @@ function TopUp() {
   return (
     <FocusScreen>
       <div className="flex min-h-screen flex-col px-6 pb-10 pt-8 sm:min-h-[860px]">
-        <Link to="/" className="text-sm font-semibold text-muted-foreground">
+        <Link to="/wallet" className="text-sm font-semibold text-muted-foreground">
           Cancel
         </Link>
-        <h1 className="mt-4 text-3xl font-bold">Add credits</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{`You pay in ${cur.code}. You receive shekel credits.`}</p>
+        <h1 className="mt-4 font-display text-3xl font-bold tracking-tight">Add money</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Pay in {cur.code}, hold shekels. Your balance lands in your Shekk account.
+        </p>
 
-        <div className="mt-6 rounded-3xl border border-border bg-card p-5 shadow-card">
+        {/* Source currency */}
+        <div className="-mx-6 mt-5 flex gap-2 overflow-x-auto px-6 pb-1 no-scrollbar">
+          {CURRENCIES.map((c) => (
+            <button
+              key={c.code}
+              onClick={() => setSource(c.code)}
+              className={`tap flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-semibold ${
+                source === c.code ? "bg-ink text-ink-foreground" : "bg-muted text-muted-foreground"
+              }`}
+            >
+              <span className="text-sm">{c.flag}</span> {c.code}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-4 rounded-3xl border border-border bg-card p-5 shadow-card">
           <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">You pay</span>
           <button
             type="button"
@@ -86,7 +106,6 @@ function TopUp() {
               className="w-full bg-transparent font-display text-5xl font-bold outline-none"
             />
           </button>
-          <p className="text-xs text-muted-foreground">Tap the amount to enter your own.</p>
           <div className="mt-4 grid grid-cols-4 gap-2">
             {PRESETS.map((p) => (
               <button
@@ -115,66 +134,82 @@ function TopUp() {
           </button>
         </div>
 
-
         <Card className="mt-4 space-y-2.5 text-sm">
-          <Row label="Amount paid" value={money(cur.code, q.amount)} />
+          <Row label="You pay" value={money(cur.code, q.amount)} />
+          <Row label="Interbank rate" value={`${cur.symbol}1 = ₪${q.interbank.toFixed(3)}`} muted />
+          <Row label="Conversion cost" value={money(cur.code, q.fee)} muted />
           <Row label="Shekk rate" value={`${cur.symbol}1 = ₪${q.rate.toFixed(3)}`} muted />
           <div className="border-t border-border pt-2.5">
-            <Row label="Credits you receive" value={ils(q.credits)} bold />
+            <Row label="Shekels you receive" value={ils(q.shekels)} bold />
           </div>
         </Card>
 
+        <p className="mt-3 flex items-start gap-2 px-1 text-[11px] leading-relaxed text-muted-foreground">
+          <ShieldCheck className="mt-0.5 size-3.5 shrink-0" />
+          Accounts and payments are provided by Shekk's regulated banking partner. Simulated in this prototype.{" "}
+          <Link to="/terms" className="font-semibold underline">
+            Terms
+          </Link>
+        </p>
 
-        <div className="mt-4 flex gap-2 rounded-2xl border border-notice-border bg-notice-soft p-4 text-xs text-notice-foreground">
-          <Info className="mt-0.5 size-4 shrink-0" />
-          <p>
-            Your Shekk balance is ready to spend straight away — order through any partner app inside Shekk and we
-            pay them, then deduct the Shekk equivalent.{" "}
-            <Link to="/terms" className="font-semibold underline">
-              Terms & Conditions
-            </Link>
-            .
-          </p>
-        </div>
-
-        <div className="mt-auto pt-6">
-          <PrimaryButton disabled={value <= 0} onClick={() => setSheet(true)} className="flex items-center justify-center gap-2">
+        <div className="mt-auto space-y-2 pt-6">
+          <PrimaryButton
+            disabled={value <= 0}
+            onClick={() => setSheet("apple")}
+            className="flex items-center justify-center gap-2"
+          >
             <Apple className="size-5" /> Pay {money(cur.code, q.amount)}
           </PrimaryButton>
+          <button
+            disabled={value <= 0}
+            onClick={() => setSheet("bank")}
+            className="tap flex w-full items-center justify-center gap-2 rounded-2xl bg-muted py-3.5 text-sm font-semibold disabled:opacity-40"
+          >
+            <Building2 className="size-4" /> Bank transfer instead
+          </button>
         </div>
       </div>
 
-      {sheet && (
+      {sheet ? (
         <div className="fixed inset-0 z-50 flex flex-col justify-end bg-neutral-950/45">
           <div className="animate-fade-in mx-auto w-full max-w-md rounded-t-3xl bg-card p-6 pb-8">
-
             <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-border" />
             <div className="flex items-center gap-2 text-lg font-semibold">
-              <Apple className="size-5" /> Apple Pay
+              {sheet === "apple" ? (
+                <>
+                  <Apple className="size-5" /> Apple Pay
+                </>
+              ) : (
+                <>
+                  <Building2 className="size-5" /> Bank transfer
+                </>
+              )}
             </div>
             <div className="mt-4 space-y-2 text-sm">
               <Row label="Shekk" value={money(cur.code, q.amount)} />
-              <Row label="Card" value="•••• 4417 · Visa" muted />
-              <Row label="You receive" value={`${ils(q.credits)} credits`} bold />
+              <Row label={sheet === "apple" ? "Card" : "From"} value={sheet === "apple" ? "•••• 4417 · Visa" : `${cur.code} account`} muted />
+              <Row label="You receive" value={ils(q.shekels)} bold />
             </div>
-            <p className="mt-4 text-xs text-muted-foreground">Mock sheet — no real payment is processed.</p>
+            <p className="mt-4 text-xs text-muted-foreground">
+              Simulated — the partner bank connection is not live in this prototype.
+            </p>
             <div className="mt-5 space-y-2">
               <PrimaryButton
                 onClick={() => {
-                  addCredits(q.credits, q.amount, money(cur.code, q.amount));
-                  setSheet(false);
+                  addMoney(q.shekels, q.amount, `${money(cur.code, q.amount)} · ${sheet === "apple" ? "Apple Pay" : "bank transfer"}`);
+                  setSheet(null);
                   setDone(true);
                 }}
               >
-                Confirm with Face ID
+                {sheet === "apple" ? "Confirm with Face ID" : "Confirm transfer"}
               </PrimaryButton>
-              <button onClick={() => setSheet(false)} className="tap w-full rounded-2xl bg-muted py-3.5 text-sm font-semibold">
+              <button onClick={() => setSheet(null)} className="tap w-full rounded-2xl bg-muted py-3.5 text-sm font-semibold">
                 Cancel
               </button>
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </FocusScreen>
   );
 }

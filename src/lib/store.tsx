@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { SEED_TXNS, type Txn } from "./mock";
 import type { CurrencyCode } from "./currencies";
+import { defaultCardControls, type CardControls } from "./banking";
+import type { TierId } from "./membership";
 
 export type VerificationStatus = "verified" | "expiring" | "needs-update";
 
@@ -11,6 +13,31 @@ export type SplitRequest = {
   amount: number;
   paid: boolean;
 };
+
+/** What we learn during onboarding and use to personalise everything after. */
+export type Profile = {
+  homeCountry: string;
+  arrivalDateISO: string | null;
+  city: string;
+};
+
+export type CardState = CardControls & {
+  issued: boolean;
+  last4: string;
+  expiry: string;
+  inAppleWallet: boolean;
+  inGoogleWallet: boolean;
+};
+
+export const defaultCard: CardState = {
+  ...defaultCardControls,
+  issued: false,
+  last4: "4417",
+  expiry: "09/29",
+  inAppleWallet: false,
+  inGoogleWallet: false,
+};
+
 
 export type ThemePref = "system" | "light" | "dark";
 
@@ -76,9 +103,15 @@ type State = {
   splits: SplitRequest[];
   feedOptIn: boolean;
   settings: Settings;
+  profile: Profile;
+  membership: TierId;
+  memberSinceISO: string | null;
+  card: CardState;
+  /** Benefit ids the member has already redeemed. */
+  redeemed: string[];
 };
 
-const STORAGE_KEY = "shekk.state.v2";
+const STORAGE_KEY = "shekk.state.v3";
 
 const initialState: State = {
   onboarded: true,
@@ -86,7 +119,7 @@ const initialState: State = {
   avatar: null,
   programId: "aish",
   cohort: "J26 · Fall–Spring",
-  balance: 640.5,
+  balance: 3850.0,
   txns: SEED_TXNS,
   reverifyDueISO: null,
   reverifyDone: true,
@@ -96,6 +129,22 @@ const initialState: State = {
   ],
   feedOptIn: true,
   settings: defaultSettings,
+  profile: { homeCountry: "United States", arrivalDateISO: null, city: "Jerusalem" },
+  membership: "premium",
+  memberSinceISO: "2025-09-01",
+  card: { ...defaultCard, issued: true, inAppleWallet: true },
+  redeemed: [],
+};
+
+export type OnboardingPayload = {
+  name: string;
+  programId: string;
+  cohort?: string;
+  homeCountry?: string;
+  arrivalDateISO?: string | null;
+  city?: string;
+  appLanguage?: Settings["appLanguage"];
+  payCurrency?: CurrencyCode;
 };
 
 type Ctx = {
@@ -103,10 +152,13 @@ type Ctx = {
   hydrated: boolean;
   daysLeft: number | null;
   verification: VerificationStatus;
-  completeOnboarding: (p: { name: string; programId: string }) => void;
-  addCredits: (credits: number, paid: number, currencyLabel?: string) => void;
+  isPremium: boolean;
+  completeOnboarding: (p: OnboardingPayload) => void;
+  /** Money added to the shekel account, settled by the partner bank. */
+  addMoney: (shekels: number, paid: number, sourceLabel?: string) => void;
   spend: (merchant: string, category: string, amount: number, icon: string) => void;
   receive: (merchant: string, amount: number, icon: string) => void;
+  sendMoney: (to: string, amount: number, note?: string) => void;
   triggerReverify: () => void;
   completeReverify: () => void;
   payFriend: (id: string) => void;
@@ -115,8 +167,12 @@ type Ctx = {
   setSetting: <K extends keyof Settings>(key: K, value: Settings[K]) => void;
   resetSettings: () => void;
   setAvatar: (dataUrl: string | null) => void;
+  setMembership: (tier: TierId) => void;
+  setCard: (patch: Partial<CardState>) => void;
+  redeemBenefit: (id: string) => void;
   reset: () => void;
 };
+
 
 const AppContext = createContext<Ctx | null>(null);
 
@@ -187,24 +243,70 @@ export function AppProvider({ children }: { children: ReactNode }) {
     hydrated,
     daysLeft,
     verification,
-    completeOnboarding: ({ name, programId }) =>
-      setState((s) => ({ ...s, onboarded: true, name, programId, txns: SEED_TXNS })),
-    addCredits: (credits, paid, currencyLabel) =>
+    isPremium: state.membership === "premium",
+    completeOnboarding: (p) =>
       setState((s) => ({
         ...s,
-        balance: +(s.balance + credits).toFixed(2),
+        onboarded: true,
+        name: p.name,
+        programId: p.programId,
+        cohort: p.cohort ?? s.cohort,
+        txns: SEED_TXNS,
+        profile: {
+          homeCountry: p.homeCountry ?? s.profile.homeCountry,
+          arrivalDateISO: p.arrivalDateISO ?? s.profile.arrivalDateISO,
+          city: p.city ?? s.profile.city,
+        },
+        settings: {
+          ...s.settings,
+          homeCity: p.city ?? s.settings.homeCity,
+          appLanguage: p.appLanguage ?? s.settings.appLanguage,
+          payCurrency: p.payCurrency ?? s.settings.payCurrency,
+        },
+      })),
+    addMoney: (shekels, paid, sourceLabel) =>
+      setState((s) => ({
+        ...s,
+        balance: +(s.balance + shekels).toFixed(2),
         txns: [
           {
             id: `tx${Date.now()}`,
-            merchant: `Credits purchased · ${currencyLabel ?? `$${paid.toFixed(2)}`} Apple Pay`,
+            merchant: `Money added · ${sourceLabel ?? `$${paid.toFixed(2)}`}`,
             category: "Top up",
-            amount: credits,
+            amount: shekels,
             date: "Just now",
             icon: "💳",
           },
           ...s.txns,
         ],
       })),
+    sendMoney: (to, amount, note) =>
+      setState((s) => ({
+        ...s,
+        balance: +(s.balance - amount).toFixed(2),
+        txns: [
+          {
+            id: `tx${Date.now()}`,
+            merchant: `Sent to ${to}${note ? ` · ${note}` : ""}`,
+            category: "Transfers",
+            amount: -amount,
+            date: "Just now",
+            icon: "↗️",
+          },
+          ...s.txns,
+        ],
+      })),
+    setMembership: (membership) =>
+      setState((s) => ({
+        ...s,
+        membership,
+        memberSinceISO: membership === "premium" ? (s.memberSinceISO ?? new Date().toISOString().slice(0, 10)) : null,
+        card: membership === "premium" ? s.card : { ...s.card, issued: false, inAppleWallet: false },
+      })),
+    setCard: (patch) => setState((s) => ({ ...s, card: { ...s.card, ...patch } })),
+    redeemBenefit: (id) =>
+      setState((s) => (s.redeemed.includes(id) ? s : { ...s, redeemed: [id, ...s.redeemed] })),
+
     spend: (merchant, category, amount, icon) =>
       setState((s) => ({
         ...s,

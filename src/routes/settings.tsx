@@ -92,7 +92,7 @@ function SettingsPage() {
           <Divider />
           <Toggle
             label="Auto top up"
-            hint={`Buy more credits automatically when your balance drops below ${ils(s.autoTopUpFloor)}`}
+            hint={`Add money automatically when your balance drops below ${ils(s.autoTopUpFloor)}`}
             checked={s.autoTopUp}
             onChange={(v) => setSetting("autoTopUp", v)}
           />
@@ -177,7 +177,7 @@ function SettingsPage() {
           <Divider />
           <Toggle
             label="Spend receipts"
-            hint="A line every time credits leave your balance"
+            hint="A line every time money leaves your balance"
             checked={s.notifReceipts}
             onChange={(v) => setSetting("notifReceipts", v)}
           />

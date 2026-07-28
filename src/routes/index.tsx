@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Users, QrCode } from "lucide-react";
+import { Users, QrCode, Plus, ArrowLeftRight, ArrowUpRight, CreditCard } from "lucide-react";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { ForYou } from "@/components/ForYou";
@@ -10,11 +10,14 @@ import { LocationBar } from "@/components/LocationBar";
 import { QRCode } from "@/components/QRCode";
 import { Avatar } from "@/components/Avatar";
 import { useApp } from "@/lib/store";
+import { ils } from "@/lib/mock";
+import { refIn } from "@/lib/currencies";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 
 import { serviceLinkProps, type Service } from "@/lib/services";
 import { recordServiceUse, useRecentServices } from "@/lib/recents";
 import { ServiceLogo } from "@/components/ServiceLogo";
+import { BENEFITS } from "@/lib/benefits";
 
 
 export const Route = createFileRoute("/")({
@@ -32,6 +35,13 @@ export const Route = createFileRoute("/")({
   }),
   component: HomeScreen,
 });
+
+const HERO_ACTIONS = [
+  { to: "/topup", label: "Add money", Icon: Plus },
+  { to: "/exchange", label: "Exchange", Icon: ArrowLeftRight },
+  { to: "/social", label: "Send", Icon: ArrowUpRight },
+  { to: "/card", label: "Card", Icon: CreditCard },
+] as const;
 
 function AppIcon({ service }: { service: Service }) {
   return (
@@ -58,7 +68,7 @@ function AppIcon({ service }: { service: Service }) {
 
 function HomeScreen() {
   const ready = useOnboardedGate();
-  const { state } = useApp();
+  const { state, isPremium } = useApp();
   const recents = useRecentServices();
   const [showCode, setShowCode] = useState(false);
 
@@ -91,12 +101,39 @@ function HomeScreen() {
 
       <LocationBar />
 
-
+      {/* Wallet hero — the daily financial pulse */}
+      <section className="px-4 pt-3">
+        <div className="grad-balance relative overflow-hidden rounded-[1.5rem] px-5 py-4 text-ink-foreground shadow-lift">
+          <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
+          <div className="relative">
+            <Link to="/wallet" className="tap-flat block">
+              <p className="text-[10px] uppercase tracking-widest opacity-70">Shekk balance</p>
+              <p className="font-display text-4xl font-bold leading-none tracking-tight">{ils(state.balance)}</p>
+              <p className="mt-1.5 text-[11px] opacity-70">
+                ≈ {refIn(state.settings.payCurrency, state.balance)} · {isPremium ? "Premium member" : "Free plan"}
+              </p>
+            </Link>
+            <div className="mt-4 grid grid-cols-4 gap-1.5">
+              {HERO_ACTIONS.map(({ to, label, Icon }) => (
+                <Link
+                  key={label}
+                  to={to}
+                  className="tap-icon flex flex-col items-center gap-1 rounded-xl bg-ink-foreground/10 py-2"
+                >
+                  <Icon className="size-[17px]" strokeWidth={2.4} />
+                  <span className="text-[9.5px] font-semibold leading-none">{label}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Search into the full catalogue */}
       <div className="px-4 pt-3">
         <GlobalSearch />
       </div>
+
 
 
 
@@ -124,7 +161,7 @@ function HomeScreen() {
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold">Paying people</p>
               <p className="text-xs text-muted-foreground">
-                Send Shekk to friends on Shekk or split a bill with your cohort.
+                Send shekels to friends on Shekk or split a bill with your cohort.
               </p>
             </div>
           </div>
@@ -133,7 +170,7 @@ function HomeScreen() {
               to="/social"
               className="tap rounded-xl bg-primary px-2 py-2.5 text-center text-xs font-semibold text-primary-foreground"
             >
-              Send Shekk
+              Send money
             </Link>
             <Link to="/social" className="tap rounded-xl bg-muted px-2 py-2.5 text-center text-xs font-semibold">
               Split a bill
@@ -153,11 +190,35 @@ function HomeScreen() {
                 <p className="text-xs font-semibold">{state.name || "Your"} · friend code</p>
               </div>
               <p className="text-center text-[11px] text-muted-foreground">
-                A friend scans this to send you Shekk. It isn't a merchant payment code.
+                A friend scans this to send you shekels. It isn't a merchant payment code.
               </p>
             </div>
           ) : null}
         </Card>
+      </section>
+
+      {/* Benefits near you */}
+      <section className="pt-6">
+        <div className="mb-2 flex items-baseline justify-between px-5">
+          <h2 className="font-display text-lg font-bold tracking-tight">Benefits near you</h2>
+          <Link to="/benefits" className="tap-flat text-[12px] font-semibold text-primary">
+            See all
+          </Link>
+        </div>
+        <div className="scrollbar-none flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 scroll-px-5 pb-1">
+          {BENEFITS.slice(0, 6).map((b) => (
+            <Link
+              key={b.id}
+              to="/benefits/$id"
+              params={{ id: b.id }}
+              className="tap w-[190px] shrink-0 snap-start rounded-2xl border border-border bg-card p-3.5 shadow-card"
+            >
+              <ServiceLogo service={{ name: b.brand, emoji: b.emoji, domain: b.domain }} size={38} />
+              <p className="mt-2.5 line-clamp-2 text-[13px] font-semibold leading-snug">{b.headline}</p>
+              <p className="mt-1.5 text-[11px] text-muted-foreground">{b.location}</p>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <ForYou />

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText, Camera } from "lucide-react";
+import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText, Camera, Crown, CreditCard, Sparkles } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { PROGRAMS, ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/me")({
 
 function Me() {
   const ready = useOnboardedGate();
-  const { state, verification, daysLeft, setAvatar } = useApp();
+  const { state, verification, daysLeft, setAvatar, isPremium } = useApp();
   const program = PROGRAMS.find((p) => p.id === state.programId);
 
   const onPickPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,22 +97,25 @@ function Me() {
         </Card>
 
         <Card className="p-0">
-          <RowLink to="/topup" Icon={Receipt} label="Order & top-up history" hint={`${state.txns.length} records`} />
+          <RowLink to="/membership" Icon={Crown} label="Shekk Membership" hint={isPremium ? "Premium" : "Free — see Premium"} />
+          <RowLink to="/card" Icon={CreditCard} label="Shekk Card" hint={state.card.issued ? `•••• ${state.card.last4}` : "Not issued yet"} />
+          <RowLink to="/activity" Icon={Receipt} label="Order & payment history" hint={`${state.txns.length} records`} />
           <RowLink to="/explore/shops" Icon={Bookmark} label="Saved places & discounts" hint="7 saved" />
           <RowLink to="/explore/admin" Icon={FileText} label="Program documents & visa" hint="Student visa A/2" />
           <RowLink to="/settings" Icon={Settings} label="App settings" hint="Currency, theme, alerts" />
+          <RowLink to="/welcome" Icon={Sparkles} label="Redo account setup" hint="Programme, city, currency" />
           <RowLink to="/terms" Icon={FileText} label="Full Terms & Conditions" hint="" />
         </Card>
 
         <Card className="space-y-2">
-          <h2 className="text-base font-semibold">How your credits work</h2>
+          <h2 className="text-base font-semibold">How your Shekk account works</h2>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>• You top up with Apple Pay and your balance lands in shekels, ready to spend.</li>
+            <li>• You add money with Apple Pay or a bank transfer and your balance lands in shekels, ready to spend.</li>
             <li>• Order through a partner app inside Shekk and <span className="font-medium text-foreground">we pay them</span> — your card is never charged at checkout.</li>
-            <li>• We then deduct the Shekk equivalent of that order from your preloaded balance.</li>
-            <li>• Every top up shows the Shekk rate and the exact credits you get before you confirm.</li>
+            <li>• We then deduct that order from your shekel balance.</li>
+            <li>• Every time you add money you see the rate and the exact shekels you get before you confirm.</li>
             <li>• Re-verify your ID once a year to keep the account active.</li>
-            <li>• The full credit terms live in the <span className="font-medium text-foreground">Terms & Conditions</span>.</li>
+            <li>• The full account terms live in the <span className="font-medium text-foreground">Terms & Conditions</span>.</li>
           </ul>
 
           <Link to="/terms" className="inline-block pt-1 text-sm font-semibold text-primary">

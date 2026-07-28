@@ -1,6 +1,6 @@
 import { Link, useRouterState, useRouter, useCanGoBack, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Wallet, Compass, Receipt, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy } from "lucide-react";
+import { Wallet, Compass, Tag, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy, Home, Receipt, CreditCard, Crown } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
@@ -8,9 +8,10 @@ import { refIn } from "@/lib/currencies";
 
 
 const TABS = [
-  { to: "/", label: "Home", Icon: Wallet },
+  { to: "/", label: "Home", Icon: Home },
+  { to: "/wallet", label: "Wallet", Icon: Wallet },
   { to: "/explore", label: "Explore", Icon: Compass },
-  { to: "/activity", label: "Activity", Icon: Receipt },
+  { to: "/benefits", label: "Benefits", Icon: Tag },
   { to: "/social", label: "Social", Icon: Users },
   { to: "/me", label: "Me", Icon: User },
 ];
@@ -146,7 +147,16 @@ export function QuickMenu() {
               to="/topup"
               className="tap-flat flex items-center gap-2 border-b border-border px-4 py-3 text-sm font-bold text-primary"
             >
-              <Plus className="size-4" strokeWidth={3} /> Top up
+              <Plus className="size-4" strokeWidth={3} /> Add money
+            </Link>
+            <Link to="/activity" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <Receipt className="size-4 text-muted-foreground" /> Activity
+            </Link>
+            <Link to="/card" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <CreditCard className="size-4 text-muted-foreground" /> Shekk Card
+            </Link>
+            <Link to="/membership" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <Crown className="size-4 text-muted-foreground" /> Membership
             </Link>
             <Link to="/me" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <User className="size-4 text-muted-foreground" /> Me
@@ -183,7 +193,7 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
         onClick={onNavigate}
         className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-card px-4 py-3 text-sm font-bold uppercase tracking-wide text-primary shadow-lift ring-2 ring-card/60 transition-transform hover:scale-[1.03] active:scale-[0.98]"
       >
-        <Plus className="size-4" strokeWidth={3} /> Top up
+        <Plus className="size-4" strokeWidth={3} /> Add money
       </Link>
 
     </div>
@@ -289,7 +299,7 @@ export function ReverifyBanner() {
     >
       <div>
         <p className="text-sm font-semibold">{daysLeft} days left to re-verify</p>
-        <p className="text-xs opacity-80">Annual ID check — keeps your credits spendable.</p>
+        <p className="text-xs opacity-80">Annual ID check — keeps your account and card active.</p>
       </div>
       <span className="rounded-full bg-notice-foreground px-3 py-1.5 text-xs font-semibold text-notice-soft">
         Re-verify
