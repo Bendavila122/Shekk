@@ -6,7 +6,15 @@ import { useApp } from "@/lib/store";
 import { PROGRAMS } from "@/lib/mock";
 import { LOCATION_CITIES } from "@/lib/location";
 import { CURRENCIES } from "@/lib/currencies";
-import { LANGUAGES } from "@/lib/languages";
+import type { Settings } from "@/lib/store";
+
+const LANGUAGES: { code: Settings["appLanguage"]; label: string }[] = [
+  { code: "en", label: "English" },
+  { code: "he", label: "עברית" },
+  { code: "es", label: "Español" },
+  { code: "fr", label: "Français" },
+  { code: "ru", label: "Русский" },
+];
 
 export const Route = createFileRoute("/welcome")({
   head: () => ({
