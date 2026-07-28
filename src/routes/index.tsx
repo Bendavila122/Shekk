@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Users, QrCode } from "lucide-react";
+import { Users, QrCode, Plus, ArrowLeftRight, ArrowUpRight, CreditCard } from "lucide-react";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { ForYou } from "@/components/ForYou";
@@ -10,6 +10,8 @@ import { LocationBar } from "@/components/LocationBar";
 import { QRCode } from "@/components/QRCode";
 import { Avatar } from "@/components/Avatar";
 import { useApp } from "@/lib/store";
+import { ils } from "@/lib/mock";
+import { refIn } from "@/lib/currencies";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 
 import { serviceLinkProps, type Service } from "@/lib/services";
@@ -32,6 +34,13 @@ export const Route = createFileRoute("/")({
   }),
   component: HomeScreen,
 });
+
+const HERO_ACTIONS = [
+  { to: "/topup", label: "Add money", Icon: Plus },
+  { to: "/exchange", label: "Exchange", Icon: ArrowLeftRight },
+  { to: "/social", label: "Send", Icon: ArrowUpRight },
+  { to: "/card", label: "Card", Icon: CreditCard },
+] as const;
 
 function AppIcon({ service }: { service: Service }) {
   return (
@@ -58,7 +67,7 @@ function AppIcon({ service }: { service: Service }) {
 
 function HomeScreen() {
   const ready = useOnboardedGate();
-  const { state } = useApp();
+  const { state, isPremium } = useApp();
   const recents = useRecentServices();
   const [showCode, setShowCode] = useState(false);
 
