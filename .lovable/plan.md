@@ -1,49 +1,60 @@
 ## Goal
-Add a personalised, swipeable "For You" section below the existing Home content. Nothing on the current Home screen changes — greeting, search, recents, "Paying people" card and re-verify banner all stay exactly as they are.
 
-All data stays mock/simulated (consistent with the rest of the prototype): no real weather API, GPS or news feed. A deterministic "context engine" derives the user's situation from the clock, calendar, their stored transactions, recent apps and program city, so the screen genuinely changes through the day and differs between users.
+Build the first Tier 1 native tool: a Siddur that lives inside Shekk, uses the existing design system, and adds no new infrastructure.
 
-## 1. Context engine — `src/lib/personalise.ts` (new)
-A single `useUserContext()` hook returning:
-- `timeOfDay` (early / morning / afternoon / evening / late), `dayOfWeek`
-- `isErevShabbat`, `isShabbat`, `isMotzash`, plus a small hard-coded Hebrew-calendar table for chagim and fast days (Chanukah, Tu BiShvat, Purim, Pesach, Yom HaZikaron/Atzmaut, Lag BaOmer, Shavuot, 17 Tammuz, Tisha B'Av, Yamim Noraim, Sukkot) with candle-lighting / havdalah / fast times per city
-- `city` derived from the user's program (`PROGRAMS[].city`) — Jerusalem, Tel Aviv etc.
-- `weather` — deterministic pseudo-random per city + date: temp, condition, UV, rain %, AQI, sunrise/sunset
-- Behaviour signals computed from `state.txns` and recent apps: top category, favourite merchant, spend-this-week, whether transit spend is stale (Rav-Kav low), pending splits count
+## What gets built
 
-Deterministic seeding uses a hash of name + date, so two different users get different content but the same user's screen is stable within a session.
+**1. Prayer content library** — `src/lib/siddur.ts`
 
-## 2. Widget catalogue — `src/lib/widgets.tsx` (new)
-Nine widget definitions, each with `id`, `title`, `icon/emoji`, `gradient` token, a `relevance(ctx) => number` score, and a render body:
-- **Today** — weather, temp, UV, rain %, AQI, sunrise/sunset; on Friday swaps to candle lighting + havdalah. CTA "View forecast".
-- **Wallet** — Shekk balance, spend this week, pending split count, cashback, promo codes. CTAs: Add Credits / Split Bill / View Activity.
-- **Happening Nearby** — 3–4 events from `EVENTS` + city-flavoured extras. CTA "View Events".
-- **Travel** — next train/bus from `BUS_LINES`, Rav-Kav balance warning, traffic, taxi pricing. CTA "Plan Journey".
-- **Deals For You** — offers picked from `SHOPS`/`RESTAURANTS` filtered by the user's actual top spending category and favourite merchant. Never random.
-- **Israel Today** — 3–5 neutral headlines (transport, student, holiday, weather, national), rotated by date. CTA "Read More".
-- **Jewish Life** — Friday: candle lighting, Friday-night meals, minyan times from `SHULS`; fast day: fast begins/ends; chag: countdown + guides. CTA "View Details".
-- **Social** — friend activity from `FEED`, someone paid you back, pending splits, programme announcements. CTA "Open".
-- **Discover** — nearby café/restaurant/attraction/volunteering/student-discount picks for the user's city.
+A plain static data file (no database, no API). Shape:
 
-Each widget's relevance score combines time of day, day of week, holiday state and behaviour signals, matching the requested ordering (morning → Weather/Travel/Wallet; afternoon → Food/Deals; evening → Events/Nightlife; late Friday → Jewish Life first).
+```
+Prayer = {
+  id, title, hebrewTitle, category, blurb,
+  sections: [{ id, heading, hebrewHeading, lines: [{ he, en? }] }]  // per nusach
+  nusach: { ashkenaz?: Section[]; sephard?: Section[]; edot?: Section[] }
+  source: string   // attribution line
+}
+```
 
-## 3. UI — `src/components/ForYou.tsx` (new)
-- Horizontal scroll-snap carousel (`overflow-x-auto snap-x snap-mandatory no-scrollbar`), one card ≈ 85% of viewport width, peek of the next card.
-- Cards: `rounded-[1.75rem]`, soft gradient backgrounds from new design tokens, large emoji/icon header, clear title/subtitle hierarchy, body rows, optional CTA button row.
-- Dot pagination under the rail that tracks scroll position.
-- Header row: "For You" + a small settings/pin button opening the customisation sheet.
-- Skeleton cards on first paint, then a gentle staggered `fade-in`.
-- Pull-to-refresh: touch-drag at scroll-top reveals a spinner, re-seeds the context and re-animates values.
-- Micro-interactions: snap-scroll, `tap-icon`-style press feedback, `navigator.vibrate` haptic on CTA/pin where supported, animated number transitions on refresh.
+Categories on the home screen: Shacharit, Mincha, Maariv, Shema before sleeping, Tefilat HaDerech, Birkat Hamazon, Common brachot, Havdalah.
 
-## 4. Customisation — `src/components/ForYouSettings.tsx` (new)
-Bottom sheet listing all widgets with: pin toggle, hide toggle, drag-free up/down reorder arrows for pinned items, and a compact/expanded size switch. Preferences persist in `localStorage` (`shekk.foryou.v1`). Pinned widgets always render first in the user's order; the rest are sorted by relevance score; hidden ones are excluded.
+Content policy:
+- Hebrew text from public-domain liturgy (traditional wording, unchanged, no invention, no summarising).
+- English from public-domain translations only (e.g. Singer 1917 / early-1900s editions), never modern copyrighted translations.
+- Full texts for the short, self-contained prayers (Tefilat HaDerech, Shema before sleeping, Havdalah, Birkat Hamazon, common brachot).
+- Shacharit/Mincha/Maariv ship as structured services with their core sections included and a clearly-marked contents menu; sections not yet transcribed show the same "not yet available" treatment rather than placeholder text.
+- Per-prayer nusach coverage is explicit. Where a nusach version isn't in the data, the reader shows: "This prayer is not yet available in your selected nusach." — never substituted with another nusach.
+- Discreet attribution line at the bottom of each prayer.
 
-## 5. Wiring
-- `src/routes/index.tsx`: insert `<ForYou />` after the "Paying people" section and before `<ReverifyBanner />`. No other edits to this file.
-- `src/styles.css`: add gradient + surface tokens for the widget backgrounds (`--gradient-sky`, `--gradient-wallet`, `--gradient-events`, etc.) plus a `skeleton` shimmer utility — all semantic tokens, no hardcoded colours in components.
+**2. Local preferences** — `src/lib/siddur-prefs.ts`
+
+Same pattern as the existing `recents.ts` (localStorage + a small hook + custom event), key `shekk.siddur.v1`. Stores: selected nusach, display mode (Hebrew-only / bilingual), text size step, line-spacing comfort, favourites, recently opened, and last reading position per prayer. No new state library, no changes to `store.tsx`.
+
+**3. Routes**
+
+- `src/routes/siddur/index.tsx` — Siddur home: continue reading (last position), favourites, recently opened, search field, then all prayers grouped by category as clean rows. Nusach selector as a compact segmented control in the header. Sparse, not card-heavy.
+- `src/routes/siddur/$id.tsx` — reader screen: RTL Hebrew, optional English beneath each line, Hebrew-only / bilingual toggle, A−/A+ text size, line-spacing toggle, favourite button, contents menu (sheet) for multi-section prayers, auto-saved scroll/section position with a "resume" affordance, discreet attribution footer. Minimal chrome, no decorative cards inside the prayer body.
+
+Both use `AppShell`, existing tokens, dark mode, and the desktop sidebar automatically.
+
+**4. Integration**
+
+- `src/lib/services.ts`: point the existing `siddur` service (Jewish life category) at `/siddur`, refresh its blurb.
+- `src/lib/search.ts`: add a Siddur page entry plus keywords (siddur, tefillah, davening, prayer, shema, bentching, birkat hamazon, havdalah, tefilat haderech, brachot).
+- `src/routes/explore/community.tsx`: add a Siddur entry in the Jewish-life screen (read first, match its existing layout).
 
 ## Technical notes
-- All new logic is client-side and derives from existing store state and mock data; no backend, no network calls, no new dependencies.
-- Deterministic hashing keeps SSR and hydration consistent; anything clock-dependent is read in `useEffect` to avoid hydration mismatch.
-- Existing Home components and routes are untouched apart from the single insertion point.
+
+- RTL: prayer body sets `dir="rtl"` locally so it works regardless of the app's global `dir`; English lines render `dir="ltr"`.
+- Text size / spacing applied via CSS variables on the reader container, so it never fights the global type scale.
+- Hebrew rendering uses the existing font stack with a serif Hebrew fallback for legibility of nikkud.
+- Route files follow the existing `createFileRoute("/siddur/")` / `("/siddur/$id")` convention with their own `head()` metadata.
+
+## Out of scope (per brief)
+
+No audio, no AI-generated religious content, no zmanim calculations, no database/analytics/notifications, no Tier 1 catalogue system, no auth/banking/payment changes.
+
+## Deliberately left for later
+
+Full uncut Shacharit/Mincha/Maariv text for all three nusachim, Edot HaMizrach coverage beyond the short prayers, Tikkun, Kabbalat Shabbat, and holiday liturgy — each surfaced honestly through the "not yet available in your selected nusach" message.
