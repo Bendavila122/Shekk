@@ -26,6 +26,7 @@ import { Route as CardRouteImport } from './routes/card'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SiddurIndexRouteImport } from './routes/siddur/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
 import { Route as BenefitsIndexRouteImport } from './routes/benefits/index'
@@ -131,6 +132,11 @@ const ActivityRoute = ActivityRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SiddurIndexRoute = SiddurIndexRouteImport.update({
+  id: '/siddur/',
+  path: '/siddur/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuidesIndexRoute = GuidesIndexRouteImport.update({
@@ -277,6 +283,7 @@ export interface FileRoutesByFullPath {
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
+  '/siddur/': typeof SiddurIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
@@ -317,6 +324,7 @@ export interface FileRoutesByTo {
   '/benefits': typeof BenefitsIndexRoute
   '/explore': typeof ExploreIndexRoute
   '/guides': typeof GuidesIndexRoute
+  '/siddur': typeof SiddurIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
@@ -358,6 +366,7 @@ export interface FileRoutesById {
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
+  '/siddur/': typeof SiddurIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
@@ -400,6 +409,7 @@ export interface FileRouteTypes {
     | '/benefits/'
     | '/explore/'
     | '/guides/'
+    | '/siddur/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
@@ -440,6 +450,7 @@ export interface FileRouteTypes {
     | '/benefits'
     | '/explore'
     | '/guides'
+    | '/siddur'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
@@ -480,6 +491,7 @@ export interface FileRouteTypes {
     | '/benefits/'
     | '/explore/'
     | '/guides/'
+    | '/siddur/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
@@ -521,6 +533,7 @@ export interface RootRouteChildren {
   BenefitsIndexRoute: typeof BenefitsIndexRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
+  SiddurIndexRoute: typeof SiddurIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
@@ -646,6 +659,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/siddur/': {
+      id: '/siddur/'
+      path: '/siddur'
+      fullPath: '/siddur/'
+      preLoaderRoute: typeof SiddurIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guides/': {
@@ -834,6 +854,7 @@ const rootRouteChildren: RootRouteChildren = {
   BenefitsIndexRoute: BenefitsIndexRoute,
   ExploreIndexRoute: ExploreIndexRoute,
   GuidesIndexRoute: GuidesIndexRoute,
+  SiddurIndexRoute: SiddurIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ExploreCategoryIdRoute: ExploreCategoryIdRoute,
