@@ -39,6 +39,7 @@ import { Route as ExploreFoodRouteImport } from './routes/explore/food'
 import { Route as ExploreEventsRouteImport } from './routes/explore/events'
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
 import { Route as ExploreAdminRouteImport } from './routes/explore/admin'
+import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
@@ -196,6 +197,11 @@ const ExploreAdminRoute = ExploreAdminRouteImport.update({
   path: '/explore/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BenefitsIdRoute = BenefitsIdRouteImport.update({
+  id: '/benefits/$id',
+  path: '/benefits/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
     id: '/.well-known/oauth-protected-resource',
@@ -249,6 +255,7 @@ export interface FileRoutesByFullPath {
   '/wallet': typeof WalletRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
@@ -287,6 +294,7 @@ export interface FileRoutesByTo {
   '/wallet': typeof WalletRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
@@ -326,6 +334,7 @@ export interface FileRoutesById {
   '/wallet': typeof WalletRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
@@ -366,6 +375,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/benefits/$id'
     | '/explore/admin'
     | '/explore/community'
     | '/explore/events'
@@ -404,6 +414,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/benefits/$id'
     | '/explore/admin'
     | '/explore/community'
     | '/explore/events'
@@ -442,6 +453,7 @@ export interface FileRouteTypes {
     | '/wallet'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/benefits/$id'
     | '/explore/admin'
     | '/explore/community'
     | '/explore/events'
@@ -481,6 +493,7 @@ export interface RootRouteChildren {
   WalletRoute: typeof WalletRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  BenefitsIdRoute: typeof BenefitsIdRoute
   ExploreAdminRoute: typeof ExploreAdminRoute
   ExploreCommunityRoute: typeof ExploreCommunityRoute
   ExploreEventsRoute: typeof ExploreEventsRoute
@@ -713,6 +726,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/benefits/$id': {
+      id: '/benefits/$id'
+      path: '/benefits/$id'
+      fullPath: '/benefits/$id'
+      preLoaderRoute: typeof BenefitsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
       path: '/.well-known/oauth-protected-resource'
@@ -778,6 +798,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  BenefitsIdRoute: BenefitsIdRoute,
   ExploreAdminRoute: ExploreAdminRoute,
   ExploreCommunityRoute: ExploreCommunityRoute,
   ExploreEventsRoute: ExploreEventsRoute,
