@@ -7,8 +7,9 @@ import {
   SIDDUR_CATEGORIES,
   NUSACHIM,
   findPrayer,
-  nusachAvailability,
+  sectionCount,
   searchPrayers,
+  type NusachId,
   type Prayer,
 } from "@/lib/siddur";
 import { useSiddurPrefs } from "@/lib/siddur-prefs";
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/siddur/")({
       {
         name: "description",
         content:
-          "A clean, nusach-aware siddur inside Shekk: Shacharit, Mincha, Maariv, bedtime Shema, Tefilat HaDerech, Birkat Hamazon, brachot and Havdalah.",
+          "A complete, nusach-aware siddur inside Shekk: Shacharit, Mincha, Maariv, Shabbat, bedtime Shema, Tefilat HaDerech, Birkat Hamazon, brachot and Havdalah.",
       },
       { property: "og:title", content: "Siddur · Shekk" },
       { property: "og:description", content: "Hebrew and English, your nusach, your text size — always in your pocket." },
@@ -55,6 +56,13 @@ function PrayerRow({ prayer, trailing }: { prayer: Prayer; trailing?: string }) 
     </Link>
   );
 }
+
+function subtitleFor(prayer: Prayer, nusach: NusachId) {
+  const count = sectionCount(prayer, nusach);
+  if (!count) return "Not yet in your selected nusach";
+  return count > 1 ? `${prayer.blurb} · ${count} sections` : prayer.blurb;
+}
+
 
 function SiddurHome() {
   const { prefs, hydrated, update } = useSiddurPrefs();
@@ -188,30 +196,29 @@ function SiddurHome() {
               </section>
             ) : null}
 
-            {/* All prayers */}
-            <section>
-              <h2 className="mb-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                All prayers
-              </h2>
-              <div>
-                {PRAYERS.map((p) => {
-                  const available = nusachAvailability(p);
-                  const has = available.includes(prefs.nusach);
-                  return (
-                    <PrayerRow
-                      key={p.id}
-                      prayer={p}
-                      trailing={has ? p.blurb : "Not yet in your selected nusach"}
-                    />
-                  );
-                })}
-              </div>
-            </section>
+            {/* All prayers, by part of the day */}
+            {SIDDUR_CATEGORIES.map((cat) => {
+              const items = PRAYERS.filter((p) => p.categoryId === cat.id);
+              if (!items.length) return null;
+              return (
+                <section key={cat.id}>
+                  <h2 className="mb-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                    {cat.emoji} {cat.label}
+                  </h2>
+                  <div>
+                    {items.map((p) => (
+                      <PrayerRow key={p.id} prayer={p} trailing={subtitleFor(p, prefs.nusach)} />
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
 
             <p className="pb-2 text-center text-[11px] leading-relaxed text-muted-foreground">
-              Traditional liturgy in the public domain. Nothing here is abridged or rewritten — sections we
-              haven’t transcribed yet are listed as missing rather than filled in.
+              Liturgy from Sefaria’s public Siddur library, reproduced unchanged. Nothing here is abridged or
+              rewritten — where a nusach has no source text we say so rather than substituting another version.
             </p>
+
           </>
         )}
       </div>
