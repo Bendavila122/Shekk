@@ -7,8 +7,9 @@ import {
   SIDDUR_CATEGORIES,
   NUSACHIM,
   findPrayer,
-  nusachAvailability,
+  sectionCount,
   searchPrayers,
+  type NusachId,
   type Prayer,
 } from "@/lib/siddur";
 import { useSiddurPrefs } from "@/lib/siddur-prefs";
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/siddur/")({
       {
         name: "description",
         content:
-          "A clean, nusach-aware siddur inside Shekk: Shacharit, Mincha, Maariv, bedtime Shema, Tefilat HaDerech, Birkat Hamazon, brachot and Havdalah.",
+          "A complete, nusach-aware siddur inside Shekk: Shacharit, Mincha, Maariv, Shabbat, bedtime Shema, Tefilat HaDerech, Birkat Hamazon, brachot and Havdalah.",
       },
       { property: "og:title", content: "Siddur · Shekk" },
       { property: "og:description", content: "Hebrew and English, your nusach, your text size — always in your pocket." },
@@ -55,6 +56,13 @@ function PrayerRow({ prayer, trailing }: { prayer: Prayer; trailing?: string }) 
     </Link>
   );
 }
+
+function subtitleFor(prayer: Prayer, nusach: NusachId) {
+  const count = sectionCount(prayer, nusach);
+  if (!count) return "Not yet in your selected nusach";
+  return count > 1 ? `${prayer.blurb} · ${count} sections` : prayer.blurb;
+}
+
 
 function SiddurHome() {
   const { prefs, hydrated, update } = useSiddurPrefs();
