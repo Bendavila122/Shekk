@@ -196,30 +196,29 @@ function SiddurHome() {
               </section>
             ) : null}
 
-            {/* All prayers */}
-            <section>
-              <h2 className="mb-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                All prayers
-              </h2>
-              <div>
-                {PRAYERS.map((p) => {
-                  const available = nusachAvailability(p);
-                  const has = available.includes(prefs.nusach);
-                  return (
-                    <PrayerRow
-                      key={p.id}
-                      prayer={p}
-                      trailing={has ? p.blurb : "Not yet in your selected nusach"}
-                    />
-                  );
-                })}
-              </div>
-            </section>
+            {/* All prayers, by part of the day */}
+            {SIDDUR_CATEGORIES.map((cat) => {
+              const items = PRAYERS.filter((p) => p.categoryId === cat.id);
+              if (!items.length) return null;
+              return (
+                <section key={cat.id}>
+                  <h2 className="mb-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                    {cat.emoji} {cat.label}
+                  </h2>
+                  <div>
+                    {items.map((p) => (
+                      <PrayerRow key={p.id} prayer={p} trailing={subtitleFor(p, prefs.nusach)} />
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
 
             <p className="pb-2 text-center text-[11px] leading-relaxed text-muted-foreground">
-              Traditional liturgy in the public domain. Nothing here is abridged or rewritten — sections we
-              haven’t transcribed yet are listed as missing rather than filled in.
+              Liturgy from Sefaria’s public Siddur library, reproduced unchanged. Nothing here is abridged or
+              rewritten — where a nusach has no source text we say so rather than substituting another version.
             </p>
+
           </>
         )}
       </div>
