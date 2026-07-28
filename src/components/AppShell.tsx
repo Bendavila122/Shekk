@@ -147,7 +147,16 @@ export function QuickMenu() {
               to="/topup"
               className="tap-flat flex items-center gap-2 border-b border-border px-4 py-3 text-sm font-bold text-primary"
             >
-              <Plus className="size-4" strokeWidth={3} /> Top up
+              <Plus className="size-4" strokeWidth={3} /> Add money
+            </Link>
+            <Link to="/activity" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <Receipt className="size-4 text-muted-foreground" /> Activity
+            </Link>
+            <Link to="/card" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <CreditCard className="size-4 text-muted-foreground" /> Shekk Card
+            </Link>
+            <Link to="/membership" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <Crown className="size-4 text-muted-foreground" /> Membership
             </Link>
             <Link to="/me" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <User className="size-4 text-muted-foreground" /> Me
