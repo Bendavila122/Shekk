@@ -225,7 +225,16 @@
   --grad-social: linear-gradient(155deg, oklch(0.68 0.15 178), oklch(0.47 0.14 196));
   --grad-alert: linear-gradient(155deg, oklch(0.68 0.2 30), oklch(0.48 0.2 18));
   --grad-discover: linear-gradient(155deg, oklch(0.68 0.16 152), oklch(0.47 0.15 176));
+
+  /* --- Premium finance surfaces --------------------------------------
+     The card face, the wallet header and the membership tier panels. */
+  --grad-card: linear-gradient(140deg, oklch(0.44 0.2 264), oklch(0.28 0.14 268) 52%, oklch(0.36 0.17 288));
+  --grad-card-frozen: linear-gradient(140deg, oklch(0.72 0.05 232), oklch(0.54 0.06 250));
+  --grad-balance: linear-gradient(160deg, oklch(0.46 0.21 264), oklch(0.3 0.16 270));
+  --grad-premium: linear-gradient(140deg, oklch(0.82 0.13 88), oklch(0.62 0.14 62) 55%, oklch(0.45 0.12 44));
+  --card-sheen: linear-gradient(112deg, oklch(1 0 0 / 0) 34%, oklch(1 0 0 / 0.16) 46%, oklch(1 0 0 / 0) 58%);
 }
+
 
 .dark {
   --grad-sky: linear-gradient(155deg, oklch(0.42 0.17 248), oklch(0.28 0.15 262));
@@ -246,9 +255,19 @@
   --grad-social: linear-gradient(155deg, oklch(0.46 0.12 178), oklch(0.3 0.11 196));
   --grad-alert: linear-gradient(155deg, oklch(0.46 0.16 30), oklch(0.31 0.15 18));
   --grad-discover: linear-gradient(155deg, oklch(0.46 0.13 152), oklch(0.31 0.12 176));
+  --grad-card: linear-gradient(140deg, oklch(0.36 0.17 264), oklch(0.2 0.11 268) 52%, oklch(0.3 0.15 288));
+  --grad-card-frozen: linear-gradient(140deg, oklch(0.52 0.05 232), oklch(0.36 0.05 250));
+  --grad-balance: linear-gradient(160deg, oklch(0.36 0.18 264), oklch(0.22 0.12 270));
+  --grad-premium: linear-gradient(140deg, oklch(0.66 0.12 88), oklch(0.48 0.12 62) 55%, oklch(0.34 0.1 44));
 }
 
+@utility grad-card { background-image: var(--grad-card); }
+@utility grad-card-frozen { background-image: var(--grad-card-frozen); }
+@utility grad-balance { background-image: var(--grad-balance); }
+@utility grad-premium { background-image: var(--grad-premium); }
+@utility card-sheen { background-image: var(--card-sheen); }
 @utility grad-sky { background-image: var(--grad-sky); }
+
 @utility grad-sun { background-image: var(--grad-sun); }
 @utility grad-partly { background-image: var(--grad-partly); }
 @utility grad-cloud { background-image: var(--grad-cloud); }

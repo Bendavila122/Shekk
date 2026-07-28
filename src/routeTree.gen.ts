@@ -9,20 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as TopupRouteImport } from './routes/topup'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SocialRouteImport } from './routes/social'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReverifyRouteImport } from './routes/reverify'
+import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as HelpRouteImport } from './routes/help'
+import { Route as ExchangeRouteImport } from './routes/exchange'
+import { Route as CardRouteImport } from './routes/card'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
+import { Route as BenefitsIndexRouteImport } from './routes/benefits/index'
 import { Route as GuidesIdRouteImport } from './routes/guides/$id'
 import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
 import { Route as ExploreShopsRouteImport } from './routes/explore/shops'
@@ -41,6 +46,11 @@ import { Route as ExploreCategoryIdRouteImport } from './routes/explore/category
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 
+const WalletRoute = WalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TopupRoute = TopupRouteImport.update({
   id: '/topup',
   path: '/topup',
@@ -71,6 +81,11 @@ const ReverifyRoute = ReverifyRouteImport.update({
   path: '/reverify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MembershipRoute = MembershipRouteImport.update({
+  id: '/membership',
+  path: '/membership',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MeRoute = MeRouteImport.update({
   id: '/me',
   path: '/me',
@@ -84,6 +99,16 @@ const McpRoute = McpRouteImport.update({
 const HelpRoute = HelpRouteImport.update({
   id: '/help',
   path: '/help',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExchangeRoute = ExchangeRouteImport.update({
+  id: '/exchange',
+  path: '/exchange',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CardRoute = CardRouteImport.update({
+  id: '/card',
+  path: '/card',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -109,6 +134,11 @@ const GuidesIndexRoute = GuidesIndexRouteImport.update({
 const ExploreIndexRoute = ExploreIndexRouteImport.update({
   id: '/explore/',
   path: '/explore/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BenefitsIndexRoute = BenefitsIndexRouteImport.update({
+  id: '/benefits/',
+  path: '/benefits/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuidesIdRoute = GuidesIdRouteImport.update({
@@ -204,15 +234,19 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/activity': typeof ActivityRoute
   '/auth': typeof AuthRoute
+  '/card': typeof CardRoute
+  '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
+  '/membership': typeof MembershipRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/wallet': typeof WalletRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/explore/admin': typeof ExploreAdminRoute
@@ -226,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
+  '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -237,15 +272,19 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activity': typeof ActivityRoute
   '/auth': typeof AuthRoute
+  '/card': typeof CardRoute
+  '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
+  '/membership': typeof MembershipRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/wallet': typeof WalletRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/explore/admin': typeof ExploreAdminRoute
@@ -259,6 +298,7 @@ export interface FileRoutesByTo {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
+  '/benefits': typeof BenefitsIndexRoute
   '/explore': typeof ExploreIndexRoute
   '/guides': typeof GuidesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -271,15 +311,19 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/activity': typeof ActivityRoute
   '/auth': typeof AuthRoute
+  '/card': typeof CardRoute
+  '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
+  '/membership': typeof MembershipRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/wallet': typeof WalletRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/explore/admin': typeof ExploreAdminRoute
@@ -293,6 +337,7 @@ export interface FileRoutesById {
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
+  '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -306,15 +351,19 @@ export interface FileRouteTypes {
     | '/'
     | '/activity'
     | '/auth'
+    | '/card'
+    | '/exchange'
     | '/help'
     | '/mcp'
     | '/me'
+    | '/membership'
     | '/reverify'
     | '/settings'
     | '/sitemap.xml'
     | '/social'
     | '/terms'
     | '/topup'
+    | '/wallet'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/explore/admin'
@@ -328,6 +377,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/guides/$id'
+    | '/benefits/'
     | '/explore/'
     | '/guides/'
     | '/.lovable/oauth/consent'
@@ -339,15 +389,19 @@ export interface FileRouteTypes {
     | '/'
     | '/activity'
     | '/auth'
+    | '/card'
+    | '/exchange'
     | '/help'
     | '/mcp'
     | '/me'
+    | '/membership'
     | '/reverify'
     | '/settings'
     | '/sitemap.xml'
     | '/social'
     | '/terms'
     | '/topup'
+    | '/wallet'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/explore/admin'
@@ -361,6 +415,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/guides/$id'
+    | '/benefits'
     | '/explore'
     | '/guides'
     | '/.lovable/oauth/consent'
@@ -372,15 +427,19 @@ export interface FileRouteTypes {
     | '/'
     | '/activity'
     | '/auth'
+    | '/card'
+    | '/exchange'
     | '/help'
     | '/mcp'
     | '/me'
+    | '/membership'
     | '/reverify'
     | '/settings'
     | '/sitemap.xml'
     | '/social'
     | '/terms'
     | '/topup'
+    | '/wallet'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/explore/admin'
@@ -394,6 +453,7 @@ export interface FileRouteTypes {
     | '/explore/shops'
     | '/explore/transit'
     | '/guides/$id'
+    | '/benefits/'
     | '/explore/'
     | '/guides/'
     | '/.lovable/oauth/consent'
@@ -406,15 +466,19 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ActivityRoute: typeof ActivityRoute
   AuthRoute: typeof AuthRoute
+  CardRoute: typeof CardRoute
+  ExchangeRoute: typeof ExchangeRoute
   HelpRoute: typeof HelpRoute
   McpRoute: typeof McpRoute
   MeRoute: typeof MeRoute
+  MembershipRoute: typeof MembershipRoute
   ReverifyRoute: typeof ReverifyRoute
   SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SocialRoute: typeof SocialRoute
   TermsRoute: typeof TermsRoute
   TopupRoute: typeof TopupRoute
+  WalletRoute: typeof WalletRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ExploreAdminRoute: typeof ExploreAdminRoute
@@ -428,6 +492,7 @@ export interface RootRouteChildren {
   ExploreShopsRoute: typeof ExploreShopsRoute
   ExploreTransitRoute: typeof ExploreTransitRoute
   GuidesIdRoute: typeof GuidesIdRoute
+  BenefitsIndexRoute: typeof BenefitsIndexRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
@@ -438,6 +503,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wallet': {
+      id: '/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/topup': {
       id: '/topup'
       path: '/topup'
@@ -480,6 +552,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReverifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/membership': {
+      id: '/membership'
+      path: '/membership'
+      fullPath: '/membership'
+      preLoaderRoute: typeof MembershipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/me': {
       id: '/me'
       path: '/me'
@@ -499,6 +578,20 @@ declare module '@tanstack/react-router' {
       path: '/help'
       fullPath: '/help'
       preLoaderRoute: typeof HelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exchange': {
+      id: '/exchange'
+      path: '/exchange'
+      fullPath: '/exchange'
+      preLoaderRoute: typeof ExchangeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/card': {
+      id: '/card'
+      path: '/card'
+      fullPath: '/card'
+      preLoaderRoute: typeof CardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -534,6 +627,13 @@ declare module '@tanstack/react-router' {
       path: '/explore'
       fullPath: '/explore/'
       preLoaderRoute: typeof ExploreIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/benefits/': {
+      id: '/benefits/'
+      path: '/benefits'
+      fullPath: '/benefits/'
+      preLoaderRoute: typeof BenefitsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guides/$id': {
@@ -662,15 +762,19 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivityRoute: ActivityRoute,
   AuthRoute: AuthRoute,
+  CardRoute: CardRoute,
+  ExchangeRoute: ExchangeRoute,
   HelpRoute: HelpRoute,
   McpRoute: McpRoute,
   MeRoute: MeRoute,
+  MembershipRoute: MembershipRoute,
   ReverifyRoute: ReverifyRoute,
   SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SocialRoute: SocialRoute,
   TermsRoute: TermsRoute,
   TopupRoute: TopupRoute,
+  WalletRoute: WalletRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
@@ -685,6 +789,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreShopsRoute: ExploreShopsRoute,
   ExploreTransitRoute: ExploreTransitRoute,
   GuidesIdRoute: GuidesIdRoute,
+  BenefitsIndexRoute: BenefitsIndexRoute,
   ExploreIndexRoute: ExploreIndexRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
@@ -695,13 +800,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
