@@ -17,575 +17,717 @@
       "ashkenaz": [
         {
           "id": "preparatory-prayers-modeh-ani",
-          "heading": "Preparatory Prayers, Modeh Ani"
+          "heading": "Modeh Ani",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-netilat-yadayim",
-          "heading": "Preparatory Prayers, Netilat Yadayim"
+          "heading": "Netilat Yadayim",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-asher-yatzar",
-          "heading": "Preparatory Prayers, Asher Yatzar"
+          "heading": "Asher Yatzar",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-elokai-neshama",
-          "heading": "Preparatory Prayers, Elokai Neshama"
+          "heading": "Elokai Neshama",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-tzitzit",
-          "heading": "Preparatory Prayers, Tzitzit"
+          "heading": "Tzitzit",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-torah-blessings",
-          "heading": "Preparatory Prayers, Torah Blessings"
+          "heading": "Torah Blessings",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-torah-study",
-          "heading": "Preparatory Prayers, Torah Study"
+          "heading": "Torah Study",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-tallit",
-          "heading": "Preparatory Prayers, Tallit"
+          "heading": "Tallit",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-tefillin",
-          "heading": "Preparatory Prayers, Tefillin"
+          "heading": "Tefillin",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-ma-tovu",
-          "heading": "Preparatory Prayers, Ma Tovu"
+          "heading": "Ma Tovu",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-adon-olam",
-          "heading": "Preparatory Prayers, Adon Olam"
+          "heading": "Adon Olam",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-yigdal",
-          "heading": "Preparatory Prayers, Yigdal"
+          "heading": "Yigdal",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-morning-blessings",
-          "heading": "Preparatory Prayers, Morning Blessings"
+          "heading": "Morning Blessings",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-akedah",
-          "heading": "Preparatory Prayers, Akedah"
+          "heading": "Akedah",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-sovereignty-of-heaven",
-          "heading": "Preparatory Prayers, Sovereignty of Heaven"
+          "heading": "Sovereignty of Heaven",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-korbanot-kiyor",
-          "heading": "Preparatory Prayers, Korbanot, Kiyor"
+          "heading": "Kiyor",
+          "group": "Preparatory Prayers · Korbanot"
         },
         {
           "id": "preparatory-prayers-korbanot-terumat-hadeshen",
-          "heading": "Preparatory Prayers, Korbanot, Terumat HaDeshen"
+          "heading": "Terumat HaDeshen",
+          "group": "Preparatory Prayers · Korbanot"
         },
         {
           "id": "preparatory-prayers-korbanot-korban-hatamid",
-          "heading": "Preparatory Prayers, Korbanot, Korban HaTamid"
+          "heading": "Korban HaTamid",
+          "group": "Preparatory Prayers · Korbanot"
         },
         {
           "id": "preparatory-prayers-korbanot-ketoret",
-          "heading": "Preparatory Prayers, Korbanot, Ketoret"
+          "heading": "Ketoret",
+          "group": "Preparatory Prayers · Korbanot"
         },
         {
           "id": "preparatory-prayers-korbanot-baraita-of-rabbi-yishmael",
-          "heading": "Preparatory Prayers, Korbanot, Baraita of Rabbi Yishmael"
+          "heading": "Baraita of Rabbi Yishmael",
+          "group": "Preparatory Prayers · Korbanot"
         },
         {
           "id": "preparatory-prayers-korbanot-kaddish-derabbanan",
-          "heading": "Preparatory Prayers, Korbanot, Kaddish DeRabbanan"
+          "heading": "Kaddish DeRabbanan",
+          "group": "Preparatory Prayers · Korbanot"
         },
         {
           "id": "pesukei-dezimra-introductory-psalm",
-          "heading": "Pesukei Dezimra, Introductory Psalm"
+          "heading": "Introductory Psalm",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-mourner-s-kaddish",
-          "heading": "Pesukei Dezimra, Mourner's Kaddish"
+          "heading": "Mourner's Kaddish",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-barukh-she-amar",
-          "heading": "Pesukei Dezimra, Barukh She'amar"
+          "heading": "Barukh She'amar",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-hodu",
-          "heading": "Pesukei Dezimra, Hodu"
+          "heading": "Hodu",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-mizmor-letoda",
-          "heading": "Pesukei Dezimra, Mizmor Letoda"
+          "heading": "Mizmor Letoda",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-yehi-chevod",
-          "heading": "Pesukei Dezimra, Yehi Chevod"
+          "heading": "Yehi Chevod",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-ashrei",
-          "heading": "Pesukei Dezimra, Ashrei"
+          "heading": "Ashrei",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-146",
-          "heading": "Pesukei Dezimra, Psalm 146"
+          "heading": "Psalm 146",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-147",
-          "heading": "Pesukei Dezimra, Psalm 147"
+          "heading": "Psalm 147",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-148",
-          "heading": "Pesukei Dezimra, Psalm 148"
+          "heading": "Psalm 148",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-149",
-          "heading": "Pesukei Dezimra, Psalm 149"
+          "heading": "Psalm 149",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-150",
-          "heading": "Pesukei Dezimra, Psalm 150"
+          "heading": "Psalm 150",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-closing-verses",
-          "heading": "Pesukei Dezimra, Closing Verses"
+          "heading": "Closing Verses",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-vayevarech-david",
-          "heading": "Pesukei Dezimra, Vayevarech David"
+          "heading": "Vayevarech David",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-ata-hu",
-          "heading": "Pesukei Dezimra, Ata Hu"
+          "heading": "Ata Hu",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-az-yashir",
-          "heading": "Pesukei Dezimra, Az Yashir"
+          "heading": "Az Yashir",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-yishtabach",
-          "heading": "Pesukei Dezimra, Yishtabach"
+          "heading": "Yishtabach",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-130",
-          "heading": "Pesukei Dezimra, Psalm 130"
+          "heading": "Psalm 130",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-half-kaddish",
-          "heading": "Pesukei Dezimra, Half Kaddish"
+          "heading": "Half Kaddish",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "blessings-of-the-shema-barchu",
-          "heading": "Blessings of the Shema, Barchu"
+          "heading": "Barchu",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-first-blessing-before-shema",
-          "heading": "Blessings of the Shema, First Blessing before Shema"
+          "heading": "First Blessing before Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-second-blessing-before-shema",
-          "heading": "Blessings of the Shema, Second Blessing before Shema"
+          "heading": "Second Blessing before Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-shema",
-          "heading": "Blessings of the Shema, Shema"
+          "heading": "Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-blessing-after-shema",
-          "heading": "Blessings of the Shema, Blessing after Shema"
+          "heading": "Blessing after Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "amidah-patriarchs",
-          "heading": "Amidah, Patriarchs"
+          "heading": "Patriarchs",
+          "group": "Amidah"
         },
         {
           "id": "amidah-divine-might",
-          "heading": "Amidah, Divine Might"
+          "heading": "Divine Might",
+          "group": "Amidah"
         },
         {
           "id": "amidah-holiness-of-god",
-          "heading": "Amidah, Holiness of God"
+          "heading": "Holiness of God",
+          "group": "Amidah"
         },
         {
           "id": "amidah-kedushah",
-          "heading": "Amidah, Kedushah"
+          "heading": "Kedushah",
+          "group": "Amidah"
         },
         {
           "id": "amidah-knowledge",
-          "heading": "Amidah, Knowledge"
+          "heading": "Knowledge",
+          "group": "Amidah"
         },
         {
           "id": "amidah-repentance",
-          "heading": "Amidah, Repentance"
+          "heading": "Repentance",
+          "group": "Amidah"
         },
         {
           "id": "amidah-forgiveness",
-          "heading": "Amidah, Forgiveness"
+          "heading": "Forgiveness",
+          "group": "Amidah"
         },
         {
           "id": "amidah-redemption",
-          "heading": "Amidah, Redemption"
+          "heading": "Redemption",
+          "group": "Amidah"
         },
         {
           "id": "amidah-healing",
-          "heading": "Amidah, Healing"
+          "heading": "Healing",
+          "group": "Amidah"
         },
         {
           "id": "amidah-prosperity",
-          "heading": "Amidah, Prosperity"
+          "heading": "Prosperity",
+          "group": "Amidah"
         },
         {
           "id": "amidah-gathering-the-exiles",
-          "heading": "Amidah, Gathering the Exiles"
+          "heading": "Gathering the Exiles",
+          "group": "Amidah"
         },
         {
           "id": "amidah-justice",
-          "heading": "Amidah, Justice"
+          "heading": "Justice",
+          "group": "Amidah"
         },
         {
           "id": "amidah-against-enemies",
-          "heading": "Amidah, Against Enemies"
+          "heading": "Against Enemies",
+          "group": "Amidah"
         },
         {
           "id": "amidah-the-righteous",
-          "heading": "Amidah, The Righteous"
+          "heading": "The Righteous",
+          "group": "Amidah"
         },
         {
           "id": "amidah-rebuilding-jerusalem",
-          "heading": "Amidah, Rebuilding Jerusalem"
+          "heading": "Rebuilding Jerusalem",
+          "group": "Amidah"
         },
         {
           "id": "amidah-kingdom-of-david",
-          "heading": "Amidah, Kingdom of David"
+          "heading": "Kingdom of David",
+          "group": "Amidah"
         },
         {
           "id": "amidah-response-to-prayer",
-          "heading": "Amidah, Response to Prayer"
+          "heading": "Response to Prayer",
+          "group": "Amidah"
         },
         {
           "id": "amidah-temple-service",
-          "heading": "Amidah, Temple Service"
+          "heading": "Temple Service",
+          "group": "Amidah"
         },
         {
           "id": "amidah-thanksgiving",
-          "heading": "Amidah, Thanksgiving"
+          "heading": "Thanksgiving",
+          "group": "Amidah"
         },
         {
           "id": "amidah-birkat-kohanim",
-          "heading": "Amidah, Birkat Kohanim"
+          "heading": "Birkat Kohanim",
+          "group": "Amidah"
         },
         {
           "id": "amidah-peace",
-          "heading": "Amidah, Peace"
+          "heading": "Peace",
+          "group": "Amidah"
         },
         {
           "id": "amidah-concluding-passage",
-          "heading": "Amidah, Concluding Passage"
+          "heading": "Concluding Passage",
+          "group": "Amidah"
         },
         {
           "id": "post-amidah-vidui-and-13-middot",
-          "heading": "Post Amidah, Vidui and 13 Middot"
+          "heading": "Vidui and 13 Middot",
+          "group": "Post Amidah"
         },
         {
           "id": "post-amidah-avinu-malkenu",
-          "heading": "Post Amidah, Avinu Malkenu"
+          "heading": "Avinu Malkenu",
+          "group": "Post Amidah"
         },
         {
           "id": "post-amidah-tachanun-for-monday-and-thursday",
-          "heading": "Post Amidah, Tachanun, For Monday and Thursday"
+          "heading": "For Monday and Thursday",
+          "group": "Post Amidah · Tachanun"
         },
         {
           "id": "post-amidah-tachanun-nefilat-apayim",
-          "heading": "Post Amidah, Tachanun, Nefilat Apayim"
+          "heading": "Nefilat Apayim",
+          "group": "Post Amidah · Tachanun"
         },
         {
           "id": "post-amidah-tachanun-god-of-israel",
-          "heading": "Post Amidah, Tachanun, God of Israel"
+          "heading": "God of Israel",
+          "group": "Post Amidah · Tachanun"
         },
         {
           "id": "post-amidah-tachanun-shomer-yisrael",
-          "heading": "Post Amidah, Tachanun, Shomer Yisrael"
+          "heading": "Shomer Yisrael",
+          "group": "Post Amidah · Tachanun"
         },
         {
           "id": "post-amidah-tachanun-half-kaddish",
-          "heading": "Post Amidah, Tachanun, Half Kaddish"
+          "heading": "Half Kaddish",
+          "group": "Post Amidah · Tachanun"
         },
         {
           "id": "torah-reading-removing-the-torah-from-ark-el-erech-appayim",
-          "heading": "Torah Reading, Removing the Torah from Ark, El Erech Appayim"
+          "heading": "El Erech Appayim",
+          "group": "Torah Reading · Removing the Torah from Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-ark-vayehi-binsoa",
-          "heading": "Torah Reading, Removing the Torah from Ark, Vayehi Binsoa"
+          "heading": "Vayehi Binsoa",
+          "group": "Torah Reading · Removing the Torah from Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-ark-berich-shmei",
-          "heading": "Torah Reading, Removing the Torah from Ark, Berich Shmei"
+          "heading": "Berich Shmei",
+          "group": "Torah Reading · Removing the Torah from Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-ark-lekha-hashem",
-          "heading": "Torah Reading, Removing the Torah from Ark, Lekha Hashem"
+          "heading": "Lekha Hashem",
+          "group": "Torah Reading · Removing the Torah from Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-ark-av-harachamim",
-          "heading": "Torah Reading, Removing the Torah from Ark, Av Harachamim"
+          "heading": "Av Harachamim",
+          "group": "Torah Reading · Removing the Torah from Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-ark-vetigaleh-veteraeh",
-          "heading": "Torah Reading, Removing the Torah from Ark, Vetigaleh Veteraeh"
+          "heading": "Vetigaleh Veteraeh",
+          "group": "Torah Reading · Removing the Torah from Ark"
         },
         {
           "id": "torah-reading-reading-from-sefer-birkat-hatorah",
-          "heading": "Torah Reading, Reading from Sefer, Birkat HaTorah"
+          "heading": "Birkat HaTorah",
+          "group": "Torah Reading · Reading from Sefer"
         },
         {
           "id": "torah-reading-reading-from-sefer-birkat-hagomel",
-          "heading": "Torah Reading, Reading from Sefer, Birkat Hagomel"
+          "heading": "Birkat Hagomel",
+          "group": "Torah Reading · Reading from Sefer"
         },
         {
           "id": "torah-reading-reading-from-sefer-half-kaddish",
-          "heading": "Torah Reading, Reading from Sefer, Half Kaddish"
+          "heading": "Half Kaddish",
+          "group": "Torah Reading · Reading from Sefer"
         },
         {
           "id": "torah-reading-reading-from-sefer-raising-the-torah",
-          "heading": "Torah Reading, Reading from Sefer, Raising the Torah"
+          "heading": "Raising the Torah",
+          "group": "Torah Reading · Reading from Sefer"
         },
         {
           "id": "torah-reading-returning-sefer-to-aron-yehalelu",
-          "heading": "Torah Reading, Returning Sefer to Aron, Yehalelu"
+          "heading": "Yehalelu",
+          "group": "Torah Reading · Returning Sefer to Aron"
         },
         {
           "id": "torah-reading-returning-sefer-to-aron-ledavid-mizmor",
-          "heading": "Torah Reading, Returning Sefer to Aron, LeDavid Mizmor"
+          "heading": "LeDavid Mizmor",
+          "group": "Torah Reading · Returning Sefer to Aron"
         },
         {
           "id": "torah-reading-returning-sefer-to-aron-uvenucho-yomar",
-          "heading": "Torah Reading, Returning Sefer to Aron, Uvenucho Yomar"
+          "heading": "Uvenucho Yomar",
+          "group": "Torah Reading · Returning Sefer to Aron"
         },
         {
           "id": "concluding-prayers-ashrei",
-          "heading": "Concluding Prayers, Ashrei"
+          "heading": "Ashrei",
+          "group": "Concluding Prayers"
         },
         {
           "id": "concluding-prayers-lamenatze-ach",
-          "heading": "Concluding Prayers, Lamenatze'ach"
+          "heading": "Lamenatze'ach",
+          "group": "Concluding Prayers"
         },
         {
           "id": "concluding-prayers-uva-letzion",
-          "heading": "Concluding Prayers, Uva Letzion"
+          "heading": "Uva Letzion",
+          "group": "Concluding Prayers"
         },
         {
           "id": "concluding-prayers-kaddish-shalem",
-          "heading": "Concluding Prayers, Kaddish Shalem"
+          "heading": "Kaddish Shalem",
+          "group": "Concluding Prayers"
         },
         {
           "id": "concluding-prayers-alenu",
-          "heading": "Concluding Prayers, Alenu"
+          "heading": "Alenu",
+          "group": "Concluding Prayers"
         },
         {
           "id": "concluding-prayers-mourner-s-kaddish",
-          "heading": "Concluding Prayers, Mourner's Kaddish"
+          "heading": "Mourner's Kaddish",
+          "group": "Concluding Prayers"
         },
         {
           "id": "concluding-prayers-song-of-the-day",
-          "heading": "Concluding Prayers, Song of the Day"
+          "heading": "Song of the Day",
+          "group": "Concluding Prayers"
         },
         {
           "id": "concluding-prayers-barchi-nafshi",
-          "heading": "Concluding Prayers, Barchi Nafshi"
+          "heading": "Barchi Nafshi",
+          "group": "Concluding Prayers"
         },
         {
           "id": "concluding-prayers-ledavid",
-          "heading": "Concluding Prayers, LeDavid"
+          "heading": "LeDavid",
+          "group": "Concluding Prayers"
         }
       ],
       "sephard": [
         {
           "id": "modeh-ani",
-          "heading": "Modeh Ani"
+          "heading": "Modeh Ani",
+          "group": null
         },
         {
           "id": "tallit",
-          "heading": "Tallit"
+          "heading": "Tallit",
+          "group": null
         },
         {
           "id": "tefilin",
-          "heading": "Tefilin"
+          "heading": "Tefilin",
+          "group": null
         },
         {
           "id": "introductory-prayers",
-          "heading": "Introductory Prayers"
+          "heading": "Introductory Prayers",
+          "group": null
         },
         {
           "id": "upon-entering-synagogue",
-          "heading": "Upon Entering Synagogue"
+          "heading": "Upon Entering Synagogue",
+          "group": null
         },
         {
           "id": "morning-blessings",
-          "heading": "Morning Blessings"
+          "heading": "Morning Blessings",
+          "group": null
         },
         {
           "id": "blessings-on-torah",
-          "heading": "Blessings on Torah"
+          "heading": "Blessings on Torah",
+          "group": null
         },
         {
           "id": "morning-prayer",
-          "heading": "Morning Prayer"
+          "heading": "Morning Prayer",
+          "group": null
         },
         {
           "id": "korbanot",
-          "heading": "Korbanot"
+          "heading": "Korbanot",
+          "group": null
         },
         {
           "id": "b-raita-d-rabi-yishmael",
-          "heading": "B'raita d'Rabi Yishmael"
+          "heading": "B'raita d'Rabi Yishmael",
+          "group": null
         },
         {
           "id": "hodu",
-          "heading": "Hodu"
+          "heading": "Hodu",
+          "group": null
         },
         {
           "id": "yishtabach",
-          "heading": "Yishtabach"
+          "heading": "Yishtabach",
+          "group": null
         },
         {
           "id": "the-shema",
-          "heading": "The Shema"
+          "heading": "The Shema",
+          "group": null
         },
         {
           "id": "amidah",
-          "heading": "Amidah"
+          "heading": "Amidah",
+          "group": null
         },
         {
           "id": "tachanun",
-          "heading": "Tachanun"
+          "heading": "Tachanun",
+          "group": null
         },
         {
           "id": "avinu-malkeinu",
-          "heading": "Avinu Malkeinu"
+          "heading": "Avinu Malkeinu",
+          "group": null
         },
         {
           "id": "for-monday-thursday",
-          "heading": "For Monday & Thursday"
+          "heading": "For Monday & Thursday",
+          "group": null
         },
         {
           "id": "torah-reading",
-          "heading": "Torah Reading"
+          "heading": "Torah Reading",
+          "group": null
         },
         {
           "id": "ashrei",
-          "heading": "Ashrei"
+          "heading": "Ashrei",
+          "group": null
         },
         {
           "id": "beit-yaakov",
-          "heading": "Beit Yaakov"
+          "heading": "Beit Yaakov",
+          "group": null
         },
         {
           "id": "song-of-the-day",
-          "heading": "Song of the Day"
+          "heading": "Song of the Day",
+          "group": null
         },
         {
           "id": "barchi-nafshi",
-          "heading": "Barchi Nafshi"
+          "heading": "Barchi Nafshi",
+          "group": null
         },
         {
           "id": "l-david-hashem",
-          "heading": "L'David Hashem"
+          "heading": "L'David Hashem",
+          "group": null
         },
         {
           "id": "kaveh",
-          "heading": "Kaveh"
+          "heading": "Kaveh",
+          "group": null
         },
         {
           "id": "aleinu",
-          "heading": "Aleinu"
+          "heading": "Aleinu",
+          "group": null
         }
       ],
       "edot": [
         {
           "id": "modeh-ani",
-          "heading": "Modeh Ani"
+          "heading": "Modeh Ani",
+          "group": null
         },
         {
           "id": "morning-blessings",
-          "heading": "Morning Blessings"
+          "heading": "Morning Blessings",
+          "group": null
         },
         {
           "id": "torah-blessings",
-          "heading": "Torah Blessings"
+          "heading": "Torah Blessings",
+          "group": null
         },
         {
           "id": "petichat-eliyahu",
-          "heading": "Petichat Eliyahu"
+          "heading": "Petichat Eliyahu",
+          "group": null
         },
         {
           "id": "order-of-talit",
-          "heading": "Order of Talit"
+          "heading": "Order of Talit",
+          "group": null
         },
         {
           "id": "order-of-tefillin",
-          "heading": "Order of Tefillin"
+          "heading": "Order of Tefillin",
+          "group": null
         },
         {
           "id": "hanna-s-prayer",
-          "heading": "Hanna's Prayer"
+          "heading": "Hanna's Prayer",
+          "group": null
         },
         {
           "id": "morning-prayer",
-          "heading": "Morning Prayer"
+          "heading": "Morning Prayer",
+          "group": null
         },
         {
           "id": "incense-offering",
-          "heading": "Incense Offering"
+          "heading": "Incense Offering",
+          "group": null
         },
         {
           "id": "hodu",
-          "heading": "Hodu"
+          "heading": "Hodu",
+          "group": null
         },
         {
           "id": "pesukei-d-zimra",
-          "heading": "Pesukei D'Zimra"
+          "heading": "Pesukei D'Zimra",
+          "group": null
         },
         {
           "id": "the-shema",
-          "heading": "The Shema"
+          "heading": "The Shema",
+          "group": null
         },
         {
           "id": "amida",
-          "heading": "Amida"
+          "heading": "Amida",
+          "group": null
         },
         {
           "id": "vidui",
-          "heading": "Vidui"
+          "heading": "Vidui",
+          "group": null
         },
         {
           "id": "torah-reading",
-          "heading": "Torah Reading"
+          "heading": "Torah Reading",
+          "group": null
         },
         {
           "id": "ashrei",
-          "heading": "Ashrei"
+          "heading": "Ashrei",
+          "group": null
         },
         {
           "id": "uva-lesion",
-          "heading": "Uva LeSion"
+          "heading": "Uva LeSion",
+          "group": null
         },
         {
           "id": "beit-yaakov",
-          "heading": "Beit Yaakov"
+          "heading": "Beit Yaakov",
+          "group": null
         },
         {
           "id": "song-of-the-day",
-          "heading": "Song of the Day"
+          "heading": "Song of the Day",
+          "group": null
         },
         {
           "id": "kaveh",
-          "heading": "Kaveh"
+          "heading": "Kaveh",
+          "group": null
         },
         {
           "id": "alenu",
-          "heading": "Alenu"
+          "heading": "Alenu",
+          "group": null
         }
       ]
     },
@@ -616,467 +758,582 @@
       "ashkenaz": [
         {
           "id": "preparatory-prayers-modeh-ani",
-          "heading": "Preparatory Prayers, Modeh Ani"
+          "heading": "Modeh Ani",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-netilat-yadayim",
-          "heading": "Preparatory Prayers, Netilat Yadayim"
+          "heading": "Netilat Yadayim",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-asher-yatzar",
-          "heading": "Preparatory Prayers, Asher Yatzar"
+          "heading": "Asher Yatzar",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-elokai-neshama",
-          "heading": "Preparatory Prayers, Elokai Neshama"
+          "heading": "Elokai Neshama",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-tzitzit",
-          "heading": "Preparatory Prayers, Tzitzit"
+          "heading": "Tzitzit",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-tallit",
-          "heading": "Preparatory Prayers, Tallit"
+          "heading": "Tallit",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-ma-tovu",
-          "heading": "Preparatory Prayers, Ma Tovu"
+          "heading": "Ma Tovu",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-adon-olam",
-          "heading": "Preparatory Prayers, Adon Olam"
+          "heading": "Adon Olam",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-yigdal",
-          "heading": "Preparatory Prayers, Yigdal"
+          "heading": "Yigdal",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-morning-blessings",
-          "heading": "Preparatory Prayers, Morning Blessings"
+          "heading": "Morning Blessings",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-akedah",
-          "heading": "Preparatory Prayers, Akedah"
+          "heading": "Akedah",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-sovereignty-of-heaven",
-          "heading": "Preparatory Prayers, Sovereignty of Heaven"
+          "heading": "Sovereignty of Heaven",
+          "group": "Preparatory Prayers"
         },
         {
           "id": "preparatory-prayers-korbanot-kiyor",
-          "heading": "Preparatory Prayers, Korbanot, Kiyor"
+          "heading": "Kiyor",
+          "group": "Preparatory Prayers · Korbanot"
         },
         {
           "id": "preparatory-prayers-korbanot-terumat-hadeshen",
-          "heading": "Preparatory Prayers, Korbanot, Terumat HaDeshen"
+          "heading": "Terumat HaDeshen",
+          "group": "Preparatory Prayers · Korbanot"
         },
         {
           "id": "preparatory-prayers-korbanot-korban-hatamid",
-          "heading": "Preparatory Prayers, Korbanot, Korban HaTamid"
+          "heading": "Korban HaTamid",
+          "group": "Preparatory Prayers · Korbanot"
         },
         {
           "id": "preparatory-prayers-korbanot-ketoret",
-          "heading": "Preparatory Prayers, Korbanot, Ketoret"
+          "heading": "Ketoret",
+          "group": "Preparatory Prayers · Korbanot"
         },
         {
           "id": "preparatory-prayers-korbanot-baraita-of-rabbi-yishmael",
-          "heading": "Preparatory Prayers, Korbanot, Baraita of Rabbi Yishmael"
+          "heading": "Baraita of Rabbi Yishmael",
+          "group": "Preparatory Prayers · Korbanot"
         },
         {
           "id": "preparatory-prayers-korbanot-kaddish-derabbanan",
-          "heading": "Preparatory Prayers, Korbanot, Kaddish DeRabbanan"
+          "heading": "Kaddish DeRabbanan",
+          "group": "Preparatory Prayers · Korbanot"
         },
         {
           "id": "pesukei-dezimra-mizmor-shir",
-          "heading": "Pesukei Dezimra, Mizmor Shir"
+          "heading": "Mizmor Shir",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-mourner-s-kaddish",
-          "heading": "Pesukei Dezimra, Mourner's Kaddish"
+          "heading": "Mourner's Kaddish",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-barukh-she-amar",
-          "heading": "Pesukei Dezimra, Barukh She'amar"
+          "heading": "Barukh She'amar",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-hodu",
-          "heading": "Pesukei Dezimra, Hodu"
+          "heading": "Hodu",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-19",
-          "heading": "Pesukei Dezimra, Psalm 19"
+          "heading": "Psalm 19",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-34",
-          "heading": "Pesukei Dezimra, Psalm 34"
+          "heading": "Psalm 34",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-90",
-          "heading": "Pesukei Dezimra, Psalm 90"
+          "heading": "Psalm 90",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-91",
-          "heading": "Pesukei Dezimra, Psalm 91"
+          "heading": "Psalm 91",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-135",
-          "heading": "Pesukei Dezimra, Psalm 135"
+          "heading": "Psalm 135",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-136",
-          "heading": "Pesukei Dezimra, Psalm 136"
+          "heading": "Psalm 136",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-33",
-          "heading": "Pesukei Dezimra, Psalm 33"
+          "heading": "Psalm 33",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-92",
-          "heading": "Pesukei Dezimra, Psalm 92"
+          "heading": "Psalm 92",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-93",
-          "heading": "Pesukei Dezimra, Psalm 93"
+          "heading": "Psalm 93",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-yehi-chevod",
-          "heading": "Pesukei Dezimra, Yehi Chevod"
+          "heading": "Yehi Chevod",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-ashrei",
-          "heading": "Pesukei Dezimra, Ashrei"
+          "heading": "Ashrei",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-146",
-          "heading": "Pesukei Dezimra, Psalm 146"
+          "heading": "Psalm 146",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-147",
-          "heading": "Pesukei Dezimra, Psalm 147"
+          "heading": "Psalm 147",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-148",
-          "heading": "Pesukei Dezimra, Psalm 148"
+          "heading": "Psalm 148",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-149",
-          "heading": "Pesukei Dezimra, Psalm 149"
+          "heading": "Psalm 149",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-150",
-          "heading": "Pesukei Dezimra, Psalm 150"
+          "heading": "Psalm 150",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-baruch-hashem",
-          "heading": "Pesukei Dezimra, Baruch Hashem"
+          "heading": "Baruch Hashem",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-vayevarech-david",
-          "heading": "Pesukei Dezimra, Vayevarech David"
+          "heading": "Vayevarech David",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-shirat-hayam",
-          "heading": "Pesukei Dezimra, Shirat HaYam"
+          "heading": "Shirat HaYam",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-nishmat-kol-chai",
-          "heading": "Pesukei Dezimra, Nishmat Kol Chai"
+          "heading": "Nishmat Kol Chai",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-shochen-ad",
-          "heading": "Pesukei Dezimra, Shochen Ad"
+          "heading": "Shochen Ad",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-yishtabach",
-          "heading": "Pesukei Dezimra, Yishtabach"
+          "heading": "Yishtabach",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-psalm-130",
-          "heading": "Pesukei Dezimra, Psalm 130"
+          "heading": "Psalm 130",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "pesukei-dezimra-half-kaddish",
-          "heading": "Pesukei Dezimra, Half Kaddish"
+          "heading": "Half Kaddish",
+          "group": "Pesukei Dezimra"
         },
         {
           "id": "blessings-of-the-shema-barchu",
-          "heading": "Blessings of the Shema, Barchu"
+          "heading": "Barchu",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-first-blessing-before-shema",
-          "heading": "Blessings of the Shema, First Blessing before Shema"
+          "heading": "First Blessing before Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-second-blessing-before-shema",
-          "heading": "Blessings of the Shema, Second Blessing before Shema"
+          "heading": "Second Blessing before Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-shema",
-          "heading": "Blessings of the Shema, Shema"
+          "heading": "Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-blessing-after-shema",
-          "heading": "Blessings of the Shema, Blessing after Shema"
+          "heading": "Blessing after Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "amidah-patriarchs",
-          "heading": "Amidah, Patriarchs"
+          "heading": "Patriarchs",
+          "group": "Amidah"
         },
         {
           "id": "amidah-divine-might",
-          "heading": "Amidah, Divine Might"
+          "heading": "Divine Might",
+          "group": "Amidah"
         },
         {
           "id": "amidah-kedushah",
-          "heading": "Amidah, Kedushah"
+          "heading": "Kedushah",
+          "group": "Amidah"
         },
         {
           "id": "amidah-sanctity-of-the-day",
-          "heading": "Amidah, Sanctity of the Day"
+          "heading": "Sanctity of the Day",
+          "group": "Amidah"
         },
         {
           "id": "amidah-temple-service",
-          "heading": "Amidah, Temple Service"
+          "heading": "Temple Service",
+          "group": "Amidah"
         },
         {
           "id": "amidah-thanksgiving",
-          "heading": "Amidah, Thanksgiving"
+          "heading": "Thanksgiving",
+          "group": "Amidah"
         },
         {
           "id": "amidah-birkat-kohanim",
-          "heading": "Amidah, Birkat Kohanim"
+          "heading": "Birkat Kohanim",
+          "group": "Amidah"
         },
         {
           "id": "amidah-peace",
-          "heading": "Amidah, Peace"
+          "heading": "Peace",
+          "group": "Amidah"
         },
         {
           "id": "amidah-concluding-passage",
-          "heading": "Amidah, Concluding Passage"
+          "heading": "Concluding Passage",
+          "group": "Amidah"
         },
         {
           "id": "amidah-kaddish-shalem",
-          "heading": "Amidah, Kaddish Shalem"
+          "heading": "Kaddish Shalem",
+          "group": "Amidah"
         },
         {
           "id": "torah-reading-removing-the-torah-from-the-ark-ein-kamocha",
-          "heading": "Torah Reading, Removing the Torah from the Ark, Ein Kamocha"
+          "heading": "Ein Kamocha",
+          "group": "Torah Reading · Removing the Torah from the Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-the-ark-vayehi-binsoa",
-          "heading": "Torah Reading, Removing the Torah from the Ark, Vayehi Binsoa"
+          "heading": "Vayehi Binsoa",
+          "group": "Torah Reading · Removing the Torah from the Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-the-ark-berich-shmei",
-          "heading": "Torah Reading, Removing the Torah from the Ark, Berich Shmei"
+          "heading": "Berich Shmei",
+          "group": "Torah Reading · Removing the Torah from the Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-the-ark-shema-yisrael-gadlu",
-          "heading": "Torah Reading, Removing the Torah from the Ark, Shema Yisrael (Gadlu)"
+          "heading": "Shema Yisrael (Gadlu)",
+          "group": "Torah Reading · Removing the Torah from the Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-the-ark-lecha-hashem",
-          "heading": "Torah Reading, Removing the Torah from the Ark, Lecha Hashem"
+          "heading": "Lecha Hashem",
+          "group": "Torah Reading · Removing the Torah from the Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-the-ark-veyazor-veyagen",
-          "heading": "Torah Reading, Removing the Torah from the Ark, Veyazor Veyagen"
+          "heading": "Veyazor Veyagen",
+          "group": "Torah Reading · Removing the Torah from the Ark"
         },
         {
           "id": "torah-reading-reading-from-sefer-birkat-hatorah",
-          "heading": "Torah Reading, Reading from Sefer, Birkat HaTorah"
+          "heading": "Birkat HaTorah",
+          "group": "Torah Reading · Reading from Sefer"
         },
         {
           "id": "torah-reading-reading-from-sefer-birkat-hagomel",
-          "heading": "Torah Reading, Reading from Sefer, Birkat Hagomel"
+          "heading": "Birkat Hagomel",
+          "group": "Torah Reading · Reading from Sefer"
         },
         {
           "id": "torah-reading-reading-from-sefer-mi-sheberach-for-an-oleh",
-          "heading": "Torah Reading, Reading from Sefer, Mi Sheberach, For an Oleh"
+          "heading": "For an Oleh",
+          "group": "Torah Reading · Reading from Sefer · Mi Sheberach"
         },
         {
           "id": "torah-reading-reading-from-sefer-mi-sheberach-for-sickness-includes-man-and-woman",
-          "heading": "Torah Reading, Reading from Sefer, Mi Sheberach, For Sickness (includes man and woman)"
+          "heading": "For Sickness (includes man and woman)",
+          "group": "Torah Reading · Reading from Sefer · Mi Sheberach"
         },
         {
           "id": "torah-reading-reading-from-sefer-mi-sheberach-for-birth-birth-of-a-son",
-          "heading": "Torah Reading, Reading from Sefer, Mi Sheberach, For Birth, Birth of a Son"
+          "heading": "Birth of a Son",
+          "group": "Torah Reading · Reading from Sefer · Mi Sheberach · For Birth"
         },
         {
           "id": "torah-reading-reading-from-sefer-mi-sheberach-for-birth-birth-of-daughter",
-          "heading": "Torah Reading, Reading from Sefer, Mi Sheberach, For Birth, Birth of Daughter"
+          "heading": "Birth of Daughter",
+          "group": "Torah Reading · Reading from Sefer · Mi Sheberach · For Birth"
         },
         {
           "id": "torah-reading-reading-from-sefer-mi-sheberach-bar-mitzvah",
-          "heading": "Torah Reading, Reading from Sefer, Mi Sheberach, Bar Mitzvah"
+          "heading": "Bar Mitzvah",
+          "group": "Torah Reading · Reading from Sefer · Mi Sheberach"
         },
         {
           "id": "torah-reading-reading-from-sefer-half-kaddish",
-          "heading": "Torah Reading, Reading from Sefer, Half Kaddish"
+          "heading": "Half Kaddish",
+          "group": "Torah Reading · Reading from Sefer"
         },
         {
           "id": "torah-reading-reading-from-sefer-raising-the-torah",
-          "heading": "Torah Reading, Reading from Sefer, Raising the Torah"
+          "heading": "Raising the Torah",
+          "group": "Torah Reading · Reading from Sefer"
         },
         {
           "id": "torah-reading-reading-from-sefer-haftarah",
-          "heading": "Torah Reading, Reading from Sefer, Haftarah"
+          "heading": "Haftarah",
+          "group": "Torah Reading · Reading from Sefer"
         },
         {
           "id": "communal-prayers-yekum-purkan",
-          "heading": "Communal Prayers, Yekum Purkan"
+          "heading": "Yekum Purkan",
+          "group": "Communal Prayers"
         },
         {
           "id": "communal-prayers-prayer-of-the-state-of-israel",
-          "heading": "Communal Prayers, Prayer of the State of Israel"
+          "heading": "Prayer of the State of Israel",
+          "group": "Communal Prayers"
         },
         {
           "id": "communal-prayers-prayer-for-israeli-soldiers",
-          "heading": "Communal Prayers, Prayer for Israeli Soldiers"
+          "heading": "Prayer for Israeli Soldiers",
+          "group": "Communal Prayers"
         },
         {
           "id": "communal-prayers-prayer-for-those-being-held-in-captivity",
-          "heading": "Communal Prayers, Prayer for Those Being Held in Captivity"
+          "heading": "Prayer for Those Being Held in Captivity",
+          "group": "Communal Prayers"
         },
         {
           "id": "communal-prayers-birkat-hachodesh",
-          "heading": "Communal Prayers, Birkat Hachodesh"
+          "heading": "Birkat Hachodesh",
+          "group": "Communal Prayers"
         },
         {
           "id": "communal-prayers-av-harachamim",
-          "heading": "Communal Prayers, Av HaRachamim"
+          "heading": "Av HaRachamim",
+          "group": "Communal Prayers"
         },
         {
           "id": "ashrei",
-          "heading": "Ashrei"
+          "heading": "Ashrei",
+          "group": null
         },
         {
           "id": "returning-sefer-to-aron",
-          "heading": "Returning Sefer to Aron"
+          "heading": "Returning Sefer to Aron",
+          "group": null
         },
         {
           "id": "half-kaddish",
-          "heading": "Half Kaddish"
+          "heading": "Half Kaddish",
+          "group": null
         }
       ],
       "sephard": [
         {
           "id": "pesukei-d-zimrah",
-          "heading": "Pesukei D'Zimrah"
+          "heading": "Pesukei D'Zimrah",
+          "group": null
         },
         {
           "id": "shema-blessings",
-          "heading": "Shema & Blessings"
+          "heading": "Shema & Blessings",
+          "group": null
         },
         {
           "id": "amidah",
-          "heading": "Amidah"
+          "heading": "Amidah",
+          "group": null
         },
         {
           "id": "shabbat-torah-reading",
-          "heading": "Shabbat Torah Reading"
+          "heading": "Shabbat Torah Reading",
+          "group": null
         },
         {
           "id": "blessings-on-torah-reading",
-          "heading": "Blessings on Torah Reading"
+          "heading": "Blessings on Torah Reading",
+          "group": null
         },
         {
           "id": "prayer-for-oleh",
-          "heading": "Prayer for Oleh"
+          "heading": "Prayer for Oleh",
+          "group": null
         },
         {
           "id": "prayer-for-mother-after-chilbirth",
-          "heading": "Prayer for Mother after Chilbirth"
+          "heading": "Prayer for Mother after Chilbirth",
+          "group": null
         },
         {
           "id": "prayer-for-sick",
-          "heading": "Prayer for Sick"
+          "heading": "Prayer for Sick",
+          "group": null
         },
         {
           "id": "bahab-blessing",
-          "heading": "BaHaB Blessing"
+          "heading": "BaHaB Blessing",
+          "group": null
         },
         {
           "id": "thanksgiving-blessing",
-          "heading": "Thanksgiving Blessing"
+          "heading": "Thanksgiving Blessing",
+          "group": null
         },
         {
           "id": "bar-mitzva",
-          "heading": "Bar Mitzva"
+          "heading": "Bar Mitzva",
+          "group": null
         },
         {
           "id": "hagbahah",
-          "heading": "Hagbahah"
+          "heading": "Hagbahah",
+          "group": null
         },
         {
           "id": "haftarah-blessings",
-          "heading": "Haftarah Blessings"
+          "heading": "Haftarah Blessings",
+          "group": null
         },
         {
           "id": "blessing-of-new-month",
-          "heading": "Blessing of New Month"
+          "heading": "Blessing of New Month",
+          "group": null
         },
         {
           "id": "prayer-for-deceased",
-          "heading": "Prayer for Deceased"
+          "heading": "Prayer for Deceased",
+          "group": null
         },
         {
           "id": "av-harachamim",
-          "heading": "Av HaRachamim"
+          "heading": "Av HaRachamim",
+          "group": null
         }
       ],
       "edot": [
         {
           "id": "psalms-for-shabbat",
-          "heading": "Psalms for Shabbat"
+          "heading": "Psalms for Shabbat",
+          "group": null
         },
         {
           "id": "pesukei-d-zimra",
-          "heading": "Pesukei D'Zimra"
+          "heading": "Pesukei D'Zimra",
+          "group": null
         },
         {
           "id": "the-shema",
-          "heading": "The Shema"
+          "heading": "The Shema",
+          "group": null
         },
         {
           "id": "amidah",
-          "heading": "Amidah"
+          "heading": "Amidah",
+          "group": null
         },
         {
           "id": "torah-reading",
-          "heading": "Torah Reading"
+          "heading": "Torah Reading",
+          "group": null
         },
         {
           "id": "hagomel",
-          "heading": "HaGomel"
+          "heading": "HaGomel",
+          "group": null
         },
         {
           "id": "zeved-habat",
-          "heading": "Zeved HaBat"
+          "heading": "Zeved HaBat",
+          "group": null
         },
         {
           "id": "shabbat-chatan",
-          "heading": "Shabbat Chatan"
+          "heading": "Shabbat Chatan",
+          "group": null
         },
         {
           "id": "haftarah",
-          "heading": "Haftarah"
+          "heading": "Haftarah",
+          "group": null
         },
         {
           "id": "birkat-hachodesh",
-          "heading": "Birkat HaChodesh"
+          "heading": "Birkat HaChodesh",
+          "group": null
         },
         {
           "id": "announcement-of-fast",
-          "heading": "Announcement of Fast"
+          "heading": "Announcement of Fast",
+          "group": null
         },
         {
           "id": "mi-sheberach",
-          "heading": "Mi Sheberach"
+          "heading": "Mi Sheberach",
+          "group": null
         },
         {
           "id": "ashrei",
-          "heading": "Ashrei"
+          "heading": "Ashrei",
+          "group": null
         }
       ]
     },
@@ -1107,159 +1364,197 @@
       "ashkenaz": [
         {
           "id": "ashrei",
-          "heading": "Ashrei"
+          "heading": "Ashrei",
+          "group": null
         },
         {
           "id": "amida-patriarchs",
-          "heading": "Amida, Patriarchs"
+          "heading": "Patriarchs",
+          "group": "Amida"
         },
         {
           "id": "amida-divine-might",
-          "heading": "Amida, Divine Might"
+          "heading": "Divine Might",
+          "group": "Amida"
         },
         {
           "id": "amida-holiness-of-god",
-          "heading": "Amida, Holiness of God"
+          "heading": "Holiness of God",
+          "group": "Amida"
         },
         {
           "id": "amida-keduasha",
-          "heading": "Amida, Keduasha"
+          "heading": "Keduasha",
+          "group": "Amida"
         },
         {
           "id": "amida-knowledge",
-          "heading": "Amida, Knowledge"
+          "heading": "Knowledge",
+          "group": "Amida"
         },
         {
           "id": "amida-repentance",
-          "heading": "Amida, Repentance"
+          "heading": "Repentance",
+          "group": "Amida"
         },
         {
           "id": "amida-forgiveness",
-          "heading": "Amida, Forgiveness"
+          "heading": "Forgiveness",
+          "group": "Amida"
         },
         {
           "id": "amida-redemption",
-          "heading": "Amida, Redemption"
+          "heading": "Redemption",
+          "group": "Amida"
         },
         {
           "id": "amida-healing",
-          "heading": "Amida, Healing"
+          "heading": "Healing",
+          "group": "Amida"
         },
         {
           "id": "amida-prosperity",
-          "heading": "Amida, Prosperity"
+          "heading": "Prosperity",
+          "group": "Amida"
         },
         {
           "id": "amida-gathering-the-exiles",
-          "heading": "Amida, Gathering the Exiles"
+          "heading": "Gathering the Exiles",
+          "group": "Amida"
         },
         {
           "id": "amida-justice",
-          "heading": "Amida, Justice"
+          "heading": "Justice",
+          "group": "Amida"
         },
         {
           "id": "amida-against-enemies",
-          "heading": "Amida, Against Enemies"
+          "heading": "Against Enemies",
+          "group": "Amida"
         },
         {
           "id": "amida-the-righteous",
-          "heading": "Amida, The Righteous"
+          "heading": "The Righteous",
+          "group": "Amida"
         },
         {
           "id": "amida-rebuilding-jerusalem",
-          "heading": "Amida, Rebuilding Jerusalem"
+          "heading": "Rebuilding Jerusalem",
+          "group": "Amida"
         },
         {
           "id": "amida-kingdom-of-david",
-          "heading": "Amida, Kingdom of David"
+          "heading": "Kingdom of David",
+          "group": "Amida"
         },
         {
           "id": "amida-response-to-prayer",
-          "heading": "Amida, Response to Prayer"
+          "heading": "Response to Prayer",
+          "group": "Amida"
         },
         {
           "id": "amida-temple-service",
-          "heading": "Amida, Temple Service"
+          "heading": "Temple Service",
+          "group": "Amida"
         },
         {
           "id": "amida-thanksgiving",
-          "heading": "Amida, Thanksgiving"
+          "heading": "Thanksgiving",
+          "group": "Amida"
         },
         {
           "id": "amida-birkat-kohanim",
-          "heading": "Amida, Birkat Kohanim"
+          "heading": "Birkat Kohanim",
+          "group": "Amida"
         },
         {
           "id": "amida-peace",
-          "heading": "Amida, Peace"
+          "heading": "Peace",
+          "group": "Amida"
         },
         {
           "id": "amida-concluding-passage",
-          "heading": "Amida, Concluding Passage"
+          "heading": "Concluding Passage",
+          "group": "Amida"
         },
         {
           "id": "post-amidah-avinu-malkenu",
-          "heading": "Post Amidah, Avinu Malkenu"
+          "heading": "Avinu Malkenu",
+          "group": "Post Amidah"
         },
         {
           "id": "post-amidah-tachanun-nefilat-appayim",
-          "heading": "Post Amidah, Tachanun, Nefilat Appayim"
+          "heading": "Nefilat Appayim",
+          "group": "Post Amidah · Tachanun"
         },
         {
           "id": "post-amidah-tachanun-shomer-yisrael",
-          "heading": "Post Amidah, Tachanun, Shomer Yisrael"
+          "heading": "Shomer Yisrael",
+          "group": "Post Amidah · Tachanun"
         },
         {
           "id": "post-amidah-kaddish-shalem",
-          "heading": "Post Amidah, Kaddish Shalem"
+          "heading": "Kaddish Shalem",
+          "group": "Post Amidah"
         },
         {
           "id": "concluding-prayers-alenu",
-          "heading": "Concluding Prayers, Alenu"
+          "heading": "Alenu",
+          "group": "Concluding Prayers"
         },
         {
           "id": "concluding-prayers-mourner-s-kaddish",
-          "heading": "Concluding Prayers, Mourner's Kaddish"
+          "heading": "Mourner's Kaddish",
+          "group": "Concluding Prayers"
         }
       ],
       "sephard": [
         {
           "id": "korbanot",
-          "heading": "Korbanot"
+          "heading": "Korbanot",
+          "group": null
         },
         {
           "id": "torah-reading-for-fast-day",
-          "heading": "Torah Reading for Fast Day"
+          "heading": "Torah Reading for Fast Day",
+          "group": null
         },
         {
           "id": "amidah",
-          "heading": "Amidah"
+          "heading": "Amidah",
+          "group": null
         },
         {
           "id": "tachanun",
-          "heading": "Tachanun"
+          "heading": "Tachanun",
+          "group": null
         },
         {
           "id": "avinu-malkeinu",
-          "heading": "Avinu Malkeinu"
+          "heading": "Avinu Malkeinu",
+          "group": null
         }
       ],
       "edot": [
         {
           "id": "offerings",
-          "heading": "Offerings"
+          "heading": "Offerings",
+          "group": null
         },
         {
           "id": "amida",
-          "heading": "Amida"
+          "heading": "Amida",
+          "group": null
         },
         {
           "id": "vidui",
-          "heading": "Vidui"
+          "heading": "Vidui",
+          "group": null
         },
         {
           "id": "alenu",
-          "heading": "Alenu"
+          "heading": "Alenu",
+          "group": null
         }
       ]
     },
@@ -1289,155 +1584,192 @@
       "ashkenaz": [
         {
           "id": "ashrei",
-          "heading": "Ashrei"
+          "heading": "Ashrei",
+          "group": null
         },
         {
           "id": "uva-letzion",
-          "heading": "Uva Letzion"
+          "heading": "Uva Letzion",
+          "group": null
         },
         {
           "id": "half-kaddish",
-          "heading": "Half Kaddish"
+          "heading": "Half Kaddish",
+          "group": null
         },
         {
           "id": "torah-reading-removing-the-torah-from-ark-va-ani-tefillati",
-          "heading": "Torah Reading, Removing the Torah from Ark, Va'ani Tefillati"
+          "heading": "Va'ani Tefillati",
+          "group": "Torah Reading · Removing the Torah from Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-ark-vayehi-binsoa",
-          "heading": "Torah Reading, Removing the Torah from Ark, Vayehi Binsoa"
+          "heading": "Vayehi Binsoa",
+          "group": "Torah Reading · Removing the Torah from Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-ark-berich-shmei",
-          "heading": "Torah Reading, Removing the Torah from Ark, Berich Shmei"
+          "heading": "Berich Shmei",
+          "group": "Torah Reading · Removing the Torah from Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-ark-gadlu",
-          "heading": "Torah Reading, Removing the Torah from Ark, Gadlu"
+          "heading": "Gadlu",
+          "group": "Torah Reading · Removing the Torah from Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-ark-lekha-hashem",
-          "heading": "Torah Reading, Removing the Torah from Ark, Lekha Hashem"
+          "heading": "Lekha Hashem",
+          "group": "Torah Reading · Removing the Torah from Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-ark-av-harachamim",
-          "heading": "Torah Reading, Removing the Torah from Ark, Av Harachamim"
+          "heading": "Av Harachamim",
+          "group": "Torah Reading · Removing the Torah from Ark"
         },
         {
           "id": "torah-reading-removing-the-torah-from-ark-vetigaleh-veteraeh",
-          "heading": "Torah Reading, Removing the Torah from Ark, Vetigaleh Veteraeh"
+          "heading": "Vetigaleh Veteraeh",
+          "group": "Torah Reading · Removing the Torah from Ark"
         },
         {
           "id": "torah-reading-reading-from-sefer-birkat-hatorah",
-          "heading": "Torah Reading, Reading from Sefer, Birkat HaTorah"
+          "heading": "Birkat HaTorah",
+          "group": "Torah Reading · Reading from Sefer"
         },
         {
           "id": "torah-reading-reading-from-sefer-raising-the-torah",
-          "heading": "Torah Reading, Reading from Sefer, Raising the Torah"
+          "heading": "Raising the Torah",
+          "group": "Torah Reading · Reading from Sefer"
         },
         {
           "id": "torah-reading-returning-sefer-to-aron-yehalelu",
-          "heading": "Torah Reading, Returning Sefer to Aron, Yehalelu"
+          "heading": "Yehalelu",
+          "group": "Torah Reading · Returning Sefer to Aron"
         },
         {
           "id": "torah-reading-returning-sefer-to-aron-ledavid",
-          "heading": "Torah Reading, Returning Sefer to Aron, LeDavid"
+          "heading": "LeDavid",
+          "group": "Torah Reading · Returning Sefer to Aron"
         },
         {
           "id": "torah-reading-returning-sefer-to-aron-uvenucho-yomar",
-          "heading": "Torah Reading, Returning Sefer to Aron, Uvenucho Yomar"
+          "heading": "Uvenucho Yomar",
+          "group": "Torah Reading · Returning Sefer to Aron"
         },
         {
           "id": "amidah-patriarchs",
-          "heading": "Amidah, Patriarchs"
+          "heading": "Patriarchs",
+          "group": "Amidah"
         },
         {
           "id": "amidah-divine-might",
-          "heading": "Amidah, Divine Might"
+          "heading": "Divine Might",
+          "group": "Amidah"
         },
         {
           "id": "amidah-kedushah",
-          "heading": "Amidah, Kedushah"
+          "heading": "Kedushah",
+          "group": "Amidah"
         },
         {
           "id": "amidah-holiness-of-god",
-          "heading": "Amidah, Holiness of God"
+          "heading": "Holiness of God",
+          "group": "Amidah"
         },
         {
           "id": "amidah-sanctity-of-the-day",
-          "heading": "Amidah, Sanctity of the Day"
+          "heading": "Sanctity of the Day",
+          "group": "Amidah"
         },
         {
           "id": "amidah-temple-service",
-          "heading": "Amidah, Temple Service"
+          "heading": "Temple Service",
+          "group": "Amidah"
         },
         {
           "id": "amidah-thanksgiving-modim",
-          "heading": "Amidah, Thanksgiving, Modim"
+          "heading": "Modim",
+          "group": "Amidah · Thanksgiving"
         },
         {
           "id": "amidah-thanksgiving-al-hanisim-for-chanukkah",
-          "heading": "Amidah, Thanksgiving, Al Hanisim for Chanukkah"
+          "heading": "Al Hanisim for Chanukkah",
+          "group": "Amidah · Thanksgiving"
         },
         {
           "id": "amidah-thanksgiving-al-hanisim-for-purim",
-          "heading": "Amidah, Thanksgiving, Al Hanisim for Purim"
+          "heading": "Al Hanisim for Purim",
+          "group": "Amidah · Thanksgiving"
         },
         {
           "id": "amidah-peace",
-          "heading": "Amidah, Peace"
+          "heading": "Peace",
+          "group": "Amidah"
         },
         {
           "id": "amidah-concluding-passage",
-          "heading": "Amidah, Concluding Passage"
+          "heading": "Concluding Passage",
+          "group": "Amidah"
         },
         {
           "id": "tzidkatkhah-tzedek",
-          "heading": "Tzidkatkhah Tzedek"
+          "heading": "Tzidkatkhah Tzedek",
+          "group": null
         },
         {
           "id": "kaddish-shalem",
-          "heading": "Kaddish Shalem"
+          "heading": "Kaddish Shalem",
+          "group": null
         },
         {
           "id": "alenu",
-          "heading": "Alenu"
+          "heading": "Alenu",
+          "group": null
         },
         {
           "id": "mourner-s-kaddish",
-          "heading": "Mourner's Kaddish"
+          "heading": "Mourner's Kaddish",
+          "group": null
         },
         {
           "id": "barchi-nafshi",
-          "heading": "Barchi Nafshi"
+          "heading": "Barchi Nafshi",
+          "group": null
         }
       ],
       "sephard": [
         {
           "id": "korbanot",
-          "heading": "Korbanot"
+          "heading": "Korbanot",
+          "group": null
         },
         {
           "id": "amidah",
-          "heading": "Amidah"
+          "heading": "Amidah",
+          "group": null
         }
       ],
       "edot": [
         {
           "id": "offerings",
-          "heading": "Offerings"
+          "heading": "Offerings",
+          "group": null
         },
         {
           "id": "uva-lesion",
-          "heading": "Uva LeSion"
+          "heading": "Uva LeSion",
+          "group": null
         },
         {
           "id": "amida",
-          "heading": "Amida"
+          "heading": "Amida",
+          "group": null
         },
         {
           "id": "alenu",
-          "heading": "Alenu"
+          "heading": "Alenu",
+          "group": null
         }
       ]
     },
@@ -1466,183 +1798,227 @@
       "ashkenaz": [
         {
           "id": "vehu-rachum",
-          "heading": "Vehu Rachum"
+          "heading": "Vehu Rachum",
+          "group": null
         },
         {
           "id": "barchu",
-          "heading": "Barchu"
+          "heading": "Barchu",
+          "group": null
         },
         {
           "id": "blessings-of-the-shema-first-blessing-before-shema",
-          "heading": "Blessings of the Shema, First Blessing before Shema"
+          "heading": "First Blessing before Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-second-blessing-before-shema",
-          "heading": "Blessings of the Shema, Second Blessing before Shema"
+          "heading": "Second Blessing before Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-shema",
-          "heading": "Blessings of the Shema, Shema"
+          "heading": "Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-first-blessing-after-shema",
-          "heading": "Blessings of the Shema, First Blessing after Shema"
+          "heading": "First Blessing after Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-second-blessing-after-shema",
-          "heading": "Blessings of the Shema, Second Blessing after Shema"
+          "heading": "Second Blessing after Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-third-blessing-after-shema",
-          "heading": "Blessings of the Shema, Third Blessing after Shema"
+          "heading": "Third Blessing after Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-half-kaddish",
-          "heading": "Blessings of the Shema, Half Kaddish"
+          "heading": "Half Kaddish",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "amidah-patriarchs",
-          "heading": "Amidah, Patriarchs"
+          "heading": "Patriarchs",
+          "group": "Amidah"
         },
         {
           "id": "amidah-divine-might",
-          "heading": "Amidah, Divine Might"
+          "heading": "Divine Might",
+          "group": "Amidah"
         },
         {
           "id": "amidah-holiness-of-god",
-          "heading": "Amidah, Holiness of God"
+          "heading": "Holiness of God",
+          "group": "Amidah"
         },
         {
           "id": "amidah-knowledge",
-          "heading": "Amidah, Knowledge"
+          "heading": "Knowledge",
+          "group": "Amidah"
         },
         {
           "id": "amidah-repentance",
-          "heading": "Amidah, Repentance"
+          "heading": "Repentance",
+          "group": "Amidah"
         },
         {
           "id": "amidah-forgiveness",
-          "heading": "Amidah, Forgiveness"
+          "heading": "Forgiveness",
+          "group": "Amidah"
         },
         {
           "id": "amidah-redemption",
-          "heading": "Amidah, Redemption"
+          "heading": "Redemption",
+          "group": "Amidah"
         },
         {
           "id": "amidah-healing",
-          "heading": "Amidah, Healing"
+          "heading": "Healing",
+          "group": "Amidah"
         },
         {
           "id": "amidah-prosperity",
-          "heading": "Amidah, Prosperity"
+          "heading": "Prosperity",
+          "group": "Amidah"
         },
         {
           "id": "amidah-gathering-the-exiles",
-          "heading": "Amidah, Gathering the Exiles"
+          "heading": "Gathering the Exiles",
+          "group": "Amidah"
         },
         {
           "id": "amidah-justice",
-          "heading": "Amidah, Justice"
+          "heading": "Justice",
+          "group": "Amidah"
         },
         {
           "id": "amidah-against-enemies",
-          "heading": "Amidah, Against Enemies"
+          "heading": "Against Enemies",
+          "group": "Amidah"
         },
         {
           "id": "amidah-the-righteous",
-          "heading": "Amidah, The Righteous"
+          "heading": "The Righteous",
+          "group": "Amidah"
         },
         {
           "id": "amidah-rebuilding-jerusalem",
-          "heading": "Amidah, Rebuilding Jerusalem"
+          "heading": "Rebuilding Jerusalem",
+          "group": "Amidah"
         },
         {
           "id": "amidah-kingdom-of-david",
-          "heading": "Amidah, Kingdom of David"
+          "heading": "Kingdom of David",
+          "group": "Amidah"
         },
         {
           "id": "amidah-response-to-prayer",
-          "heading": "Amidah, Response to Prayer"
+          "heading": "Response to Prayer",
+          "group": "Amidah"
         },
         {
           "id": "amidah-temple-service",
-          "heading": "Amidah, Temple Service"
+          "heading": "Temple Service",
+          "group": "Amidah"
         },
         {
           "id": "amidah-thanksgiving",
-          "heading": "Amidah, Thanksgiving"
+          "heading": "Thanksgiving",
+          "group": "Amidah"
         },
         {
           "id": "amidah-peace",
-          "heading": "Amidah, Peace"
+          "heading": "Peace",
+          "group": "Amidah"
         },
         {
           "id": "amidah-concluding-passage",
-          "heading": "Amidah, Concluding Passage"
+          "heading": "Concluding Passage",
+          "group": "Amidah"
         },
         {
           "id": "kaddish-shalem",
-          "heading": "Kaddish Shalem"
+          "heading": "Kaddish Shalem",
+          "group": null
         },
         {
           "id": "additions-for-motza-ei-shabbat-viyehi-noam",
-          "heading": "Additions for Motza'ei Shabbat, Viyehi Noam"
+          "heading": "Viyehi Noam",
+          "group": "Additions for Motza'ei Shabbat"
         },
         {
           "id": "additions-for-motza-ei-shabbat-veyiten-lekha",
-          "heading": "Additions for Motza'ei Shabbat, Veyiten Lekha"
+          "heading": "Veyiten Lekha",
+          "group": "Additions for Motza'ei Shabbat"
         },
         {
           "id": "sefirat-haomer",
-          "heading": "Sefirat HaOmer"
+          "heading": "Sefirat HaOmer",
+          "group": null
         },
         {
           "id": "alenu",
-          "heading": "Alenu"
+          "heading": "Alenu",
+          "group": null
         },
         {
           "id": "mourner-s-kaddish",
-          "heading": "Mourner's Kaddish"
+          "heading": "Mourner's Kaddish",
+          "group": null
         },
         {
           "id": "ledavid",
-          "heading": "LeDavid"
+          "heading": "LeDavid",
+          "group": null
         }
       ],
       "sephard": [
         {
           "id": "the-shema",
-          "heading": "The Shema"
+          "heading": "The Shema",
+          "group": null
         },
         {
           "id": "amidah",
-          "heading": "Amidah"
+          "heading": "Amidah",
+          "group": null
         },
         {
           "id": "motzaei-shabbat",
-          "heading": "Motzaei Shabbat"
+          "heading": "Motzaei Shabbat",
+          "group": null
         },
         {
           "id": "sefirat-haomer",
-          "heading": "Sefirat HaOmer"
+          "heading": "Sefirat HaOmer",
+          "group": null
         }
       ],
       "edot": [
         {
           "id": "barchu",
-          "heading": "Barchu"
+          "heading": "Barchu",
+          "group": null
         },
         {
           "id": "the-shema",
-          "heading": "The Shema"
+          "heading": "The Shema",
+          "group": null
         },
         {
           "id": "amidah",
-          "heading": "Amidah"
+          "heading": "Amidah",
+          "group": null
         },
         {
           "id": "alenu",
-          "heading": "Alenu"
+          "heading": "Alenu",
+          "group": null
         }
       ]
     },
@@ -1672,139 +2048,172 @@
       "ashkenaz": [
         {
           "id": "barchu",
-          "heading": "Barchu"
+          "heading": "Barchu",
+          "group": null
         },
         {
           "id": "blessings-of-the-shema-first-blessing-before-shema",
-          "heading": "Blessings of the Shema, First Blessing before Shema"
+          "heading": "First Blessing before Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-second-blessing-before-shema",
-          "heading": "Blessings of the Shema, Second Blessing before Shema"
+          "heading": "Second Blessing before Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-shema",
-          "heading": "Blessings of the Shema, Shema"
+          "heading": "Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-first-blessing-after-shema",
-          "heading": "Blessings of the Shema, First Blessing after Shema"
+          "heading": "First Blessing after Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "blessings-of-the-shema-second-blessing-after-shema",
-          "heading": "Blessings of the Shema, Second Blessing after Shema"
+          "heading": "Second Blessing after Shema",
+          "group": "Blessings of the Shema"
         },
         {
           "id": "veshamru",
-          "heading": "Veshamru"
+          "heading": "Veshamru",
+          "group": null
         },
         {
           "id": "half-kaddish",
-          "heading": "Half Kaddish"
+          "heading": "Half Kaddish",
+          "group": null
         },
         {
           "id": "amidah-patriarchs",
-          "heading": "Amidah, Patriarchs"
+          "heading": "Patriarchs",
+          "group": "Amidah"
         },
         {
           "id": "amidah-divine-might",
-          "heading": "Amidah, Divine Might"
+          "heading": "Divine Might",
+          "group": "Amidah"
         },
         {
           "id": "amidah-holines-of-god-s-name",
-          "heading": "Amidah, Holines of God's Name"
+          "heading": "Holines of God's Name",
+          "group": "Amidah"
         },
         {
           "id": "amidah-sanctity-of-the-day",
-          "heading": "Amidah, Sanctity of the Day"
+          "heading": "Sanctity of the Day",
+          "group": "Amidah"
         },
         {
           "id": "amidah-temple-service",
-          "heading": "Amidah, Temple Service"
+          "heading": "Temple Service",
+          "group": "Amidah"
         },
         {
           "id": "amidah-thanksgiving",
-          "heading": "Amidah, Thanksgiving"
+          "heading": "Thanksgiving",
+          "group": "Amidah"
         },
         {
           "id": "amidah-peace",
-          "heading": "Amidah, Peace"
+          "heading": "Peace",
+          "group": "Amidah"
         },
         {
           "id": "amidah-concluding-passage",
-          "heading": "Amidah, Concluding Passage"
+          "heading": "Concluding Passage",
+          "group": "Amidah"
         },
         {
           "id": "vay-chulu",
-          "heading": "Vay'chulu"
+          "heading": "Vay'chulu",
+          "group": null
         },
         {
           "id": "me-ein-sheva",
-          "heading": "Me'ein Sheva"
+          "heading": "Me'ein Sheva",
+          "group": null
         },
         {
           "id": "kaddish-shalem",
-          "heading": "Kaddish Shalem"
+          "heading": "Kaddish Shalem",
+          "group": null
         },
         {
           "id": "sefirat-haomer",
-          "heading": "Sefirat HaOmer"
+          "heading": "Sefirat HaOmer",
+          "group": null
         },
         {
           "id": "aleinu",
-          "heading": "Aleinu"
+          "heading": "Aleinu",
+          "group": null
         },
         {
           "id": "mourner-s-kaddish",
-          "heading": "Mourner's Kaddish"
+          "heading": "Mourner's Kaddish",
+          "group": null
         },
         {
           "id": "ledavid",
-          "heading": "LeDavid"
+          "heading": "LeDavid",
+          "group": null
         },
         {
           "id": "yigdal",
-          "heading": "Yigdal"
+          "heading": "Yigdal",
+          "group": null
         },
         {
           "id": "adon-olam",
-          "heading": "Adon Olam"
+          "heading": "Adon Olam",
+          "group": null
         }
       ],
       "sephard": [
         {
           "id": "shabbat-eve-maariv",
-          "heading": "Shabbat Eve Maariv"
+          "heading": "Shabbat Eve Maariv",
+          "group": null
         },
         {
           "id": "shema-blessings",
-          "heading": "Shema & Blessings"
+          "heading": "Shema & Blessings",
+          "group": null
         },
         {
           "id": "amidah",
-          "heading": "Amidah"
+          "heading": "Amidah",
+          "group": null
         },
         {
           "id": "vayechulu",
-          "heading": "Vayechulu"
+          "heading": "Vayechulu",
+          "group": null
         }
       ],
       "edot": [
         {
           "id": "barchu",
-          "heading": "Barchu"
+          "heading": "Barchu",
+          "group": null
         },
         {
           "id": "the-shema",
-          "heading": "The Shema"
+          "heading": "The Shema",
+          "group": null
         },
         {
           "id": "magen-avot",
-          "heading": "Magen Avot"
+          "heading": "Magen Avot",
+          "group": null
         },
         {
           "id": "alenu",
-          "heading": "Alenu"
+          "heading": "Alenu",
+          "group": null
         }
       ]
     },
@@ -1834,19 +2243,22 @@
       "ashkenaz": [
         {
           "id": "keri-at-shema-al-hamita",
-          "heading": "Keri'at Shema al Hamita"
+          "heading": "Keri'at Shema al Hamita",
+          "group": null
         }
       ],
       "sephard": [
         {
           "id": "bedtime-shema",
-          "heading": "Bedtime Shema"
+          "heading": "Bedtime Shema",
+          "group": null
         }
       ],
       "edot": [
         {
           "id": "bedtime-shema",
-          "heading": "Bedtime Shema"
+          "heading": "Bedtime Shema",
+          "group": null
         }
       ]
     },
@@ -1875,23 +2287,27 @@
       "ashkenaz": [
         {
           "id": "tefillat-haderech",
-          "heading": "Tefillat HaDerech"
+          "heading": "Tefillat HaDerech",
+          "group": null
         }
       ],
       "sephard": [
         {
           "id": "traveler-s-prayer",
-          "heading": "Traveler's Prayer"
+          "heading": "Traveler's Prayer",
+          "group": null
         },
         {
           "id": "air-traveler-s-prayer",
-          "heading": "Air Traveler's Prayer"
+          "heading": "Air Traveler's Prayer",
+          "group": null
         }
       ],
       "edot": [
         {
           "id": "traveler-s-prayer",
-          "heading": "Traveler's Prayer"
+          "heading": "Traveler's Prayer",
+          "group": null
         }
       ]
     },
@@ -1920,19 +2336,22 @@
       "ashkenaz": [
         {
           "id": "birkat-hamazon",
-          "heading": "Birkat HaMazon"
+          "heading": "Birkat HaMazon",
+          "group": null
         }
       ],
       "sephard": [
         {
           "id": "birchat-hamazon",
-          "heading": "Birchat HaMazon"
+          "heading": "Birchat HaMazon",
+          "group": null
         }
       ],
       "edot": [
         {
           "id": "post-meal-blessing",
-          "heading": "Post Meal Blessing"
+          "heading": "Post Meal Blessing",
+          "group": null
         }
       ]
     },
@@ -1961,115 +2380,142 @@
       "ashkenaz": [
         {
           "id": "eating-barachot-rishonot",
-          "heading": "Eating, Barachot Rishonot"
+          "heading": "Barachot Rishonot",
+          "group": "Eating"
         },
         {
           "id": "eating-brachot-achronot-al-hamichyah",
-          "heading": "Eating, Brachot Achronot, Al Hamichyah"
+          "heading": "Al Hamichyah",
+          "group": "Eating · Brachot Achronot"
         },
         {
           "id": "eating-brachot-achronot-borei-nefashot",
-          "heading": "Eating, Brachot Achronot, Borei Nefashot"
+          "heading": "Borei Nefashot",
+          "group": "Eating · Brachot Achronot"
         },
         {
           "id": "blessings-on-sights-sounds-and-smells",
-          "heading": "Blessings on Sights Sounds and Smells"
+          "heading": "Blessings on Sights Sounds and Smells",
+          "group": null
         }
       ],
       "sephard": [
         {
           "id": "me-ein-shalosh",
-          "heading": "Me'ein Shalosh"
+          "heading": "Me'ein Shalosh",
+          "group": null
         },
         {
           "id": "ha-etz",
-          "heading": "Ha'etz"
+          "heading": "Ha'etz",
+          "group": null
         },
         {
           "id": "ha-adamah",
-          "heading": "Ha'adamah"
+          "heading": "Ha'adamah",
+          "group": null
         },
         {
           "id": "shehakol",
-          "heading": "Shehakol"
+          "heading": "Shehakol",
+          "group": null
         },
         {
           "id": "borei-nefashot",
-          "heading": "Borei Nefashot"
+          "heading": "Borei Nefashot",
+          "group": null
         },
         {
           "id": "shehecheyanu",
-          "heading": "Shehecheyanu"
+          "heading": "Shehecheyanu",
+          "group": null
         },
         {
           "id": "fragrant-spices",
-          "heading": "Fragrant Spices"
+          "heading": "Fragrant Spices",
+          "group": null
         },
         {
           "id": "fragrant-herbs",
-          "heading": "Fragrant Herbs"
+          "heading": "Fragrant Herbs",
+          "group": null
         },
         {
           "id": "fragrant-shrubs",
-          "heading": "Fragrant Shrubs"
+          "heading": "Fragrant Shrubs",
+          "group": null
         },
         {
           "id": "fragrant-fruit",
-          "heading": "Fragrant Fruit"
+          "heading": "Fragrant Fruit",
+          "group": null
         },
         {
           "id": "fragrant-oils",
-          "heading": "Fragrant Oils"
+          "heading": "Fragrant Oils",
+          "group": null
         },
         {
           "id": "lightning-thunder",
-          "heading": "Lightning & Thunder"
+          "heading": "Lightning & Thunder",
+          "group": null
         },
         {
           "id": "seeing-rainbow",
-          "heading": "Seeing Rainbow"
+          "heading": "Seeing Rainbow",
+          "group": null
         },
         {
           "id": "seeing-ocean",
-          "heading": "Seeing Ocean"
+          "heading": "Seeing Ocean",
+          "group": null
         },
         {
           "id": "blossoming-fruit-tree",
-          "heading": "Blossoming Fruit Tree"
+          "heading": "Blossoming Fruit Tree",
+          "group": null
         },
         {
           "id": "various-blessings-of-praise",
-          "heading": "Various Blessings of Praise"
+          "heading": "Various Blessings of Praise",
+          "group": null
         },
         {
           "id": "immersing-utensils",
-          "heading": "Immersing Utensils"
+          "heading": "Immersing Utensils",
+          "group": null
         },
         {
           "id": "mezuzah",
-          "heading": "Mezuzah"
+          "heading": "Mezuzah",
+          "group": null
         },
         {
           "id": "separating-challah",
-          "heading": "Separating Challah"
+          "heading": "Separating Challah",
+          "group": null
         },
         {
           "id": "separating-terumot-maasrot",
-          "heading": "Separating Terumot & Maasrot"
+          "heading": "Separating Terumot & Maasrot",
+          "group": null
         },
         {
           "id": "mealtime-blessings",
-          "heading": "Mealtime Blessings"
+          "heading": "Mealtime Blessings",
+          "group": null
         }
       ],
       "edot": [
         {
           "id": "blessings-on-enjoyments",
-          "heading": "Blessings on Enjoyments"
+          "heading": "Blessings on Enjoyments",
+          "group": null
         },
         {
           "id": "al-hamihya",
-          "heading": "Al Hamihya"
+          "heading": "Al Hamihya",
+          "group": null
         }
       ]
     },
@@ -2098,27 +2544,32 @@
       "ashkenaz": [
         {
           "id": "havdalah",
-          "heading": "Havdalah"
+          "heading": "Havdalah",
+          "group": null
         }
       ],
       "sephard": [
         {
           "id": "havdala",
-          "heading": "Havdala"
+          "heading": "Havdala",
+          "group": null
         },
         {
           "id": "hamavdil",
-          "heading": "Hamavdil"
+          "heading": "Hamavdil",
+          "group": null
         }
       ],
       "edot": [
         {
           "id": "before-havdalah",
-          "heading": "Before Havdalah"
+          "heading": "Before Havdalah",
+          "group": null
         },
         {
           "id": "havdala",
-          "heading": "Havdala"
+          "heading": "Havdala",
+          "group": null
         }
       ]
     },
