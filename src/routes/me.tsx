@@ -105,12 +105,12 @@ function Me() {
         </Card>
 
         <Card className="space-y-2">
-          <h2 className="text-base font-semibold">How your credits work</h2>
+          <h2 className="text-base font-semibold">How your Shekk account works</h2>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li>• You top up with Apple Pay and your balance lands in shekels, ready to spend.</li>
             <li>• Order through a partner app inside Shekk and <span className="font-medium text-foreground">we pay them</span> — your card is never charged at checkout.</li>
             <li>• We then deduct the Shekk equivalent of that order from your preloaded balance.</li>
-            <li>• Every top up shows the Shekk rate and the exact credits you get before you confirm.</li>
+            <li>• Every time you add money you see the rate and the exact shekels you get before you confirm.</li>
             <li>• Re-verify your ID once a year to keep the account active.</li>
             <li>• The full credit terms live in the <span className="font-medium text-foreground">Terms & Conditions</span>.</li>
           </ul>

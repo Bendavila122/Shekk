@@ -299,7 +299,7 @@ export function ReverifyBanner() {
     >
       <div>
         <p className="text-sm font-semibold">{daysLeft} days left to re-verify</p>
-        <p className="text-xs opacity-80">Annual ID check — keeps your credits spendable.</p>
+        <p className="text-xs opacity-80">Annual ID check — keeps your account and card active.</p>
       </div>
       <span className="rounded-full bg-notice-foreground px-3 py-1.5 text-xs font-semibold text-notice-soft">
         Re-verify
