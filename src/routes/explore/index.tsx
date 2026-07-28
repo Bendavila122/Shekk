@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Search, X } from "lucide-react";
+import { Search, X, Tag, ChevronRight } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 
 import { SERVICE_CATEGORIES, serviceLinkProps, type Service } from "@/lib/services";
@@ -9,6 +9,7 @@ import { recordServiceUse } from "@/lib/recents";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { GUIDES } from "@/lib/guides";
 import { GuideStrip } from "@/components/GuideStrip";
+import { BENEFITS } from "@/lib/benefits";
 
 export const Route = createFileRoute("/explore/")({
   head: () => ({
@@ -104,6 +105,25 @@ function Explore() {
         </section>
       ) : (
         <section className="space-y-8 px-4 py-6">
+          {/* Benefits marketplace entry */}
+          <Link to="/benefits" className="tap block">
+            <div className="grad-premium relative overflow-hidden rounded-2xl p-4 text-ink-foreground shadow-lift">
+              <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
+              <div className="relative flex items-center gap-3">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-ink-foreground/15">
+                  <Tag className="size-5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold">Benefits marketplace</p>
+                  <p className="text-xs opacity-85">
+                    {BENEFITS.length} member offers on food, transport, gyms, trips and courses.
+                  </p>
+                </div>
+                <ChevronRight className="size-5 shrink-0 opacity-80" />
+              </div>
+            </div>
+          </Link>
+
           {/* Category folders — one big icon each */}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {SERVICE_CATEGORIES.map((cat) => (
