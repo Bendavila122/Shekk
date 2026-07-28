@@ -91,12 +91,39 @@ function HomeScreen() {
 
       <LocationBar />
 
-
+      {/* Wallet hero — the daily financial pulse */}
+      <section className="px-4 pt-3">
+        <div className="grad-balance relative overflow-hidden rounded-[1.5rem] px-5 py-4 text-ink-foreground shadow-lift">
+          <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
+          <div className="relative">
+            <Link to="/wallet" className="tap-flat block">
+              <p className="text-[10px] uppercase tracking-widest opacity-70">Shekk balance</p>
+              <p className="font-display text-4xl font-bold leading-none tracking-tight">{ils(state.balance)}</p>
+              <p className="mt-1.5 text-[11px] opacity-70">
+                ≈ {refIn(state.settings.payCurrency, state.balance)} · {isPremium ? "Premium member" : "Free plan"}
+              </p>
+            </Link>
+            <div className="mt-4 grid grid-cols-4 gap-1.5">
+              {HERO_ACTIONS.map(({ to, label, Icon }) => (
+                <Link
+                  key={label}
+                  to={to}
+                  className="tap-icon flex flex-col items-center gap-1 rounded-xl bg-ink-foreground/10 py-2"
+                >
+                  <Icon className="size-[17px]" strokeWidth={2.4} />
+                  <span className="text-[9.5px] font-semibold leading-none">{label}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Search into the full catalogue */}
       <div className="px-4 pt-3">
         <GlobalSearch />
       </div>
+
 
 
 
