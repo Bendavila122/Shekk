@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { useApp } from "@/lib/store";
@@ -17,36 +17,9 @@ type LiveItem = {
   qr?: string;
 };
 
-function fmtCountdown(ms: number) {
-  if (ms <= 0) return "now";
-  const mins = Math.round(ms / 60000);
-  if (mins < 60) return `${mins} min${mins === 1 ? "" : "s"}`;
-  const h = Math.floor(mins / 60);
-  return `${h}h ${mins % 60}m`;
-}
-
-/** Deterministic-ish "live" offsets anchored to the current session. */
-function useAnchors() {
-  const [anchor] = useState(() => Date.now());
-  return useMemo(
-    () => ({
-      ticket: anchor + 102 * 60000,
-      train: anchor + 18 * 60000,
-      gett: anchor + 3 * 60000,
-    }),
-    [anchor],
-  );
-}
-
 export function ActiveNow() {
   const { state, hydrated } = useApp();
-  const [now, setNow] = useState(() => Date.now());
   const [qr, setQr] = useState<LiveItem | null>(null);
-
-  useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), 15000);
-    return () => clearInterval(t);
-  }, []);
 
   const pendingSplit = state.splits.find((s) => !s.paid);
 

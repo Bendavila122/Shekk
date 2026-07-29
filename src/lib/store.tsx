@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { SEED_TXNS, type Txn } from "./mock";
+import type { Txn } from "./mock";
 import type { CurrencyCode } from "./currencies";
 import { defaultCardControls, type CardControls } from "./banking";
 import type { TierId } from "./membership";
@@ -114,25 +114,22 @@ type State = {
 const STORAGE_KEY = "shekk.state.v3";
 
 const initialState: State = {
-  onboarded: true,
-  name: "Ari Feldman",
+  onboarded: false,
+  name: "",
   avatar: null,
-  programId: "aish",
-  cohort: "J26 · Fall–Spring",
-  balance: 3850.0,
-  txns: SEED_TXNS,
+  programId: "",
+  cohort: "",
+  balance: 0,
+  txns: [],
   reverifyDueISO: null,
   reverifyDone: true,
-  splits: [
-    { id: "sp1", from: "Rivki Stein", reason: "Gett to Yitzhak Navon", amount: 16.25, paid: false },
-    { id: "sp2", from: "Yoni Adler", reason: "Pizza Kefar — motzei Shabbat", amount: 34.0, paid: false },
-  ],
-  feedOptIn: true,
+  splits: [],
+  feedOptIn: false,
   settings: defaultSettings,
-  profile: { homeCountry: "United States", arrivalDateISO: null, city: "Jerusalem" },
-  membership: "premium",
-  memberSinceISO: "2025-09-01",
-  card: { ...defaultCard, issued: true, inAppleWallet: true },
+  profile: { homeCountry: "", arrivalDateISO: null, city: "" },
+  membership: "free",
+  memberSinceISO: null,
+  card: defaultCard,
   redeemed: [],
 };
 
@@ -251,7 +248,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         name: p.name,
         programId: p.programId,
         cohort: p.cohort ?? s.cohort,
-        txns: SEED_TXNS,
         profile: {
           homeCountry: p.homeCountry ?? s.profile.homeCountry,
           arrivalDateISO: p.arrivalDateISO ?? s.profile.arrivalDateISO,
