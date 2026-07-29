@@ -84,7 +84,7 @@ function HomeScreen() {
     );
   }
 
-  const firstName = (state.name || "there").split(" ")[0];
+  const firstName = state.name.split(" ")[0];
 
   return (
     <AppShell>
