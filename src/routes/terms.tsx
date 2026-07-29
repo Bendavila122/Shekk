@@ -113,8 +113,16 @@ function Terms() {
         </header>
         <div className="space-y-6 px-6 py-6 text-sm leading-relaxed">
           <p className="rounded-2xl bg-muted p-4 text-xs text-muted-foreground">
-            Summary document maintained by Shekk to explain how the account works. The money side of Shekk is provided by our regulated payments partner and their customer terms apply alongside these. This is not legal advice and is not a substitute for either full agreement.
+            Maintained by Shekk to explain how the account works. The money side of Shekk is provided by Airwallex and the Airwallex customer terms apply alongside these. This is not legal advice and is not a substitute for either full agreement.
           </p>
+          <section className="rounded-2xl border border-border p-4">
+            <h2 className="mb-2 text-base font-semibold">The short version</h2>
+            {SHORT.map((p, i) => (
+              <p key={i} className="mb-2 text-muted-foreground">
+                {p}
+              </p>
+            ))}
+          </section>
           {SECTIONS.map((s) => (
             <section key={s.h}>
               <h2 className="mb-2 text-base font-semibold">{s.h}</h2>
