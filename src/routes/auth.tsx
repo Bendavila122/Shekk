@@ -4,6 +4,7 @@ import { Check, Loader2, MailCheck, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
+import { Splash } from "@/components/Splash";
 
 function safeNext(value: unknown): string {
   if (typeof value !== "string") return "/";
