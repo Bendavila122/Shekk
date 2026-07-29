@@ -1,14 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Users, QrCode, Plus, ArrowLeftRight, ArrowUpRight, CreditCard } from "lucide-react";
+import { Plus, ArrowLeftRight, ArrowUpRight, CreditCard } from "lucide-react";
 import { GlobalSearch } from "@/components/GlobalSearch";
-import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
+import { AppShell, ReverifyBanner } from "@/components/AppShell";
 import { ForYou } from "@/components/ForYou";
 import { ActiveNow } from "@/components/ActiveNow";
 import { LocationBar } from "@/components/LocationBar";
 
-import { QRCode } from "@/components/QRCode";
-import { Avatar } from "@/components/Avatar";
+
 import { useApp } from "@/lib/store";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
