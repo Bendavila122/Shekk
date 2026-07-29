@@ -234,8 +234,7 @@ type Ctx = {
   verification: VerificationStatus;
   isPremium: boolean;
   completeOnboarding: (p: OnboardingPayload) => void;
-  /** Money added to the shekel account, settled by the partner bank. */
-  addMoney: (shekels: number, paid: number, sourceLabel?: string) => void;
+
   spend: (merchant: string, category: string, amount: number, icon: string) => void;
   receive: (merchant: string, amount: number, icon: string) => void;
   sendMoney: (to: string, amount: number, note?: string) => void;
