@@ -10,7 +10,7 @@ export const Route = createFileRoute("/reverify")({
       { title: "Annual re-verification · Shekk" },
       {
         name: "description",
-        content: "Re-confirm your ID within 30 days to keep your Shekk account active and your credits spendable.",
+        content: "Re-confirm your ID within 30 days to keep your Shekk account active and your shekels spendable.",
       },
       { property: "og:title", content: "Annual re-verification · Shekk" },
       { property: "og:description", content: "One-tap annual ID re-verification for Shekk accounts." },
@@ -70,7 +70,7 @@ function Reverify() {
                 </p>
                 <p className="text-muted-foreground">
                   If the deadline passes, your account moves to limited status — no new top ups or spends until you
-                  re-verify. Your existing credits stay on your account.
+                  re-verify. Your existing balance stays on your account.
                 </p>
                 <button
                   onClick={() => {
@@ -82,7 +82,7 @@ function Reverify() {
                   Re-verify now
                 </button>
                 <p className="text-xs text-muted-foreground">
-                  Questions about how credits work?{" "}
+                  Questions about how your account works?{" "}
                   <Link to="/terms" className="font-semibold text-primary underline">
                     Terms & Conditions
                   </Link>

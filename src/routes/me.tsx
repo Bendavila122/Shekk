@@ -13,10 +13,10 @@ export const Route = createFileRoute("/me")({
       { title: "Me · Shekk" },
       {
         name: "description",
-        content: "Verification badge, program and cohort details, order history and plain-language credit terms.",
+        content: "Verification badge, program and cohort details, order history and plain-language account terms.",
       },
       { property: "og:title", content: "Me · Shekk" },
-      { property: "og:description", content: "Your Shekk account, verification status and credit terms." },
+      { property: "og:description", content: "Your Shekk account, verification status and account terms." },
     ],
   }),
   component: Me,
