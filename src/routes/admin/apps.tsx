@@ -92,7 +92,7 @@ function Apps() {
                 const status = config.serviceStatus[s.id] ?? s.status;
                 return (
                   <div key={s.id} className="flex flex-wrap items-center gap-3 py-3">
-                    <ServiceLogo name={s.name} domain={s.domain} emoji={s.emoji} size={40} />
+                    <ServiceLogo service={{ name: s.name, domain: s.domain, emoji: s.emoji }} size={40} />
                     <div className="min-w-40 flex-1">
                       <p className={`text-sm font-semibold ${isHidden ? "line-through opacity-50" : ""}`}>
                         {s.name} {s.custom ? <Pill tone="primary">custom</Pill> : null}
@@ -142,7 +142,7 @@ function Apps() {
               const isHidden = config.hiddenBenefits.includes(b.id);
               return (
                 <div key={b.id} className="flex items-center gap-3 py-3">
-                  <ServiceLogo name={b.brand} domain={b.domain} emoji={b.emoji} size={40} />
+                  <ServiceLogo service={{ name: b.brand, domain: b.domain, emoji: b.emoji }} size={40} />
                   <div className="min-w-0 flex-1">
                     <p className={`text-sm font-semibold ${isHidden ? "line-through opacity-50" : ""}`}>{b.brand}</p>
                     <p className="truncate text-xs text-muted-foreground">{b.headline}</p>
