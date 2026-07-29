@@ -218,82 +218,8 @@ export function usePromotions(placement: Promotion["placement"]) {
 
 /* ------------------------------------------------------------ analytics --- */
 
-export type AdminAccount = {
-  id: string;
-  name: string;
-  city: string;
-  program: string;
-  country: string;
-  currency: CurrencyCode;
-  membership: "free" | "premium";
-  status: "active" | "pending-kyc" | "suspended";
-  balance: number;
-  addedTotal: number;
-  spentTotal: number;
-  sentTotal: number;
-  convertedTotal: number;
-  withdrawnTotal: number;
-  cardIssued: boolean;
-  joinedISO: string;
-  lastActive: string;
-};
+/**
+ * Console analytics are no longer mocked here — every figure comes from the
+ * backend through `admin.functions.ts` / `admin-data.ts`.
+ */
 
-/** No live book yet — the console starts empty until real accounts exist. */
-export const ACCOUNTS: AdminAccount[] = [];
-
-export type MoneyTotals = {
-  added: number;
-  spent: number;
-  sent: number;
-  converted: number;
-  withdrawn: number;
-  float: number;
-  fxRevenue: number;
-  membershipRevenue: number;
-};
-
-export function moneyTotals(accounts: AdminAccount[], config: AdminConfig): MoneyTotals {
-  const t = accounts.reduce(
-    (acc, a) => ({
-      added: acc.added + a.addedTotal,
-      spent: acc.spent + a.spentTotal,
-      sent: acc.sent + a.sentTotal,
-      converted: acc.converted + a.convertedTotal,
-      withdrawn: acc.withdrawn + a.withdrawnTotal,
-      float: acc.float + a.balance,
-    }),
-    { added: 0, spent: 0, sent: 0, converted: 0, withdrawn: 0, float: 0 },
-  );
-  const premiumCount = accounts.filter((a) => a.membership === "premium").length;
-  const freeCount = accounts.length - premiumCount;
-  const blended =
-    (premiumCount * config.fxMarginPremium + freeCount * config.fxMarginFree) /
-    Math.max(1, accounts.length) /
-    100;
-  return {
-    ...t,
-    fxRevenue: Math.round(t.converted * blended),
-    membershipRevenue: Math.round(premiumCount * config.premiumPriceGbp * 4.68),
-  };
-}
-
-/** Rolling 12-week money-in / money-out series for the charts. */
-export function weeklySeries() {
-  return Array.from({ length: 12 }, (_, i) => ({ label: `W${i + 1}`, added: 0, spent: 0 }));
-}
-
-export function spendByCategory(accounts: AdminAccount[]) {
-  const cats = [
-    { label: "Food & drink", share: 0.31, emoji: "🥙" },
-    { label: "Transit & rides", share: 0.22, emoji: "🚌" },
-    { label: "Groceries", share: 0.17, emoji: "🛒" },
-    { label: "Events & tiyulim", share: 0.13, emoji: "🎟️" },
-    { label: "Shops", share: 0.1, emoji: "🛍️" },
-    { label: "Other", share: 0.07, emoji: "•" },
-  ];
-  const total = accounts.reduce((n, a) => n + a.spentTotal, 0);
-  return cats.map((c) => ({ ...c, amount: Math.round(total * c.share) }));
-}
-
-export const shekels = (n: number) =>
-  `₪${Math.round(n).toLocaleString("en-US")}`;

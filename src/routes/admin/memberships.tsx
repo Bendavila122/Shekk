@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { Panel, PageTitle, Stat, Bar } from "@/components/admin/AdminUI";
-import { ACCOUNTS, moneyTotals, shekels, useAdminConfig } from "@/lib/admin";
+import { Panel, PageTitle, Stat, Bar, Pill } from "@/components/admin/AdminUI";
+import { useAdminConfig } from "@/lib/admin";
+import { ils, useAdminMembers, useAdminOverview } from "@/lib/admin-data";
 import { COMPARISON, TIERS } from "@/lib/membership";
 
 export const Route = createFileRoute("/admin/memberships")({
@@ -10,24 +11,48 @@ export const Route = createFileRoute("/admin/memberships")({
 
 function Memberships() {
   const { config, update } = useAdminConfig();
-  const totals = useMemo(() => moneyTotals(ACCOUNTS, config), [config]);
+  const { data: members = [], isLoading } = useAdminMembers(true);
+  const { data: overview } = useAdminOverview(true);
 
-  const premium = ACCOUNTS.filter((a) => a.membership === "premium");
-  const free = ACCOUNTS.filter((a) => a.membership === "free");
-  const conversion = Math.round((premium.length / Math.max(1, ACCOUNTS.length)) * 100);
-  const avgPremiumSpend = Math.round(premium.reduce((n, a) => n + a.spentTotal, 0) / Math.max(1, premium.length));
-  const avgFreeSpend = Math.round(free.reduce((n, a) => n + a.spentTotal, 0) / Math.max(1, free.length));
+  const premium = useMemo(() => members.filter((m) => m.membership === "premium"), [members]);
+  const free = useMemo(() => members.filter((m) => m.membership === "free"), [members]);
+  const conversion = Math.round((premium.length / Math.max(1, members.length)) * 100);
+  const avgPremiumSpend = Math.round(premium.reduce((n, a) => n + a.spentAgorot, 0) / Math.max(1, premium.length));
+  const avgFreeSpend = Math.round(free.reduce((n, a) => n + a.spentAgorot, 0) / Math.max(1, free.length));
+  const monthlyRevenueGbp = premium.length * config.premiumPriceGbp;
 
   return (
     <>
-      <PageTitle title="Memberships" subtitle="Free vs Premium — pricing, mix and what each plan is worth." />
+      <PageTitle title="Memberships" subtitle="Shekk vs Shekk+ — live mix, pricing and what each plan is worth." />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat label="Premium members" value={String(premium.length)} sub={`${conversion}% of the book`} />
+        <Stat label="Shekk+ members" value={String(premium.length)} sub={`${conversion}% of the book`} />
         <Stat label="Free members" value={String(free.length)} />
-        <Stat label="Monthly revenue" value={shekels(totals.membershipRevenue)} tone="positive" />
-        <Stat label="Cards issued" value={String(ACCOUNTS.filter((a) => a.cardIssued).length)} />
+        <Stat
+          label="Monthly revenue"
+          value={`£${monthlyRevenueGbp.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          tone="positive"
+        />
+        <Stat label="Cards issued" value={String(members.filter((a) => a.cardIssued).length)} />
       </div>
+
+      <Panel title="Subscription states" className="mt-4">
+        {(overview?.subscriptions ?? []).length === 0 ? (
+          <p className="text-sm text-muted-foreground">{isLoading ? "Loading…" : "No subscriptions yet."}</p>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {overview!.subscriptions.map((s) => (
+              <Pill
+                key={s.status}
+                tone={s.status === "active" || s.status === "trialing" ? "success" : s.status === "canceled" ? "muted" : "warning"}
+              >
+                {s.status.replace(/_/g, " ")} · {s.count}
+              </Pill>
+            ))}
+          </div>
+        )}
+      </Panel>
+
 
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <Panel title="Plan pricing & margins">
@@ -71,15 +96,15 @@ function Memberships() {
           <div className="space-y-4">
             <div>
               <div className="mb-1 flex justify-between text-sm font-semibold">
-                <span>Average spend · Premium</span>
-                <span>{shekels(avgPremiumSpend)}</span>
+                <span>Average spend · Shekk+</span>
+                <span>{ils(avgPremiumSpend)}</span>
               </div>
               <Bar value={avgPremiumSpend} max={Math.max(avgPremiumSpend, avgFreeSpend)} />
             </div>
             <div>
               <div className="mb-1 flex justify-between text-sm font-semibold">
                 <span>Average spend · Free</span>
-                <span>{shekels(avgFreeSpend)}</span>
+                <span>{ils(avgFreeSpend)}</span>
               </div>
               <Bar value={avgFreeSpend} max={Math.max(avgPremiumSpend, avgFreeSpend)} />
             </div>
