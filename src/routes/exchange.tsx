@@ -168,13 +168,36 @@ function ExchangeScreen() {
           </section>
 
           <section className="px-4 pb-10 pt-6">
-            <PrimaryButton
-              disabled={value <= 0 || Boolean(blocked) || phase === "starting"}
-              onClick={() => void fund(from, q.amount)}
-            >
-              {phase === "starting" ? "Starting payment…" : `Convert ${money(cur.code, q.amount)}`}
-            </PrimaryButton>
+            {phase === "collecting" && intent ? (
+              <Card className="p-4">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Pay {money(cur.code, q.amount)}
+                </p>
+                <AirwallexDropIn
+                  intentId={intent.intentId}
+                  clientSecret={intent.clientSecret}
+                  currency={intent.currency}
+                  environment={partner?.environment ?? "sandbox"}
+                  onSubmitted={markSubmitted}
+                  onError={failFunding}
+                />
+                <button
+                  onClick={resetFunding}
+                  className="tap mt-3 w-full rounded-2xl bg-muted py-3 text-sm font-semibold"
+                >
+                  Cancel
+                </button>
+              </Card>
+            ) : (
+              <PrimaryButton
+                disabled={value <= 0 || Boolean(blocked) || phase === "starting"}
+                onClick={() => void fund(from, q.amount)}
+              >
+                {phase === "starting" ? "Starting payment…" : `Convert ${money(cur.code, q.amount)}`}
+              </PrimaryButton>
+            )}
           </section>
+
         </>
       )}
 
