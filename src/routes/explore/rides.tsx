@@ -1,82 +1,317 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { AppShell, Card, PrimaryButton, ScreenHeader } from "@/components/AppShell";
 import { ils } from "@/lib/mock";
 import { useApp } from "@/lib/store";
+import { useLocation, ISRAEL_PLACES } from "@/lib/location";
+import { bookRide, cancelRide, estimateRide, rideStatus, searchPlaces } from "@/lib/gett.functions";
 
 export const Route = createFileRoute("/explore/rides")({
   head: () => ({
     meta: [
-      { title: "Rides · Shekk" },
-      { name: "description", content: "Book and track a taxi across Jerusalem and pay with your credits." },
-      { property: "og:title", content: "Rides · Shekk" },
-      { property: "og:description", content: "In-app taxi booking with no cash at the curb." },
+      { title: "Gett taxis · Shekk" },
+      { name: "description", content: "Order a Gett taxi anywhere in Israel and pay straight from your Shekk shekel balance." },
+      { property: "og:title", content: "Gett taxis · Shekk" },
+      { property: "og:description", content: "Live prices, in-app booking and driver tracking — no cash at the curb." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Rides,
 });
 
-const OPTIONS = [
-  { id: "o1", name: "Standard", eta: "3 min", price: 34.5, emoji: "🚕" },
-  { id: "o2", name: "XL (5 seats)", eta: "6 min", price: 52.0, emoji: "🚐" },
-  { id: "o3", name: "Share with cohort", eta: "8 min", price: 19.0, emoji: "👥" },
-];
+type Place = { label: string; lat: number; lng: number };
+type Option = {
+  id: string;
+  productId: string;
+  name: string;
+  seats: number;
+  etaMinutes: number;
+  price: number;
+  currency: string;
+  emoji: string;
+};
+
+const QUICK: Place[] = ISRAEL_PLACES.slice(0, 8).map((p) => ({
+  label: `${p.name}, ${p.city}`,
+  lat: p.lat,
+  lng: p.lon,
+}));
+
+function PlaceField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: Place | null;
+  onChange: (p: Place) => void;
+}) {
+  const search = useServerFn(searchPlaces);
+  const [q, setQ] = useState("");
+  const [open, setOpen] = useState(false);
+  const [results, setResults] = useState<Place[]>([]);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!open || q.trim().length < 3) {
+      setResults([]);
+      return;
+    }
+    let live = true;
+    setBusy(true);
+    const t = setTimeout(async () => {
+      try {
+        const r = await search({ data: { q } });
+        if (live) setResults(r.places);
+      } finally {
+        if (live) setBusy(false);
+      }
+    }, 350);
+    return () => {
+      live = false;
+      clearTimeout(t);
+    };
+  }, [q, open, search]);
+
+  const suggestions = q.trim().length < 3 ? QUICK : results;
+
+  return (
+    <div className="relative">
+      <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
+      <input
+        value={open ? q : (value?.label ?? "")}
+        placeholder="Search an address or landmark"
+        onFocus={() => {
+          setQ("");
+          setOpen(true);
+        }}
+        onChange={(e) => setQ(e.target.value)}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        className="w-full rounded-2xl border border-border bg-card px-4 py-3.5 text-sm outline-none focus:border-primary"
+      />
+      {open && (
+        <div className="absolute z-20 mt-1 max-h-64 w-full overflow-auto rounded-2xl border border-border bg-card shadow-lg">
+          {busy && <p className="px-4 py-3 text-xs text-muted-foreground">Searching…</p>}
+          {!busy && suggestions.length === 0 && (
+            <p className="px-4 py-3 text-xs text-muted-foreground">No matches — keep typing.</p>
+          )}
+          {suggestions.map((p) => (
+            <button
+              key={`${p.label}-${p.lat}`}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => {
+                onChange(p);
+                setOpen(false);
+              }}
+              className="tap block w-full px-4 py-3 text-left text-sm hover:bg-primary-soft"
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function Rides() {
-  const { spend } = useApp();
-  const [dest, setDest] = useState("Machane Yehuda Market");
-  const [pick, setPick] = useState(OPTIONS[0].id);
-  const [stage, setStage] = useState<"book" | "tracking">("book");
-  const opt = OPTIONS.find((o) => o.id === pick)!;
+  const { state, spend } = useApp();
+  const { place: here } = useLocation();
+  const estimate = useServerFn(estimateRide);
+  const book = useServerFn(bookRide);
+  const track = useServerFn(rideStatus);
+  const cancel = useServerFn(cancelRide);
+
+  const defaultPickup = useMemo<Place | null>(
+    () => (here ? { label: `${here.name}, ${here.city}`, lat: here.lat, lng: here.lon } : QUICK[0] ?? null),
+    [here],
+  );
+
+  const [pickup, setPickup] = useState<Place | null>(defaultPickup);
+  const [dropoff, setDropoff] = useState<Place | null>(null);
+  const [options, setOptions] = useState<Option[]>([]);
+  const [pick, setPick] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [live, setLive] = useState(false);
+  const [rideId, setRideId] = useState<string | null>(null);
+  const [status, setStatus] = useState<Awaited<ReturnType<typeof rideStatus>> | null>(null);
+  const charged = useRef(false);
+
+  useEffect(() => {
+    if (!pickup && defaultPickup) setPickup(defaultPickup);
+  }, [defaultPickup, pickup]);
+
+  // Price the journey whenever both ends are set.
+  useEffect(() => {
+    if (!pickup || !dropoff || rideId) return;
+    let alive = true;
+    setLoading(true);
+    setNotice(null);
+    estimate({ data: { pickup, dropoff } })
+      .then((r) => {
+        if (!alive) return;
+        setOptions(r.options as Option[]);
+        setPick(r.options[0]?.id ?? null);
+        setLive(r.live);
+        if ("error" in r && r.error) setNotice(r.error as string);
+      })
+      .catch(() => alive && setNotice("Couldn't reach Gett just now."))
+      .finally(() => alive && setLoading(false));
+    return () => {
+      alive = false;
+    };
+  }, [pickup, dropoff, rideId, estimate]);
+
+  // Poll ride progress.
+  useEffect(() => {
+    if (!rideId) return;
+    let alive = true;
+    const poll = async () => {
+      try {
+        const s = await track({ data: { rideId } });
+        if (alive) setStatus(s);
+      } catch {
+        /* keep last known status */
+      }
+    };
+    poll();
+    const t = setInterval(poll, 4000);
+    return () => {
+      alive = false;
+      clearInterval(t);
+    };
+  }, [rideId, track]);
+
+  const selected = options.find((o) => o.id === pick) ?? null;
+  const affordable = selected ? state.balance >= selected.price : false;
+
+  async function order() {
+    if (!pickup || !dropoff || !selected) return;
+    setLoading(true);
+    try {
+      const r = await book({
+        data: {
+          pickup,
+          dropoff,
+          productId: selected.productId,
+          price: selected.price,
+          passengerName: state.name || "Shekk member",
+        },
+      });
+      setRideId(r.rideId);
+      setLive(r.live);
+      if ("error" in r && r.error) setNotice(r.error as string);
+      if (!charged.current) {
+        charged.current = true;
+        spend(`Gett · ${dropoff.label}`, "Rides", selected.price, "🚕");
+      }
+    } catch {
+      setNotice("Booking failed. Nothing was charged.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function endRide() {
+    if (rideId) await cancel({ data: { rideId } });
+    setRideId(null);
+    setStatus(null);
+    charged.current = false;
+  }
 
   return (
     <AppShell>
-      <ScreenHeader title="Rides" subtitle="Pickup: dorm entrance" />
+      <ScreenHeader title="Gett taxis" subtitle={live ? "Live Gett prices" : "Indicative prices"} />
       <div className="space-y-4 px-4 py-4">
-        <div className="flex h-40 items-center justify-center rounded-2xl bg-muted text-sm text-muted-foreground">
-          🗺️ Live map (mock)
-        </div>
-        {stage === "book" ? (
+        {notice && (
+          <p className="rounded-2xl bg-muted px-4 py-3 text-xs text-muted-foreground">{notice}</p>
+        )}
+
+        {!rideId ? (
           <>
-            <input
-              value={dest}
-              onChange={(e) => setDest(e.target.value)}
-              className="w-full rounded-2xl border border-border bg-card px-4 py-3.5 text-sm outline-none focus:border-primary"
-            />
-            <Card className="divide-y divide-border p-0">
-              {OPTIONS.map((o) => (
-                <button
-                  key={o.id}
-                  onClick={() => setPick(o.id)}
-                  className={`tap flex w-full items-center gap-3 p-4 text-left ${pick === o.id ? "bg-primary-soft" : ""}`}
-                >
-                  <span className="text-xl">{o.emoji}</span>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold">{o.name}</p>
-                    <p className="text-xs text-muted-foreground">{o.eta} away</p>
-                  </div>
-                  <span className="text-sm font-semibold">{ils(o.price)}</span>
-                </button>
-              ))}
+            <Card className="space-y-4">
+              <PlaceField label="Pickup" value={pickup} onChange={setPickup} />
+              <PlaceField label="Destination" value={dropoff} onChange={setDropoff} />
             </Card>
-            <PrimaryButton
-              onClick={() => {
-                spend(`Ride · ${dest}`, "Rides", opt.price, "🚕");
-                setStage("tracking");
-              }}
-            >
-              Book {opt.name} · {ils(opt.price)}
+
+            {loading && <p className="text-center text-sm text-muted-foreground">Getting prices…</p>}
+
+            {!loading && options.length > 0 && (
+              <Card className="divide-y divide-border p-0">
+                {options.map((o) => (
+                  <button
+                    key={o.id}
+                    onClick={() => setPick(o.id)}
+                    className={`tap flex w-full items-center gap-3 p-4 text-left ${pick === o.id ? "bg-primary-soft" : ""}`}
+                  >
+                    <span className="text-xl">{o.emoji}</span>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold">{o.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {o.etaMinutes} min away · {o.seats} seats
+                      </p>
+                    </div>
+                    <span className="text-sm font-semibold">{ils(o.price)}</span>
+                  </button>
+                ))}
+              </Card>
+            )}
+
+            {selected && !affordable && (
+              <p className="text-center text-xs text-muted-foreground">
+                You need {ils(selected.price - state.balance)} more in your balance to book this ride.
+              </p>
+            )}
+
+            <PrimaryButton disabled={!selected || !affordable || loading} onClick={order}>
+              {selected ? `Order ${selected.name} · ${ils(selected.price)}` : "Choose a destination"}
             </PrimaryButton>
+            <p className="text-center text-xs text-muted-foreground">
+              Paid from your shekel balance — nothing owed in the car.
+            </p>
           </>
         ) : (
-          <Card className="space-y-2 text-center">
+          <Card className="space-y-3 text-center">
             <p className="text-3xl">🚕</p>
-            <p className="text-lg font-bold">Moshe is 2 minutes away</p>
-            <p className="text-sm text-muted-foreground">White Skoda · 42-193-71 · heading to {dest}</p>
+            <p className="text-lg font-bold">
+              {status?.driverName
+                ? `${status.driverName} · ${status.label}`
+                : (status?.label ?? "Finding you a driver")}
+            </p>
+            {status?.car && (
+              <p className="text-sm text-muted-foreground">
+                {status.car}
+                {status.plate ? ` · ${status.plate}` : ""}
+              </p>
+            )}
+            <p className="text-sm text-muted-foreground">Heading to {dropoff?.label}</p>
+            {status?.etaMinutes != null && (
+              <p className="text-sm font-semibold">{status.etaMinutes} min away</p>
+            )}
             <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-              <div className="h-full w-2/3 animate-pulse rounded-full bg-primary" />
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-700"
+                style={{
+                  width:
+                    status?.status === "completed"
+                      ? "100%"
+                      : status?.status === "in_progress"
+                        ? "75%"
+                        : status?.status === "arriving"
+                          ? "45%"
+                          : "20%",
+                }}
+              />
             </div>
-            <p className="text-xs text-muted-foreground">Paid {ils(opt.price)} from credits — nothing owed in the car.</p>
+            {status?.price != null && (
+              <p className="text-xs text-muted-foreground">Paid {ils(status.price)} from your balance.</p>
+            )}
+            <button onClick={endRide} className="tap text-sm font-semibold text-muted-foreground underline">
+              {status?.status === "completed" ? "Done" : "Cancel ride"}
+            </button>
           </Card>
         )}
       </div>
