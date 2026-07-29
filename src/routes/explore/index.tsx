@@ -3,13 +3,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Search, X, Tag, ChevronRight } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 
-import { SERVICE_CATEGORIES, serviceLinkProps, type Service } from "@/lib/services";
+import { serviceLinkProps, type Service } from "@/lib/services";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { recordServiceUse } from "@/lib/recents";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { GUIDES } from "@/lib/guides";
 import { GuideStrip } from "@/components/GuideStrip";
-import { BENEFITS } from "@/lib/benefits";
+import { useCatalogue, useVisibleBenefits } from "@/lib/admin";
 
 export const Route = createFileRoute("/explore/")({
   head: () => ({
@@ -47,14 +47,16 @@ function AppTile({ service, size = 60 }: { service: Service; size?: number }) {
 function Explore() {
   const ready = useOnboardedGate();
   const [query, setQuery] = useState("");
+  const catalogue = useCatalogue();
+  const benefits = useVisibleBenefits();
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return null;
-    return SERVICE_CATEGORIES.flatMap((c) => c.services).filter((s) =>
+    return catalogue.flatMap((c) => c.services).filter((s) =>
       [s.name, s.blurb, s.partner ?? ""].join(" ").toLowerCase().includes(q),
     );
-  }, [query]);
+  }, [query, catalogue]);
 
   if (!ready)
     return (
@@ -116,7 +118,7 @@ function Explore() {
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold">Benefits marketplace</p>
                   <p className="text-xs opacity-85">
-                    {BENEFITS.length} member offers on food, transport, gyms, trips and courses.
+                    {benefits.length} member offers on food, transport, gyms, trips and courses.
                   </p>
                 </div>
                 <ChevronRight className="size-5 shrink-0 opacity-80" />
@@ -126,7 +128,7 @@ function Explore() {
 
           {/* Category folders — one big icon each */}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {SERVICE_CATEGORIES.map((cat) => (
+            {catalogue.map((cat) => (
               <Link
                 key={cat.id}
                 to="/explore/category/$id"

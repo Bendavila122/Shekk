@@ -17,7 +17,7 @@ import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { serviceLinkProps, type Service } from "@/lib/services";
 import { recordServiceUse, useRecentServices } from "@/lib/recents";
 import { ServiceLogo } from "@/components/ServiceLogo";
-import { BENEFITS } from "@/lib/benefits";
+import { useVisibleBenefits, usePromotions } from "@/lib/admin";
 
 
 export const Route = createFileRoute("/")({
@@ -69,6 +69,9 @@ function AppIcon({ service }: { service: Service }) {
 function HomeScreen() {
   const ready = useOnboardedGate();
   const { state, isPremium } = useApp();
+  const benefits = useVisibleBenefits();
+  const promos = usePromotions("home");
+
   const recents = useRecentServices();
   const [showCode, setShowCode] = useState(false);
 
@@ -197,6 +200,27 @@ function HomeScreen() {
         </Card>
       </section>
 
+      {/* Promotions published from the console */}
+      {promos.length > 0 ? (
+        <section className="pt-6">
+          <div className="scrollbar-none flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 scroll-px-5 pb-1">
+            {promos.map((p) => (
+              <Link
+                key={p.id}
+                to={p.ctaHref}
+                className="tap w-[260px] shrink-0 snap-start rounded-2xl border border-border bg-card p-4 shadow-card"
+              >
+                <span className="text-2xl">{p.emoji}</span>
+                <p className="mt-2 text-sm font-semibold leading-snug">{p.title}</p>
+                <p className="mt-1 text-[12px] text-muted-foreground">{p.blurb}</p>
+                <p className="mt-2 text-[12px] font-semibold text-primary">{p.ctaLabel} →</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+
       {/* Benefits near you */}
       <section className="pt-6">
         <div className="mb-2 flex items-baseline justify-between px-5">
@@ -206,7 +230,7 @@ function HomeScreen() {
           </Link>
         </div>
         <div className="scrollbar-none flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 scroll-px-5 pb-1">
-          {BENEFITS.slice(0, 6).map((b) => (
+          {benefits.slice(0, 6).map((b) => (
             <Link
               key={b.id}
               to="/benefits/$id"

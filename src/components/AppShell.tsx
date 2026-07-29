@@ -1,6 +1,6 @@
 import { Link, useRouterState, useRouter, useCanGoBack, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Wallet, Compass, Tag, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy, Home, Receipt, CreditCard, Crown } from "lucide-react";
+import { Wallet, Compass, Tag, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy, Home, Receipt, CreditCard, Crown, ShieldCheck } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
@@ -167,6 +167,13 @@ export function QuickMenu() {
             <Link to="/help" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <LifeBuoy className="size-4 text-muted-foreground" /> Help
             </Link>
+            <Link
+              to="/admin"
+              className="tap-flat flex items-center gap-2 border-t border-border px-4 py-3 text-xs font-semibold text-muted-foreground"
+            >
+              <ShieldCheck className="size-4" /> Console
+            </Link>
+
           </div>
         </>
       ) : null}

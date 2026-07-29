@@ -25,11 +25,13 @@ import { Route as ExchangeRouteImport } from './routes/exchange'
 import { Route as CardRouteImport } from './routes/card'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ActivityRouteImport } from './routes/activity'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SiddurIndexRouteImport } from './routes/siddur/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
 import { Route as BenefitsIndexRouteImport } from './routes/benefits/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
 import { Route as GuidesIdRouteImport } from './routes/guides/$id'
 import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
@@ -43,6 +45,12 @@ import { Route as ExploreEventsRouteImport } from './routes/explore/events'
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
 import { Route as ExploreAdminRouteImport } from './routes/explore/admin'
 import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
+import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
+import { Route as AdminMoneyRouteImport } from './routes/admin/money'
+import { Route as AdminMembershipsRouteImport } from './routes/admin/memberships'
+import { Route as AdminControlsRouteImport } from './routes/admin/controls'
+import { Route as AdminAppsRouteImport } from './routes/admin/apps'
+import { Route as AdminAccountsRouteImport } from './routes/admin/accounts'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
@@ -130,6 +138,11 @@ const ActivityRoute = ActivityRouteImport.update({
   path: '/activity',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -154,6 +167,11 @@ const BenefitsIndexRoute = BenefitsIndexRouteImport.update({
   id: '/benefits/',
   path: '/benefits/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const SiddurIdRoute = SiddurIdRouteImport.update({
   id: '/siddur/$id',
@@ -220,6 +238,36 @@ const BenefitsIdRoute = BenefitsIdRouteImport.update({
   path: '/benefits/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPromotionsRoute = AdminPromotionsRouteImport.update({
+  id: '/promotions',
+  path: '/promotions',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminMoneyRoute = AdminMoneyRouteImport.update({
+  id: '/money',
+  path: '/money',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminMembershipsRoute = AdminMembershipsRouteImport.update({
+  id: '/memberships',
+  path: '/memberships',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminControlsRoute = AdminControlsRouteImport.update({
+  id: '/controls',
+  path: '/controls',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminAppsRoute = AdminAppsRouteImport.update({
+  id: '/apps',
+  path: '/apps',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminAccountsRoute = AdminAccountsRouteImport.update({
+  id: '/accounts',
+  path: '/accounts',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
     id: '/.well-known/oauth-protected-resource',
@@ -256,6 +304,7 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/activity': typeof ActivityRoute
   '/auth': typeof AuthRoute
   '/card': typeof CardRoute
@@ -274,6 +323,12 @@ export interface FileRoutesByFullPath {
   '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/accounts': typeof AdminAccountsRoute
+  '/admin/apps': typeof AdminAppsRoute
+  '/admin/controls': typeof AdminControlsRoute
+  '/admin/memberships': typeof AdminMembershipsRoute
+  '/admin/money': typeof AdminMoneyRoute
+  '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -287,6 +342,7 @@ export interface FileRoutesByFullPath {
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
@@ -316,6 +372,12 @@ export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/accounts': typeof AdminAccountsRoute
+  '/admin/apps': typeof AdminAppsRoute
+  '/admin/controls': typeof AdminControlsRoute
+  '/admin/memberships': typeof AdminMembershipsRoute
+  '/admin/money': typeof AdminMoneyRoute
+  '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -329,6 +391,7 @@ export interface FileRoutesByTo {
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
+  '/admin': typeof AdminIndexRoute
   '/benefits': typeof BenefitsIndexRoute
   '/explore': typeof ExploreIndexRoute
   '/guides': typeof GuidesIndexRoute
@@ -341,6 +404,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/activity': typeof ActivityRoute
   '/auth': typeof AuthRoute
   '/card': typeof CardRoute
@@ -359,6 +423,12 @@ export interface FileRoutesById {
   '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/accounts': typeof AdminAccountsRoute
+  '/admin/apps': typeof AdminAppsRoute
+  '/admin/controls': typeof AdminControlsRoute
+  '/admin/memberships': typeof AdminMembershipsRoute
+  '/admin/money': typeof AdminMoneyRoute
+  '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -372,6 +442,7 @@ export interface FileRoutesById {
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
@@ -385,6 +456,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/activity'
     | '/auth'
     | '/card'
@@ -403,6 +475,12 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/accounts'
+    | '/admin/apps'
+    | '/admin/controls'
+    | '/admin/memberships'
+    | '/admin/money'
+    | '/admin/promotions'
     | '/benefits/$id'
     | '/explore/admin'
     | '/explore/community'
@@ -416,6 +494,7 @@ export interface FileRouteTypes {
     | '/explore/transit'
     | '/guides/$id'
     | '/siddur/$id'
+    | '/admin/'
     | '/benefits/'
     | '/explore/'
     | '/guides/'
@@ -445,6 +524,12 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/accounts'
+    | '/admin/apps'
+    | '/admin/controls'
+    | '/admin/memberships'
+    | '/admin/money'
+    | '/admin/promotions'
     | '/benefits/$id'
     | '/explore/admin'
     | '/explore/community'
@@ -458,6 +543,7 @@ export interface FileRouteTypes {
     | '/explore/transit'
     | '/guides/$id'
     | '/siddur/$id'
+    | '/admin'
     | '/benefits'
     | '/explore'
     | '/guides'
@@ -469,6 +555,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/activity'
     | '/auth'
     | '/card'
@@ -487,6 +574,12 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/accounts'
+    | '/admin/apps'
+    | '/admin/controls'
+    | '/admin/memberships'
+    | '/admin/money'
+    | '/admin/promotions'
     | '/benefits/$id'
     | '/explore/admin'
     | '/explore/community'
@@ -500,6 +593,7 @@ export interface FileRouteTypes {
     | '/explore/transit'
     | '/guides/$id'
     | '/siddur/$id'
+    | '/admin/'
     | '/benefits/'
     | '/explore/'
     | '/guides/'
@@ -512,6 +606,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   ActivityRoute: typeof ActivityRoute
   AuthRoute: typeof AuthRoute
   CardRoute: typeof CardRoute
@@ -667,6 +762,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ActivityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -701,6 +803,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/benefits/'
       preLoaderRoute: typeof BenefitsIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/siddur/$id': {
       id: '/siddur/$id'
@@ -793,6 +902,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BenefitsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/promotions': {
+      id: '/admin/promotions'
+      path: '/promotions'
+      fullPath: '/admin/promotions'
+      preLoaderRoute: typeof AdminPromotionsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/money': {
+      id: '/admin/money'
+      path: '/money'
+      fullPath: '/admin/money'
+      preLoaderRoute: typeof AdminMoneyRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/memberships': {
+      id: '/admin/memberships'
+      path: '/memberships'
+      fullPath: '/admin/memberships'
+      preLoaderRoute: typeof AdminMembershipsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/controls': {
+      id: '/admin/controls'
+      path: '/controls'
+      fullPath: '/admin/controls'
+      preLoaderRoute: typeof AdminControlsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/apps': {
+      id: '/admin/apps'
+      path: '/apps'
+      fullPath: '/admin/apps'
+      preLoaderRoute: typeof AdminAppsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/accounts': {
+      id: '/admin/accounts'
+      path: '/accounts'
+      fullPath: '/admin/accounts'
+      preLoaderRoute: typeof AdminAccountsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
       path: '/.well-known/oauth-protected-resource'
@@ -838,8 +989,33 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteRouteChildren {
+  AdminAccountsRoute: typeof AdminAccountsRoute
+  AdminAppsRoute: typeof AdminAppsRoute
+  AdminControlsRoute: typeof AdminControlsRoute
+  AdminMembershipsRoute: typeof AdminMembershipsRoute
+  AdminMoneyRoute: typeof AdminMoneyRoute
+  AdminPromotionsRoute: typeof AdminPromotionsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminAccountsRoute: AdminAccountsRoute,
+  AdminAppsRoute: AdminAppsRoute,
+  AdminControlsRoute: AdminControlsRoute,
+  AdminMembershipsRoute: AdminMembershipsRoute,
+  AdminMoneyRoute: AdminMoneyRoute,
+  AdminPromotionsRoute: AdminPromotionsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   ActivityRoute: ActivityRoute,
   AuthRoute: AuthRoute,
   CardRoute: CardRoute,
