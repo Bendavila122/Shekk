@@ -51,7 +51,7 @@ export type PendingIntent = {
 export function useFunding() {
   const { signedIn, refreshLedger, state } = useApp();
   const partner = usePaymentPartner();
-  const { verified, pending, loading: profileLoading } = useProfile();
+  const { verified, pending, bankingOpen, ilsAccountStatus, loading: profileLoading } = useProfile();
   const [phase, setPhase] = useState<FundingPhase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [intent, setIntent] = useState<PendingIntent | null>(null);
@@ -74,6 +74,8 @@ export function useFunding() {
 
   /** Regulated accounts only fund after the identity checks pass. */
   const needsVerification = signedIn && !profileLoading && !verified;
+  /** Verified, but our partner hasn't opened the shekel account yet. */
+  const awaitingPartner = signedIn && !profileLoading && verified && !bankingOpen;
 
   /** Why funding is unavailable right now, or null when it's good to go. */
   const blocked =
@@ -87,7 +89,11 @@ export function useFunding() {
             ? pending
               ? "Your identity checks are still being reviewed. You can add money as soon as they clear."
               : "Verify your identity before adding money — it takes about three minutes."
-            : null;
+            : awaitingPartner
+              ? ilsAccountStatus === "rejected"
+                ? "Our payment partner could not open a shekel account for you. Contact support and we'll look at it with you."
+                : "Your shekel account is with our payment partner for approval. You can add money the moment it's open."
+              : null;
 
 
   /** Mint a payment intent. The shopper then pays inside Airwallex's sheet. */
@@ -144,6 +150,8 @@ export function useFunding() {
     partner,
     blocked,
     needsVerification,
+    awaitingPartner,
+    ilsAccountStatus,
     phase,
     error,
     intent,
