@@ -50,7 +50,7 @@ export function FocusScreen({
   return (
     <div className="flex min-h-screen justify-center bg-ink/95 px-0 py-0 sm:px-4 sm:py-8 lg:bg-ink/[0.03] lg:px-8 lg:py-12">
       <div className="relative flex min-h-screen w-full max-w-[430px] flex-col overflow-hidden bg-background shadow-lift sm:min-h-[860px] sm:rounded-[2.5rem] sm:border-8 sm:border-ink lg:min-h-0 lg:max-w-2xl lg:rounded-3xl lg:border lg:border-border lg:shadow-card">
-        <div className={`flex-1 ${nav ? "pb-24 lg:pb-6" : "pb-6"}`}>{children}</div>
+        <div className={`flex-1 ${nav ? "pb-28 lg:pb-6" : "pb-6"}`}>{children}</div>
         {nav ? (
           <>
             <QuickMenu />
@@ -278,7 +278,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <QuickMenu />
             <MobileNav />
 
-            <div className="flex-1 pb-24 lg:pb-6">{children}</div>
+            <div className="flex-1 pb-28 lg:pb-6">{children}</div>
           </PhoneFrame>
 
         </div>
