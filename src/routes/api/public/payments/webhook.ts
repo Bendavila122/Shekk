@@ -100,6 +100,19 @@ async function upsertSubscription(subscription: any, env: StripeEnv) {
       },
       { onConflict: "stripe_subscription_id" },
     );
+
+  if (["active", "trialing"].includes(subscription.status)) {
+    await notify(
+      userId,
+      "membership-welcome",
+      {
+        planLabel: planLabel(priceIdOf(item)),
+        renewsOn: formatDate(periodEnd ? new Date(periodEnd * 1000).toISOString() : null),
+        manageUrl: `${APP_URL}/membership`,
+      },
+      `membership-welcome-${subscription.id}`,
+    );
+  }
 }
 
 async function updateSubscription(subscription: any, env: StripeEnv) {
