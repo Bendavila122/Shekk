@@ -81,13 +81,10 @@ export function AirwallexDropIn({
           client_secret: clientSecret,
           currency,
           mode: "payment",
-          appearance: {
-            mode: "light",
-            variables: {
-              // Airwallex only parses hex/rgb, so resolve the theme token first.
-              colorBrand: cssColor("--primary", "#1a2b48"),
-            },
-          },
+          // Airwallex's appearance API rejects our oklch theme tokens, so the
+          // sheet keeps its own neutral styling inside the iframe.
+          appearance: { mode: "light" },
+
 
         });
         if (!alive || !dropIn || !container.current) return;
