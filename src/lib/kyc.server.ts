@@ -321,6 +321,43 @@ export async function recordDocument(
   if (error) throw error;
 }
 
+/* ------------------------------------------------------------ eligibility --- */
+
+const ISRAEL = ["israel", "il", "isr", "ישראל"];
+
+function yearsSince(iso: string): number {
+  const dob = new Date(`${iso}T00:00:00Z`);
+  if (Number.isNaN(dob.getTime())) return NaN;
+  const now = new Date();
+  let age = now.getUTCFullYear() - dob.getUTCFullYear();
+  const m = now.getUTCMonth() - dob.getUTCMonth();
+  if (m < 0 || (m === 0 && now.getUTCDate() < dob.getUTCDate())) age -= 1;
+  return age;
+}
+
+/**
+ * Airwallex-aligned eligibility: 16+, natural person, resident outside Israel
+ * in a supported onboarding country.
+ */
+export function assertEligible(draft: {
+  dateOfBirth?: string;
+  addressCountry?: string;
+  taxCountry?: string;
+}) {
+  if (draft.dateOfBirth) {
+    const age = yearsSince(draft.dateOfBirth);
+    if (Number.isNaN(age)) throw new Error("Enter your date of birth as YYYY-MM-DD.");
+    if (age < 16) throw new Error("You must be at least 16 years old to hold a Shekk account.");
+    if (age > 120) throw new Error("Check your date of birth.");
+  }
+  const country = (draft.addressCountry ?? "").trim().toLowerCase();
+  if (country && ISRAEL.includes(country)) {
+    throw new Error(
+      "Shekk accounts are for people coming to Israel from abroad. We can't open an account for a home address in Israel.",
+    );
+  }
+}
+
 /* ------------------------------------------------------------- submission --- */
 
 export type MissingField = { field: string; label: string };
