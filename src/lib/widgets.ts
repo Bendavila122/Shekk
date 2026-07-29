@@ -1,6 +1,6 @@
 /** "For You" widget catalogue — content + relevance scoring. */
 import type { ReactNode } from "react";
-import { SHULS, ils } from "./mock";
+import { ils } from "./mock";
 import { pick, rand, type UserContext } from "./personalise";
 
 export type WidgetCta = { label: string; to: string };
@@ -101,9 +101,8 @@ export const WIDGETS: WidgetDef[] = [
             ...base,
             { icon: "🌑", label: "Fast begins", value: c.zmanim.sunrise },
             { icon: "✨", label: "Fast ends", value: c.zmanim.havdalah },
-            { icon: "🕍", label: SHULS[0].name, value: "Kinot 09:00" },
           ],
-          ctas: [{ label: "View Details", to: "/explore/community" }],
+          ctas: [],
         };
       }
       if (c.jewishDay) {
@@ -112,10 +111,9 @@ export const WIDGETS: WidgetDef[] = [
           sub: c.hebrewDate,
           rows: [
             ...base,
-            { icon: "🎉", label: "Nearby events", value: `${EVENTS.length} listed` },
             { icon: "🕯", label: "Candle lighting", value: c.zmanim.candle },
           ],
-          ctas: [{ label: "View Details", to: "/explore/community" }],
+          ctas: [],
         };
       }
       return {
@@ -125,10 +123,8 @@ export const WIDGETS: WidgetDef[] = [
           ...base,
           { icon: "🕯", label: "Candle lighting", value: c.zmanim.candle },
           { icon: "🍷", label: "Havdalah", value: c.zmanim.havdalah },
-          { icon: "🍽", label: "Friday night meals nearby", value: "7 open" },
-          ...SHULS.slice(0, 2).map((s) => ({ icon: s.emoji, label: s.name, value: undefined })),
         ],
-        ctas: [{ label: "View Details", to: "/explore/community" }],
+        ctas: [],
       };
     },
   },
