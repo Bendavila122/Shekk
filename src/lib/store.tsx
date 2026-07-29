@@ -1,8 +1,18 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Txn } from "./mock";
 import type { CurrencyCode } from "./currencies";
 import { defaultCardControls, type CardControls } from "./banking";
 import type { TierId } from "./membership";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  getLedger,
+  spendMoney,
+  receiveMoney,
+  completeTopUp,
+  holdMoney,
+  settleHoldFn,
+  releaseHoldFn,
+} from "./ledger.functions";
 
 export type VerificationStatus = "verified" | "expiring" | "needs-update";
 
