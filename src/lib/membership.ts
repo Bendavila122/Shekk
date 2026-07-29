@@ -50,7 +50,7 @@ export const COMPARISON: { label: string; free: string; premium: string }[] = [
   { label: "Shekk shekel account", free: "Included", premium: "Included" },
   { label: "Shekk Mastercard", free: "—", premium: "Included" },
   { label: "Apple Pay & Google Wallet", free: "—", premium: "Included" },
-  { label: "Currency conversion margin", free: "3.0%", premium: "1.2%" },
+  { label: "Currency conversion", free: "Standard rate", premium: "Member rate" },
   { label: "Partner offers", free: "Basic", premium: "Everything" },
   { label: "Member events", free: "Public pricing", premium: "Member pricing" },
   { label: "Concierge support", free: "—", premium: "7 days a week" },
