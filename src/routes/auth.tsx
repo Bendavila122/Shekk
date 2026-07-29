@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, Loader2, ShieldCheck } from "lucide-react";
+import { Check, Loader2, MailCheck, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
@@ -47,6 +47,7 @@ function Auth() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [sentTo, setSentTo] = useState<string | null>(null);
 
   async function social(provider: "google" | "apple") {
     const label = provider === "google" ? "Google" : "Apple";
@@ -86,17 +87,21 @@ function Auth() {
         setBusy(false);
         return setError("Please accept the Terms & Conditions to continue.");
       }
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: { emailRedirectTo: `${window.location.origin}/verify` },
       });
       setBusy(false);
       if (error) return setError(error.message);
-      setNotice("Check your email to confirm your account, then sign in to finish verification.");
-      setMode("signin");
+      if (data.session) {
+        window.location.href = next === "/" ? "/verify" : next;
+        return;
+      }
+      setSentTo(email);
       return;
     }
+
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
@@ -104,7 +109,79 @@ function Auth() {
     window.location.href = next === "/" ? "/verify" : next;
   }
 
+  if (sentTo) {
+    return (
+      <FocusScreen nav={false}>
+        <div className="flex min-h-screen flex-col justify-center gap-5 px-6 py-14 sm:min-h-[860px]">
+          <div className="flex size-14 items-center justify-center rounded-2xl bg-success/10">
+            <MailCheck className="size-7 text-success" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-extrabold leading-tight tracking-tight">
+              Check your email
+            </h1>
+            <p className="mt-3 text-base text-muted-foreground">
+              We&rsquo;ve sent a confirmation link to{" "}
+              <span className="font-semibold text-foreground">{sentTo}</span>. Tap
+              &ldquo;Verify now&rdquo; in that email to activate your Shekk account.
+            </p>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Nothing yet? Give it a minute and check your spam folder.
+            </p>
+          </div>
+
+          {notice && <p className="text-sm text-success">{notice}</p>}
+          {error && (
+            <p role="alert" className="text-sm font-medium text-destructive">
+              {error}
+            </p>
+          )}
+
+          <PrimaryButton
+            type="button"
+            disabled={busy}
+            onClick={async () => {
+              setBusy(true);
+              setError(null);
+              setNotice(null);
+              const { error } = await supabase.auth.resend({
+                type: "signup",
+                email: sentTo,
+                options: { emailRedirectTo: `${window.location.origin}/verify` },
+              });
+              setBusy(false);
+              if (error) return setError(error.message);
+              setNotice("Sent again — check your inbox.");
+            }}
+          >
+            {busy ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="size-4 animate-spin" /> Sending…
+              </span>
+            ) : (
+              "Resend the email"
+            )}
+          </PrimaryButton>
+
+          <button
+            type="button"
+            onClick={() => {
+              setSentTo(null);
+              setNotice(null);
+              setError(null);
+              setMode("signin");
+            }}
+            className="text-center text-sm text-muted-foreground underline"
+          >
+            Already confirmed? Sign in
+          </button>
+        </div>
+      </FocusScreen>
+    );
+  }
+
   return (
+
     <FocusScreen nav={false}>
       <div className="flex min-h-screen flex-col justify-center gap-6 px-6 py-14 sm:min-h-[860px]">
         <div>
