@@ -45,6 +45,7 @@ import { Route as ExploreEventsRouteImport } from './routes/explore/events'
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
 import { Route as ExploreAdminRouteImport } from './routes/explore/admin'
 import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
+import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
 import { Route as AdminMoneyRouteImport } from './routes/admin/money'
 import { Route as AdminMembershipsRouteImport } from './routes/admin/memberships'
 import { Route as AdminAppsRouteImport } from './routes/admin/apps'
@@ -236,6 +237,11 @@ const BenefitsIdRoute = BenefitsIdRouteImport.update({
   path: '/benefits/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPromotionsRoute = AdminPromotionsRouteImport.update({
+  id: '/promotions',
+  path: '/promotions',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminMoneyRoute = AdminMoneyRouteImport.update({
   id: '/money',
   path: '/money',
@@ -315,6 +321,7 @@ export interface FileRoutesByFullPath {
   '/admin/apps': typeof AdminAppsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
+  '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -362,6 +369,7 @@ export interface FileRoutesByTo {
   '/admin/apps': typeof AdminAppsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
+  '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -411,6 +419,7 @@ export interface FileRoutesById {
   '/admin/apps': typeof AdminAppsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
+  '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -461,6 +470,7 @@ export interface FileRouteTypes {
     | '/admin/apps'
     | '/admin/memberships'
     | '/admin/money'
+    | '/admin/promotions'
     | '/benefits/$id'
     | '/explore/admin'
     | '/explore/community'
@@ -508,6 +518,7 @@ export interface FileRouteTypes {
     | '/admin/apps'
     | '/admin/memberships'
     | '/admin/money'
+    | '/admin/promotions'
     | '/benefits/$id'
     | '/explore/admin'
     | '/explore/community'
@@ -556,6 +567,7 @@ export interface FileRouteTypes {
     | '/admin/apps'
     | '/admin/memberships'
     | '/admin/money'
+    | '/admin/promotions'
     | '/benefits/$id'
     | '/explore/admin'
     | '/explore/community'
@@ -878,6 +890,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BenefitsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/promotions': {
+      id: '/admin/promotions'
+      path: '/promotions'
+      fullPath: '/admin/promotions'
+      preLoaderRoute: typeof AdminPromotionsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/money': {
       id: '/admin/money'
       path: '/money'
@@ -956,6 +975,7 @@ interface AdminRouteRouteChildren {
   AdminAppsRoute: typeof AdminAppsRoute
   AdminMembershipsRoute: typeof AdminMembershipsRoute
   AdminMoneyRoute: typeof AdminMoneyRoute
+  AdminPromotionsRoute: typeof AdminPromotionsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -964,6 +984,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAppsRoute: AdminAppsRoute,
   AdminMembershipsRoute: AdminMembershipsRoute,
   AdminMoneyRoute: AdminMoneyRoute,
+  AdminPromotionsRoute: AdminPromotionsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
