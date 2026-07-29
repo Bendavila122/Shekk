@@ -57,6 +57,7 @@ import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$
 import { Route as ExploreCategoryIdRouteImport } from './routes/explore/category.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
+import { Route as ApiPublicWebhooksAirwallexRouteImport } from './routes/api/public/webhooks/airwallex'
 
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
@@ -301,6 +302,12 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
   path: '/.lovable/oauth/consent',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicWebhooksAirwallexRoute =
+  ApiPublicWebhooksAirwallexRouteImport.update({
+    id: '/api/public/webhooks/airwallex',
+    path: '/api/public/webhooks/airwallex',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -351,6 +358,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -400,6 +408,7 @@ export interface FileRoutesByTo {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -451,6 +460,7 @@ export interface FileRoutesById {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -503,6 +513,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/service/$id'
+    | '/api/public/webhooks/airwallex'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -552,6 +563,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/service/$id'
+    | '/api/public/webhooks/airwallex'
   id:
     | '__root__'
     | '/'
@@ -602,6 +614,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/service/$id'
+    | '/api/public/webhooks/airwallex'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -646,6 +659,7 @@ export interface RootRouteChildren {
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
+  ApiPublicWebhooksAirwallexRoute: typeof ApiPublicWebhooksAirwallexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -986,6 +1000,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/webhooks/airwallex': {
+      id: '/api/public/webhooks/airwallex'
+      path: '/api/public/webhooks/airwallex'
+      fullPath: '/api/public/webhooks/airwallex'
+      preLoaderRoute: typeof ApiPublicWebhooksAirwallexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1056,6 +1077,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ExploreCategoryIdRoute: ExploreCategoryIdRoute,
   ExploreServiceIdRoute: ExploreServiceIdRoute,
+  ApiPublicWebhooksAirwallexRoute: ApiPublicWebhooksAirwallexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
