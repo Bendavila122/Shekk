@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Plus, ArrowLeftRight, ArrowUpRight, CreditCard } from "lucide-react";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { AppShell, ReverifyBanner } from "@/components/AppShell";
-import { ForYou } from "@/components/ForYou";
+
 import { ActiveNow } from "@/components/ActiveNow";
 import { LocationBar } from "@/components/LocationBar";
 
