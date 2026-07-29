@@ -1,10 +1,9 @@
 /**
- * Deterministic personalisation engine for the Home "For You" rail.
+ * Personalisation engine for the Home "For You" rail.
  *
- * Everything here is simulated (this is a prototype — no GPS, weather API or
- * news feed). Values are derived from the clock, a small Jewish-calendar table,
- * the student's programme city and their own stored activity, then seeded with
- * a hash of their name so two students never see the same Home screen.
+ * Weather (Open-Meteo) and the Jewish calendar (Hebcal) are live, fetched for
+ * the student's detected or chosen place. Spending signals come from their own
+ * stored activity; only the small nudge copy is still seeded by name.
  */
 import { useEffect, useMemo, useState } from "react";
 import { type Txn } from "./mock";
@@ -120,12 +119,25 @@ function signalsFrom(txns: Txn[], seed: string) {
 
 /* ----------------------------------------------------------------- hook */
 
+/** Cities the student can pin the widgets to when GPS is unavailable. */
+export { LOCATION_CITIES as WEATHER_CITIES } from "./location";
+
+export type LiveInput = {
+  /** Label for the place the live data was fetched for. */
+  cityLabel: string;
+  weather: LiveWeather | null;
+  weatherLoading: boolean;
+  weatherError: boolean;
+  jewish: LiveJewish | null;
+  jewishLoading: boolean;
+  jewishError: boolean;
+};
+
 /**
  * Reads the clock only after mount so SSR and hydration agree.
- * `refreshKey` re-seeds the simulated live values; `weatherCityOverride`
- * lets the student point the weather widget at another Israeli city.
+ * `refreshKey` forces a re-read; `live` carries the fetched weather/Hebcal data.
  */
-export function useUserContext(refreshKey = 0, weatherCityOverride?: string | null): UserContext {
+export function useUserContext(refreshKey = 0, live?: LiveInput): UserContext {
   const { state } = useApp();
   const [now, setNow] = useState<Date | null>(null);
 
@@ -135,21 +147,28 @@ export function useUserContext(refreshKey = 0, weatherCityOverride?: string | nu
     return () => window.clearInterval(id);
   }, [refreshKey]);
 
+  const jewish = live?.jewish ?? null;
+  const weather = live?.weather ?? null;
+
   return useMemo<UserContext>(() => {
     const d = now ?? new Date(2026, 0, 1, 9, 0, 0);
     const hour = d.getHours();
     const dayOfWeek = d.getDay();
-    const mmdd = `${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-    const programCity = PROGRAMS.find((p) => p.id === state.programId)?.city ?? "Jerusalem";
-    const city = programCity.includes("Tel Aviv") ? "Tel Aviv" : programCity.includes("Jerusalem") ? "Jerusalem" : "Israel";
-    const weatherCity = weatherCityOverride && CITY_PROFILE[weatherCityOverride] ? weatherCityOverride : city;
-    const zmanim = CITY_PROFILE[weatherCity] ?? CITY_PROFILE.Default;
+    const city = live?.cityLabel ?? "Israel";
 
-    const seed = `${state.name}|${city}|${mmdd}|${refreshKey}`;
-    const wSeed = `${seed}|${weatherCity}`;
-    const condition = pick(CONDITIONS, `${wSeed}|cond`);
-    const base = (CITY_PROFILE[weatherCity] ?? CITY_PROFILE.Default).base;
-    const temp = between(`${wSeed}|temp`, base - 5, base + 5);
+    // Prefer real candle-lighting / havdalah instants over clock heuristics.
+    const candleAt = jewish?.candleDate ? new Date(jewish.candleDate) : null;
+    const havdalahAt = jewish?.havdalahDate ? new Date(jewish.havdalahDate) : null;
+    const withinShabbat =
+      candleAt && havdalahAt ? d >= candleAt && d < havdalahAt : (dayOfWeek === 5 && hour >= 17) || (dayOfWeek === 6 && hour < 18);
+    const erev = candleAt
+      ? candleAt.toDateString() === d.toDateString() && d < candleAt
+      : dayOfWeek === 5 && hour >= 11;
+    const motzash = havdalahAt
+      ? havdalahAt.toDateString() === d.toDateString() && d >= havdalahAt
+      : dayOfWeek === 6 && hour >= 18;
+
+    const seed = `${state.name}|${city}|${d.toDateString()}|${refreshKey}`;
     const unpaid = state.splits.filter((s) => !s.paid);
 
     return {
@@ -159,26 +178,20 @@ export function useUserContext(refreshKey = 0, weatherCityOverride?: string | nu
       timeOfDay: timeOfDay(hour),
       dayOfWeek,
       isFriday: dayOfWeek === 5,
-      isErevShabbat: dayOfWeek === 5 && hour >= 11,
-      isShabbat: (dayOfWeek === 5 && hour >= 17) || (dayOfWeek === 6 && hour < 18),
-      isMotzash: dayOfWeek === 6 && hour >= 18,
-      jewishDay: JEWISH_CALENDAR[mmdd] ?? null,
-      sedra: sedraFor(d),
-      hebrewDate: hebrewDate(d),
+      isErevShabbat: erev,
+      isShabbat: withinShabbat,
+      isMotzash: motzash,
+      jewishDay: jewish?.holiday ?? null,
+      sedra: jewish?.sedra ?? null,
+      hebrewDate: jewish?.hebrewDate ?? "",
       city,
-      weatherCity,
-      zmanim,
-      weather: {
-        temp,
-        feels: temp + between(`${wSeed}|feels`, -2, 3),
-        condition: condition.label,
-        emoji: condition.emoji,
-        uv: between(`${wSeed}|uv`, 2, 9),
-        rain: between(`${wSeed}|rain`, 0, condition.label === "Light rain" ? 80 : 25),
-        aqi: between(`${wSeed}|aqi`, 18, 74),
-        high: temp + between(`${wSeed}|hi`, 1, 5),
-        low: temp - between(`${wSeed}|lo`, 3, 8),
-      },
+      weatherCity: city,
+      jewish,
+      jewishLoading: live?.jewishLoading ?? false,
+      jewishError: live?.jewishError ?? false,
+      weather,
+      weatherLoading: live?.weatherLoading ?? false,
+      weatherError: live?.weatherError ?? false,
       signals: {
         ...signalsFrom(state.txns, seed),
         pendingSplits: unpaid.length,
@@ -186,6 +199,18 @@ export function useUserContext(refreshKey = 0, weatherCityOverride?: string | nu
         requestedTotal: +unpaid.reduce((sum, s) => sum + s.amount, 0).toFixed(2),
       },
     };
-  }, [now, refreshKey, weatherCityOverride, state.name, state.programId, state.txns, state.splits]);
-
+  }, [
+    now,
+    refreshKey,
+    jewish,
+    weather,
+    live?.cityLabel,
+    live?.weatherLoading,
+    live?.weatherError,
+    live?.jewishLoading,
+    live?.jewishError,
+    state.name,
+    state.txns,
+    state.splits,
+  ]);
 }
