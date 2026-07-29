@@ -48,20 +48,22 @@ function Auth() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  async function google() {
+  async function social(provider: "google" | "apple") {
+    const label = provider === "google" ? "Google" : "Apple";
     setBusy(true);
     setError(null);
-    const result = await lovable.auth.signInWithOAuth("google", {
+    const result = await lovable.auth.signInWithOAuth(provider, {
       redirect_uri: window.location.origin,
     });
     if (result.error) {
       setBusy(false);
-      return setError(result.error.message ?? "Google sign-in failed. Try email instead.");
+      return setError(result.error.message ?? `${label} sign-in failed. Try email instead.`);
     }
     if (result.redirected) return;
     setBusy(false);
     window.location.href = next === "/" ? "/verify" : next;
   }
+
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -129,7 +131,7 @@ function Auth() {
           <>
             <button
               type="button"
-              onClick={google}
+              onClick={() => social("google")}
               disabled={busy}
               className="tap flex w-full items-center justify-center gap-3 rounded-2xl border border-border bg-card px-5 py-4 text-base font-semibold shadow-card disabled:opacity-50"
             >
@@ -153,10 +155,22 @@ function Auth() {
               </svg>
               Continue with Google
             </button>
+            <button
+              type="button"
+              onClick={() => social("apple")}
+              disabled={busy}
+              className="tap -mt-3 flex w-full items-center justify-center gap-3 rounded-2xl border border-border bg-card px-5 py-4 text-base font-semibold shadow-card disabled:opacity-50"
+            >
+              <svg viewBox="0 0 24 24" className="size-5 fill-foreground" aria-hidden="true">
+                <path d="M16.4 12.7c0-2.4 2-3.6 2.1-3.6-1.1-1.7-2.9-1.9-3.6-1.9-1.5-.2-3 .9-3.7.9-.8 0-2-.9-3.2-.8-1.7 0-3.2 1-4 2.5-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.5 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.7 1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.4-.9-2.4-3.6ZM14.1 5.1c.7-.8 1.1-2 1-3.1-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.4Z" />
+              </svg>
+              Continue with Apple
+            </button>
             <div className="flex items-center gap-3 text-xs uppercase tracking-wide text-muted-foreground">
               <span className="h-px flex-1 bg-border" /> or email <span className="h-px flex-1 bg-border" />
             </div>
           </>
+
         )}
 
         <form onSubmit={submit} className="space-y-3">
