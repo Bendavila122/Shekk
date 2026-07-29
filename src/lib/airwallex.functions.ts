@@ -20,6 +20,27 @@ export const airwallexStatus = createServerFn({ method: "GET" }).handler(async (
   };
 });
 
+/**
+ * The regulated gate. A member may only move money once their identity checks
+ * have passed AND our partner has approved their shekel (ILS) account. Client
+ * code can hide buttons; this is what actually enforces it.
+ */
+async function requireOpenIlsAccount(userId: string, email?: string | null) {
+  const { readProfile } = await import("./kyc.server");
+  const profile = await readProfile(userId, email ?? null);
+  if (profile.kycStatus !== "verified") {
+    throw new Error("Your identity checks need to pass before you can add money.");
+  }
+  if (profile.ilsAccountStatus !== "approved") {
+    throw new Error(
+      profile.ilsAccountStatus === "rejected"
+        ? "Our payment partner could not open a shekel account for you."
+        : "Your shekel account is still waiting on approval from our payment partner.",
+    );
+  }
+  return profile;
+}
+
 /** Start a top up. Returns the client secret the payment sheet needs. */
 export const startTopUp = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -34,6 +55,7 @@ export const startTopUp = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { isConfigured, createPaymentIntent } = await import("./airwallex.server");
     if (!isConfigured()) return { connected: false as const };
+    await requireOpenIlsAccount(context.userId, context.claims?.email as string | undefined);
 
     const intent = await createPaymentIntent({
       userId: context.userId,
@@ -91,7 +113,8 @@ export const issueCard = createServerFn({ method: "POST" })
       })
       .parse(data),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await requireOpenIlsAccount(context.userId, data.email);
     const { isConfigured, createCardholder, createCard } = await import("./airwallex.server");
     if (!isConfigured()) return { connected: false as const };
 

@@ -20,6 +20,7 @@ import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { ils } from "@/lib/mock";
 import { issueCard, provisionToWallet, PARTNERS } from "@/lib/banking";
+import { useProfile } from "@/lib/useProfile";
 
 export const Route = createFileRoute("/card")({
   head: () => ({
@@ -53,6 +54,7 @@ function CardScreen() {
   const [reveal, setReveal] = useState(false);
   const [issuing, setIssuing] = useState(false);
   const [walletBusy, setWalletBusy] = useState(false);
+  const kyc = useProfile();
 
   if (!ready) {
     return (
@@ -129,7 +131,32 @@ function CardScreen() {
           </div>
         ) : (
           <div className="mt-4">
-            {isPremium ? (
+            {!kyc.bankingOpen ? (
+              <div className="space-y-3 rounded-2xl border border-notice-border bg-notice-soft px-4 py-4 text-xs leading-relaxed text-notice-foreground">
+                <p className="text-sm font-bold">
+                  {kyc.verified
+                    ? kyc.ilsAccountStatus === "rejected"
+                      ? "Your shekel account wasn't approved"
+                      : "Waiting on your shekel account"
+                    : "Verify your identity first"}
+                </p>
+                <p>
+                  {kyc.verified
+                    ? kyc.ilsAccountStatus === "rejected"
+                      ? "Our regulated partner couldn't open a shekel account for you. Talk to support and we'll go through it together."
+                      : "Our regulated partner is reviewing your account. Cards are issued the moment your shekel account is open."
+                    : "A Shekk card can only be issued once your ID checks pass and our partner opens your shekel account."}
+                </p>
+                {!kyc.verified && (
+                  <Link
+                    to="/verify"
+                    className="tap block rounded-xl bg-notice-foreground px-4 py-2.5 text-center text-xs font-semibold text-notice-soft"
+                  >
+                    Verify my identity
+                  </Link>
+                )}
+              </div>
+            ) : isPremium ? (
               <PrimaryButton onClick={issue} disabled={issuing}>
                 {issuing ? "Issuing your card…" : "Issue my Shekk Card"}
               </PrimaryButton>
@@ -143,6 +170,7 @@ function CardScreen() {
             )}
           </div>
         )}
+
 
         {card.frozen ? (
           <p className="mt-3 rounded-2xl border border-notice-border bg-notice-soft px-4 py-3 text-xs text-notice-foreground">

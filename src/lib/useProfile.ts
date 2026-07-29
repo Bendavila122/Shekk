@@ -94,6 +94,7 @@ export function useProfile() {
 
   const profile = query.data?.profile ?? null;
   const status = profile?.kycStatus ?? "not_started";
+  const ilsAccountStatus = profile?.ilsAccountStatus ?? "not_submitted";
 
   return {
     profile,
@@ -101,6 +102,10 @@ export function useProfile() {
     status,
     verified: status === "verified",
     pending: status === "in_review" || status === "submitted",
+    /** Our partner's decision on this member's shekel account. */
+    ilsAccountStatus,
+    /** True only once the partner has approved the shekel account. */
+    bankingOpen: status === "verified" && ilsAccountStatus === "approved",
     loading: query.isLoading,
     save,
     submit,
@@ -108,3 +113,4 @@ export function useProfile() {
     refetch: query.refetch,
   };
 }
+

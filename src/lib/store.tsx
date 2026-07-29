@@ -209,6 +209,8 @@ type Ctx = {
   ledgerReady: boolean;
   /** Signed in against the real backend ledger, rather than the local demo. */
   signedIn: boolean;
+  /** True once we know whether there's a session — before this, don't redirect. */
+  authChecked: boolean;
   /** Money reserved by pending payments, e.g. a taxi booked at an estimate. */
   held: number;
   /** Balance minus holds — what can actually be spent right now. */
@@ -268,6 +270,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
    * keep the local demo wallet so the prototype stays explorable.
    * -------------------------------------------------------------------------- */
   const [signedIn, setSignedIn] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
   const [ledgerReady, setLedgerReady] = useState(false);
   const [held, setHeld] = useState(0);
   const [openHolds, setOpenHolds] = useState<OpenHold[]>([]);
@@ -326,6 +329,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const isIn = Boolean(userId);
       signedInRef.current = isIn;
       setSignedIn(isIn);
+      setAuthChecked(true);
       if (isIn) {
         void refreshLedger();
       } else {
@@ -411,6 +415,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     hydrated,
     ledgerReady,
     signedIn,
+    authChecked,
     held,
     available: Math.max(0, +(state.balance - held).toFixed(2)),
     openHolds,
