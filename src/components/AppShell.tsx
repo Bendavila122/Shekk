@@ -4,6 +4,7 @@ import { Wallet, Compass, Tag, Users, User, ChevronLeft, Plus, Info, Menu, X, Se
 import { useApp } from "@/lib/store";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
+import { MembershipDunningBanner } from "@/components/MembershipDunningBanner";
 
 
 
@@ -278,7 +279,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             <QuickMenu />
             <MobileNav />
 
-            <div className="flex-1 pb-28 lg:pb-6">{children}</div>
+            <div className="flex-1 pb-28 lg:pb-6">
+              <MembershipDunningBanner />
+              {children}
+            </div>
           </PhoneFrame>
 
         </div>

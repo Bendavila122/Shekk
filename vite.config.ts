@@ -6,6 +6,11 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/tanstack/vite";
+import { loadEnv } from "vite";
+
+// Server-side code (server routes, server functions) reads process.env for
+// non-VITE_ secrets. These are never added to the client define block.
+Object.assign(process.env, loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), ""));
 
 export default defineConfig({
   plugins: [mcpPlugin()],

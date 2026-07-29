@@ -7,7 +7,7 @@ import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { useApp } from "@/lib/store";
 import { TIERS, COMPARISON } from "@/lib/membership";
 import { useSubscription } from "@/lib/useSubscription";
-import { SHEKK_PLUS_PRICE_ID, getStripeEnvironment } from "@/lib/stripe";
+import { MEMBERSHIP_PLANS, getStripeEnvironment, type BillingCycle } from "@/lib/stripe";
 import { createMembershipPortal } from "@/lib/payments.functions";
 
 export const Route = createFileRoute("/membership")({
@@ -32,8 +32,10 @@ function MembershipScreen() {
   const { state, setMembership } = useApp();
   const { subscription, isPlus, loading, refresh } = useSubscription();
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [cycle, setCycle] = useState<BillingCycle>("monthly");
   const [portalBusy, setPortalBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const plan = MEMBERSHIP_PLANS[cycle];
 
   // Membership state follows the billing record, not a local toggle.
   useEffect(() => {
@@ -97,9 +99,9 @@ function MembershipScreen() {
                 ? subscription?.cancelAtPeriodEnd && renews
                   ? `Ends ${renews}. You keep everything until then.`
                   : renews
-                    ? `£9.99 a month · renews ${renews}.`
+                    ? `Renews ${renews}.`
                     : "Card, full marketplace, member pricing and concierge — all active."
-                : "£9.99 a month. Cancel any time, keep your account either way."}
+                : `${plan.price} ${plan.cadence}. Cancel any time, keep your account either way.`}
             </p>
           </div>
         </div>
@@ -119,7 +121,8 @@ function MembershipScreen() {
         <section className="px-4 pt-4">
           <Card className="p-3">
             <MembershipCheckout
-              priceId={SHEKK_PLUS_PRICE_ID}
+              key={plan.priceId}
+              priceId={plan.priceId}
               returnUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/membership?session_id={CHECKOUT_SESSION_ID}`}
             />
             <button
@@ -133,9 +136,32 @@ function MembershipScreen() {
         </section>
       ) : null}
 
+      {!isPlus ? (
+        <section className="px-4 pt-5">
+          <div className="flex rounded-2xl bg-muted p-1">
+            {(["monthly", "yearly"] as BillingCycle[]).map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => {
+                  setCycle(c);
+                  setCheckoutOpen(false);
+                }}
+                className={`tap-flat flex-1 rounded-xl py-2.5 text-sm font-semibold ${
+                  cycle === c ? "bg-card text-foreground shadow-card" : "text-muted-foreground"
+                }`}
+              >
+                {c === "monthly" ? "Monthly" : "Yearly · save 17%"}
+              </button>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section className="space-y-4 px-4 pt-5">
         {TIERS.map((t) => {
           const current = t.id === "premium" ? isPlus : !isPlus;
+          const isPremium = t.id === "premium";
           return (
             <Card key={t.id} className={`p-5 ${current ? "border-primary" : ""}`}>
               <div className="flex items-baseline justify-between gap-3">
@@ -144,10 +170,15 @@ function MembershipScreen() {
                   <p className="text-xs text-muted-foreground">{t.tagline}</p>
                 </div>
                 <div className="shrink-0 text-right">
-                  <p className="font-display text-lg font-bold">{t.price}</p>
-                  <p className="text-[11px] text-muted-foreground">{t.cadence}</p>
+                  <p className="font-display text-lg font-bold">
+                    {isPremium ? plan.price : t.price}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {isPremium ? plan.cadence : t.cadence}
+                  </p>
                 </div>
               </div>
+
 
               <ul className="mt-4 space-y-2.5">
                 {t.perks.map((p) => (
@@ -185,7 +216,7 @@ function MembershipScreen() {
                         <Loader2 className="size-4 animate-spin" /> Checking
                       </span>
                     ) : (
-                      "Join Shekk+ · £9.99 a month"
+                      `Join Shekk+ · ${plan.price} ${plan.cadence}`
                     )}
                   </PrimaryButton>
                 ) : (
@@ -240,8 +271,9 @@ function MembershipScreen() {
           </Card>
         </Link>
         <p className="mt-3 px-1 text-[11px] text-muted-foreground">
-          Shekk+ is billed at £9.99 a month and renews until you cancel. Membership is separate from
-          your shekel account, which is provided by our regulated payment partner.
+          Shekk+ is billed at £9.99 a month or £99 a year and renews until you cancel. Cancelling
+          keeps everything running until the end of the period you have already paid for. Membership
+          is separate from your shekel account, which is provided by our regulated payment partner.
         </p>
       </section>
     </AppShell>
