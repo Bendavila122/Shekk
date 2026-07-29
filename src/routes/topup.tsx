@@ -26,7 +26,7 @@ export const Route = createFileRoute("/topup")({
 const PRESETS = [50, 100, 250, 500];
 
 function AddMoney() {
-  const { addMoney, state } = useApp();
+  const { addMoney, state, moneyError } = useApp();
   const [amount, setAmount] = useState("100");
   const [source, setSource] = useState(state.settings.payCurrency);
   const [sheet, setSheet] = useState<"apple" | "bank" | null>(null);
