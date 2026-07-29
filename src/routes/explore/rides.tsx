@@ -117,7 +117,7 @@ function PlaceField({
 }
 
 function Rides() {
-  const { state, spend } = useApp();
+  const { state, spend, signedIn, available, holdFor, settleHold, releaseHold, moneyError } = useApp();
   const { place: here } = useLocation();
   const estimate = useServerFn(estimateRide);
   const book = useServerFn(bookRide);
@@ -139,6 +139,7 @@ function Rides() {
   const [rideId, setRideId] = useState<string | null>(null);
   const [status, setStatus] = useState<Awaited<ReturnType<typeof rideStatus>> | null>(null);
   const charged = useRef(false);
+  const holdId = useRef<string | null>(null);
 
   useEffect(() => {
     if (!pickup && defaultPickup) setPickup(defaultPickup);
@@ -186,7 +187,9 @@ function Rides() {
   }, [rideId, track]);
 
   const selected = options.find((o) => o.id === pick) ?? null;
-  const affordable = selected ? state.balance >= selected.price : false;
+  // Signed-in members book against spendable money: balance minus existing holds.
+  const spendable = signedIn ? available : state.balance;
+  const affordable = selected ? spendable >= selected.price : false;
 
   async function order() {
     if (!pickup || !dropoff || !selected) return;
@@ -206,7 +209,19 @@ function Rides() {
       if ("error" in r && r.error) setNotice(r.error as string);
       if (!charged.current) {
         charged.current = true;
-        spend(`Gett · ${dropoff.label}`, "Rides", selected.price, "🚕");
+        if (signedIn) {
+          // The estimate is only reserved. The true fare is charged when the
+          // ride ends, so waiting time or a route change settles correctly.
+          holdId.current = await holdFor({
+            amount: selected.price,
+            merchant: `Gett · ${dropoff.label}`,
+            category: "Rides",
+            icon: "🚕",
+            externalRef: r.rideId,
+          });
+        } else {
+          spend(`Gett · ${dropoff.label}`, "Rides", selected.price, "🚕");
+        }
       }
     } catch {
       setNotice("Booking failed. Nothing was charged.");
@@ -216,7 +231,17 @@ function Rides() {
   }
 
   async function endRide() {
-    if (rideId) await cancel({ data: { rideId } });
+    const completed = status?.status === "completed";
+    if (rideId && !completed) await cancel({ data: { rideId } });
+
+    if (holdId.current) {
+      // A finished ride settles at Gett's final fare; a cancelled one gives
+      // the reservation straight back.
+      if (completed) await settleHold(holdId.current, status?.price ?? undefined);
+      else await releaseHold(holdId.current);
+      holdId.current = null;
+    }
+
     setRideId(null);
     setStatus(null);
     charged.current = false;
@@ -226,6 +251,12 @@ function Rides() {
     <AppShell>
       <ScreenHeader title="Gett taxis" subtitle={live ? "Live Gett prices" : "Indicative prices"} />
       <div className="space-y-4 px-4 py-4">
+        {moneyError && (
+          <p className="rounded-2xl bg-destructive/10 px-4 py-3 text-xs font-medium text-destructive">
+            {moneyError}
+          </p>
+        )}
+
         {notice && (
           <p className="rounded-2xl bg-muted px-4 py-3 text-xs text-muted-foreground">{notice}</p>
         )}
@@ -262,7 +293,7 @@ function Rides() {
 
             {selected && !affordable && (
               <p className="text-center text-xs text-muted-foreground">
-                You need {ils(selected.price - state.balance)} more in your balance to book this ride.
+                You need {ils(selected.price - spendable)} more in your balance to book this ride.
               </p>
             )}
 
@@ -307,7 +338,11 @@ function Rides() {
               />
             </div>
             {status?.price != null && (
-              <p className="text-xs text-muted-foreground">Paid {ils(status.price)} from your balance.</p>
+              <p className="text-xs text-muted-foreground">
+                {signedIn && status.status !== "completed"
+                  ? `${ils(status.price)} reserved — you are charged the final fare when the ride ends.`
+                  : `Paid ${ils(status.price)} from your balance.`}
+              </p>
             )}
             <button onClick={endRide} className="tap text-sm font-semibold text-muted-foreground underline">
               {status?.status === "completed" ? "Done" : "Cancel ride"}
