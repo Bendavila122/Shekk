@@ -45,6 +45,7 @@ import { Route as ExploreEventsRouteImport } from './routes/explore/events'
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
 import { Route as ExploreAdminRouteImport } from './routes/explore/admin'
 import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
+import { Route as AdminMoneyRouteImport } from './routes/admin/money'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
@@ -232,6 +233,11 @@ const BenefitsIdRoute = BenefitsIdRouteImport.update({
   path: '/benefits/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminMoneyRoute = AdminMoneyRouteImport.update({
+  id: '/money',
+  path: '/money',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
     id: '/.well-known/oauth-protected-resource',
@@ -287,6 +293,7 @@ export interface FileRoutesByFullPath {
   '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/money': typeof AdminMoneyRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -330,6 +337,7 @@ export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/money': typeof AdminMoneyRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -375,6 +383,7 @@ export interface FileRoutesById {
   '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/money': typeof AdminMoneyRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -421,6 +430,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/money'
     | '/benefits/$id'
     | '/explore/admin'
     | '/explore/community'
@@ -464,6 +474,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/money'
     | '/benefits/$id'
     | '/explore/admin'
     | '/explore/community'
@@ -508,6 +519,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/money'
     | '/benefits/$id'
     | '/explore/admin'
     | '/explore/community'
@@ -830,6 +842,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BenefitsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/money': {
+      id: '/admin/money'
+      path: '/money'
+      fullPath: '/admin/money'
+      preLoaderRoute: typeof AdminMoneyRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
       path: '/.well-known/oauth-protected-resource'
@@ -876,10 +895,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteRouteChildren {
+  AdminMoneyRoute: typeof AdminMoneyRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminMoneyRoute: AdminMoneyRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
