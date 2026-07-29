@@ -84,10 +84,11 @@ export function AirwallexDropIn({
           appearance: {
             mode: "light",
             variables: {
-              colorBrand: cssColor("--primary", "#1d4ed8"),
-              colorText: cssColor("--foreground", "#1a2b48"),
+              // Airwallex only parses hex/rgb, so resolve the theme token first.
+              colorBrand: cssColor("--primary", "#1a2b48"),
             },
           },
+
         });
         if (!alive || !dropIn || !container.current) return;
 
