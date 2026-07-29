@@ -4,6 +4,7 @@ import { Wallet, Compass, Tag, Users, User, ChevronLeft, Plus, Info, Menu, X, Se
 import { useApp } from "@/lib/store";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
+import { MembershipDunningBanner } from "@/components/MembershipDunningBanner";
 
 
 
