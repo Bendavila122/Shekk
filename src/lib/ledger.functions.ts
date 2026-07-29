@@ -120,36 +120,10 @@ export const releaseHoldFn = createServerFn({ method: "POST" })
   });
 
 /**
- * Complete a top up.
+ * There is deliberately no client-callable "complete a top up" function.
  *
- * The shekel amount is recomputed server-side from the currency and the amount
- * paid — the client's arithmetic is never trusted. When Airwallex is live this
- * runs from the verified payment webhook instead of a client call.
+ * Money enters the ledger from exactly one place: the signature-verified
+ * Airwallex webhook at /api/public/webhooks/airwallex, which calls
+ * `settleFunding` after the payment has actually settled.
  */
-export const completeTopUp = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
-    z
-      .object({
-        payCurrency: z.enum(["USD", "GBP", "EUR", "CAD", "AUD", "ZAR"]),
-        payAmount: z.number().finite().positive().max(50_000),
-        method: z.enum(["apple-pay", "google-pay", "bank-transfer", "card"]).default("apple-pay"),
-        idempotencyKey: z.string().max(120).nullish(),
-      })
-      .parse(data),
-  )
-  .handler(async ({ data, context }) => {
-    const { settleFunding } = await import("./ledger.server");
-    const { priceTopUp } = await import("./ledger-pricing.server");
-    const quote = priceTopUp(data.payCurrency, data.payAmount);
-    return settleFunding(context.userId, {
-      payCurrency: data.payCurrency,
-      payAmount: data.payAmount,
-      interbankRate: quote.interbank,
-      quotedRate: quote.rate,
-      fee: quote.fee,
-      shekels: quote.shekels,
-      method: data.method,
-      idempotencyKey: data.idempotencyKey,
-    });
-  });
+

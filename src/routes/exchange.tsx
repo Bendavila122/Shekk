@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowDown, Check, Info } from "lucide-react";
+import { ArrowDown, Check, Info, Loader2, Lock } from "lucide-react";
 import { AppShell, Card, ScreenHeader, PrimaryButton } from "@/components/AppShell";
 import { useApp } from "@/lib/store";
+import { useFunding } from "@/lib/useFunding";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
+
 import { ils } from "@/lib/mock";
 import { CURRENCIES, currency, money } from "@/lib/currencies";
 import { quoteFx, FX_MARGIN } from "@/lib/banking";
@@ -28,10 +30,12 @@ export const Route = createFileRoute("/exchange")({
 
 function ExchangeScreen() {
   const ready = useOnboardedGate();
-  const { state, addMoney, isPremium } = useApp();
+  const { state, isPremium } = useApp();
+  const { blocked, phase, error, fund, resetFunding } = useFunding();
   const [from, setFrom] = useState(state.settings.payCurrency);
   const [amount, setAmount] = useState("250");
-  const [done, setDone] = useState(false);
+  const done = phase === "awaiting" || phase === "settled";
+
 
   if (!ready) {
     return (
@@ -52,20 +56,33 @@ function ExchangeScreen() {
 
       {done ? (
         <section className="px-5 pt-8 text-center">
-          <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-success-soft">
-            <Check className="size-10 text-success" />
+          <div
+            className={`mx-auto flex size-20 items-center justify-center rounded-full ${
+              phase === "settled" ? "bg-success-soft" : "bg-muted"
+            }`}
+          >
+            {phase === "settled" ? (
+              <Check className="size-10 text-success" />
+            ) : (
+              <Loader2 className="size-9 animate-spin text-muted-foreground" />
+            )}
           </div>
-          <h1 className="mt-6 font-display text-3xl font-bold">{ils(q.shekels)} converted</h1>
+          <h1 className="mt-6 font-display text-3xl font-bold">
+            {phase === "settled" ? `${ils(q.shekels)} converted` : "Waiting for your payment"}
+          </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            {money(cur.code, q.amount)} exchanged at ₪{q.rate.toFixed(3)}. It's in your Shekk balance now.
+            {phase === "settled"
+              ? `${money(cur.code, q.amount)} exchanged at ₪${q.rate.toFixed(3)}. It's in your Shekk balance now.`
+              : `${money(cur.code, q.amount)} is with the payment partner. Your shekels land as soon as they confirm it settled.`}
           </p>
           <div className="mt-8 space-y-3 text-left">
-            <PrimaryButton onClick={() => setDone(false)}>Convert again</PrimaryButton>
+            <PrimaryButton onClick={resetFunding}>Convert again</PrimaryButton>
             <Link to="/wallet" className="tap block rounded-2xl bg-muted py-4 text-center text-sm font-semibold">
               Back to wallet
             </Link>
           </div>
         </section>
+
       ) : (
         <>
           <section className="px-4 pt-5">
@@ -131,23 +148,34 @@ function ExchangeScreen() {
             ) : null}
 
             <p className="mt-3 px-1 text-[11px] text-muted-foreground">
-              Rates refresh every 30 seconds. Conversion is handled by Shekk's FX partner — simulated here.
+              Rates refresh every 30 seconds. Conversion and settlement are handled by Shekk's regulated payment
+              partner.
             </p>
+
+            {blocked ? (
+              <div className="mt-3 flex items-start gap-2 rounded-2xl border border-notice-border bg-notice-soft px-4 py-3 text-xs leading-relaxed text-notice-foreground">
+                <Lock className="mt-0.5 size-4 shrink-0" />
+                <span>{blocked}</span>
+              </div>
+            ) : null}
+            {error ? (
+              <p className="mt-3 rounded-2xl bg-destructive/10 px-3 py-2 text-xs font-medium text-destructive">
+                {error}
+              </p>
+            ) : null}
           </section>
 
           <section className="px-4 pb-10 pt-6">
             <PrimaryButton
-              disabled={value <= 0}
-              onClick={() => {
-                addMoney(q.shekels, q.amount, `${money(cur.code, q.amount)} exchanged`);
-                setDone(true);
-              }}
+              disabled={value <= 0 || Boolean(blocked) || phase === "starting"}
+              onClick={() => void fund(from, q.amount)}
             >
-              Convert {money(cur.code, q.amount)}
+              {phase === "starting" ? "Starting payment…" : `Convert ${money(cur.code, q.amount)}`}
             </PrimaryButton>
           </section>
         </>
       )}
+
     </AppShell>
   );
 }
