@@ -38,6 +38,71 @@ const PROMISES = [
   "Split Shabbaton, tiyul and taxi bills in a tap",
 ];
 
+const OAUTH_MESSAGE_TYPE = "authorization_response";
+const TRUSTED_OAUTH_ORIGINS = new Set([
+  "https://oauth.lovable.app",
+  "https://lovable.dev",
+  "https://shekk.app",
+  "https://www.shekk.app",
+  "https://shekel-connect.lovable.app",
+]);
+
+type OAuthMessage = {
+  type?: unknown;
+  response?: {
+    access_token?: unknown;
+    refresh_token?: unknown;
+    error?: unknown;
+    error_description?: unknown;
+  };
+};
+
+function afterAuthPath(next: string) {
+  return next === "/" ? "/verify" : next;
+}
+
+function isTrustedOAuthOrigin(origin: string) {
+  return origin === window.location.origin || TRUSTED_OAUTH_ORIGINS.has(origin);
+}
+
+function waitForOAuthMessage() {
+  let cleanup = () => {};
+  const promise = new Promise<void>((resolve, reject) => {
+    const handler = (event: MessageEvent<OAuthMessage>) => {
+      if (!isTrustedOAuthOrigin(event.origin)) return;
+      if (!event.data || event.data.type !== OAUTH_MESSAGE_TYPE) return;
+
+      const response = event.data.response;
+      if (!response) return;
+
+      if (typeof response.error === "string") {
+        cleanup();
+        reject(new Error(typeof response.error_description === "string" ? response.error_description : response.error));
+        return;
+      }
+
+      if (typeof response.access_token !== "string" || typeof response.refresh_token !== "string") {
+        cleanup();
+        reject(new Error("Google sign-in finished, but no session was returned."));
+        return;
+      }
+
+      cleanup();
+      void supabase.auth
+        .setSession({ access_token: response.access_token, refresh_token: response.refresh_token })
+        .then(({ error }) => {
+          if (error) reject(error);
+          else resolve();
+        });
+    };
+
+    cleanup = () => window.removeEventListener("message", handler);
+    window.addEventListener("message", handler);
+  });
+
+  return { promise, cleanup };
+}
+
 /**
  * Hand-off screen for Google/Apple sign-in.
  *
@@ -56,17 +121,30 @@ function OAuthHandoff({
 }) {
   const [stuck, setStuck] = useState(false);
 
+  async function checkSession() {
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (sessionData.session) {
+      window.location.href = afterAuthPath(next);
+      return true;
+    }
+
+    const { data: userData } = await supabase.auth.getUser();
+    if (userData.user) {
+      window.location.href = afterAuthPath(next);
+      return true;
+    }
+
+    return false;
+  }
+
   useEffect(() => {
     let done = false;
-    const go = () => {
-      if (done) return;
-      done = true;
-      window.location.href = next === "/" ? "/verify" : next;
-    };
     const check = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) go();
+      if (done) return;
+      const found = await checkSession();
+      if (found) done = true;
     };
+    void check();
     const poll = window.setInterval(check, 1000);
     window.addEventListener("focus", check);
     const timer = window.setTimeout(() => setStuck(true), 6000);
@@ -87,8 +165,17 @@ function OAuthHandoff({
           </p>
           <button
             type="button"
-            onClick={onCancel}
+            onClick={() => void checkSession().then((found) => {
+              if (!found) onCancel();
+            })}
             className="rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold shadow-card"
+          >
+            I finished — continue
+          </button>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="text-xs font-semibold text-muted-foreground underline"
           >
             Back to sign in
           </button>
@@ -117,11 +204,17 @@ function Auth() {
     setBusy(true);
     setHandoff(label);
     setError(null);
+    const messageFallback = waitForOAuthMessage();
+    let finished = false;
     try {
-      const result = await lovable.auth.signInWithOAuth(provider, {
-        redirect_uri: window.location.origin,
-        ...(provider === "google" ? { extraParams: { prompt: "select_account" } } : {}),
-      });
+      const result = await Promise.race([
+        lovable.auth.signInWithOAuth(provider, {
+          redirect_uri: window.location.origin,
+          ...(provider === "google" ? { extraParams: { prompt: "select_account" } } : {}),
+        }),
+        messageFallback.promise.then(() => ({ error: null, redirected: false as const })),
+      ]);
+      finished = true;
       if (result.error) {
         setBusy(false);
         setHandoff(null);
@@ -129,14 +222,17 @@ function Auth() {
       }
       if (result.redirected) return;
     } catch (e) {
+      finished = true;
       setBusy(false);
       setHandoff(null);
       return setError(
         e instanceof Error ? e.message : `${label} sign-in failed. Try email instead.`,
       );
+    } finally {
+      if (finished) messageFallback.cleanup();
     }
     setBusy(false);
-    window.location.href = next === "/" ? "/verify" : next;
+    window.location.href = afterAuthPath(next);
   }
 
 
