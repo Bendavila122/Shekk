@@ -102,7 +102,7 @@ function Auth() {
   }
 
   return (
-    <FocusScreen>
+    <FocusScreen nav={false}>
       <div className="flex min-h-screen flex-col justify-center gap-6 px-6 py-14 sm:min-h-[860px]">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">Shekk</p>
