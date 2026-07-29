@@ -6,6 +6,20 @@ import type { TierId } from "./membership";
 
 export type VerificationStatus = "verified" | "expiring" | "needs-update";
 
+export type Friend = {
+  id: string;
+  name: string;
+  program?: string;
+};
+
+export type CohortMessage = {
+  id: string;
+  who: string;
+  text: string;
+  when: string;
+  me: boolean;
+};
+
 export type SplitRequest = {
   id: string;
   from: string;
@@ -101,6 +115,8 @@ type State = {
   reverifyDueISO: string | null;
   reverifyDone: boolean;
   splits: SplitRequest[];
+  friends: Friend[];
+  cohortMessages: CohortMessage[];
   feedOptIn: boolean;
   settings: Settings;
   profile: Profile;
@@ -144,6 +160,8 @@ const initialState: State = {
   reverifyDueISO: null,
   reverifyDone: true,
   splits: [],
+  friends: [],
+  cohortMessages: [],
   feedOptIn: false,
   settings: defaultSettings,
   profile: { homeCountry: "", arrivalDateISO: null, city: "" },
@@ -180,6 +198,9 @@ type Ctx = {
   completeReverify: () => void;
   payFriend: (id: string) => void;
   addSplit: (s: SplitRequest) => void;
+  addFriend: (name: string, program?: string) => void;
+  removeFriend: (id: string) => void;
+  sendCohortMessage: (text: string) => void;
   setFeedOptIn: (v: boolean) => void;
   setSetting: <K extends keyof Settings>(key: K, value: Settings[K]) => void;
   resetSettings: () => void;
@@ -371,6 +392,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
         };
       }),
     addSplit: (s2) => setState((s) => ({ ...s, splits: [s2, ...s.splits] })),
+    addFriend: (name, program) =>
+      setState((s) =>
+        s.friends.some((f) => f.name.toLowerCase() === name.trim().toLowerCase())
+          ? s
+          : { ...s, friends: [...s.friends, { id: `fr${Date.now()}`, name: name.trim(), program }] },
+      ),
+    removeFriend: (id) => setState((s) => ({ ...s, friends: s.friends.filter((f) => f.id !== id) })),
+    sendCohortMessage: (text) =>
+      setState((s) => ({
+        ...s,
+        cohortMessages: [
+          ...s.cohortMessages,
+          {
+            id: `cm${Date.now()}`,
+            who: s.name || "You",
+            text,
+            when: new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
+            me: true,
+          },
+        ],
+      })),
     setFeedOptIn: (v) => setState((s) => ({ ...s, feedOptIn: v })),
     setSetting: (key, value) => setState((s) => ({ ...s, settings: { ...s.settings, [key]: value } })),
     resetSettings: () => setState((s) => ({ ...s, settings: defaultSettings })),
