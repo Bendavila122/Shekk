@@ -104,7 +104,7 @@ function restore() {
     const raw = localStorage.getItem(KEY);
     if (!raw) return;
     const saved = JSON.parse(raw) as { status: LocationStatus; place: Place | null };
-    if (saved?.place) current = { status: saved.status ?? "manual", place: saved.place, loading: false };
+    if (saved?.place) current = { status: saved.status ?? "manual", place: saved.place, loading: false, error: null };
   } catch {
     /* ignore */
   }
