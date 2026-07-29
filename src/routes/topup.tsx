@@ -2,11 +2,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { Apple, Building2, Check, Loader2, Lock, ShieldCheck } from "lucide-react";
 import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
+import { AirwallexDropIn } from "@/components/AirwallexDropIn";
 import { ils } from "@/lib/mock";
 import { CURRENCIES, currency, money } from "@/lib/currencies";
 import { quoteFx } from "@/lib/banking";
 import { useApp } from "@/lib/store";
 import { useFunding } from "@/lib/useFunding";
+
 
 export const Route = createFileRoute("/topup")({
   head: () => ({
