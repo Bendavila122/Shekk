@@ -95,7 +95,7 @@ function HomeScreen() {
       <div className="px-5 pb-2 pt-6">
         <div className="flex items-center gap-2">
           <img
-            src="/favicon.png"
+            src="/logo.png"
             alt="Shekk logo"
             width={30}
             height={30}

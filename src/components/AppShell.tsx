@@ -227,7 +227,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:gap-1 lg:border-r lg:border-border lg:bg-card lg:px-4 lg:py-8">
         <div className="mb-4 flex items-center gap-2 px-3">
-          <img src="/favicon.png" alt="Shekk logo" width={32} height={32} className="size-8 rounded-lg border border-border bg-white" />
+          <img src="/logo.png" alt="Shekk logo" width={32} height={32} className="size-8 rounded-lg border border-border bg-white" />
           <p className="font-display text-xl font-bold">Shekk</p>
         </div>
 
