@@ -48,6 +48,7 @@ import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
 import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
 import { Route as AdminMoneyRouteImport } from './routes/admin/money'
 import { Route as AdminMembershipsRouteImport } from './routes/admin/memberships'
+import { Route as AdminControlsRouteImport } from './routes/admin/controls'
 import { Route as AdminAppsRouteImport } from './routes/admin/apps'
 import { Route as AdminAccountsRouteImport } from './routes/admin/accounts'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
@@ -252,6 +253,11 @@ const AdminMembershipsRoute = AdminMembershipsRouteImport.update({
   path: '/memberships',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminControlsRoute = AdminControlsRouteImport.update({
+  id: '/controls',
+  path: '/controls',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminAppsRoute = AdminAppsRouteImport.update({
   id: '/apps',
   path: '/apps',
@@ -319,6 +325,7 @@ export interface FileRoutesByFullPath {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/apps': typeof AdminAppsRoute
+  '/admin/controls': typeof AdminControlsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -367,6 +374,7 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/apps': typeof AdminAppsRoute
+  '/admin/controls': typeof AdminControlsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -417,6 +425,7 @@ export interface FileRoutesById {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/apps': typeof AdminAppsRoute
+  '/admin/controls': typeof AdminControlsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -468,6 +477,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin/accounts'
     | '/admin/apps'
+    | '/admin/controls'
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
@@ -516,6 +526,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin/accounts'
     | '/admin/apps'
+    | '/admin/controls'
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
@@ -565,6 +576,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin/accounts'
     | '/admin/apps'
+    | '/admin/controls'
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
@@ -911,6 +923,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMembershipsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/controls': {
+      id: '/admin/controls'
+      path: '/controls'
+      fullPath: '/admin/controls'
+      preLoaderRoute: typeof AdminControlsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/apps': {
       id: '/admin/apps'
       path: '/apps'
@@ -973,6 +992,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteRouteChildren {
   AdminAccountsRoute: typeof AdminAccountsRoute
   AdminAppsRoute: typeof AdminAppsRoute
+  AdminControlsRoute: typeof AdminControlsRoute
   AdminMembershipsRoute: typeof AdminMembershipsRoute
   AdminMoneyRoute: typeof AdminMoneyRoute
   AdminPromotionsRoute: typeof AdminPromotionsRoute
@@ -982,6 +1002,7 @@ interface AdminRouteRouteChildren {
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAccountsRoute: AdminAccountsRoute,
   AdminAppsRoute: AdminAppsRoute,
+  AdminControlsRoute: AdminControlsRoute,
   AdminMembershipsRoute: AdminMembershipsRoute,
   AdminMoneyRoute: AdminMoneyRoute,
   AdminPromotionsRoute: AdminPromotionsRoute,
