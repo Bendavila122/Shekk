@@ -75,7 +75,7 @@ function HomeScreen() {
   const promos = usePromotions("home");
 
   const recents = useRecentServices();
-  const [showCode, setShowCode] = useState(false);
+  
 
 
   if (!ready) {
