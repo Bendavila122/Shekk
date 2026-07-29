@@ -38,7 +38,68 @@ const PROMISES = [
   "Split Shabbaton, tiyul and taxi bills in a tap",
 ];
 
+/**
+ * Hand-off screen for Google/Apple sign-in.
+ *
+ * The popup can be closed or blocked without the SDK ever resolving, which used
+ * to leave people stuck on "Continuing with Google…" forever. So we poll for a
+ * session (the popup may have signed them in already) and always offer a way out.
+ */
+function OAuthHandoff({
+  label,
+  next,
+  onCancel,
+}: {
+  label: string;
+  next: string;
+  onCancel: () => void;
+}) {
+  const [stuck, setStuck] = useState(false);
+
+  useEffect(() => {
+    let done = false;
+    const go = () => {
+      if (done) return;
+      done = true;
+      window.location.href = next === "/" ? "/verify" : next;
+    };
+    const check = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) go();
+    };
+    const poll = window.setInterval(check, 1000);
+    window.addEventListener("focus", check);
+    const timer = window.setTimeout(() => setStuck(true), 6000);
+    return () => {
+      window.clearInterval(poll);
+      window.clearTimeout(timer);
+      window.removeEventListener("focus", check);
+    };
+  }, [next]);
+
+  return (
+    <>
+      <Splash message={`Continuing with ${label}…`} />
+      {stuck && (
+        <div className="fixed inset-x-0 bottom-10 z-[101] flex flex-col items-center gap-2 px-6 text-center">
+          <p className="text-sm text-muted-foreground">
+            Taking a while? The {label} window may have been blocked or closed.
+          </p>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold shadow-card"
+          >
+            Back to sign in
+          </button>
+        </div>
+      )}
+    </>
+  );
+}
+
 function Auth() {
+
   const { next } = Route.useSearch();
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signup");
