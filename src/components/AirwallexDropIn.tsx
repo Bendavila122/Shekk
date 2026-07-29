@@ -24,7 +24,7 @@ export type DropInProps = {
   onError: (message: string) => void;
 };
 
-/** Read a themed CSS variable as a hex-ish colour the Airwallex iframe accepts. */
+
 
 
 export function AirwallexDropIn({
