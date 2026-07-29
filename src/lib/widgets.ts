@@ -1,6 +1,6 @@
 /** "For You" widget catalogue — content + relevance scoring. */
 import type { ReactNode } from "react";
-import { EVENTS, BUS_LINES, RESTAURANTS, SHOPS, SHULS, ils } from "./mock";
+import { SHULS, ils } from "./mock";
 import { pick, rand, type UserContext } from "./personalise";
 
 export type WidgetCta = { label: string; to: string };
@@ -170,75 +170,6 @@ export const WIDGETS: WidgetDef[] = [
     },
   },
   {
-    id: "promo-event",
-    title: "Featured Event",
-    emoji: "🎟",
-    gradient: "grad-events",
-    relevance: (c) => clamp(62 + (c.timeOfDay === "evening" ? 18 : 8) + (c.dayOfWeek === 0 || c.dayOfWeek === 1 ? 10 : 0)),
-    build: (c) => {
-      const e = EVENTS[0];
-      const promo = Math.round(e.price * 0.7);
-      return {
-        headline: `${e.name} — ₪${promo}`,
-        sub: `30% off with Shekk · was ${ils(e.price)}`,
-        rows: [
-          { icon: e.emoji, label: e.name, value: `₪${promo}` },
-          { icon: "🏫", label: e.host, value: e.when },
-          { icon: "🎫", label: "Spots left", value: `${e.spots}` },
-          { icon: "🏷", label: "Code SHEKK30 applied at checkout", value: "Ends Thu" },
-          { icon: "📍", label: `Buses leave ${c.city} 13:30`, value: "Included" },
-        ],
-        ctas: [
-          { label: "Get ticket", to: "/explore/events" },
-          { label: "All events", to: "/explore/events" },
-        ],
-      };
-    },
-  },
-  {
-    id: "deals",
-    title: "Food Deal",
-    emoji: "🍕",
-    gradient: "grad-deals",
-    relevance: (c) => clamp(50 + (c.timeOfDay === "afternoon" ? 32 : c.timeOfDay === "evening" ? 30 : 8)),
-    build: (c) => {
-      const r = RESTAURANTS[0];
-      const item = r.items[0];
-      const deal = Math.round(item.price * 0.5);
-      return {
-        headline: `2 for 1 at ${r.name}`,
-        sub: `${item.name} ₪${deal} each tonight · ${r.eta}`,
-        rows: [
-          { icon: r.emoji, label: `${item.name} — was ₪${item.price}`, value: `₪${deal}` },
-          { icon: "🛵", label: "Free delivery over ₪60", value: "Until 23:00" },
-          { icon: "🥙", label: `${RESTAURANTS[1].name} — 20% student discount`, value: "Today" },
-          { icon: "🏷", label: `Because you love ${c.signals.favouriteMerchant}`, value: "Picked" },
-        ],
-        ctas: [
-          { label: "Order now", to: "/explore/food" },
-          { label: "More deals", to: "/explore/shops" },
-        ],
-      };
-    },
-  },
-  {
-    id: "nearby",
-    title: "Happening Nearby",
-    emoji: "🎉",
-    gradient: "grad-events",
-    relevance: (c) => clamp(32 + (c.timeOfDay === "evening" ? 44 : c.timeOfDay === "late" ? 30 : 8) + (c.dayOfWeek === 4 ? 12 : 0)),
-    build: (c) => ({
-      headline: `Tonight in ${c.city}`,
-      sub: "Picked for your cohort",
-      rows: (nearbyByCity[c.city] ?? nearbyByCity.Israel).map((label, i) => ({
-        icon: ["🎊", "🍲", "🎸", "🧑‍🎓"][i % 4],
-        label,
-        value: undefined,
-      })),
-      ctas: [{ label: "View Events", to: "/explore/events" }],
-    }),
-  },
-  {
     id: "social",
     title: "Requests",
     emoji: "👥",
@@ -257,37 +188,6 @@ export const WIDGETS: WidgetDef[] = [
     }),
   },
 
-  {
-    id: "discover",
-    title: "Discover",
-    emoji: "📍",
-    gradient: "grad-discover",
-    relevance: (c) => clamp(26 + (c.timeOfDay === "afternoon" ? 22 : 10)),
-    build: (c) => ({
-      headline: `Around ${c.city}`,
-      sub: "Places students near you are going",
-      rows: discoverByCity[c.city] ?? discoverByCity.Israel,
-      ctas: [{ label: "Explore", to: "/explore" }],
-    }),
-  },
-  {
-    id: "news",
-    title: "Israel Today",
-    emoji: "📰",
-    gradient: "grad-news",
-    gradientFor: (c) => (c.weather.rain > 60 ? "grad-alert" : "grad-news"),
-    relevance: (c) => clamp(24 + (c.timeOfDay === "morning" ? 22 : 8)),
-    build: (c) => {
-      const start = Math.floor(rand(`${c.signals.seed}|news`) * HEADLINES.length);
-      const rows = Array.from({ length: 4 }, (_, i) => HEADLINES[(start + i) % HEADLINES.length]);
-      return {
-        headline: "What's going on",
-        sub: `Practical updates for ${c.city}`,
-        rows,
-        ctas: [{ label: "Read More", to: "/help" }],
-      };
-    },
-  },
 ];
 
 export const WIDGET_BY_ID = Object.fromEntries(WIDGETS.map((w) => [w.id, w])) as Record<string, WidgetDef>;
