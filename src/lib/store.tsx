@@ -111,7 +111,27 @@ type State = {
   redeemed: string[];
 };
 
-const STORAGE_KEY = "shekk.state.v3";
+const STORAGE_KEY = "shekk.state.v4";
+
+/** Older builds shipped seeded demo profiles; drop them once on upgrade. */
+const LEGACY_KEYS = [
+  "shekk.state.v1",
+  "shekk.state.v2",
+  "shekk.state.v3",
+  "shekk.admin.v1",
+  "shekk.recents.v1",
+];
+
+function purgeLegacy() {
+  if (typeof window === "undefined") return;
+  for (const key of LEGACY_KEYS) {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      /* ignore */
+    }
+  }
+}
 
 const initialState: State = {
   onboarded: false,
@@ -179,6 +199,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
+      purgeLegacy();
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const saved = JSON.parse(raw) as Partial<State>;

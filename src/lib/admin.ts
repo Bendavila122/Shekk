@@ -118,7 +118,7 @@ export const defaultAdminConfig: AdminConfig = {
   maintenanceNote: "",
 };
 
-const CONFIG_KEY = "shekk.admin.v1";
+const CONFIG_KEY = "shekk.admin.v2";
 const EVENT = "shekk-admin-config";
 
 function readConfig(): AdminConfig {

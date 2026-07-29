@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ALL_SERVICES, type Service } from "./services";
 
-const KEY = "shekk.recents.v1";
+const KEY = "shekk.recents.v2";
 const MAX = 5;
 
 /** Sensible starting point before the student has opened anything. */
