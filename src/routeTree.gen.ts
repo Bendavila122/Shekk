@@ -22,6 +22,7 @@ import { Route as MeRouteImport } from './routes/me'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as ExchangeRouteImport } from './routes/exchange'
+import { Route as DevDropinRouteImport } from './routes/dev-dropin'
 import { Route as CardRouteImport } from './routes/card'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ActivityRouteImport } from './routes/activity'
@@ -122,6 +123,11 @@ const HelpRoute = HelpRouteImport.update({
 const ExchangeRoute = ExchangeRouteImport.update({
   id: '/exchange',
   path: '/exchange',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevDropinRoute = DevDropinRouteImport.update({
+  id: '/dev-dropin',
+  path: '/dev-dropin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CardRoute = CardRouteImport.update({
@@ -315,6 +321,7 @@ export interface FileRoutesByFullPath {
   '/activity': typeof ActivityRoute
   '/auth': typeof AuthRoute
   '/card': typeof CardRoute
+  '/dev-dropin': typeof DevDropinRoute
   '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
   '/mcp': typeof McpRoute
@@ -365,6 +372,7 @@ export interface FileRoutesByTo {
   '/activity': typeof ActivityRoute
   '/auth': typeof AuthRoute
   '/card': typeof CardRoute
+  '/dev-dropin': typeof DevDropinRoute
   '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
   '/mcp': typeof McpRoute
@@ -417,6 +425,7 @@ export interface FileRoutesById {
   '/activity': typeof ActivityRoute
   '/auth': typeof AuthRoute
   '/card': typeof CardRoute
+  '/dev-dropin': typeof DevDropinRoute
   '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
   '/mcp': typeof McpRoute
@@ -470,6 +479,7 @@ export interface FileRouteTypes {
     | '/activity'
     | '/auth'
     | '/card'
+    | '/dev-dropin'
     | '/exchange'
     | '/help'
     | '/mcp'
@@ -520,6 +530,7 @@ export interface FileRouteTypes {
     | '/activity'
     | '/auth'
     | '/card'
+    | '/dev-dropin'
     | '/exchange'
     | '/help'
     | '/mcp'
@@ -571,6 +582,7 @@ export interface FileRouteTypes {
     | '/activity'
     | '/auth'
     | '/card'
+    | '/dev-dropin'
     | '/exchange'
     | '/help'
     | '/mcp'
@@ -623,6 +635,7 @@ export interface RootRouteChildren {
   ActivityRoute: typeof ActivityRoute
   AuthRoute: typeof AuthRoute
   CardRoute: typeof CardRoute
+  DevDropinRoute: typeof DevDropinRoute
   ExchangeRoute: typeof ExchangeRoute
   HelpRoute: typeof HelpRoute
   McpRoute: typeof McpRoute
@@ -753,6 +766,13 @@ declare module '@tanstack/react-router' {
       path: '/exchange'
       fullPath: '/exchange'
       preLoaderRoute: typeof ExchangeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dev-dropin': {
+      id: '/dev-dropin'
+      path: '/dev-dropin'
+      fullPath: '/dev-dropin'
+      preLoaderRoute: typeof DevDropinRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/card': {
@@ -1040,6 +1060,7 @@ const rootRouteChildren: RootRouteChildren = {
   ActivityRoute: ActivityRoute,
   AuthRoute: AuthRoute,
   CardRoute: CardRoute,
+  DevDropinRoute: DevDropinRoute,
   ExchangeRoute: ExchangeRoute,
   HelpRoute: HelpRoute,
   McpRoute: McpRoute,
