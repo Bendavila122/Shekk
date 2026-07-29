@@ -112,8 +112,8 @@ function WalletScreen() {
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold">Shekk Card</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="truncate text-sm font-semibold">Shekk Card</p>
+              <p className="mt-0.5 line-clamp-2 text-[11.5px] leading-snug text-muted-foreground">
                 {state.card.issued
                   ? state.card.frozen
                     ? "Frozen · tap to unfreeze"
@@ -130,18 +130,19 @@ function WalletScreen() {
 
       {/* Spend summary */}
       <section className="grid grid-cols-2 gap-3 px-4 pt-3">
-        <Card className="p-4">
-          <p className="text-[11px] uppercase tracking-widest text-muted-foreground">Spent this month</p>
-          <p className="font-display text-2xl font-bold">{ils(thisMonth)}</p>
+        <Card className="min-w-0 p-4">
+          <p className="truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Spent this month</p>
+          <p className="mt-1 truncate font-display text-xl font-bold leading-none">{ils(thisMonth)}</p>
         </Card>
-        <Card className="p-4">
-          <p className="text-[11px] uppercase tracking-widest text-muted-foreground">Membership</p>
-          <p className="font-display text-2xl font-bold">{isPremium ? "Premium" : "Free"}</p>
-          <Link to="/membership" className="text-[11px] font-semibold text-primary">
+        <Card className="min-w-0 p-4">
+          <p className="truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Membership</p>
+          <p className="mt-1 truncate font-display text-xl font-bold leading-none">{isPremium ? "Premium" : "Free"}</p>
+          <Link to="/membership" className="mt-1.5 inline-block text-[11px] font-semibold text-primary">
             {isPremium ? "See benefits" : "Upgrade"}
           </Link>
         </Card>
       </section>
+
 
       {/* Recent activity */}
       <section className="px-4 pb-8 pt-5">
