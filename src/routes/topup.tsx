@@ -234,20 +234,37 @@ function AddMoney() {
                 Handled by Shekk's payment partner. Your balance updates when they confirm the payment.
               </p>
             )}
+
+            {phase === "collecting" && intent ? (
+              <div className="mt-4 max-h-[55vh] overflow-y-auto">
+                <AirwallexDropIn
+                  intentId={intent.intentId}
+                  clientSecret={intent.clientSecret}
+                  currency={intent.currency}
+                  environment={partner?.environment ?? "sandbox"}
+                  onSubmitted={() => {
+                    markSubmitted();
+                    setSheet(null);
+                  }}
+                  onError={failFunding}
+                />
+              </div>
+            ) : null}
+
             <div className="mt-5 space-y-2">
-              <PrimaryButton
-                disabled={phase === "starting"}
-                onClick={async () => {
-                  const res = await fund(source, q.amount);
-                  if (res) setSheet(null);
-                }}
-              >
-                {phase === "starting"
-                  ? "Starting payment…"
-                  : sheet === "apple"
-                    ? "Confirm with Face ID"
-                    : "Confirm transfer"}
-              </PrimaryButton>
+              {phase === "collecting" ? null : (
+                <PrimaryButton
+                  disabled={phase === "starting"}
+                  onClick={() => void fund(source, q.amount)}
+                >
+                  {phase === "starting"
+                    ? "Starting payment…"
+                    : sheet === "apple"
+                      ? "Continue to payment"
+                      : "Continue to payment"}
+                </PrimaryButton>
+              )}
+
               <button
                 onClick={() => {
                   resetFunding();
