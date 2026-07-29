@@ -153,7 +153,9 @@ export async function fetchJewish(lat: number, lon: number): Promise<LiveJewish>
   const [cal, zman, conv] = await Promise.all([
     getJson<{ items: HebcalItem[] }>(calUrl),
     getJson<{ times: Record<string, string> }>(zmanimUrl).catch(() => ({ times: {} as Record<string, string> })),
-    getJson<{ hebrew?: string; hy?: number; hm?: string; hd?: number; events?: string[] }>(convUrl).catch(() => ({})),
+    getJson<{ hebrew?: string; hy?: number; hm?: string; hd?: number; events?: string[] }>(convUrl).catch(
+      () => ({}) as { hebrew?: string; hy?: number; hm?: string; hd?: number; events?: string[] },
+    ),
   ]);
 
   const items = cal.items ?? [];
