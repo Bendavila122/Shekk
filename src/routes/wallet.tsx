@@ -59,37 +59,37 @@ function WalletScreen() {
     <AppShell>
       {/* Balance header */}
       <section className="px-4 pt-6">
-        <div className="grad-balance relative overflow-hidden rounded-[1.75rem] px-5 pb-5 pt-6 text-ink-foreground shadow-lift">
+        <div className="grad-balance relative overflow-hidden rounded-[1.75rem] px-5 pb-4 pt-5 text-ink-foreground shadow-lift">
           <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
           <div className="relative">
-            <div className="flex items-center justify-between">
-              <p className="text-[11px] uppercase tracking-widest opacity-70">Shekk balance</p>
+            <div className="flex items-center justify-between gap-3">
+              <p className="truncate text-[10px] uppercase tracking-[0.16em] opacity-70">Shekk balance</p>
               <button
                 onClick={() => setHidden((v) => !v)}
                 aria-label={hidden ? "Show balance" : "Hide balance"}
-                className="tap-flat rounded-full bg-ink-foreground/10 p-1.5"
+                className="tap-flat shrink-0 rounded-full bg-ink-foreground/10 p-1.5"
               >
                 {hidden ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
               </button>
             </div>
-            <p className="mt-1 font-display text-5xl font-bold leading-none tracking-tight">
+            <p className="mt-1.5 truncate font-display text-[2.6rem] font-bold leading-none tracking-tight">
               {hidden ? "₪ ••••" : ils(state.balance)}
             </p>
-            <p className="mt-2 text-xs opacity-70">
+            <p className="mt-2 truncate text-[11px] opacity-70">
               {held > 0
                 ? `${hidden ? "••••" : ils(available)} available · ${hidden ? "••••" : ils(held)} reserved`
                 : `Available now · ≈ ${hidden ? "••••" : refIn(state.settings.payCurrency, state.balance)}`}
             </p>
 
-            <div className="mt-5 grid grid-cols-5 gap-1.5">
+            <div className="mt-4 grid grid-cols-5 gap-1.5">
               {ACTIONS.map(({ to, label, Icon }) => (
                 <Link
                   key={label}
                   to={to}
-                  className="tap-icon flex flex-col items-center gap-1.5 rounded-2xl bg-ink-foreground/10 py-2.5"
+                  className="tap-icon flex min-w-0 flex-col items-center gap-1.5 rounded-2xl bg-ink-foreground/10 px-1 py-2.5"
                 >
-                  <Icon className="size-[18px]" strokeWidth={2.4} />
-                  <span className="text-[9.5px] font-semibold leading-none">{label}</span>
+                  <Icon className="size-[17px] shrink-0" strokeWidth={2.4} />
+                  <span className="w-full truncate text-center text-[9px] font-semibold leading-none">{label}</span>
                 </Link>
               ))}
             </div>
@@ -98,19 +98,19 @@ function WalletScreen() {
       </section>
 
       {/* Card strip */}
-      <section className="px-4 pt-4">
+      <section className="px-4 pt-3">
         <Link to="/card" className="tap block">
-          <Card className="flex items-center gap-4 p-4">
-            <div className="w-24 shrink-0">
+          <Card className="flex items-center gap-3.5 p-3.5">
+            <div className="w-[84px] shrink-0">
               <ShekkCardFace
                 name={firstName}
                 last4={state.card.last4}
                 expiry={state.card.expiry}
-                balance={state.balance}
                 frozen={state.card.frozen}
-                className="!rounded-xl !p-2 !shadow-card"
+                compact
               />
             </div>
+
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold">Shekk Card</p>
               <p className="text-xs text-muted-foreground">
