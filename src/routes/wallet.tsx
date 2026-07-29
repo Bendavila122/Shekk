@@ -27,11 +27,12 @@ export const Route = createFileRoute("/wallet")({
 });
 
 const ACTIONS = [
-  { to: "/topup", label: "Add money", Icon: Plus },
+  { to: "/topup", label: "Add", Icon: Plus },
   { to: "/exchange", label: "Exchange", Icon: ArrowLeftRight },
   { to: "/social", label: "Send", Icon: ArrowUpRight },
   { to: "/social", label: "Request", Icon: ArrowDownLeft },
   { to: "/card", label: "Card", Icon: CreditCard },
+
 ] as const;
 
 function WalletScreen() {
