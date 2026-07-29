@@ -123,8 +123,21 @@ function Auth() {
   }
 
   if (handoff) {
-    return <Splash message={`Continuing with ${handoff}…`} />;
+    return (
+      <OAuthHandoff
+        label={handoff}
+        next={next}
+        onCancel={() => {
+          setHandoff(null);
+          setBusy(false);
+          setError(
+            `${handoff} sign-in didn't finish. Try again, or use your email and password below.`,
+          );
+        }}
+      />
+    );
   }
+
 
   if (sentTo) {
     return (
