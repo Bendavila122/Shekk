@@ -121,7 +121,8 @@ function MembershipScreen() {
         <section className="px-4 pt-4">
           <Card className="p-3">
             <MembershipCheckout
-              priceId={SHEKK_PLUS_PRICE_ID}
+              key={plan.priceId}
+              priceId={plan.priceId}
               returnUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/membership?session_id={CHECKOUT_SESSION_ID}`}
             />
             <button
