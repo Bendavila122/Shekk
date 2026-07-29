@@ -28,8 +28,8 @@ export const TIERS: Tier[] = [
   },
   {
     id: "premium",
-    name: "Shekk Premium",
-    price: "£14.99",
+    name: "Shekk+",
+    price: "£9.99",
     cadence: "per month",
     tagline: "The card, the benefits and someone to call.",
     perks: [
