@@ -12,7 +12,7 @@ import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 const SITE_NAME = "Shekk"
 const SENDER_DOMAIN = "notify.shekk.app"
 const ROOT_DOMAIN = "shekk.app"
-const FROM_DOMAIN = "notify.shekk.app"
+const FROM_DOMAIN = "shekk.app"
 const SITE_URL = `https://${ROOT_DOMAIN}`
 
 // The SDK handler owns verification, dispatch, and retry semantics; this file

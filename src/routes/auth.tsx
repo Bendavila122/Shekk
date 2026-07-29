@@ -4,6 +4,7 @@ import { Check, Loader2, MailCheck, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
+import { Splash } from "@/components/Splash";
 
 function safeNext(value: unknown): string {
   if (typeof value !== "string") return "/";
@@ -48,10 +49,12 @@ function Auth() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [sentTo, setSentTo] = useState<string | null>(null);
+  const [handoff, setHandoff] = useState<string | null>(null);
 
   async function social(provider: "google" | "apple") {
     const label = provider === "google" ? "Google" : "Apple";
     setBusy(true);
+    setHandoff(label);
     setError(null);
     const result = await lovable.auth.signInWithOAuth(provider, {
       redirect_uri: window.location.origin,
@@ -59,6 +62,7 @@ function Auth() {
     });
     if (result.error) {
       setBusy(false);
+      setHandoff(null);
       return setError(result.error.message ?? `${label} sign-in failed. Try email instead.`);
     }
     if (result.redirected) return;
@@ -107,6 +111,10 @@ function Auth() {
     setBusy(false);
     if (error) return setError(error.message);
     window.location.href = next === "/" ? "/verify" : next;
+  }
+
+  if (handoff) {
+    return <Splash message={`Continuing with ${handoff}…`} />;
   }
 
   if (sentTo) {

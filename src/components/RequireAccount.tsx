@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useApp } from "@/lib/store";
+import { Splash } from "@/components/Splash";
 
 /** Routes a signed-out visitor is allowed to reach. */
 const OPEN_PREFIXES = [
@@ -49,16 +50,7 @@ export function RequireAccount({ children }: { children: ReactNode }) {
 
   // Hold the door shut while we check, so no signed-out flash of the wallet.
   if (!open && (!authChecked || !signedIn)) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-6">
-        <div className="text-center">
-          <p className="text-sm font-semibold tracking-[0.2em] text-muted-foreground">SHEKK</p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {authChecked ? "Taking you to sign in…" : "Opening your account…"}
-          </p>
-        </div>
-      </div>
-    );
+    return <Splash message={authChecked ? "Taking you to sign in…" : "Opening your wallet…"} />;
   }
 
   return <>{children}</>;
