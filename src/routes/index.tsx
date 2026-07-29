@@ -17,7 +17,7 @@ import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { serviceLinkProps, type Service } from "@/lib/services";
 import { recordServiceUse, useRecentServices } from "@/lib/recents";
 import { ServiceLogo } from "@/components/ServiceLogo";
-import { BENEFITS } from "@/lib/benefits";
+import { useVisibleBenefits, usePromotions } from "@/lib/admin";
 
 
 export const Route = createFileRoute("/")({
@@ -206,7 +206,7 @@ function HomeScreen() {
           </Link>
         </div>
         <div className="scrollbar-none flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 scroll-px-5 pb-1">
-          {BENEFITS.slice(0, 6).map((b) => (
+          {benefits.slice(0, 6).map((b) => (
             <Link
               key={b.id}
               to="/benefits/$id"

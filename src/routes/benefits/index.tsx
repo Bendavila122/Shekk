@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Lock, Sparkles, MapPin, Check } from "lucide-react";
+import { useVisibleBenefits } from "@/lib/admin";
 import { AppShell, Card, ScreenHeader } from "@/components/AppShell";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { useApp } from "@/lib/store";
-import { BENEFITS, BENEFIT_CATEGORIES, type Benefit, type BenefitCategoryId } from "@/lib/benefits";
+import { BENEFIT_CATEGORIES, type Benefit, type BenefitCategoryId } from "@/lib/benefits";
 
 export const Route = createFileRoute("/benefits/")({
   head: () => ({
@@ -27,8 +28,9 @@ export const Route = createFileRoute("/benefits/")({
 function BenefitsScreen() {
   const { isPremium, state } = useApp();
   const [cat, setCat] = useState<BenefitCategoryId | "all">("all");
+  const BENEFITS = useVisibleBenefits();
 
-  const list = useMemo(() => (cat === "all" ? BENEFITS : BENEFITS.filter((b) => b.category === cat)), [cat]);
+  const list = useMemo(() => (cat === "all" ? BENEFITS : BENEFITS.filter((b) => b.category === cat)), [cat, BENEFITS]);
   const featured = BENEFITS.filter((b) => b.premium).slice(0, 3);
 
   return (
