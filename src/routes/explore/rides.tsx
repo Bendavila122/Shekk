@@ -21,7 +21,7 @@ export const Route = createFileRoute("/explore/rides")({
   component: Rides,
 });
 
-type Place = { label: string; lat: number; lng: number };
+type Spot = { label: string; lat: number; lng: number };
 type Option = {
   id: string;
   productId: string;
@@ -33,7 +33,7 @@ type Option = {
   emoji: string;
 };
 
-const QUICK: Place[] = ISRAEL_PLACES.slice(0, 8).map((p) => ({
+const QUICK: Spot[] = ISRAEL_PLACES.slice(0, 8).map((p) => ({
   label: `${p.name}, ${p.city}`,
   lat: p.lat,
   lng: p.lon,
@@ -45,13 +45,13 @@ function PlaceField({
   onChange,
 }: {
   label: string;
-  value: Place | null;
-  onChange: (p: Place) => void;
+  value: Spot | null;
+  onChange: (p: Spot) => void;
 }) {
   const search = useServerFn(searchPlaces);
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
-  const [results, setResults] = useState<Place[]>([]);
+  const [results, setResults] = useState<Spot[]>([]);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -124,13 +124,13 @@ function Rides() {
   const track = useServerFn(rideStatus);
   const cancel = useServerFn(cancelRide);
 
-  const defaultPickup = useMemo<Place | null>(
+  const defaultPickup = useMemo<Spot | null>(
     () => (here ? { label: `${here.name}, ${here.city}`, lat: here.lat, lng: here.lon } : QUICK[0] ?? null),
     [here],
   );
 
-  const [pickup, setPickup] = useState<Place | null>(defaultPickup);
-  const [dropoff, setDropoff] = useState<Place | null>(null);
+  const [pickup, setPickup] = useState<Spot | null>(defaultPickup);
+  const [dropoff, setDropoff] = useState<Spot | null>(null);
   const [options, setOptions] = useState<Option[]>([]);
   const [pick, setPick] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
