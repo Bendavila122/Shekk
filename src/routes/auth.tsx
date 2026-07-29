@@ -52,6 +52,7 @@ function Auth() {
   async function social(provider: "google" | "apple") {
     const label = provider === "google" ? "Google" : "Apple";
     setBusy(true);
+    setHandoff(label);
     setError(null);
     const result = await lovable.auth.signInWithOAuth(provider, {
       redirect_uri: window.location.origin,
@@ -59,6 +60,7 @@ function Auth() {
     });
     if (result.error) {
       setBusy(false);
+      setHandoff(null);
       return setError(result.error.message ?? `${label} sign-in failed. Try email instead.`);
     }
     if (result.redirected) return;
