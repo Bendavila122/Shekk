@@ -167,6 +167,13 @@ export function QuickMenu() {
             <Link to="/help" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <LifeBuoy className="size-4 text-muted-foreground" /> Help
             </Link>
+            <Link
+              to="/admin"
+              className="tap-flat flex items-center gap-2 border-t border-border px-4 py-3 text-xs font-semibold text-muted-foreground"
+            >
+              <ShieldCheck className="size-4" /> Console
+            </Link>
+
           </div>
         </>
       ) : null}
