@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Search, X, Tag, ChevronRight } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 
-import { SERVICE_CATEGORIES, serviceLinkProps, type Service } from "@/lib/services";
+import { serviceLinkProps, type Service } from "@/lib/services";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { recordServiceUse } from "@/lib/recents";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
