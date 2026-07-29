@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, Plus } from "lucide-react";
 import { AppShell, Card, PrimaryButton } from "@/components/AppShell";
-import { COHORT_THREAD, FEED, FRIENDS, friendPhoto, ils } from "@/lib/mock";
+import { ils } from "@/lib/mock";
 import { Avatar } from "@/components/Avatar";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
@@ -66,9 +66,14 @@ function Social() {
                 Requests for you
               </h2>
               <Card className="divide-y divide-border p-0">
+                {state.splits.length === 0 && (
+                  <p className="p-4 text-sm text-muted-foreground">
+                    No one is waiting on you. Requests from friends land here.
+                  </p>
+                )}
                 {state.splits.map((r) => (
                   <div key={r.id} className="flex items-center gap-3 p-4">
-                    <Avatar name={r.from} src={friendPhoto(r.from)} />
+                    <Avatar name={r.from} />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold">{r.from}</p>
                       <p className="truncate text-xs text-muted-foreground">{r.reason}</p>
@@ -93,36 +98,7 @@ function Social() {
           </div>
         )}
 
-        {tab === "thread" && (
-          <div className="space-y-3">
-            <Card className="bg-primary-soft">
-              <p className="text-sm font-semibold">Cohort {state.cohort}</p>
-              <p className="text-xs text-muted-foreground">42 students · 3 madrichim · announcements on</p>
-            </Card>
-            {COHORT_THREAD.map((m) => (
-              <div key={m.id} className={`flex ${m.me ? "justify-end" : "justify-start"}`}>
-                <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${
-                    m.me ? "bg-primary text-primary-foreground" : "bg-card shadow-card"
-                  }`}
-                >
-                  {!m.me && <p className="mb-1 text-xs font-semibold text-primary">{m.who}</p>}
-                  <p>{m.text}</p>
-                  <p className={`mt-1 text-[10px] ${m.me ? "opacity-70" : "text-muted-foreground"}`}>{m.when}</p>
-                </div>
-              </div>
-            ))}
-            <div className="flex gap-2 pt-2">
-              <input
-                placeholder="Message your cohort…"
-                className="flex-1 rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
-              />
-              <button className="tap rounded-2xl bg-primary px-4 text-sm font-semibold text-primary-foreground">
-                Send
-              </button>
-            </div>
-          </div>
-        )}
+        {tab === "thread" && <CohortThread />}
 
         {tab === "feed" && (
           <div className="space-y-3">
@@ -143,15 +119,9 @@ function Social() {
               </button>
             </Card>
             {state.feedOptIn ? (
-              FEED.map((f) => (
-                <Card key={f.id} className="flex items-center gap-3">
-                  <span className="text-xl">{f.emoji}</span>
-                  <p className="flex-1 text-sm">
-                    <strong>{f.who}</strong> {f.what}
-                  </p>
-                  <span className="text-xs text-muted-foreground">{f.when}</span>
-                </Card>
-              ))
+              <p className="py-10 text-center text-sm text-muted-foreground">
+                Nothing yet. When friends you add start booking and splitting, it shows up here.
+              </p>
             ) : (
               <p className="py-10 text-center text-sm text-muted-foreground">
                 Feed is off. Flip the switch to see what your cohort is up to.
