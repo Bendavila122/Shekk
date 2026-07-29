@@ -86,7 +86,8 @@ function HomeScreen() {
     );
   }
 
-  const firstName = state.name.split(" ")[0];
+  const firstName =
+    (state.name?.trim().split(" ")[0] || kycProfile.profile?.legalFirstName?.trim().split(" ")[0] || "").trim();
 
   return (
     <AppShell>
