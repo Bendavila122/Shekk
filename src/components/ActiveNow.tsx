@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { useApp } from "@/lib/store";
@@ -17,109 +17,14 @@ type LiveItem = {
   qr?: string;
 };
 
-function fmtCountdown(ms: number) {
-  if (ms <= 0) return "now";
-  const mins = Math.round(ms / 60000);
-  if (mins < 60) return `${mins} min${mins === 1 ? "" : "s"}`;
-  const h = Math.floor(mins / 60);
-  return `${h}h ${mins % 60}m`;
-}
-
-/** Deterministic-ish "live" offsets anchored to the current session. */
-function useAnchors() {
-  const [anchor] = useState(() => Date.now());
-  return useMemo(
-    () => ({
-      ticket: anchor + 102 * 60000,
-      train: anchor + 18 * 60000,
-      gett: anchor + 3 * 60000,
-    }),
-    [anchor],
-  );
-}
-
 export function ActiveNow() {
   const { state, hydrated } = useApp();
-  const anchors = useAnchors();
-  const [now, setNow] = useState(() => Date.now());
   const [qr, setQr] = useState<LiveItem | null>(null);
-
-  useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), 15000);
-    return () => clearInterval(t);
-  }, []);
 
   const pendingSplit = state.splits.find((s) => !s.paid);
 
   const items = useMemo<LiveItem[]>(() => {
-    const list: LiveItem[] = [
-      {
-        id: "ticket",
-        emoji: "🎟️",
-        label: "Tonight's ticket",
-        title: "Rooftop Party · Florentin",
-        sub: `Starts in ${fmtCountdown(anchors.ticket - now)}`,
-        meta: "2 tickets · Gate B",
-        gradient: "from-[oklch(0.46_0.19_320)] to-[oklch(0.34_0.16_300)]",
-        cta: "View QR",
-        qr: "shekk-ticket:rooftop-party:2",
-      },
-      {
-        id: "train",
-        emoji: "🚆",
-        label: "Current journey",
-        title: "Jerusalem → Tel Aviv",
-        sub: `Arriving in ${fmtCountdown(anchors.train - now)}`,
-        meta: "Platform 4 · Israel Railways",
-        gradient: "from-[oklch(0.48_0.15_250)] to-[oklch(0.34_0.13_255)]",
-        cta: "View QR",
-        qr: "shekk-rail:jer-tlv",
-      },
-      {
-        id: "gett",
-        emoji: "🚕",
-        label: "Gett ride",
-        title: "Amir · Škoda Octavia",
-        sub: `Arriving in ${fmtCountdown(anchors.gett - now)}`,
-        meta: "48-392-71 · ₪31 fare",
-        gradient: "from-[oklch(0.55_0.16_75)] to-[oklch(0.42_0.14_55)]",
-        cta: "Track ride",
-        to: "/service/gett",
-      },
-      {
-        id: "ravkav",
-        emoji: "🚌",
-        label: "Rav-Kav",
-        title: "Balance ₪14.20",
-        sub: "Low balance — 2 rides left",
-        meta: "Anonymous card · 0498",
-        gradient: "from-[oklch(0.48_0.13_190)] to-[oklch(0.35_0.11_200)]",
-        cta: "Top up",
-        to: "/topup",
-      },
-      {
-        id: "booking",
-        emoji: "🏠",
-        label: "Current booking",
-        title: "Airbnb · Nachlaot studio",
-        sub: "Check-in today from 3:00pm",
-        meta: "Host Maya · 2 nights",
-        gradient: "from-[oklch(0.46_0.14_150)] to-[oklch(0.34_0.12_160)]",
-        cta: "Open booking",
-        to: "/explore",
-      },
-      {
-        id: "event",
-        emoji: "🎫",
-        label: "Upcoming event",
-        title: "Friday Night Dinner",
-        sub: "Tomorrow · 7:30pm",
-        meta: "Katamon · 40 going",
-        gradient: "from-[oklch(0.44_0.16_285)] to-[oklch(0.32_0.14_290)]",
-        cta: "View QR",
-        qr: "shekk-event:friday-night-dinner",
-      },
-    ];
+    const list: LiveItem[] = [];
 
     if (pendingSplit) {
       list.unshift({
@@ -136,7 +41,7 @@ export function ActiveNow() {
     }
 
     return list;
-  }, [anchors, now, pendingSplit]);
+  }, [pendingSplit]);
 
   if (!hydrated || items.length === 0) return null;
 

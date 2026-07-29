@@ -10,7 +10,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SERVICE_CATEGORIES, type Service, type ServiceStatus } from "./services";
 import { BENEFITS, type Benefit } from "./benefits";
-import { CURRENCIES, type CurrencyCode } from "./currencies";
+import type { CurrencyCode } from "./currencies";
 
 /* ----------------------------------------------------------------- gate --- */
 
@@ -109,30 +109,7 @@ export const defaultAdminConfig: AdminConfig = {
   serviceStatus: {},
   customServices: [],
   hiddenBenefits: [],
-  promotions: [
-    {
-      id: "promo-seed-1",
-      title: "First Rav-Kav top-up on us",
-      blurb: "New members get ₪30 back on their first travel-card load.",
-      emoji: "🚌",
-      placement: "home",
-      ctaLabel: "Load Rav-Kav",
-      ctaHref: "/explore/transit",
-      active: true,
-      createdISO: "2026-06-01",
-    },
-    {
-      id: "promo-seed-2",
-      title: "Premium for the chagim",
-      blurb: "Two months of Shekk Premium free when you upgrade before Tishrei.",
-      emoji: "👑",
-      placement: "home",
-      ctaLabel: "See Premium",
-      ctaHref: "/membership",
-      active: false,
-      createdISO: "2026-07-04",
-    },
-  ],
+  promotions: [],
   premiumPriceGbp: 14.99,
   fxMarginFree: 3,
   fxMarginPremium: 1.2,
@@ -261,49 +238,8 @@ export type AdminAccount = {
   lastActive: string;
 };
 
-const FIRST = ["Ari", "Rivki", "Yoni", "Tova", "Shua", "Elisheva", "Dovi", "Maya", "Noam", "Talia", "Zev", "Chana", "Ezra", "Bracha", "Yehuda", "Shira", "Meir", "Adina", "Gavi", "Leah"];
-const LAST = ["Feldman", "Stein", "Adler", "Klein", "Berman", "Rosen", "Kaplan", "Weiss", "Gold", "Katz", "Levine", "Bauer", "Schwartz", "Mandel", "Reich"];
-const CITIES = ["Jerusalem", "Tel Aviv", "Bet Shemesh", "Efrat", "Haifa", "Ra'anana", "Modiin"];
-const PROGRAMS = ["Aish HaTorah", "Ohr Somayach", "Michlala", "Meor", "Midreshet Moriah", "Machon Maayan"];
-const COUNTRIES = ["United States", "United Kingdom", "Canada", "Australia", "South Africa", "France"];
-
-/** Deterministic pseudo-random so the console shows the same book every load. */
-function rng(seed: number) {
-  let s = seed;
-  return () => {
-    s = (s * 1664525 + 1013904223) % 4294967296;
-    return s / 4294967296;
-  };
-}
-
-export const ACCOUNTS: AdminAccount[] = Array.from({ length: 48 }, (_, i) => {
-  const r = rng(i * 7919 + 13);
-  const added = Math.round((600 + r() * 9000) / 10) * 10;
-  const spent = Math.round(added * (0.35 + r() * 0.5));
-  const sent = Math.round(added * (0.03 + r() * 0.12));
-  const withdrawn = r() > 0.85 ? Math.round(added * 0.05) : 0;
-  const premium = r() > 0.58;
-  const statusRoll = r();
-  return {
-    id: `acc_${(1000 + i).toString()}`,
-    name: `${FIRST[i % FIRST.length]} ${LAST[(i * 3) % LAST.length]}`,
-    city: CITIES[i % CITIES.length],
-    program: PROGRAMS[(i * 2) % PROGRAMS.length],
-    country: COUNTRIES[(i * 5) % COUNTRIES.length],
-    currency: CURRENCIES[i % CURRENCIES.length].code,
-    membership: premium ? "premium" : "free",
-    status: statusRoll > 0.94 ? "suspended" : statusRoll > 0.86 ? "pending-kyc" : "active",
-    balance: Math.max(0, added - spent - sent - withdrawn),
-    addedTotal: added,
-    spentTotal: spent,
-    sentTotal: sent,
-    convertedTotal: added,
-    withdrawnTotal: withdrawn,
-    cardIssued: premium && r() > 0.2,
-    joinedISO: `2026-0${(i % 7) + 1}-${String((i % 27) + 1).padStart(2, "0")}`,
-    lastActive: ["Today", "Yesterday", "2 days ago", "This week", "Last week"][i % 5],
-  };
-});
+/** No live book yet — the console starts empty until real accounts exist. */
+export const ACCOUNTS: AdminAccount[] = [];
 
 export type MoneyTotals = {
   added: number;
@@ -343,12 +279,7 @@ export function moneyTotals(accounts: AdminAccount[], config: AdminConfig): Mone
 
 /** Rolling 12-week money-in / money-out series for the charts. */
 export function weeklySeries() {
-  const r = rng(4242);
-  return Array.from({ length: 12 }, (_, i) => ({
-    label: `W${i + 1}`,
-    added: Math.round(18000 + r() * 22000 + i * 900),
-    spent: Math.round(12000 + r() * 18000 + i * 700),
-  }));
+  return Array.from({ length: 12 }, (_, i) => ({ label: `W${i + 1}`, added: 0, spent: 0 }));
 }
 
 export function spendByCategory(accounts: AdminAccount[]) {
