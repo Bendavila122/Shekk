@@ -177,10 +177,10 @@ export async function post(userId: string, input: PostInput) {
     _merchant: input.merchant,
     _category: input.category ?? "Other",
     _icon: input.icon ?? "💳",
-    _counterparty: input.counterparty ?? null,
-    _external_ref: input.externalRef ?? null,
-    _idempotency_key: input.idempotencyKey ?? null,
-    _hold_id: null,
+    _counterparty: input.counterparty ?? undefined,
+    _external_ref: input.externalRef ?? undefined,
+    _idempotency_key: input.idempotencyKey ?? undefined,
+    _hold_id: undefined,
   });
   rethrow(error, "That payment could not be completed");
   return readSnapshot(userId);
@@ -204,8 +204,8 @@ export async function createHold(userId: string, input: HoldInput) {
     _merchant: input.merchant,
     _category: input.category ?? "Other",
     _icon: input.icon ?? "💳",
-    _external_ref: input.externalRef ?? null,
-    _idempotency_key: input.idempotencyKey ?? null,
+    _external_ref: input.externalRef ?? undefined,
+    _idempotency_key: input.idempotencyKey ?? undefined,
   });
   rethrow(error, "Could not reserve that amount");
   const hold = data as unknown as HoldRow;
@@ -218,7 +218,7 @@ export async function settleHold(userId: string, holdId: string, finalShekels?: 
   const { error } = await db.rpc("hold_settle", {
     _user_id: userId,
     _hold_id: holdId,
-    _final_amount_agorot: finalShekels == null ? null : toAgorot(finalShekels),
+    _final_amount_agorot: finalShekels == null ? undefined : toAgorot(finalShekels),
   });
   rethrow(error, "Could not complete that payment");
   return readSnapshot(userId);
@@ -263,8 +263,8 @@ export async function settleFunding(userId: string, input: FundingInput) {
     _shekels_agorot: toAgorot(input.shekels),
     _method: input.method ?? "apple-pay",
     _provider: input.provider ?? "simulator",
-    _provider_ref: input.providerRef ?? null,
-    _idempotency_key: input.idempotencyKey ?? null,
+    _provider_ref: input.providerRef ?? undefined,
+    _idempotency_key: input.idempotencyKey ?? undefined,
   });
   rethrow(error, "That top up could not be completed");
   return readSnapshot(userId);
