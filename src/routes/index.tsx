@@ -31,7 +31,11 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:title", content: "Home · Shekk" },
       { property: "og:description", content: "One home screen for every Israeli app a gap-year student needs." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://shekel-connect.lovable.app/" },
+      { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: "https://shekel-connect.lovable.app/" }],
   }),
   component: HomeScreen,
 });

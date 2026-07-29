@@ -12,7 +12,11 @@ export const Route = createFileRoute("/terms")({
       },
       { property: "og:title", content: "Terms & Conditions · Shekk" },
       { property: "og:description", content: "Your Shekk account, who provides it, eligibility and identity checks." },
+      { property: "og:type", content: "article" },
+      { property: "og:url", content: "https://shekel-connect.lovable.app/terms" },
+      { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: "https://shekel-connect.lovable.app/terms" }],
   }),
   component: Terms,
 });
