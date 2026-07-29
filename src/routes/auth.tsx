@@ -112,6 +112,10 @@ function Auth() {
     window.location.href = next === "/" ? "/verify" : next;
   }
 
+  if (handoff) {
+    return <Splash message={`Continuing with ${handoff}…`} />;
+  }
+
   if (sentTo) {
     return (
       <FocusScreen nav={false}>
