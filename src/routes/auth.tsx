@@ -210,7 +210,7 @@ function Auth() {
                   <Link to="/terms" className="font-semibold underline">
                     Terms &amp; Conditions
                   </Link>{" "}
-                  and privacy notice, and I consent to electronic records and identity checks.
+                  and privacy notice. I confirm I am 18 or over and opening this account for myself, and I consent to electronic records and to identity checks run by Shekk&rsquo;s regulated payments partner.
                 </span>
               </label>
             </Card>
