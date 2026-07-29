@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { getPlaceName } from "./live.functions";
 
 export type Place = {
   city: string;
@@ -6,6 +7,10 @@ export type Place = {
   area?: string;
   lat: number;
   lon: number;
+  /** How we arrived at this place — GPS reading, geocoded name, or a manual pick. */
+  source?: "gps" | "geocoded" | "manual";
+  /** Epoch ms of the fix, used to decide when a refresh is worth it. */
+  at?: number;
 };
 
 export type LocationStatus = "idle" | "asking" | "granted" | "denied" | "unavailable" | "manual";
@@ -15,6 +20,8 @@ export type LocationState = {
   place: Place | null;
   /** True while a geolocation request is in flight. */
   loading: boolean;
+  /** Set when the browser refused or timed out, so the UI can explain why. */
+  error: string | null;
 };
 
 /** Places a student on a gap year actually ends up in. */
@@ -76,7 +83,7 @@ export const placeForCity = (city: string): Place =>
 
 // ---- tiny shared store so every screen shows the same location ----
 
-let current: LocationState = { status: "idle", place: null, loading: false };
+let current: LocationState = { status: "idle", place: null, loading: false, error: null };
 const listeners = new Set<(s: LocationState) => void>();
 
 function set(next: Partial<LocationState>) {
@@ -105,6 +112,30 @@ function restore() {
 
 let restored = false;
 
+/** Upgrade a GPS fix with a real city / neighbourhood name. */
+async function resolveName(lat: number, lon: number, snapped: Place) {
+  try {
+    const named = await getPlaceName({ data: { lat, lon } });
+    if (!named?.city) return;
+    // Ignore if the student has since picked a city by hand or moved on.
+    if (current.status === "manual") return;
+    if (!current.place || distanceKm(current.place.lat, current.place.lon, lat, lon) > 1) return;
+    set({
+      place: {
+        city: named.city,
+        area: named.area ?? snapped.area,
+        lat,
+        lon,
+        source: "geocoded",
+        at: Date.now(),
+      },
+    });
+    persist();
+  } catch {
+    /* keep the snapped name */
+  }
+}
+
 export function useLocation() {
   const [state, setState] = useState<LocationState>(current);
 
@@ -120,38 +151,59 @@ export function useLocation() {
     };
   }, []);
 
-  /** Ask the browser for permission and snap to the nearest place. */
+  // Refresh a GPS fix when the app comes back to the foreground and it is stale.
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState !== "visible") return;
+      if (current.status !== "granted" || current.loading) return;
+      if (current.place?.at && Date.now() - current.place.at < 10 * 60_000) return;
+      detectRef.current?.();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, []);
+
+  /** Ask the browser for permission, then name the spot properly. */
   const detect = useCallback(() => {
     if (typeof navigator === "undefined" || !("geolocation" in navigator)) {
-      set({ status: "unavailable", loading: false });
+      set({ status: "unavailable", loading: false, error: "This browser can't share your location." });
       return;
     }
-    set({ status: "asking", loading: true });
+    set({ status: "asking", loading: true, error: null });
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        const { latitude: lat, longitude: lon } = pos.coords;
+        // Show the nearest known place instantly, then upgrade with a real name.
+        const snapped = { ...nearestPlace(lat, lon), source: "gps" as const, at: Date.now() };
+        set({ status: "granted", loading: false, place: snapped, error: null });
+        persist();
+        void resolveName(lat, lon, snapped);
+      },
+      (err) => {
+        const denied = err.code === err.PERMISSION_DENIED;
         set({
-          status: "granted",
+          status: denied ? "denied" : "unavailable",
           loading: false,
-          place: nearestPlace(pos.coords.latitude, pos.coords.longitude),
+          error: denied
+            ? "Location is blocked for Shekk in your browser settings."
+            : err.code === err.TIMEOUT
+              ? "Couldn't get a location fix in time."
+              : "Location is unavailable right now.",
         });
         persist();
       },
-      (err) => {
-        set({ status: err.code === err.PERMISSION_DENIED ? "denied" : "unavailable", loading: false });
-        persist();
-      },
-      { enableHighAccuracy: false, timeout: 8000, maximumAge: 5 * 60 * 1000 },
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 2 * 60 * 1000 },
     );
   }, []);
 
-  /** Manual override from the picker. */
+  /** Manual override from the picker — sticks until the student re-detects. */
   const setCity = useCallback((city: string) => {
-    set({ status: "manual", loading: false, place: placeForCity(city) });
+    set({ status: "manual", loading: false, error: null, place: { ...placeForCity(city), source: "manual", at: Date.now() } });
     persist();
   }, []);
 
   const clear = useCallback(() => {
-    set({ status: "idle", loading: false, place: null });
+    set({ status: "idle", loading: false, place: null, error: null });
     try {
       localStorage.removeItem(KEY);
     } catch {
