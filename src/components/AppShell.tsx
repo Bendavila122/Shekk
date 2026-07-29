@@ -50,7 +50,7 @@ export function FocusScreen({
   return (
     <div className="flex min-h-screen justify-center bg-ink/95 px-0 py-0 sm:px-4 sm:py-8 lg:bg-ink/[0.03] lg:px-8 lg:py-12">
       <div className="relative flex min-h-screen w-full max-w-[430px] flex-col overflow-hidden bg-background shadow-lift sm:min-h-[860px] sm:rounded-[2.5rem] sm:border-8 sm:border-ink lg:min-h-0 lg:max-w-2xl lg:rounded-3xl lg:border lg:border-border lg:shadow-card">
-        <div className={`flex-1 ${nav ? "pb-24 lg:pb-6" : "pb-6"}`}>{children}</div>
+        <div className={`flex-1 ${nav ? "pb-28 lg:pb-6" : "pb-6"}`}>{children}</div>
         {nav ? (
           <>
             <QuickMenu />
@@ -87,33 +87,56 @@ export function Notice({
   );
 }
 
-/** Bottom tab bar, shared by every screen (mobile). */
+/** Bottom tab bar, shared by every screen (mobile). Home sits centred and raised. */
 export function MobileNav() {
   const isActive = useActive();
+  const side = TABS.filter((t) => t.to !== "/me" && t.to !== "/");
+  const left = side.slice(0, 2);
+  const right = side.slice(2);
+  const homeActive = isActive("/");
+
+  const item = (to: string, label: string, Icon: typeof Home) => {
+    const active = isActive(to);
+    return (
+      <Link
+        key={to}
+        to={to}
+        className={`tap-flat flex flex-1 flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold ${
+          active ? "text-primary" : "text-muted-foreground"
+        }`}
+      >
+        <Icon className="size-6" strokeWidth={active ? 2.6 : 1.8} />
+        <span>{label}</span>
+      </Link>
+    );
+  };
 
   return (
     <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[430px] -translate-x-1/2 border-t border-border bg-card lg:hidden">
+      <nav className="flex items-end justify-between px-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-2">
+        {left.map(({ to, label, Icon }) => item(to, label, Icon))}
 
-      <nav className="flex items-stretch justify-between px-1 pb-[max(0.4rem,env(safe-area-inset-bottom))] pt-1.5">
-        {TABS.filter((t) => t.to !== "/me").map(({ to, label, Icon }) => {
-          const active = isActive(to);
-          return (
-            <Link
-              key={to}
-              to={to}
-              className={`tap-flat flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1.5 text-[10px] font-semibold ${
-                active ? "text-primary" : "text-muted-foreground"
-              }`}
-            >
-              <Icon className="size-5" strokeWidth={active ? 2.6 : 1.8} />
-              <span>{label}</span>
-            </Link>
-          );
-        })}
+        <Link
+          to="/"
+          aria-label="Home"
+          className="tap-flat -mt-7 flex flex-1 flex-col items-center gap-1 text-[11px] font-semibold"
+        >
+          <span
+            className={`flex size-14 items-center justify-center rounded-full border-4 border-card shadow-lift transition-transform active:scale-95 ${
+              homeActive ? "bg-primary text-primary-foreground" : "bg-ink text-ink-foreground"
+            }`}
+          >
+            <Home className="size-6" strokeWidth={2.4} />
+          </span>
+          <span className={homeActive ? "text-primary" : "text-muted-foreground"}>Home</span>
+        </Link>
+
+        {right.map(({ to, label, Icon }) => item(to, label, Icon))}
       </nav>
     </div>
   );
 }
+
 
 /** Top-right quick menu (mobile): balance, top up, Me, Settings, Help. */
 export function QuickMenu() {
@@ -255,7 +278,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <QuickMenu />
             <MobileNav />
 
-            <div className="flex-1 pb-24 lg:pb-6">{children}</div>
+            <div className="flex-1 pb-28 lg:pb-6">{children}</div>
           </PhoneFrame>
 
         </div>
