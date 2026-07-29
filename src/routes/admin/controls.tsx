@@ -19,19 +19,30 @@ function Controls() {
       <div className="grid gap-4 lg:grid-cols-2">
         <Panel title="Availability">
           <div className="space-y-3">
-            <Toggle
-              label="New sign-ups open"
-              hint="Turn off to hold the waiting list while onboarding catches up."
-              checked={config.signupsOpen}
-              onChange={(v) => update({ signupsOpen: v })}
-            />
-            <Toggle
-              label="Card issuing open"
-              hint="Stops new Shekk Mastercards being requested. Existing cards keep working."
-              checked={config.cardIssuingOpen}
-              onChange={(v) => update({ cardIssuingOpen: v })}
-            />
+            {[
+              {
+                label: "New sign-ups open",
+                hint: "Turn off to hold the waiting list while onboarding catches up.",
+                checked: config.signupsOpen,
+                onChange: (v: boolean) => update({ signupsOpen: v }),
+              },
+              {
+                label: "Card issuing open",
+                hint: "Stops new Shekk Mastercards being requested. Existing cards keep working.",
+                checked: config.cardIssuingOpen,
+                onChange: (v: boolean) => update({ cardIssuingOpen: v }),
+              },
+            ].map((row) => (
+              <div key={row.label} className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold">{row.label}</p>
+                  <p className="text-xs text-muted-foreground">{row.hint}</p>
+                </div>
+                <Toggle label={row.label} checked={row.checked} onChange={row.onChange} />
+              </div>
+            ))}
           </div>
+
 
           <label className="mt-4 block text-sm font-semibold">Status banner shown in the app</label>
           <textarea
