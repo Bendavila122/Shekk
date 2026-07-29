@@ -157,21 +157,17 @@ export function serviceLinkProps(service: Service): {
  */
 const HOME_LAYOUT: { label: string; hint: string; ids: string[] }[] = [
   {
-    label: "Everyday",
-    hint: "The definitive five, plus what you open daily.",
-    ids: ["wolt", "gett", "ravkav", "rail", "goto", "cibus", "10bis", "pango"],
+    label: "Live in Shekk",
+    hint: "What's wired up today. More partners as their APIs land.",
+    ids: ["gett", "siddur", "topup", "split"],
   },
   {
-    label: "Out & about",
-    hint: "Tiyulim, tickets, tables and Thursday nights.",
-    ids: ["events", "reserve", "moovit", "gmaps", "secrettlv", "thingstodo", "gyms", "flights"],
-  },
-  {
-    label: "Life in Israel",
-    hint: "The boring stuff nobody explains to you.",
-    ids: ["sim", "housing", "bills", "visa", "hospitalcard", "emergency", "community", "siddur"],
+    label: "Good to know",
+    hint: "Practical guides for your year here.",
+    ids: ["visa", "emergency", "cash", "shuk", "thingstodo", "chagim"],
   },
 ];
+
 
 export const HOME_SECTIONS = HOME_LAYOUT.map((section) => ({
   label: section.label,
