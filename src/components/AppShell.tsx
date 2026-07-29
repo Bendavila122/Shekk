@@ -278,7 +278,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             <QuickMenu />
             <MobileNav />
 
-            <div className="flex-1 pb-28 lg:pb-6">{children}</div>
+            <div className="flex-1 pb-28 lg:pb-6">
+              <MembershipDunningBanner />
+              {children}
+            </div>
           </PhoneFrame>
 
         </div>
