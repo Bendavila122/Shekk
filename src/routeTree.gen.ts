@@ -25,6 +25,7 @@ import { Route as ExchangeRouteImport } from './routes/exchange'
 import { Route as CardRouteImport } from './routes/card'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ActivityRouteImport } from './routes/activity'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SiddurIndexRouteImport } from './routes/siddur/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
@@ -128,6 +129,11 @@ const AuthRoute = AuthRouteImport.update({
 const ActivityRoute = ActivityRouteImport.update({
   id: '/activity',
   path: '/activity',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -256,6 +262,7 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRoute
   '/activity': typeof ActivityRoute
   '/auth': typeof AuthRoute
   '/card': typeof CardRoute
@@ -298,6 +305,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRoute
   '/activity': typeof ActivityRoute
   '/auth': typeof AuthRoute
   '/card': typeof CardRoute
@@ -341,6 +349,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRoute
   '/activity': typeof ActivityRoute
   '/auth': typeof AuthRoute
   '/card': typeof CardRoute
@@ -385,6 +394,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/activity'
     | '/auth'
     | '/card'
@@ -427,6 +437,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/activity'
     | '/auth'
     | '/card'
@@ -469,6 +480,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/activity'
     | '/auth'
     | '/card'
@@ -512,6 +524,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRouteRoute: typeof AdminRouteRoute
   ActivityRoute: typeof ActivityRoute
   AuthRoute: typeof AuthRoute
   CardRoute: typeof CardRoute
@@ -665,6 +678,13 @@ declare module '@tanstack/react-router' {
       path: '/activity'
       fullPath: '/activity'
       preLoaderRoute: typeof ActivityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -840,6 +860,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRouteRoute: AdminRouteRoute,
   ActivityRoute: ActivityRoute,
   AuthRoute: AuthRoute,
   CardRoute: CardRoute,
