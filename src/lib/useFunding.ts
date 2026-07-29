@@ -3,8 +3,12 @@
  *
  * Shekk cannot credit its own members. A balance only rises when Airwallex
  * confirms a settled payment to the signed webhook. This hook is the whole
- * client-side story: is the partner connected, start a payment, wait for the
- * money to land.
+ * client-side story: is the partner connected, mint an intent, hand it to the
+ * Airwallex payment sheet, then wait for the money to land.
+ *
+ * Phases: idle → starting (minting the intent) → collecting (the shopper is in
+ * the Airwallex sheet) → awaiting (submitted; waiting on the webhook) →
+ * settled.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -34,14 +38,21 @@ export function usePaymentPartner(): PartnerStatus {
   return status;
 }
 
-export type FundingPhase = "idle" | "starting" | "awaiting" | "settled" | "error";
+export type FundingPhase = "idle" | "starting" | "collecting" | "awaiting" | "settled" | "error";
+
+export type PendingIntent = {
+  intentId: string;
+  clientSecret: string;
+  currency: string;
+  amount: number;
+};
 
 export function useFunding() {
   const { signedIn, refreshLedger, state } = useApp();
   const partner = usePaymentPartner();
   const [phase, setPhase] = useState<FundingPhase>("idle");
   const [error, setError] = useState<string | null>(null);
-  const [intentId, setIntentId] = useState<string | null>(null);
+  const [intent, setIntent] = useState<PendingIntent | null>(null);
   const startBalance = useRef(0);
 
   // While a payment is in flight, watch for the webhook's credit to arrive.
@@ -69,6 +80,7 @@ export function useFunding() {
           ? "Sign in to add money to your shekel account."
           : null;
 
+  /** Mint a payment intent. The shopper then pays inside Airwallex's sheet. */
   const fund = useCallback(
     async (payCurrency: CurrencyCode, payAmount: number) => {
       setError(null);
@@ -82,9 +94,15 @@ export function useFunding() {
       try {
         const res = await startTopUp({ data: { currency: payCurrency, amount: payAmount } });
         if (!res.connected) throw new Error("Payment partner isn't connected yet.");
-        setIntentId(res.intentId);
-        setPhase("awaiting");
-        return res;
+        const pending: PendingIntent = {
+          intentId: res.intentId,
+          clientSecret: res.clientSecret,
+          currency: res.currency,
+          amount: res.amount,
+        };
+        setIntent(pending);
+        setPhase("collecting");
+        return pending;
       } catch (e) {
         setError(e instanceof Error ? e.message : "That payment could not be started.");
         setPhase("error");
@@ -94,11 +112,34 @@ export function useFunding() {
     [blocked, state.balance],
   );
 
+  /** Airwallex accepted the shopper's payment — now wait on the webhook. */
+  const markSubmitted = useCallback(() => {
+    setError(null);
+    setPhase("awaiting");
+  }, []);
+
+  /** The sheet reported a problem; let them try again. */
+  const failFunding = useCallback((message: string) => {
+    setError(message);
+    setPhase("collecting");
+  }, []);
+
   const resetFunding = useCallback(() => {
     setPhase("idle");
     setError(null);
-    setIntentId(null);
+    setIntent(null);
   }, []);
 
-  return { partner, blocked, phase, error, intentId, fund, resetFunding };
+  return {
+    partner,
+    blocked,
+    phase,
+    error,
+    intent,
+    intentId: intent?.intentId ?? null,
+    fund,
+    markSubmitted,
+    failFunding,
+    resetFunding,
+  };
 }

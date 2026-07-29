@@ -2,11 +2,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { Apple, Building2, Check, Loader2, Lock, ShieldCheck } from "lucide-react";
 import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
+import { AirwallexDropIn } from "@/components/AirwallexDropIn";
 import { ils } from "@/lib/mock";
 import { CURRENCIES, currency, money } from "@/lib/currencies";
 import { quoteFx } from "@/lib/banking";
 import { useApp } from "@/lib/store";
 import { useFunding } from "@/lib/useFunding";
+
 
 export const Route = createFileRoute("/topup")({
   head: () => ({
@@ -28,7 +30,9 @@ const PRESETS = [50, 100, 250, 500];
 
 function AddMoney() {
   const { state } = useApp();
-  const { blocked, phase, error, fund, resetFunding } = useFunding();
+  const { partner, blocked, phase, error, intent, fund, markSubmitted, failFunding, resetFunding } =
+    useFunding();
+
   const [amount, setAmount] = useState("100");
   const [source, setSource] = useState(state.settings.payCurrency);
   const [sheet, setSheet] = useState<"apple" | "bank" | null>(null);
@@ -232,20 +236,37 @@ function AddMoney() {
                 Handled by Shekk's payment partner. Your balance updates when they confirm the payment.
               </p>
             )}
+
+            {phase === "collecting" && intent ? (
+              <div className="mt-4 max-h-[55vh] overflow-y-auto">
+                <AirwallexDropIn
+                  intentId={intent.intentId}
+                  clientSecret={intent.clientSecret}
+                  currency={intent.currency}
+                  environment={partner?.environment ?? "sandbox"}
+                  onSubmitted={() => {
+                    markSubmitted();
+                    setSheet(null);
+                  }}
+                  onError={failFunding}
+                />
+              </div>
+            ) : null}
+
             <div className="mt-5 space-y-2">
-              <PrimaryButton
-                disabled={phase === "starting"}
-                onClick={async () => {
-                  const res = await fund(source, q.amount);
-                  if (res) setSheet(null);
-                }}
-              >
-                {phase === "starting"
-                  ? "Starting payment…"
-                  : sheet === "apple"
-                    ? "Confirm with Face ID"
-                    : "Confirm transfer"}
-              </PrimaryButton>
+              {phase === "collecting" ? null : (
+                <PrimaryButton
+                  disabled={phase === "starting"}
+                  onClick={() => void fund(source, q.amount)}
+                >
+                  {phase === "starting"
+                    ? "Starting payment…"
+                    : sheet === "apple"
+                      ? "Continue to payment"
+                      : "Continue to payment"}
+                </PrimaryButton>
+              )}
+
               <button
                 onClick={() => {
                   resetFunding();

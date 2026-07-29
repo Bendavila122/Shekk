@@ -5,6 +5,7 @@
     "": {
       "name": "tanstack_start_ts",
       "dependencies": {
+        "@airwallex/components-sdk": "^1.32.0",
         "@hookform/resolvers": "^5.2.2",
         "@lovable.dev/mcp-js": "^0.24.0",
         "@radix-ui/react-accordion": "^1.2.12",
@@ -82,6 +83,10 @@
     },
   },
   "packages": {
+    "@airwallex/airtracker": ["@airwallex/airtracker@3.2.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@airwallex/airtracker/-/airtracker-3.2.0.tgz", {}, "sha512-PKE5N38ajTVg6ph9JzLpWsICNjqLtf/wWudNVU3UPX9SVy2I5s5ITc281sMSD8+LIE6RJoGjGTO+VYP/io5kig=="],
+
+    "@airwallex/components-sdk": ["@airwallex/components-sdk@1.32.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@airwallex/components-sdk/-/components-sdk-1.32.0.tgz", { "dependencies": { "@airwallex/airtracker": "^3.0.0" } }, "sha512-IRrYOyCIWw/cQcndm/n11zx8b7hj2wYF7TD2YLmds9lXIQoir214JF99i1QJAyMsRR//nIRkNFTB2Ta2/etYGw=="],
+
     "@babel/code-frame": ["@babel/code-frame@7.29.0", "", { "dependencies": { "@babel/helper-validator-identifier": "^7.28.5", "js-tokens": "^4.0.0", "picocolors": "^1.1.1" } }, "sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw=="],
 
     "@babel/compat-data": ["@babel/compat-data@7.29.0", "", {}, "sha512-T1NCJqT/j9+cn8fvkt7jtwbLBfLC/1y1c7NtCeXFRgzGTsafi68MRv8yzkYSapBnFA6L3U2VSc02ciDzoAJhJg=="],

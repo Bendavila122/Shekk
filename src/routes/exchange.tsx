@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowDown, Check, Info, Loader2, Lock } from "lucide-react";
 import { AppShell, Card, ScreenHeader, PrimaryButton } from "@/components/AppShell";
+import { AirwallexDropIn } from "@/components/AirwallexDropIn";
+
 import { useApp } from "@/lib/store";
 import { useFunding } from "@/lib/useFunding";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
@@ -31,7 +33,9 @@ export const Route = createFileRoute("/exchange")({
 function ExchangeScreen() {
   const ready = useOnboardedGate();
   const { state, isPremium } = useApp();
-  const { blocked, phase, error, fund, resetFunding } = useFunding();
+  const { partner, blocked, phase, error, intent, fund, markSubmitted, failFunding, resetFunding } =
+    useFunding();
+
   const [from, setFrom] = useState(state.settings.payCurrency);
   const [amount, setAmount] = useState("250");
   const done = phase === "awaiting" || phase === "settled";
@@ -166,13 +170,36 @@ function ExchangeScreen() {
           </section>
 
           <section className="px-4 pb-10 pt-6">
-            <PrimaryButton
-              disabled={value <= 0 || Boolean(blocked) || phase === "starting"}
-              onClick={() => void fund(from, q.amount)}
-            >
-              {phase === "starting" ? "Starting payment…" : `Convert ${money(cur.code, q.amount)}`}
-            </PrimaryButton>
+            {phase === "collecting" && intent ? (
+              <Card className="p-4">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Pay {money(cur.code, q.amount)}
+                </p>
+                <AirwallexDropIn
+                  intentId={intent.intentId}
+                  clientSecret={intent.clientSecret}
+                  currency={intent.currency}
+                  environment={partner?.environment ?? "sandbox"}
+                  onSubmitted={markSubmitted}
+                  onError={failFunding}
+                />
+                <button
+                  onClick={resetFunding}
+                  className="tap mt-3 w-full rounded-2xl bg-muted py-3 text-sm font-semibold"
+                >
+                  Cancel
+                </button>
+              </Card>
+            ) : (
+              <PrimaryButton
+                disabled={value <= 0 || Boolean(blocked) || phase === "starting"}
+                onClick={() => void fund(from, q.amount)}
+              >
+                {phase === "starting" ? "Starting payment…" : `Convert ${money(cur.code, q.amount)}`}
+              </PrimaryButton>
+            )}
           </section>
+
         </>
       )}
 
