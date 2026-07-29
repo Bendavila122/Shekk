@@ -64,11 +64,13 @@ export const liveFxRate = createServerFn({ method: "POST" })
 export const platformBalances = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (!isAdmin) throw new Error("Forbidden");
+    // There is no roles table yet, so the console's client-side code cannot be
+    // the gate. Until roles land, allow-list operator user ids on the server.
+    const allowed = (process.env.SHEKK_ADMIN_USER_IDS ?? "")
+      .split(",")
+      .map((id) => id.trim())
+      .filter(Boolean);
+    if (!allowed.includes(context.userId)) throw new Error("Forbidden");
 
     const { isConfigured, listBalances } = await import("./airwallex.server");
     if (!isConfigured()) return { connected: false as const, balances: [] };
