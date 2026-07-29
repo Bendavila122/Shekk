@@ -99,9 +99,9 @@ function MembershipScreen() {
                 ? subscription?.cancelAtPeriodEnd && renews
                   ? `Ends ${renews}. You keep everything until then.`
                   : renews
-                    ? `£9.99 a month · renews ${renews}.`
+                    ? `Renews ${renews}.`
                     : "Card, full marketplace, member pricing and concierge — all active."
-                : "£9.99 a month. Cancel any time, keep your account either way."}
+                : `${plan.price} ${plan.cadence}. Cancel any time, keep your account either way.`}
             </p>
           </div>
         </div>
