@@ -85,16 +85,12 @@ export function ShekkCardFace({
 
           <div className={`flex items-end justify-between gap-3 ${compact ? "mt-1" : "mt-3"}`}>
             <div className="min-w-0">
-              {!compact ? (
-                <p className="text-[8px] uppercase tracking-[0.18em] opacity-55">Cardholder</p>
-              ) : null}
-              <p
-                className={`truncate font-semibold uppercase tracking-wide ${
-                  compact ? "text-[8px]" : "mt-0.5 text-[13px]"
-                }`}
-              >
-                {name}
-              </p>
+              {compact ? null : (
+                <>
+                  <p className="text-[8px] uppercase tracking-[0.18em] opacity-55">Cardholder</p>
+                  <p className="mt-0.5 truncate text-[13px] font-semibold uppercase tracking-wide">{name}</p>
+                </>
+              )}
             </div>
             <div className="shrink-0 text-right">
               {!compact ? (

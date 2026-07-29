@@ -153,6 +153,20 @@ function WalletScreen() {
           </Link>
         </div>
         <Card className="divide-y divide-border p-0">
+          {state.txns.length === 0 ? (
+            <div className="px-4 py-8 text-center">
+              <p className="text-sm font-semibold">No activity yet</p>
+              <p className="mx-auto mt-1 max-w-[16rem] text-xs leading-relaxed text-muted-foreground">
+                Add money to your shekel account and every payment will show up here.
+              </p>
+              <Link
+                to="/topup"
+                className="tap mt-4 inline-flex rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
+              >
+                Add money
+              </Link>
+            </div>
+          ) : null}
           {state.txns.slice(0, 7).map((t) => (
             <div key={t.id} className="flex items-center gap-3 p-3.5">
               <span className="flex size-10 items-center justify-center rounded-xl bg-muted text-lg">{t.icon}</span>
@@ -176,7 +190,7 @@ function WalletScreen() {
         </Card>
 
         <p className="mt-4 flex items-start gap-2 px-1 text-[11px] leading-relaxed text-muted-foreground">
-          <ShieldCheck className="mt-0.5 size-3.5 shrink-0" />
+          <ShieldCheck className="mt-[3px] size-3.5 shrink-0" />
           Your shekel account and card are provided by Airwallex, Shekk's regulated payment and issuing partner. Shekk builds the
           app.{" "}
           <Link to="/terms" className="font-semibold underline">
