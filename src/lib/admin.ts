@@ -10,7 +10,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SERVICE_CATEGORIES, type Service, type ServiceStatus } from "./services";
 import { BENEFITS, type Benefit } from "./benefits";
-import { CURRENCIES, type CurrencyCode } from "./currencies";
+import type { CurrencyCode } from "./currencies";
 
 /* ----------------------------------------------------------------- gate --- */
 

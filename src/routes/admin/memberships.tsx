@@ -14,7 +14,7 @@ function Memberships() {
 
   const premium = ACCOUNTS.filter((a) => a.membership === "premium");
   const free = ACCOUNTS.filter((a) => a.membership === "free");
-  const conversion = Math.round((premium.length / ACCOUNTS.length) * 100);
+  const conversion = Math.round((premium.length / Math.max(1, ACCOUNTS.length)) * 100);
   const avgPremiumSpend = Math.round(premium.reduce((n, a) => n + a.spentTotal, 0) / Math.max(1, premium.length));
   const avgFreeSpend = Math.round(free.reduce((n, a) => n + a.spentTotal, 0) / Math.max(1, free.length));
 
