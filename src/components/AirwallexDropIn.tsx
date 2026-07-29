@@ -25,25 +25,6 @@ export type DropInProps = {
 };
 
 /** Read a themed CSS variable as a hex-ish colour the Airwallex iframe accepts. */
-function cssColor(name: string, fallback: string): string {
-  if (typeof window === "undefined") return fallback;
-  const raw = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  if (!raw) return fallback;
-  // Airwallex only accepts hex/rgb, so let the browser resolve oklch() etc. for us.
-  try {
-    const canvas = document.createElement("canvas");
-    canvas.width = canvas.height = 1;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return fallback;
-    ctx.fillStyle = "#000000";
-    ctx.fillStyle = /^[\d.]+\s/.test(raw) ? `hsl(${raw})` : raw;
-    ctx.fillRect(0, 0, 1, 1);
-    const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
-    return `#${[r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
-  } catch {
-    return fallback;
-  }
-}
 
 
 export function AirwallexDropIn({
