@@ -36,15 +36,19 @@ export const WIDGETS: WidgetDef[] = [
     emoji: "🌤",
     gradient: "grad-sky",
     gradientFor: (c) => {
-      const night = c.timeOfDay === "late" || c.hour >= 20 || c.hour < 5;
+      const w = c.weather;
+      const night = w ? !w.isDay : c.timeOfDay === "late" || c.hour >= 20 || c.hour < 5;
       if (night) return "grad-night";
-      if (c.weather.rain > 50 || c.weather.condition === "Light rain") return "grad-rain";
-      switch (c.weather.condition) {
+      if (!w) return "grad-sky";
+      if (w.rain > 50 || /rain|drizzle|thunder/i.test(w.condition)) return "grad-rain";
+      switch (w.condition) {
         case "Clear":
           return "grad-sun";
         case "Mostly sunny":
-          return c.weather.temp >= 30 ? "grad-sun" : "grad-partly";
+          return w.temp >= 30 ? "grad-sun" : "grad-partly";
         case "Partly cloudy":
+        case "Overcast":
+        case "Cloudy":
           return "grad-cloud";
         case "Hamsin haze":
           return "grad-haze";
@@ -52,26 +56,38 @@ export const WIDGETS: WidgetDef[] = [
           return "grad-partly";
       }
     },
-    relevance: (c) => clamp(52 + (c.timeOfDay === "morning" ? 40 : c.timeOfDay === "early" ? 30 : 6) + (c.weather.rain > 50 ? 15 : 0)),
-    build: (c) => ({
-      headline: `${c.weather.temp}° ${c.weather.condition}`,
-      sub: `${c.weatherCity} · feels ${c.weather.feels}° · H ${c.weather.high}° / L ${c.weather.low}°`,
-      rows: c.isFriday
+    relevance: (c) =>
+      clamp(52 + (c.timeOfDay === "morning" ? 40 : c.timeOfDay === "early" ? 30 : 6) + ((c.weather?.rain ?? 0) > 50 ? 15 : 0)),
+    build: (c) => {
+      const w = c.weather;
+      if (!w) {
+        return {
+          headline: c.weatherError ? "Weather unavailable" : "Getting the weather…",
+          sub: c.weatherError ? `Couldn't reach the weather service for ${c.weatherCity}` : c.weatherCity,
+          rows: [],
+          ctas: [],
+        };
+      }
+      const rows: WidgetRow[] = c.isFriday
         ? [
-            { icon: "🕯", label: "Candle lighting", value: c.zmanim.candle },
-            { icon: "🍷", label: "Havdalah (tomorrow)", value: c.zmanim.havdalah },
-            { icon: "☂️", label: "Rain chance", value: `${c.weather.rain}%` },
-            { icon: "🫁", label: "Air quality", value: `AQI ${c.weather.aqi}` },
+            { icon: "🕯", label: "Candle lighting", value: c.jewish?.candle ?? "—" },
+            { icon: "🍷", label: "Havdalah", value: c.jewish?.havdalah ?? "—" },
+            { icon: "☂️", label: "Rain chance", value: `${w.rain}%` },
           ]
         : [
-            { icon: "🌅", label: "Sunrise", value: c.zmanim.sunrise },
-            { icon: "🌇", label: "Sunset", value: c.zmanim.sunset },
-            { icon: "🔆", label: "UV index", value: `${c.weather.uv}` },
-            { icon: "☂️", label: "Rain chance", value: `${c.weather.rain}%` },
-            { icon: "🫁", label: "Air quality", value: `AQI ${c.weather.aqi}` },
-          ],
-      ctas: [],
-    }),
+            { icon: "🌅", label: "Sunrise", value: c.jewish?.sunrise ?? "—" },
+            { icon: "🌇", label: "Sunset", value: c.jewish?.sunset ?? "—" },
+            { icon: "🔆", label: "UV index", value: `${w.uv}` },
+            { icon: "☂️", label: "Rain chance", value: `${w.rain}%` },
+          ];
+      if (w.aqi !== null) rows.push({ icon: "🫁", label: "Air quality", value: `AQI ${w.aqi}` });
+      return {
+        headline: `${w.temp}° ${w.condition}`,
+        sub: `${c.weatherCity} · feels ${w.feels}° · H ${w.high}° / L ${w.low}°`,
+        rows,
+        ctas: [],
+      };
+    },
   },
   {
     id: "jewish",
@@ -89,45 +105,53 @@ export const WIDGETS: WidgetDef[] = [
           (c.isShabbat ? 20 : 0),
       ),
     build: (c) => {
-      const base = [
-        { icon: "📜", label: "This week's sedra", value: `Parashat ${c.sedra}` },
-        { icon: "🗓", label: "Today", value: c.hebrewDate },
-      ];
-      if (c.jewishDay?.kind === "fast") {
+      const j = c.jewish;
+      if (!j) {
         return {
-          headline: c.jewishDay.label,
-          sub: c.hebrewDate,
-          rows: [
-            ...base,
-            { icon: "🌑", label: "Fast begins", value: c.zmanim.sunrise },
-            { icon: "✨", label: "Fast ends", value: c.zmanim.havdalah },
-          ],
+          headline: c.jewishError ? "Calendar unavailable" : "Loading the luach…",
+          sub: c.jewishError ? "Couldn't reach the Jewish calendar service" : c.weatherCity,
+          rows: [],
           ctas: [],
         };
       }
-      if (c.jewishDay) {
+      const base: WidgetRow[] = [];
+      if (j.sedra) base.push({ icon: "📜", label: "This week's sedra", value: `Parashat ${j.sedra}` });
+      base.push({ icon: "🗓", label: "Today", value: j.hebrewDate });
+      if (j.shabbatSpecial) base.push({ icon: "✡️", label: "This Shabbat", value: j.shabbatSpecial });
+
+      if (j.fast) {
         return {
-          headline: c.jewishDay.label,
-          sub: c.hebrewDate,
+          headline: j.fast.label,
+          sub: j.hebrewDate,
           rows: [
             ...base,
-            { icon: "🕯", label: "Candle lighting", value: c.zmanim.candle },
+            { icon: "🌑", label: "Fast begins", value: j.fast.begins },
+            { icon: "✨", label: "Fast ends", value: j.fast.ends },
           ],
-          ctas: [],
+          ctas: [{ label: "Open Siddur", to: "/siddur" }],
+        };
+      }
+      const times: WidgetRow[] = [];
+      if (j.candle) times.push({ icon: "🕯", label: "Candle lighting", value: j.candle });
+      if (j.havdalah) times.push({ icon: "🍷", label: "Havdalah", value: j.havdalah });
+
+      if (j.holiday) {
+        return {
+          headline: j.holiday.label,
+          sub: j.hebrewDate,
+          rows: [...base, ...times],
+          ctas: [{ label: "Open Siddur", to: "/siddur" }],
         };
       }
       return {
-        headline: `Parashat ${c.sedra}`,
-        sub: c.hebrewDate,
-        rows: [
-          ...base,
-          { icon: "🕯", label: "Candle lighting", value: c.zmanim.candle },
-          { icon: "🍷", label: "Havdalah", value: c.zmanim.havdalah },
-        ],
-        ctas: [],
+        headline: j.sedra ? `Parashat ${j.sedra}` : j.hebrewDate,
+        sub: j.upcoming ? `Coming up · ${j.upcoming.label}` : j.hebrewDate,
+        rows: [...base, ...times],
+        ctas: [{ label: "Open Siddur", to: "/siddur" }],
       };
     },
   },
+
   {
     id: "social",
     title: "Requests",

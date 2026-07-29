@@ -1,86 +1,46 @@
-## What Airwallex actually gives us
+## Goal
 
-Airwallex is a licensed EMI (UK FCA, plus AU/SG/HK/EU/US licences). It covers four of the things Shekk needs:
+Right now both widgets are simulated. `src/lib/personalise.ts` invents the weather from a hash of the student's name and reads candle lighting / havdalah / sunrise / sunset from a hardcoded `CITY_PROFILE` table (Jerusalem always 16:38 / 17:53), and the sedra comes from a fixed 54-week counter anchored to "12 October", so it drifts and ignores double parshiyot and chagim. The Hebrew date is the only genuinely correct value.
 
-| Shekk need | Airwallex product |
-|---|---|
-| Take GBP/USD/EUR/CAD/AUD/ZAR from students (Apple Pay, card) | Payments / Payment Intents |
-| Hold that money in named currency accounts | Global Accounts |
-| Convert to ILS at a real rate | FX & Conversions API |
-| The Shekk card | Issuing (**Visa**, not Mastercard) |
-| Paying Gett's monthly invoice | Payouts / Transfers |
+Plan: replace both with live data keyed off the student's actual coordinates.
 
-Two things Airwallex does **not** do for us:
-- It does not know that "Rivka has ₪240." Airwallex holds one pooled balance for Shekk. The per-student balance is **our** ledger, which we build. This is the standard closed-loop wallet architecture.
-- Named per-user accounts and per-user cards require **Airwallex Scale (Connected Accounts)** — an approved-partner tier. Until that's approved, we run pooled: one Airwallex account, our ledger splits it.
+## 1. Live Jewish Life data (Hebcal)
 
-## Architecture
+New `src/lib/jewish.ts` + a server function that calls Hebcal (free, no key) for the current location:
 
-```text
-Student's Apple Pay
-      |
-      v
-Airwallex Payment Intent (GBP)  --> Airwallex GBP Global Account
-      |                                     |
-      | webhook: payment succeeded          | FX conversion GBP->ILS
-      v                                     v
-Shekk ledger (our database)         Airwallex ILS balance (the float)
-  credits student's balance          backs every shekel we owe
-      |
-      v
-Spend (Gett ride, merchant) -> hold -> settle -> ledger entry
-```
+- Zmanim (`/zmanim`): sunrise, sunset, alot hashachar, chatzot, pliag, tzeit — computed from the exact lat/lon and timezone, not a city table.
+- Shabbat/chag times (`/shabbat`): candle lighting (correct local minhag offset — 40 min Jerusalem, 18/20 min elsewhere), havdalah, and the parsha for that week including double parshiyot ("Matot-Masei") and "Shabbat Chazon" style specials.
+- Holidays (`/hebcal`): today's yom tov / fast / minor day with real fast start and end times, replacing the hardcoded `JEWISH_CALENDAR` MM-DD table.
+- Hebrew date from Hebcal converter (keeps the existing `Intl` value as an offline fallback).
 
-The invariant: **sum of all student ledger balances must always equal the ILS float held at Airwallex.** A daily reconciliation job asserts this and alarms in the admin console when it drifts.
+Cached per city+date, refreshed in the background, with the current static values kept only as a last-resort offline fallback (labelled as such in the sheet, so the widget never silently shows a wrong candle time).
 
-## Build phases
+The widget itself gains real state: on Friday it shows tonight's candle lighting with a countdown; on Shabbat it shows havdalah; on a fast day, real fast begin/end; otherwise sedra + zmanim.
 
-### Phase 1 — Server-side ledger (build now, no Airwallex account needed)
+## 2. Live weather (Open-Meteo)
 
-Move money out of `localStorage` into the backend database.
+New `src/lib/weather.ts` server function calling Open-Meteo forecast + air-quality endpoints for the location's lat/lon:
 
-- `accounts` — one row per user, ILS balance in **integer agorot** (never floats).
-- `ledger_entries` — append-only, double-entry. Never updated, never deleted. Every row: account, direction, amount, currency, category, counterparty, external reference, timestamp.
-- `holds` — pending authorisations (a Gett ride booked at estimate price). Holds reduce *available* balance but not *settled* balance, then settle to a final amount or release.
-- `funding_events` — one row per Airwallex payment intent, with its FX quote captured at the moment of purchase.
-- RLS so a user can only read their own rows, and **no client can ever write a balance** — all mutations go through server functions that recompute the balance from entries.
-- Idempotency keys on every money-moving operation so a double-tap or webhook retry can't double-charge.
+- Current temp, apparent temp, WMO weather code mapped to our condition labels/emoji, UV index, precipitation probability, daily high/low, plus European AQI from the air-quality endpoint.
+- Condition mapping drives the existing `gradientFor` colours (sun / cloud / rain / haze / night), so tiles keep reacting to real weather.
+- Short client cache (~15 min) and a stale-data indicator; if the call fails, the tile shows "Weather unavailable" rather than fabricated numbers.
 
-This makes the demo genuinely credible and is the foundation everything else bolts onto.
+## 3. Location logic, properly
 
-### Phase 2 — Airwallex adapter
+- `LocationBar` keeps the one-time permission ask, but on success we now reverse-geocode the coordinates (Open-Meteo's geocoding/BigData-style reverse lookup, Israel-scoped) so any location in Israel resolves to a real city/neighbourhood name, falling back to `nearestPlace()` from the current list when the lookup fails.
+- Watch and refresh: re-detect when the app returns to the foreground, and re-fetch weather/zmanim when the student moves more than ~5 km.
+- Manual picker becomes the authoritative override — expanded to all Israeli cities we support, searchable, and once set it sticks until the student taps "Use my current location" again.
+- Denied / unavailable / timeout each get a distinct, honest message plus a direct route to the picker; both widgets then use the picked city's coordinates.
+- Everything — weather, zmanim, candle lighting, sedra specials — reads from one shared `place` (lat/lon), so the two widgets can never disagree about where you are.
 
-Replace the simulators in `src/lib/banking.ts` with real calls, keeping the same function signatures so no UI changes.
+## 4. Widget UI
 
-- Server-only Airwallex client: `client_id` + `api_key` exchanged for a bearer token, cached and refreshed.
-- `quoteFx` → real Airwallex FX quote, our margin applied on top and shown explicitly to the student.
-- `requestFunding` → create a Payment Intent, confirm with Apple Pay, return the intent for client-side confirmation.
-- Webhook at `/api/public/webhooks/airwallex` with signature verification — this is the **only** thing that credits a ledger balance. Never credit from the client saying "payment worked."
-- Everything stays behind a feature flag: no keys → current simulator; keys present → live. Same pattern as the Gett fallback.
-
-### Phase 3 — Card and per-user accounts
-
-Needs Airwallex Scale approval. Card becomes a Shekk **Visa**; `ShekkCard.tsx` art and copy updated accordingly.
-
-### Phase 4 — Gett reconciliation
-
-Ride booking creates a hold at the estimate; Gett's final fare settles it. Monthly, match Gett's invoice line items to ledger entries by Gett ride ID and flag mismatches in the admin console.
-
-## What you need to do commercially
-
-1. Apply for an **Airwallex business account** (airwallex.com) — company registration, directors' IDs, business model description. Say clearly you're building a closed-loop wallet for students in Israel; this is a platform use case and they'll route it to the right team.
-2. Ask specifically about **Scale / Connected Accounts** and **Issuing** eligibility for your entity and target market. Approval is manual and can take weeks.
-3. Get **API credentials** — sandbox first (`api-demo.airwallex.com`), production later (`api.airwallex.com`). I'll open a secure form for `AIRWALLEX_CLIENT_ID`, `AIRWALLEX_API_KEY`, `AIRWALLEX_WEBHOOK_SECRET` and `AIRWALLEX_API_BASE` when you have them.
-4. Get legal advice on your own regulatory position. Even riding on Airwallex's licence, running a student wallet in Israel with an agent/distributor arrangement has requirements — that's a lawyer question, not one I can answer.
+- Jewish Life detail sheet: full zmanim list for the day (alot, sunrise, sof zman kriat shema, chatzot, mincha gedola, shkia, tzeit), candle/havdalah, upcoming chag, and a "times for <city>" line with a change-location control.
+- Today/weather sheet: hourly-ish summary, high/low, UV, rain chance, AQI, and the same city control (currently a separate `WEATHER_CITIES` list — merged into the single location source).
+- Loading skeletons instead of placeholder numbers; timestamp of last refresh.
 
 ## Technical notes
 
-- All amounts stored as integers (agorot/cents). No floating-point money anywhere.
-- The ledger is append-only; a correction is a new reversing entry, never an edit.
-- Airwallex secrets are read inside server function handlers only, never at module scope, never client-side.
-- Webhook signature verified with timing-safe HMAC comparison before any write.
-- Existing `src/lib/banking.ts` signatures preserved so `wallet`, `card`, `exchange`, `topup` and the Gett flow keep working throughout.
-
-## Recommendation
-
-Start Phase 1 now. It's pure build work, needs no approvals, and it's the thing that turns Shekk from a prototype into something you can put in front of Airwallex and Gett. Phases 2–4 unlock as credentials land.
+- Both fetches go through `createServerFn` so upstream calls are server-side and cacheable, wrapped in TanStack Query with `staleTime` (weather 15 min, zmanim until midnight).
+- `personalise.ts` keeps its role for spending signals and seeding, but its `CITY_PROFILE` zmanim, `CONDITIONS` random weather and `JEWISH_CALENDAR` table are removed from the live path.
+- No API keys or new secrets needed; Hebcal and Open-Meteo are both free and unauthenticated.

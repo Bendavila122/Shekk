@@ -1,0 +1,54 @@
+/** React hooks for the live weather + Jewish-calendar widget data. */
+import { useQuery } from "@tanstack/react-query";
+import type { Place } from "./location";
+import { getJewishToday, getWeather } from "./live.functions";
+import type { LiveJewish, LiveWeather } from "./live-types";
+
+/** Milliseconds until the next local midnight — zmanim are good until then. */
+function msUntilMidnight() {
+  const now = new Date();
+  const next = new Date(now);
+  next.setHours(24, 0, 0, 0);
+  return Math.max(60_000, next.getTime() - now.getTime());
+}
+
+export function useWeather(place: Place | null) {
+  return useQuery<LiveWeather>({
+    queryKey: ["weather", place?.lat?.toFixed(2), place?.lon?.toFixed(2)],
+    queryFn: () => getWeather({ data: { lat: place!.lat, lon: place!.lon } }),
+    enabled: !!place,
+    staleTime: 15 * 60_000,
+    gcTime: 60 * 60_000,
+    refetchOnWindowFocus: true,
+    retry: 1,
+  });
+}
+
+export function useJewish(place: Place | null) {
+  return useQuery<LiveJewish>({
+    queryKey: ["jewish", place?.lat?.toFixed(2), place?.lon?.toFixed(2)],
+    queryFn: () => getJewishToday({ data: { lat: place!.lat, lon: place!.lon } }),
+    enabled: !!place,
+    staleTime: msUntilMidnight(),
+    gcTime: 24 * 60 * 60_000,
+    refetchOnWindowFocus: true,
+    retry: 1,
+  });
+}
+
+/** "in 3h 12m" style countdown to an ISO timestamp, or null once it has passed. */
+export function countdownTo(iso: string | null | undefined, from = new Date()): string | null {
+  if (!iso) return null;
+  const ms = new Date(iso).getTime() - from.getTime();
+  if (!Number.isFinite(ms) || ms <= 0) return null;
+  const mins = Math.round(ms / 60_000);
+  if (mins < 60) return `in ${mins} min`;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h < 24) return m ? `in ${h}h ${m}m` : `in ${h}h`;
+  const d = Math.floor(h / 24);
+  return `in ${d} day${d > 1 ? "s" : ""}`;
+}
+
+export const isToday = (iso: string | null | undefined) =>
+  !!iso && new Date(iso).toDateString() === new Date().toDateString();
