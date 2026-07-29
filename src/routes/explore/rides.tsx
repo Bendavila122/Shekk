@@ -34,7 +34,7 @@ type Option = {
 };
 
 const QUICK: Spot[] = ISRAEL_PLACES.slice(0, 8).map((p) => ({
-  label: `${p.name}, ${p.city}`,
+  label: p.area ? `${p.area}, ${p.city}` : p.city,
   lat: p.lat,
   lng: p.lon,
 }));
@@ -125,7 +125,7 @@ function Rides() {
   const cancel = useServerFn(cancelRide);
 
   const defaultPickup = useMemo<Spot | null>(
-    () => (here ? { label: `${here.name}, ${here.city}`, lat: here.lat, lng: here.lon } : QUICK[0] ?? null),
+    () => (here ? { label: here.area ? `${here.area}, ${here.city}` : here.city, lat: here.lat, lng: here.lon } : QUICK[0] ?? null),
     [here],
   );
 
