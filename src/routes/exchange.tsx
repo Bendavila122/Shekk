@@ -54,20 +54,33 @@ function ExchangeScreen() {
 
       {done ? (
         <section className="px-5 pt-8 text-center">
-          <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-success-soft">
-            <Check className="size-10 text-success" />
+          <div
+            className={`mx-auto flex size-20 items-center justify-center rounded-full ${
+              phase === "settled" ? "bg-success-soft" : "bg-muted"
+            }`}
+          >
+            {phase === "settled" ? (
+              <Check className="size-10 text-success" />
+            ) : (
+              <Loader2 className="size-9 animate-spin text-muted-foreground" />
+            )}
           </div>
-          <h1 className="mt-6 font-display text-3xl font-bold">{ils(q.shekels)} converted</h1>
+          <h1 className="mt-6 font-display text-3xl font-bold">
+            {phase === "settled" ? `${ils(q.shekels)} converted` : "Waiting for your payment"}
+          </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            {money(cur.code, q.amount)} exchanged at ₪{q.rate.toFixed(3)}. It's in your Shekk balance now.
+            {phase === "settled"
+              ? `${money(cur.code, q.amount)} exchanged at ₪${q.rate.toFixed(3)}. It's in your Shekk balance now.`
+              : `${money(cur.code, q.amount)} is with the payment partner. Your shekels land as soon as they confirm it settled.`}
           </p>
           <div className="mt-8 space-y-3 text-left">
-            <PrimaryButton onClick={() => setDone(false)}>Convert again</PrimaryButton>
+            <PrimaryButton onClick={resetFunding}>Convert again</PrimaryButton>
             <Link to="/wallet" className="tap block rounded-2xl bg-muted py-4 text-center text-sm font-semibold">
               Back to wallet
             </Link>
           </div>
         </section>
+
       ) : (
         <>
           <section className="px-4 pt-5">
