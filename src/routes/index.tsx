@@ -4,6 +4,7 @@ import { GlobalSearch } from "@/components/GlobalSearch";
 import { AppShell, ReverifyBanner } from "@/components/AppShell";
 
 import { ActiveNow } from "@/components/ActiveNow";
+import { ForYou } from "@/components/ForYou";
 import { LocationBar } from "@/components/LocationBar";
 
 
@@ -158,6 +159,8 @@ function HomeScreen() {
       </div>
 
       <ActiveNow />
+
+      <ForYou />
 
 
 

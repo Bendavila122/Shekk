@@ -90,7 +90,6 @@ function CardScreen() {
           name={firstName}
           last4={card.last4}
           expiry={card.expiry}
-          balance={state.balance}
           frozen={card.frozen}
           showNumber={reveal}
           className={card.issued ? "" : "opacity-60 blur-[1px]"}
