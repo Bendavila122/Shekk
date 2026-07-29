@@ -42,6 +42,7 @@ function AdminLayout() {
   if (!checked) return <div className="min-h-screen bg-ink" />;
   if (!unlocked) return <CodeGate onSubmit={unlock} />;
 
+
   return (
     <div className="flex min-h-screen bg-ink/[0.04]">
       <aside className="hidden w-60 shrink-0 flex-col gap-1 border-r border-border bg-ink px-3 py-6 text-ink-foreground md:flex">
