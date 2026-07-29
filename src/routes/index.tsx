@@ -183,31 +183,7 @@ function HomeScreen() {
       ) : null}
 
 
-      {/* Benefits near you */}
-      <section className="pt-6">
-        <div className="mb-2 flex items-baseline justify-between px-5">
-          <h2 className="font-display text-lg font-bold tracking-tight">Benefits near you</h2>
-          <Link to="/benefits" className="tap-flat text-[12px] font-semibold text-primary">
-            See all
-          </Link>
-        </div>
-        <div className="scrollbar-none flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 scroll-px-5 pb-1">
-          {benefits.slice(0, 6).map((b) => (
-            <Link
-              key={b.id}
-              to="/benefits/$id"
-              params={{ id: b.id }}
-              className="tap w-[190px] shrink-0 snap-start rounded-2xl border border-border bg-card p-3.5 shadow-card"
-            >
-              <ServiceLogo service={{ name: b.brand, emoji: b.emoji, domain: b.domain }} size={38} />
-              <p className="mt-2.5 line-clamp-2 text-[13px] font-semibold leading-snug">{b.headline}</p>
-              <p className="mt-1.5 text-[11px] text-muted-foreground">{b.location}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
 
-      <ForYou />
 
       <div className="mt-5">
         <ReverifyBanner />
