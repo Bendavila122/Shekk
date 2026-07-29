@@ -26,43 +26,6 @@ export type WidgetDef = {
   build: (ctx: UserContext) => WidgetContent;
 };
 
-const nearbyByCity: Record<string, string[]> = {
-  Jerusalem: ["Rooftop party, Mamilla", "Thursday night cholent, Nachlaot", "Live music at HaMachtesh", "Student meetup, Emek Refaim"],
-  "Tel Aviv": ["Rooftop party, Rothschild", "Beach bonfire, Gordon", "Live set at HaTachana", "Student meetup, Florentin"],
-  Israel: ["Cohort bonfire", "Thursday night cholent", "Live music downtown", "Student meetup"],
-};
-
-const discoverByCity: Record<string, WidgetRow[]> = {
-  Jerusalem: [
-    { icon: "☕️", label: "Cafe Kadosh", value: "4 min walk" },
-    { icon: "🍽", label: "New: Hummus Ben Sira", value: "Opened this week" },
-    { icon: "🏛", label: "Tower of David night show", value: "Student ₪35" },
-    { icon: "🤝", label: "Pantry Packers volunteering", value: "Sun 09:00" },
-  ],
-  "Tel Aviv": [
-    { icon: "☕️", label: "Cafe Xoho", value: "6 min walk" },
-    { icon: "🍽", label: "New: Miznon Ibn Gvirol", value: "Opened this week" },
-    { icon: "🏖", label: "Old Jaffa port walk", value: "Free" },
-    { icon: "🤝", label: "Leket Israel packing", value: "Mon 10:00" },
-  ],
-  Israel: [
-    { icon: "☕️", label: "Local cafe pick", value: "Nearby" },
-    { icon: "🍽", label: "New restaurant nearby", value: "This week" },
-    { icon: "🗺", label: "Nearby attraction", value: "Student rate" },
-    { icon: "🤝", label: "Volunteering slot", value: "This week" },
-  ],
-};
-
-const HEADLINES = [
-  { icon: "🚆", label: "Rail works: Navon–TLV runs at 20-min gaps Sunday" },
-  { icon: "🎓", label: "Student Rav-Kav renewals open at post offices" },
-  { icon: "🏖", label: "Public holiday next Thursday — most offices closed" },
-  { icon: "🌧", label: "Weather alert: heavy rain in the north tonight" },
-  { icon: "🚌", label: "New night bus line links Jerusalem to Modiin" },
-  { icon: "🏥", label: "Kupot clinics extend evening hours this month" },
-  { icon: "📶", label: "Nationwide test of the emergency alert system, 10:05" },
-  { icon: "🥬", label: "Produce prices down ahead of the chag" },
-];
 
 const clamp = (n: number) => Math.max(0, Math.min(100, n));
 
