@@ -258,6 +258,9 @@ function Verify() {
               value={draft.dateOfBirth ?? ""}
               onChange={(e) => set("dateOfBirth", e.target.value)}
             />
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              You must be 16 or over. Under 18, lower limits apply.
+            </p>
           </Field>
           <Field label="Nationality">
             <select
