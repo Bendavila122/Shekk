@@ -19,6 +19,15 @@ export type KycStatus =
   | "verified"
   | "rejected";
 
+/**
+ * Our regulated partner's own decision on this member's shekel (ILS) account.
+ * Identity checks passing is not enough: no money moves until the partner has
+ * approved the account, and only ever as a shekel account.
+ */
+export type IlsAccountStatus = "not_submitted" | "pending" | "approved" | "rejected";
+
+
+
 export type MemberProfile = {
   userId: string;
   email: string | null;
