@@ -71,6 +71,7 @@ function AppIcon({ service }: { service: Service }) {
 function HomeScreen() {
   const ready = useOnboardedGate();
   const { state, isPremium } = useApp();
+  const kycProfile = useProfile();
   const benefits = useVisibleBenefits();
   const promos = usePromotions("home");
 
