@@ -48,6 +48,7 @@ function Auth() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [sentTo, setSentTo] = useState<string | null>(null);
+  const [handoff, setHandoff] = useState<string | null>(null);
 
   async function social(provider: "google" | "apple") {
     const label = provider === "google" ? "Google" : "Apple";
