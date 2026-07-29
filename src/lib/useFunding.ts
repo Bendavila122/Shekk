@@ -15,6 +15,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { airwallexStatus, startTopUp } from "./airwallex.functions";
 import type { CurrencyCode } from "./currencies";
 import { useApp } from "./store";
+import { useProfile } from "./useProfile";
 
 export type PartnerStatus = {
   connected: boolean;
@@ -50,6 +51,7 @@ export type PendingIntent = {
 export function useFunding() {
   const { signedIn, refreshLedger, state } = useApp();
   const partner = usePaymentPartner();
+  const { verified, pending, loading: profileLoading } = useProfile();
   const [phase, setPhase] = useState<FundingPhase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [intent, setIntent] = useState<PendingIntent | null>(null);
@@ -70,6 +72,9 @@ export function useFunding() {
     if (phase === "awaiting" && state.balance > startBalance.current) setPhase("settled");
   }, [phase, state.balance]);
 
+  /** Regulated accounts only fund after the identity checks pass. */
+  const needsVerification = signedIn && !profileLoading && !verified;
+
   /** Why funding is unavailable right now, or null when it's good to go. */
   const blocked =
     partner === null
@@ -78,7 +83,12 @@ export function useFunding() {
         ? "Adding money is unavailable — Shekk's payment partner isn't connected yet."
         : !signedIn
           ? "Sign in to add money to your shekel account."
-          : null;
+          : needsVerification
+            ? pending
+              ? "Your identity checks are still being reviewed. You can add money as soon as they clear."
+              : "Verify your identity before adding money — it takes about three minutes."
+            : null;
+
 
   /** Mint a payment intent. The shopper then pays inside Airwallex's sheet. */
   const fund = useCallback(
@@ -133,6 +143,7 @@ export function useFunding() {
   return {
     partner,
     blocked,
+    needsVerification,
     phase,
     error,
     intent,

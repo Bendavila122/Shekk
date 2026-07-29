@@ -5,6 +5,7 @@ import { PROGRAMS, ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
+import { useProfile } from "@/lib/useProfile";
 
 export const Route = createFileRoute("/me")({
   head: () => ({
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/me")({
 function Me() {
   const ready = useOnboardedGate();
   const { state, verification, daysLeft, setAvatar, isPremium } = useApp();
+  const kyc = useProfile();
   const program = PROGRAMS.find((p) => p.id === state.programId);
 
   const onPickPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,10 +83,30 @@ function Me() {
           </div>
         </div>
 
-        <div className={`mt-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${badge.cls}`}>
-          <badge.Icon className="size-4" /> {badge.label}
-          {daysLeft !== null && <span>· {daysLeft} days left</span>}
-        </div>
+        {kyc.verified ? (
+          <div className={`mt-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${badge.cls}`}>
+            <badge.Icon className="size-4" /> {badge.label}
+            {daysLeft !== null && <span>· {daysLeft} days left</span>}
+          </div>
+        ) : (
+          <Link
+            to="/verify"
+            className="tap mt-4 flex items-center justify-between gap-3 rounded-2xl bg-accent px-4 py-3 text-accent-foreground"
+          >
+            <span>
+              <span className="block text-sm font-bold">
+                {kyc.pending ? "Identity checks in progress" : "Finish opening your account"}
+              </span>
+              <span className="block text-xs opacity-80">
+                {kyc.pending
+                  ? "We'll email you the moment it clears."
+                  : "ID, address and a selfie — about three minutes."}
+              </span>
+            </span>
+            <ChevronRight className="size-5 shrink-0" />
+          </Link>
+        )}
+
       </header>
 
       <div className="space-y-4 px-4 py-5">
