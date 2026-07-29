@@ -7,7 +7,7 @@ import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { useApp } from "@/lib/store";
 import { TIERS, COMPARISON } from "@/lib/membership";
 import { useSubscription } from "@/lib/useSubscription";
-import { SHEKK_PLUS_PRICE_ID, getStripeEnvironment } from "@/lib/stripe";
+import { MEMBERSHIP_PLANS, getStripeEnvironment, type BillingCycle } from "@/lib/stripe";
 import { createMembershipPortal } from "@/lib/payments.functions";
 
 export const Route = createFileRoute("/membership")({
