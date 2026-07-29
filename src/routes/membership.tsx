@@ -136,9 +136,32 @@ function MembershipScreen() {
         </section>
       ) : null}
 
+      {!isPlus ? (
+        <section className="px-4 pt-5">
+          <div className="flex rounded-2xl bg-muted p-1">
+            {(["monthly", "yearly"] as BillingCycle[]).map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => {
+                  setCycle(c);
+                  setCheckoutOpen(false);
+                }}
+                className={`tap-flat flex-1 rounded-xl py-2.5 text-sm font-semibold ${
+                  cycle === c ? "bg-card text-foreground shadow-card" : "text-muted-foreground"
+                }`}
+              >
+                {c === "monthly" ? "Monthly" : "Yearly · save 17%"}
+              </button>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section className="space-y-4 px-4 pt-5">
         {TIERS.map((t) => {
           const current = t.id === "premium" ? isPlus : !isPlus;
+          const isPremium = t.id === "premium";
           return (
             <Card key={t.id} className={`p-5 ${current ? "border-primary" : ""}`}>
               <div className="flex items-baseline justify-between gap-3">
@@ -147,10 +170,15 @@ function MembershipScreen() {
                   <p className="text-xs text-muted-foreground">{t.tagline}</p>
                 </div>
                 <div className="shrink-0 text-right">
-                  <p className="font-display text-lg font-bold">{t.price}</p>
-                  <p className="text-[11px] text-muted-foreground">{t.cadence}</p>
+                  <p className="font-display text-lg font-bold">
+                    {isPremium ? plan.price : t.price}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {isPremium ? plan.cadence : t.cadence}
+                  </p>
                 </div>
               </div>
+
 
               <ul className="mt-4 space-y-2.5">
                 {t.perks.map((p) => (
