@@ -28,10 +28,12 @@ export const Route = createFileRoute("/exchange")({
 
 function ExchangeScreen() {
   const ready = useOnboardedGate();
-  const { state, addMoney, isPremium } = useApp();
+  const { state, isPremium } = useApp();
+  const { blocked, phase, error, fund, resetFunding } = useFunding();
   const [from, setFrom] = useState(state.settings.payCurrency);
   const [amount, setAmount] = useState("250");
-  const [done, setDone] = useState(false);
+  const done = phase === "awaiting" || phase === "settled";
+
 
   if (!ready) {
     return (
