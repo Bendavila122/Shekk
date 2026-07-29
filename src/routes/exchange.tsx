@@ -146,23 +146,34 @@ function ExchangeScreen() {
             ) : null}
 
             <p className="mt-3 px-1 text-[11px] text-muted-foreground">
-              Rates refresh every 30 seconds. Conversion is handled by Shekk's FX partner — simulated here.
+              Rates refresh every 30 seconds. Conversion and settlement are handled by Shekk's regulated payment
+              partner.
             </p>
+
+            {blocked ? (
+              <div className="mt-3 flex items-start gap-2 rounded-2xl border border-notice-border bg-notice-soft px-4 py-3 text-xs leading-relaxed text-notice-foreground">
+                <Lock className="mt-0.5 size-4 shrink-0" />
+                <span>{blocked}</span>
+              </div>
+            ) : null}
+            {error ? (
+              <p className="mt-3 rounded-2xl bg-destructive/10 px-3 py-2 text-xs font-medium text-destructive">
+                {error}
+              </p>
+            ) : null}
           </section>
 
           <section className="px-4 pb-10 pt-6">
             <PrimaryButton
-              disabled={value <= 0}
-              onClick={() => {
-                addMoney(q.shekels, q.amount, `${money(cur.code, q.amount)} exchanged`);
-                setDone(true);
-              }}
+              disabled={value <= 0 || Boolean(blocked) || phase === "starting"}
+              onClick={() => void fund(from, q.amount)}
             >
-              Convert {money(cur.code, q.amount)}
+              {phase === "starting" ? "Starting payment…" : `Convert ${money(cur.code, q.amount)}`}
             </PrimaryButton>
           </section>
         </>
       )}
+
     </AppShell>
   );
 }
