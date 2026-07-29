@@ -411,6 +411,42 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const value: Ctx = {
     state,
     hydrated,
+    ledgerReady,
+    signedIn,
+    held,
+    available: Math.max(0, +(state.balance - held).toFixed(2)),
+    openHolds,
+    moneyError,
+    clearMoneyError: () => setMoneyError(null),
+    refreshLedger,
+    holdFor: async (input) => {
+      if (!signedIn) return null;
+      setMoneyError(null);
+      try {
+        const res = await holdMoney({
+          data: {
+            amount: input.amount,
+            merchant: input.merchant,
+            category: input.category ?? "Other",
+            icon: input.icon ?? "💳",
+            externalRef: input.externalRef ?? null,
+            idempotencyKey: `hold:${input.externalRef ?? Date.now()}`,
+          },
+        });
+        applySnapshot(res.snapshot);
+        return res.holdId;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Could not reserve that amount";
+        setMoneyError(message.replace(/^Error:\s*/, ""));
+        return null;
+      }
+    },
+    settleHold: async (holdId, finalAmount) => {
+      await money(() => settleHoldFn({ data: { holdId, finalAmount } }));
+    },
+    releaseHold: async (holdId) => {
+      await money(() => releaseHoldFn({ data: { holdId } }));
+    },
     daysLeft,
     verification,
     isPremium: state.membership === "premium",
@@ -433,7 +469,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
           payCurrency: p.payCurrency ?? s.settings.payCurrency,
         },
       })),
-    addMoney: (shekels, paid, sourceLabel) =>
+    addMoney: (shekels, paid, sourceLabel) => {
+      if (signedIn) {
+        void money(() =>
+          completeTopUp({
+            data: {
+              payCurrency: state.settings.payCurrency,
+              payAmount: paid,
+              method: "apple-pay",
+              idempotencyKey: `topup:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`,
+            },
+          }),
+        );
+        return;
+      }
       setState((s) => ({
         ...s,
         balance: +(s.balance + shekels).toFixed(2),
@@ -448,8 +497,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
           },
           ...s.txns,
         ],
-      })),
-    sendMoney: (to, amount, note) =>
+      }));
+    },
+    sendMoney: (to, amount, note) => {
+      if (signedIn) {
+        void money(() =>
+          spendMoney({
+            data: {
+              amount,
+              merchant: `Sent to ${to}${note ? ` · ${note}` : ""}`,
+              category: "Transfers",
+              icon: "↗️",
+              idempotencyKey: `p2p:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`,
+            },
+          }),
+        );
+        return;
+      }
       setState((s) => ({
         ...s,
         balance: +(s.balance - amount).toFixed(2),
@@ -464,7 +528,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
           },
           ...s.txns,
         ],
-      })),
+      }));
+    },
     setMembership: (membership) =>
       setState((s) => ({
         ...s,
@@ -476,7 +541,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     redeemBenefit: (id) =>
       setState((s) => (s.redeemed.includes(id) ? s : { ...s, redeemed: [id, ...s.redeemed] })),
 
-    spend: (merchant, category, amount, icon) =>
+    spend: (merchant, category, amount, icon) => {
+      if (signedIn) {
+        void money(() =>
+          spendMoney({
+            data: {
+              amount,
+              merchant,
+              category,
+              icon,
+              idempotencyKey: `spend:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`,
+            },
+          }),
+        );
+        return;
+      }
       setState((s) => ({
         ...s,
         balance: +(s.balance - amount).toFixed(2),
@@ -484,8 +563,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
           { id: `tx${Date.now()}`, merchant, category, amount: -amount, date: "Just now", icon },
           ...s.txns,
         ],
-      })),
-    receive: (merchant, amount, icon) =>
+      }));
+    },
+    receive: (merchant, amount, icon) => {
+      if (signedIn) {
+        void money(() =>
+          receiveMoney({
+            data: {
+              amount,
+              merchant,
+              category: "Friends",
+              icon,
+              idempotencyKey: `recv:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`,
+            },
+          }),
+        );
+        return;
+      }
       setState((s) => ({
         ...s,
         balance: +(s.balance + amount).toFixed(2),
@@ -493,7 +587,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
           { id: `tx${Date.now()}`, merchant, category: "Friends", amount, date: "Just now", icon },
           ...s.txns,
         ],
-      })),
+      }));
+    },
     triggerReverify: () =>
       setState((s) => ({
         ...s,
@@ -501,7 +596,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
         reverifyDueISO: new Date(Date.now() + 30 * 86_400_000).toISOString(),
       })),
     completeReverify: () => setState((s) => ({ ...s, reverifyDone: true, reverifyDueISO: null })),
-    payFriend: (id) =>
+    payFriend: (id) => {
+      if (signedIn) {
+        const req = state.splits.find((x) => x.id === id);
+        if (!req || req.paid) return;
+        void money(() =>
+          spendMoney({
+            data: {
+              amount: req.amount,
+              merchant: `Split paid to ${req.from}`,
+              category: "Friends",
+              icon: "👥",
+              idempotencyKey: `split:${req.id}`,
+            },
+          }),
+        ).then((ok) => {
+          if (ok) setState((s) => ({ ...s, splits: s.splits.map((x) => (x.id === id ? { ...x, paid: true } : x)) }));
+        });
+        return;
+      }
       setState((s) => {
         const req = s.splits.find((x) => x.id === id);
         if (!req || req.paid) return s;
@@ -521,7 +634,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
             ...s.txns,
           ],
         };
-      }),
+      });
+    },
     addSplit: (s2) => setState((s) => ({ ...s, splits: [s2, ...s.splits] })),
     addFriend: (name, program) =>
       setState((s) =>
