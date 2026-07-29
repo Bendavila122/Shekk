@@ -137,6 +137,19 @@ async function updateSubscription(subscription: any, env: StripeEnv) {
 
   // The update event can arrive before the created event; make sure a row exists.
   if (!data?.length) await upsertSubscription(subscription, env);
+
+  if (["past_due", "unpaid"].includes(subscription.status) && subscription.metadata?.userId) {
+    await notify(
+      subscription.metadata.userId,
+      "membership-payment-failed",
+      {
+        planLabel: "Shekk+",
+        endsOn: formatDate(periodEnd ? new Date(periodEnd * 1000).toISOString() : null),
+        manageUrl: `${APP_URL}/membership`,
+      },
+      `membership-payment-failed-${subscription.id}-${periodEnd ?? "na"}`,
+    );
+  }
 }
 
 async function cancelSubscription(subscription: any, env: StripeEnv) {
