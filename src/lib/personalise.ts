@@ -30,10 +30,6 @@ export function pick<T>(arr: readonly T[], seed: string): T {
   return arr[hash(seed) % arr.length];
 }
 
-function between(seed: string, min: number, max: number): number {
-  return Math.round(min + rand(seed) * (max - min));
-}
-
 /* ------------------------------------------------------------- calendar */
 
 export type TimeOfDay = "early" | "morning" | "afternoon" | "evening" | "late";
