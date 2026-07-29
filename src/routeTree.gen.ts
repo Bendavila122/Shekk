@@ -46,6 +46,7 @@ import { Route as ExploreCommunityRouteImport } from './routes/explore/community
 import { Route as ExploreAdminRouteImport } from './routes/explore/admin'
 import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
 import { Route as AdminMoneyRouteImport } from './routes/admin/money'
+import { Route as AdminAccountsRouteImport } from './routes/admin/accounts'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
@@ -238,6 +239,11 @@ const AdminMoneyRoute = AdminMoneyRouteImport.update({
   path: '/money',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminAccountsRoute = AdminAccountsRouteImport.update({
+  id: '/accounts',
+  path: '/accounts',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
     id: '/.well-known/oauth-protected-resource',
@@ -293,6 +299,7 @@ export interface FileRoutesByFullPath {
   '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/accounts': typeof AdminAccountsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
@@ -337,6 +344,7 @@ export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/accounts': typeof AdminAccountsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
@@ -383,6 +391,7 @@ export interface FileRoutesById {
   '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin/accounts': typeof AdminAccountsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
@@ -430,6 +439,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/accounts'
     | '/admin/money'
     | '/benefits/$id'
     | '/explore/admin'
@@ -474,6 +484,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/accounts'
     | '/admin/money'
     | '/benefits/$id'
     | '/explore/admin'
@@ -519,6 +530,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin/accounts'
     | '/admin/money'
     | '/benefits/$id'
     | '/explore/admin'
@@ -849,6 +861,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMoneyRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/accounts': {
+      id: '/admin/accounts'
+      path: '/accounts'
+      fullPath: '/admin/accounts'
+      preLoaderRoute: typeof AdminAccountsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
       path: '/.well-known/oauth-protected-resource'
@@ -895,11 +914,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteRouteChildren {
+  AdminAccountsRoute: typeof AdminAccountsRoute
   AdminMoneyRoute: typeof AdminMoneyRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminAccountsRoute: AdminAccountsRoute,
   AdminMoneyRoute: AdminMoneyRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
