@@ -8,10 +8,10 @@ export const Route = createFileRoute("/help")({
       {
         name: "description",
         content:
-          "Answers about Shekk credits, top ups, re-verification and paying friends during your gap year in Israel.",
+          "Answers about your Shekk shekel account, adding money, re-verification and paying friends during your gap year in Israel.",
       },
       { property: "og:title", content: "Help & support · Shekk" },
-      { property: "og:description", content: "Common questions about credits, top ups and verification on Shekk." },
+      { property: "og:description", content: "Common questions about your shekel balance, adding money and verification on Shekk." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -21,12 +21,12 @@ export const Route = createFileRoute("/help")({
 
 const FAQ = [
   {
-    q: "What exactly are Shekk credits?",
-    a: "Your Shekk balance is held in shekels. You top up with Apple Pay and spend it inside Shekk partner apps or with other Shekk users. Full credit terms are in the Terms & Conditions.",
+    q: "What exactly is my Shekk balance?",
+    a: "Your balance is real money in shekels, held in a regulated ILS payment account with our partner Airwallex. You add money with Apple Pay or a card in your own name and spend it inside Shekk partner apps or with other Shekk users. Full terms are in the Terms & Conditions.",
   },
   {
     q: "How is the rate calculated?",
-    a: "Before you confirm a top up we show the amount paid, the mid-market reference rate, our spread, and the exact credits you receive.",
+    a: "Before you confirm a top up we show the amount paid, the mid-market reference rate, our conversion cost, and the exact shekels you receive.",
   },
   {
     q: "Why do I need to re-verify?",
@@ -34,7 +34,7 @@ const FAQ = [
   },
   {
     q: "Can I pay a friend?",
-    a: "Yes — open Social to send credits or split a bill with your cohort. Your friend code lives on the home screen.",
+    a: "Yes — open Social to send shekels or split a bill with your cohort. Your friend code lives on the home screen.",
   },
 ];
 

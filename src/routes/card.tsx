@@ -83,7 +83,7 @@ function CardScreen() {
 
   return (
     <AppShell>
-      <ScreenHeader title="Shekk Card" subtitle="Mastercard, powered by our issuing partner" back="/wallet" />
+      <ScreenHeader title="Shekk Card" subtitle="Mastercard, issued through Airwallex" back="/wallet" />
 
       <section className="px-5 pt-5">
         <ShekkCardFace
@@ -143,9 +143,9 @@ function CardScreen() {
                 <p>
                   {kyc.verified
                     ? kyc.ilsAccountStatus === "rejected"
-                      ? "Our regulated partner couldn't open a shekel account for you. Talk to support and we'll go through it together."
-                      : "Our regulated partner is reviewing your account. Cards are issued the moment your shekel account is open."
-                    : "A Shekk card can only be issued once your ID checks pass and our partner opens your shekel account."}
+                      ? "Airwallex couldn't open a shekel account for you. Talk to support and we'll go through it together."
+                      : "Airwallex is reviewing your account. Cards are issued the moment your shekel account is open."
+                    : "A Shekk card can only be issued once your ID checks pass and Airwallex opens your shekel account."}
                 </p>
                 {!kyc.verified && (
                   <Link

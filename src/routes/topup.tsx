@@ -189,7 +189,7 @@ function AddMoney() {
 
         <p className="mt-3 flex items-start gap-2 px-1 text-[11px] leading-relaxed text-muted-foreground">
           <ShieldCheck className="mt-0.5 size-3.5 shrink-0" />
-          Accounts, payments and FX are provided by Shekk's regulated payment partner. Shekels are credited only once
+          Your shekel account, payments and FX are provided by Airwallex, Shekk's regulated payment partner. Shekels are credited only once
           they confirm your payment has settled.{" "}
           <Link to="/terms" className="font-semibold underline">
             Terms

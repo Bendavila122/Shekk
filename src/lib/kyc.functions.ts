@@ -62,7 +62,8 @@ export const saveMyProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => draftSchema.parse(data))
   .handler(async ({ data, context }) => {
-    const { saveProfile, missingFields } = await import("./kyc.server");
+    const { saveProfile, missingFields, assertEligible } = await import("./kyc.server");
+    assertEligible(data);
     const profile = await saveProfile(
       context.userId,
       data,

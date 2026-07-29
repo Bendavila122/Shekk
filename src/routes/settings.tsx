@@ -117,7 +117,7 @@ function SettingsPage() {
           <Divider />
           <Toggle
             label="Hide balance on home"
-            hint="Blur your credit balance until you tap it"
+            hint="Blur your balance until you tap it"
             checked={s.hideBalance}
             onChange={(v) => setSetting("hideBalance", v)}
           />
