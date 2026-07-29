@@ -8,7 +8,7 @@ import {
   getLedger,
   spendMoney,
   receiveMoney,
-  completeTopUp,
+  
   holdMoney,
   settleHoldFn,
   releaseHoldFn,
