@@ -184,6 +184,8 @@ function ConsoleAccess({ children }: { children: React.ReactNode }) {
         </p>
         <Link
           to="/auth"
+          search={{ next: "/admin" }}
+
           className="mt-4 inline-block rounded-xl bg-ink px-5 py-3 text-sm font-bold text-ink-foreground"
         >
           Go to sign in
