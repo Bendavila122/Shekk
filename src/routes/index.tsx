@@ -8,6 +8,7 @@ import { LocationBar } from "@/components/LocationBar";
 
 
 import { useApp } from "@/lib/store";
+import { useProfile } from "@/lib/useProfile";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
