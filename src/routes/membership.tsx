@@ -32,8 +32,10 @@ function MembershipScreen() {
   const { state, setMembership } = useApp();
   const { subscription, isPlus, loading, refresh } = useSubscription();
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [cycle, setCycle] = useState<BillingCycle>("monthly");
   const [portalBusy, setPortalBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const plan = MEMBERSHIP_PLANS[cycle];
 
   // Membership state follows the billing record, not a local toggle.
   useEffect(() => {
