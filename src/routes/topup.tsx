@@ -30,7 +30,9 @@ const PRESETS = [50, 100, 250, 500];
 
 function AddMoney() {
   const { state } = useApp();
-  const { blocked, phase, error, fund, resetFunding } = useFunding();
+  const { partner, blocked, phase, error, intent, fund, markSubmitted, failFunding, resetFunding } =
+    useFunding();
+
   const [amount, setAmount] = useState("100");
   const [source, setSource] = useState(state.settings.payCurrency);
   const [sheet, setSheet] = useState<"apple" | "bank" | null>(null);
