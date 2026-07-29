@@ -2,6 +2,8 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { useUserContext, WEATHER_CITIES } from "@/lib/personalise";
+import { placeForCity, useLocation } from "@/lib/location";
+import { useJewish, useWeather } from "@/lib/live";
 import { orderWidgets, type WidgetDef } from "@/lib/widgets";
 
 import { useForYouPrefs, haptic } from "@/lib/foryou-prefs";
@@ -84,6 +86,9 @@ function DetailSheet({
   balance,
   weatherCity,
   setWeatherCity,
+  onUseLocation,
+  locating,
+  locationError,
   onClose,
 }: {
   def: WidgetDef;
@@ -91,6 +96,9 @@ function DetailSheet({
   balance: number;
   weatherCity: string;
   setWeatherCity: (c: string) => void;
+  onUseLocation: () => void;
+  locating: boolean;
+  locationError: string | null;
   onClose: () => void;
 }) {
   const content = def.build(ctx);
@@ -129,9 +137,21 @@ function DetailSheet({
         </ul>
 
 
-        {def.id === "today" ? (
+        {def.id === "today" || def.id === "jewish" ? (
           <div className="mt-5">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Change city</p>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Location</p>
+              <button
+                onClick={() => {
+                  haptic();
+                  onUseLocation();
+                }}
+                className="tap rounded-full bg-primary/10 px-3 py-1.5 text-[11px] font-semibold text-primary"
+              >
+                {locating ? "Locating…" : "Use my location"}
+              </button>
+            </div>
+            {locationError ? <p className="mt-2 text-[11px] leading-snug text-muted-foreground">{locationError}</p> : null}
             <div className="mt-2 flex flex-wrap gap-2">
               {WEATHER_CITIES.map((c) => (
                 <button
@@ -180,7 +200,31 @@ export function ForYou() {
   // Live: re-derive context on a timer and whenever the tab regains focus.
   const [tick, setTick] = useState(0);
   const { prefs, togglePin, toggleHide, move, setSize, setWeatherCity, reset } = useForYouPrefs();
-  const ctx = useUserContext(tick, prefs.weatherCity);
+  const loc = useLocation();
+
+  // A manual city pin wins; otherwise follow the live GPS fix.
+  const place = useMemo(
+    () => (prefs.weatherCity ? placeForCity(prefs.weatherCity) : loc.place),
+    [prefs.weatherCity, loc.place],
+  );
+
+  // First visit: ask for location once so the widgets have something real.
+  useEffect(() => {
+    if (!prefs.weatherCity && loc.status === "idle") loc.detect();
+  }, [prefs.weatherCity, loc.status]);
+
+  const weather = useWeather(place);
+  const jewish = useJewish(place);
+
+  const ctx = useUserContext(tick, {
+    cityLabel: place ? (place.area ? `${place.area}, ${place.city}` : place.city) : "Israel",
+    weather: weather.data ?? null,
+    weatherLoading: weather.isPending && !!place,
+    weatherError: weather.isError || (!place && loc.status !== "asking"),
+    jewish: jewish.data ?? null,
+    jewishLoading: jewish.isPending && !!place,
+    jewishError: jewish.isError || (!place && loc.status !== "asking"),
+  });
 
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -309,8 +353,16 @@ export function ForYou() {
           def={openDef}
           ctx={ctx}
           balance={state.balance}
-          weatherCity={ctx.weatherCity}
+          weatherCity={prefs.weatherCity ?? place?.city ?? ""}
           setWeatherCity={setWeatherCity}
+          onUseLocation={() => {
+            setWeatherCity(null);
+            loc.detect();
+          }}
+          locating={loc.loading}
+          locationError={
+            prefs.weatherCity ? `Pinned to ${prefs.weatherCity}` : (loc.error ?? null)
+          }
           onClose={() => setOpenId(null)}
         />
       ) : null}
