@@ -216,7 +216,7 @@ function MembershipScreen() {
                         <Loader2 className="size-4 animate-spin" /> Checking
                       </span>
                     ) : (
-                      "Join Shekk+ · £9.99 a month"
+                      `Join Shekk+ · ${plan.price} ${plan.cadence}`
                     )}
                   </PrimaryButton>
                 ) : (
