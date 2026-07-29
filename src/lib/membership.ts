@@ -35,7 +35,7 @@ export const TIERS: Tier[] = [
     perks: [
       { icon: "💳", title: "Shekk Card", detail: "Mastercard for Israel, in Apple Pay from day one." },
       { icon: "🏷️", title: "Full benefits marketplace", detail: "Every partner offer unlocked, including members-only rates." },
-      { icon: "💱", title: "Better conversion", detail: "Lower margin on every currency you add." },
+      { icon: "💱", title: "Better conversion", detail: "Member rates when you add money in another currency." },
       { icon: "🎫", title: "Member events", detail: "Shabbatonim, tiyulim and city nights at member pricing." },
       { icon: "🎓", title: "Student deals", detail: "Gyms, courses, Hebrew lessons and travel at student rates." },
       { icon: "☎️", title: "Concierge", detail: "A real person for landlord, doctor and bureaucracy problems." },
