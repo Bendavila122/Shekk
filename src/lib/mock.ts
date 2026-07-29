@@ -33,24 +33,9 @@ export type Txn = {
   icon: string;
 };
 
-export const SEED_TXNS: Txn[] = [
-  { id: "t1", merchant: "Cafe Rimon", category: "Food & drink", amount: -48.0, date: "Today, 13:20", icon: "☕️" },
-  { id: "t2", merchant: "Rav-Kav top-up", category: "Transit", amount: -50.0, date: "Today, 08:41", icon: "🚌" },
-  { id: "t3", merchant: "Shabbaton — Tzfat", category: "Events", amount: -180.0, date: "Yesterday", icon: "🕯️" },
-  { id: "t4", merchant: "Gett ride · Machane Yehuda", category: "Rides", amount: -32.5, date: "Yesterday", icon: "🚕" },
-  { id: "t5", merchant: "Split from Ari L.", category: "Friends", amount: 41.25, date: "Sun", icon: "👥" },
-  { id: "t6", merchant: "Marzipan Bakery", category: "Food & drink", amount: -22.0, date: "Sun", icon: "🥐" },
-  { id: "t7", merchant: "Super Hatzvi", category: "Groceries", amount: -134.9, date: "Thu", icon: "🛒" },
-];
+export const SEED_TXNS: Txn[] = [];
 
-export const FRIENDS = [
-  { id: "f1", name: "Ari Lieber", program: "Ohr Somayach", initials: "AL", photo: "https://i.pravatar.cc/160?img=12" },
-  { id: "f2", name: "Tova Klein", program: "Michlala", initials: "TK", photo: "https://i.pravatar.cc/160?img=45" },
-  { id: "f3", name: "Shua Berman", program: "Aish HaTorah", initials: "SB", photo: "https://i.pravatar.cc/160?img=33" },
-  { id: "f4", name: "Rivki Stein", program: "Michlala", initials: "RS", photo: "https://i.pravatar.cc/160?img=47" },
-  { id: "f5", name: "Yoni Adler", program: "Meor", initials: "YA", photo: "https://i.pravatar.cc/160?img=15" },
-  { id: "f6", name: "Miri Gold", program: "Meor", initials: "MG", photo: "https://i.pravatar.cc/160?img=26" },
-];
+export const FRIENDS: { id: string; name: string; program: string; initials: string; photo: string }[] = [];
 
 export const friendPhoto = (name: string) => FRIENDS.find((f) => f.name === name)?.photo ?? null;
 
@@ -121,15 +106,6 @@ export const SHULS = [
   { id: "sh3", name: "Aish HaTorah Beit Midrash", detail: "Mincha 13:45 · Maariv 20:15", emoji: "📿" },
 ];
 
-export const FEED = [
-  { id: "a1", who: "Tova K.", what: "split a tiyul with 4 friends", when: "2h", emoji: "🏜️" },
-  { id: "a2", who: "Shua B.", what: "booked Shabbaton in Tzfat", when: "5h", emoji: "🕯️" },
-  { id: "a3", who: "Yoni A.", what: "topped up ₪400 before chagim", when: "1d", emoji: "💳" },
-];
+export const FEED: { id: string; who: string; what: string; when: string; emoji: string }[] = [];
 
-export const COHORT_THREAD = [
-  { id: "m1", who: "Madrich Eitan", text: "Bus for tomorrow's tiyul leaves 05:45 sharp from the kikar. Bring 3L water.", when: "18:04", me: false },
-  { id: "m2", who: "Rivki S.", text: "Anyone want to split a Gett to the station? I'm going 05:15", when: "18:11", me: false },
-  { id: "m3", who: "You", text: "I'm in — sending you a split request now 🙌", when: "18:12", me: true },
-  { id: "m4", who: "Ari L.", text: "Reminder: kitchen closes early erev Shabbat, order food before 14:00", when: "18:20", me: false },
-];
+export const COHORT_THREAD: { id: string; who: string; text: string; when: string; me: boolean }[] = [];

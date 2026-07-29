@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, Plus } from "lucide-react";
 import { AppShell, Card, PrimaryButton } from "@/components/AppShell";
-import { COHORT_THREAD, FEED, FRIENDS, friendPhoto, ils } from "@/lib/mock";
+import { ils } from "@/lib/mock";
 import { Avatar } from "@/components/Avatar";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
@@ -66,9 +66,14 @@ function Social() {
                 Requests for you
               </h2>
               <Card className="divide-y divide-border p-0">
+                {state.splits.length === 0 && (
+                  <p className="p-4 text-sm text-muted-foreground">
+                    No one is waiting on you. Requests from friends land here.
+                  </p>
+                )}
                 {state.splits.map((r) => (
                   <div key={r.id} className="flex items-center gap-3 p-4">
-                    <Avatar name={r.from} src={friendPhoto(r.from)} />
+                    <Avatar name={r.from} />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold">{r.from}</p>
                       <p className="truncate text-xs text-muted-foreground">{r.reason}</p>
@@ -93,36 +98,7 @@ function Social() {
           </div>
         )}
 
-        {tab === "thread" && (
-          <div className="space-y-3">
-            <Card className="bg-primary-soft">
-              <p className="text-sm font-semibold">Cohort {state.cohort}</p>
-              <p className="text-xs text-muted-foreground">42 students · 3 madrichim · announcements on</p>
-            </Card>
-            {COHORT_THREAD.map((m) => (
-              <div key={m.id} className={`flex ${m.me ? "justify-end" : "justify-start"}`}>
-                <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${
-                    m.me ? "bg-primary text-primary-foreground" : "bg-card shadow-card"
-                  }`}
-                >
-                  {!m.me && <p className="mb-1 text-xs font-semibold text-primary">{m.who}</p>}
-                  <p>{m.text}</p>
-                  <p className={`mt-1 text-[10px] ${m.me ? "opacity-70" : "text-muted-foreground"}`}>{m.when}</p>
-                </div>
-              </div>
-            ))}
-            <div className="flex gap-2 pt-2">
-              <input
-                placeholder="Message your cohort…"
-                className="flex-1 rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
-              />
-              <button className="tap rounded-2xl bg-primary px-4 text-sm font-semibold text-primary-foreground">
-                Send
-              </button>
-            </div>
-          </div>
-        )}
+        {tab === "thread" && <CohortThread />}
 
         {tab === "feed" && (
           <div className="space-y-3">
@@ -143,15 +119,9 @@ function Social() {
               </button>
             </Card>
             {state.feedOptIn ? (
-              FEED.map((f) => (
-                <Card key={f.id} className="flex items-center gap-3">
-                  <span className="text-xl">{f.emoji}</span>
-                  <p className="flex-1 text-sm">
-                    <strong>{f.who}</strong> {f.what}
-                  </p>
-                  <span className="text-xs text-muted-foreground">{f.when}</span>
-                </Card>
-              ))
+              <p className="py-10 text-center text-sm text-muted-foreground">
+                Nothing yet. When friends you add start booking and splitting, it shows up here.
+              </p>
             ) : (
               <p className="py-10 text-center text-sm text-muted-foreground">
                 Feed is off. Flip the switch to see what your cohort is up to.
@@ -164,13 +134,65 @@ function Social() {
   );
 }
 
+function CohortThread() {
+  const { state, sendCohortMessage } = useApp();
+  const [draft, setDraft] = useState("");
+
+  const send = () => {
+    const text = draft.trim();
+    if (!text) return;
+    sendCohortMessage(text);
+    setDraft("");
+  };
+
+  return (
+    <div className="space-y-3">
+      <Card className="bg-primary-soft">
+        <p className="text-sm font-semibold">{state.cohort ? `Cohort ${state.cohort}` : "Your cohort"}</p>
+        <p className="text-xs text-muted-foreground">
+          {state.cohort ? "Announcements from your madrichim land here." : "Join a program to unlock your cohort thread."}
+        </p>
+      </Card>
+      {state.cohortMessages.length === 0 && (
+        <p className="py-8 text-center text-sm text-muted-foreground">No messages yet — say something first.</p>
+      )}
+      {state.cohortMessages.map((m) => (
+        <div key={m.id} className={`flex ${m.me ? "justify-end" : "justify-start"}`}>
+          <div
+            className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${
+              m.me ? "bg-primary text-primary-foreground" : "bg-card shadow-card"
+            }`}
+          >
+            {!m.me && <p className="mb-1 text-xs font-semibold text-primary">{m.who}</p>}
+            <p>{m.text}</p>
+            <p className={`mt-1 text-[10px] ${m.me ? "opacity-70" : "text-muted-foreground"}`}>{m.when}</p>
+          </div>
+        </div>
+      ))}
+      <div className="flex gap-2 pt-2">
+        <input
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && send()}
+          placeholder="Message your cohort…"
+          className="flex-1 rounded-2xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-primary"
+        />
+        <button onClick={send} className="tap rounded-2xl bg-primary px-4 text-sm font-semibold text-primary-foreground">
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function SplitFlow() {
-  const { addSplit } = useApp();
+  const { state, addFriend } = useApp();
+  const [newFriend, setNewFriend] = useState("");
   const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
   const [picked, setPicked] = useState<string[]>([]);
-  const [total, setTotal] = useState("180");
+  const [total, setTotal] = useState("");
   const [mode, setMode] = useState<"even" | "custom">("even");
-  const [note, setNote] = useState("Motzei Shabbat pizza run");
+  const [note, setNote] = useState("");
 
   const amount = Number(total) || 0;
   const people = picked.length + 1;
@@ -185,19 +207,43 @@ function SplitFlow() {
         {step === 0 && (
           <>
             <p className="text-sm font-semibold">Who's in?</p>
-            <div className="grid grid-cols-3 gap-2">
-              {FRIENDS.map((f) => (
-                <button
-                  key={f.id}
-                  onClick={() => toggle(f.id)}
-                  className={`tap rounded-2xl border p-3 text-center ${
-                    picked.includes(f.id) ? "border-primary bg-primary-soft" : "border-border"
-                  }`}
-                >
-                  <Avatar name={f.name} src={f.photo} className="mx-auto mb-1 size-9" textClassName="text-xs" />
-                  <span className="block truncate text-[11px] font-semibold">{f.name.split(" ")[0]}</span>
-                </button>
-              ))}
+            {state.friends.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                No friends yet. Add someone by name to split with them.
+              </p>
+            ) : (
+              <div className="grid grid-cols-3 gap-2">
+                {state.friends.map((f) => (
+                  <button
+                    key={f.id}
+                    onClick={() => toggle(f.id)}
+                    className={`tap rounded-2xl border p-3 text-center ${
+                      picked.includes(f.id) ? "border-primary bg-primary-soft" : "border-border"
+                    }`}
+                  >
+                    <Avatar name={f.name} className="mx-auto mb-1 size-9" textClassName="text-xs" />
+                    <span className="block truncate text-[11px] font-semibold">{f.name.split(" ")[0]}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="flex gap-2">
+              <input
+                value={newFriend}
+                onChange={(e) => setNewFriend(e.target.value)}
+                placeholder="Add a friend by name"
+                className="flex-1 rounded-2xl border border-border px-4 py-3 text-sm outline-none focus:border-primary"
+              />
+              <button
+                onClick={() => {
+                  if (!newFriend.trim()) return;
+                  addFriend(newFriend);
+                  setNewFriend("");
+                }}
+                className="tap flex items-center gap-1 rounded-2xl bg-muted px-3 text-sm font-semibold"
+              >
+                <Plus className="size-4" /> Add
+              </button>
             </div>
             <PrimaryButton disabled={picked.length === 0} onClick={() => setStep(1)}>
               Next · {picked.length} friend{picked.length === 1 ? "" : "s"}
@@ -242,7 +288,9 @@ function SplitFlow() {
                 </p>
               )}
             </div>
-            <PrimaryButton onClick={() => setStep(2)}>Send requests</PrimaryButton>
+            <PrimaryButton disabled={amount <= 0} onClick={() => setStep(2)}>
+              Send requests
+            </PrimaryButton>
           </>
         )}
 
@@ -251,30 +299,17 @@ function SplitFlow() {
             <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-success-soft text-2xl">
               📨
             </span>
-            <p className="text-sm font-semibold">Requests sent for “{note}”</p>
+            <p className="text-sm font-semibold">Requests sent{note ? ` for “${note}”` : ""}</p>
             <p className="text-xs text-muted-foreground">
               {picked.length} friend{picked.length === 1 ? "" : "s"} asked for {ils(each)} each. They can pay in one tap.
             </p>
-            <PrimaryButton
-              onClick={() => {
-                addSplit({
-                  id: `sp${Date.now()}`,
-                  from: FRIENDS.find((f) => f.id === picked[0])?.name ?? "Friend",
-                  reason: `${note} (their share)`,
-                  amount: each,
-                  paid: false,
-                });
-                setStep(3);
-              }}
-            >
-              Simulate a friend splitting back
-            </PrimaryButton>
+            <PrimaryButton onClick={() => setStep(3)}>Done</PrimaryButton>
           </div>
         )}
 
         {step === 3 && (
           <div className="space-y-3 text-center">
-            <p className="text-sm font-semibold">New request added above ↑</p>
+            <p className="text-sm font-semibold">You'll see who has paid as they settle up.</p>
             <button onClick={() => { setStep(0); setPicked([]); }} className="tap text-sm font-semibold text-primary">
               Start another split
             </button>

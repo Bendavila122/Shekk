@@ -1,6 +1,6 @@
 /** "For You" widget catalogue — content + relevance scoring. */
 import type { ReactNode } from "react";
-import { EVENTS, FEED, BUS_LINES, RESTAURANTS, SHOPS, SHULS, ils } from "./mock";
+import { EVENTS, BUS_LINES, RESTAURANTS, SHOPS, SHULS, ils } from "./mock";
 import { pick, rand, type UserContext } from "./personalise";
 
 export type WidgetCta = { label: string; to: string };
@@ -252,7 +252,6 @@ export const WIDGETS: WidgetDef[] = [
         : "No one is waiting on you",
       rows: [
         ...c.signals.requests.map((r) => ({ icon: "🙋", label: `${r.from} · ${r.reason}`, value: ils(r.amount) })),
-        ...FEED.slice(0, 2).map((f) => ({ icon: f.emoji, label: `${f.who} ${f.what}`, value: f.when })),
       ],
       ctas: [{ label: "Pay back", to: "/social" }],
     }),
