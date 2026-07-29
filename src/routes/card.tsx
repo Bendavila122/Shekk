@@ -164,7 +164,7 @@ function CardScreen() {
                 to="/membership"
                 className="tap block rounded-2xl bg-primary px-5 py-4 text-center text-base font-semibold text-primary-foreground"
               >
-                Unlock with Shekk Premium
+                Unlock with Shekk+
               </Link>
             )}
           </div>

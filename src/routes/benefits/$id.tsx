@@ -63,7 +63,7 @@ function BenefitDetail() {
           <Detail label="Discount" value={b.discount} />
           <Detail label="How it works" value={b.redemption} />
           <Detail label="Valid" value={b.expires} />
-          <Detail label="Plan" value={b.premium ? "Shekk Premium" : "All members"} />
+          <Detail label="Plan" value={b.premium ? "Shekk+" : "All members"} />
         </Card>
       </section>
 

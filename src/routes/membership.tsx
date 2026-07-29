@@ -1,20 +1,26 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, Sparkles, Crown } from "lucide-react";
-import { AppShell, Card, ScreenHeader, PrimaryButton } from "@/components/AppShell";
+import { useEffect, useState } from "react";
+import { Check, Sparkles, Crown, Loader2 } from "lucide-react";
+import { AppShell, Card, ScreenHeader, PrimaryButton, Notice } from "@/components/AppShell";
+import { MembershipCheckout } from "@/components/MembershipCheckout";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { useApp } from "@/lib/store";
 import { TIERS, COMPARISON } from "@/lib/membership";
+import { useSubscription } from "@/lib/useSubscription";
+import { SHEKK_PLUS_PRICE_ID, getStripeEnvironment } from "@/lib/stripe";
+import { createMembershipPortal } from "@/lib/payments.functions";
 
 export const Route = createFileRoute("/membership")({
   head: () => ({
     meta: [
-      { title: "Shekk Membership · Shekk" },
+      { title: "Shekk+ Membership · Shekk" },
       {
         name: "description",
         content:
-          "Compare Shekk Free and Shekk Premium: the Shekk Mastercard, the full benefits marketplace, lower conversion margins, member events and concierge support.",
+          "Compare Shekk and Shekk+ at £9.99 a month: the Shekk Mastercard, the full benefits marketplace, lower conversion margins, member events and concierge support.",
       },
-      { property: "og:title", content: "Shekk Membership · Shekk" },
-      { property: "og:description", content: "The card, the benefits and someone to call." },
+      { property: "og:title", content: "Shekk+ Membership · Shekk" },
+      { property: "og:description", content: "The card, the benefits and someone to call — £9.99 a month." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -23,7 +29,56 @@ export const Route = createFileRoute("/membership")({
 });
 
 function MembershipScreen() {
-  const { state, setMembership, isPremium } = useApp();
+  const { state, setMembership } = useApp();
+  const { subscription, isPlus, loading, refresh } = useSubscription();
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [portalBusy, setPortalBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Membership state follows the billing record, not a local toggle.
+  useEffect(() => {
+    if (loading) return;
+    const target = isPlus ? "premium" : "free";
+    if (state.membership !== target) setMembership(target);
+  }, [isPlus, loading, state.membership, setMembership]);
+
+  // Coming back from checkout — re-read the membership record.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (new URLSearchParams(window.location.search).has("session_id")) {
+      setCheckoutOpen(false);
+      const timer = window.setInterval(() => void refresh(), 2000);
+      const stop = window.setTimeout(() => window.clearInterval(timer), 20000);
+      return () => {
+        window.clearInterval(timer);
+        window.clearTimeout(stop);
+      };
+    }
+  }, [refresh]);
+
+  const manage = async () => {
+    setPortalBusy(true);
+    setError(null);
+    try {
+      const result = await createMembershipPortal({
+        data: { returnUrl: window.location.href, environment: getStripeEnvironment() },
+      });
+      if ("error" in result) throw new Error(result.error);
+      window.open(result.url, "_blank");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not open billing");
+    } finally {
+      setPortalBusy(false);
+    }
+  };
+
+  const renews = subscription?.currentPeriodEnd
+    ? new Date(subscription.currentPeriodEnd).toLocaleDateString(undefined, {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : null;
 
   return (
     <AppShell>
@@ -35,20 +90,52 @@ function MembershipScreen() {
           <div className="relative">
             <Crown className="size-6" />
             <p className="mt-3 font-display text-2xl font-bold leading-tight">
-              {isPremium ? "You're a Premium member" : "Shekk Premium"}
+              {isPlus ? "You're on Shekk+" : "Shekk+"}
             </p>
             <p className="mt-1 text-sm opacity-85">
-              {isPremium
-                ? "Card, full marketplace, member pricing and concierge — all active."
-                : "£14.99 a month. Cancel any time, keep your account either way."}
+              {isPlus
+                ? subscription?.cancelAtPeriodEnd && renews
+                  ? `Ends ${renews}. You keep everything until then.`
+                  : renews
+                    ? `£9.99 a month · renews ${renews}.`
+                    : "Card, full marketplace, member pricing and concierge — all active."
+                : "£9.99 a month. Cancel any time, keep your account either way."}
             </p>
           </div>
         </div>
       </section>
 
+      <section className="px-4 pt-4">
+        <PaymentTestModeBanner />
+      </section>
+
+      {error ? (
+        <section className="px-4 pt-4">
+          <Notice title="Membership">{error}</Notice>
+        </section>
+      ) : null}
+
+      {checkoutOpen ? (
+        <section className="px-4 pt-4">
+          <Card className="p-3">
+            <MembershipCheckout
+              priceId={SHEKK_PLUS_PRICE_ID}
+              returnUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/membership?session_id={CHECKOUT_SESSION_ID}`}
+            />
+            <button
+              type="button"
+              onClick={() => setCheckoutOpen(false)}
+              className="tap-flat mt-3 w-full rounded-2xl bg-muted py-3 text-sm font-semibold"
+            >
+              Cancel
+            </button>
+          </Card>
+        </section>
+      ) : null}
+
       <section className="space-y-4 px-4 pt-5">
         {TIERS.map((t) => {
-          const current = state.membership === t.id;
+          const current = t.id === "premium" ? isPlus : !isPlus;
           return (
             <Card key={t.id} className={`p-5 ${current ? "border-primary" : ""}`}>
               <div className="flex items-baseline justify-between gap-3">
@@ -76,13 +163,40 @@ function MembershipScreen() {
 
               <div className="mt-5">
                 {current ? (
-                  <p className="flex items-center justify-center gap-1.5 rounded-2xl bg-success-soft py-3 text-sm font-semibold text-success">
-                    <Check className="size-4" /> Your current plan
-                  </p>
-                ) : (
-                  <PrimaryButton onClick={() => setMembership(t.id)}>
-                    {t.id === "premium" ? "Upgrade to Premium" : "Switch to Free"}
+                  <>
+                    <p className="flex items-center justify-center gap-1.5 rounded-2xl bg-success-soft py-3 text-sm font-semibold text-success">
+                      <Check className="size-4" /> Your current plan
+                    </p>
+                    {t.id === "premium" ? (
+                      <button
+                        type="button"
+                        onClick={manage}
+                        disabled={portalBusy}
+                        className="tap-flat mt-2 w-full rounded-2xl bg-muted py-3 text-sm font-semibold disabled:opacity-60"
+                      >
+                        {portalBusy ? "Opening…" : "Manage or cancel membership"}
+                      </button>
+                    ) : null}
+                  </>
+                ) : t.id === "premium" ? (
+                  <PrimaryButton onClick={() => setCheckoutOpen(true)} disabled={loading}>
+                    {loading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <Loader2 className="size-4 animate-spin" /> Checking
+                      </span>
+                    ) : (
+                      "Join Shekk+ · £9.99 a month"
+                    )}
                   </PrimaryButton>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={manage}
+                    disabled={portalBusy}
+                    className="tap-flat w-full rounded-2xl bg-muted py-3 text-sm font-semibold disabled:opacity-60"
+                  >
+                    {portalBusy ? "Opening…" : "Cancel Shekk+ to switch back"}
+                  </button>
                 )}
               </div>
             </Card>
@@ -95,8 +209,8 @@ function MembershipScreen() {
         <Card className="p-0">
           <div className="grid grid-cols-[1.4fr_0.8fr_0.8fr] border-b border-border px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
             <span />
-            <span className="text-center">Free</span>
-            <span className="text-center">Premium</span>
+            <span className="text-center">Shekk</span>
+            <span className="text-center">Shekk+</span>
           </div>
           {COMPARISON.map((row) => (
             <div
@@ -120,13 +234,14 @@ function MembershipScreen() {
             <span className="min-w-0 flex-1">
               <span className="block text-sm font-semibold">See what's in the marketplace</span>
               <span className="block text-xs text-muted-foreground">
-                Every partner offer, from Wolt to weekend tiyulim.
+                Every partner offer, in one place.
               </span>
             </span>
           </Card>
         </Link>
         <p className="mt-3 px-1 text-[11px] text-muted-foreground">
-          Membership billing is simulated in this prototype — nothing is charged.
+          Shekk+ is billed at £9.99 a month and renews until you cancel. Membership is separate from
+          your shekel account, which is provided by our regulated payment partner.
         </p>
       </section>
     </AppShell>

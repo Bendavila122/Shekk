@@ -85,7 +85,7 @@ export const BENEFITS: Benefit[] = [
     domain: "ontopo.com",
     emoji: "📖",
     headline: "Members-only tables at 40+ Tel Aviv restaurants",
-    detail: "Held tables released to Shekk Premium at 18:00 the day before.",
+    detail: "Held tables released to Shekk+ at 18:00 the day before.",
     location: "Tel Aviv · Jerusalem",
     discount: "Priority booking",
     premium: true,

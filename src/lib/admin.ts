@@ -110,7 +110,7 @@ export const defaultAdminConfig: AdminConfig = {
   customServices: [],
   hiddenBenefits: [],
   promotions: [],
-  premiumPriceGbp: 14.99,
+  premiumPriceGbp: 9.99,
   fxMarginFree: 3,
   fxMarginPremium: 1.2,
   signupsOpen: true,
