@@ -26,7 +26,7 @@ export const Route = createFileRoute("/topup")({
 const PRESETS = [50, 100, 250, 500];
 
 function AddMoney() {
-  const { addMoney, state } = useApp();
+  const { addMoney, state, moneyError } = useApp();
   const [amount, setAmount] = useState("100");
   const [source, setSource] = useState(state.settings.payCurrency);
   const [sheet, setSheet] = useState<"apple" | "bank" | null>(null);
@@ -190,9 +190,15 @@ function AddMoney() {
               <Row label={sheet === "apple" ? "Card" : "From"} value={sheet === "apple" ? "•••• 4417 · Visa" : `${cur.code} account`} muted />
               <Row label="You receive" value={ils(q.shekels)} bold />
             </div>
-            <p className="mt-4 text-xs text-muted-foreground">
-              Simulated — the partner bank connection is not live in this prototype.
-            </p>
+            {moneyError ? (
+              <p className="mt-4 rounded-2xl bg-destructive/10 px-3 py-2 text-xs font-medium text-destructive">
+                {moneyError}
+              </p>
+            ) : (
+              <p className="mt-4 text-xs text-muted-foreground">
+                Simulated — the licensed payment partner is not connected yet.
+              </p>
+            )}
             <div className="mt-5 space-y-2">
               <PrimaryButton
                 onClick={() => {

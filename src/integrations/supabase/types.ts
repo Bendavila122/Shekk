@@ -14,13 +14,386 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      accounts: {
+        Row: {
+          balance_agorot: number
+          created_at: string
+          currency: string
+          held_agorot: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance_agorot?: number
+          created_at?: string
+          currency?: string
+          held_agorot?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance_agorot?: number
+          created_at?: string
+          currency?: string
+          held_agorot?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      funding_events: {
+        Row: {
+          created_at: string
+          entry_id: string | null
+          fee_minor: number
+          id: string
+          idempotency_key: string
+          interbank_rate: number
+          method: string
+          pay_amount_minor: number
+          pay_currency: string
+          provider: string
+          provider_ref: string | null
+          quoted_rate: number
+          settled_at: string | null
+          shekels_agorot: number
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          entry_id?: string | null
+          fee_minor?: number
+          id?: string
+          idempotency_key: string
+          interbank_rate: number
+          method?: string
+          pay_amount_minor: number
+          pay_currency: string
+          provider?: string
+          provider_ref?: string | null
+          quoted_rate: number
+          settled_at?: string | null
+          shekels_agorot: number
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          entry_id?: string | null
+          fee_minor?: number
+          id?: string
+          idempotency_key?: string
+          interbank_rate?: number
+          method?: string
+          pay_amount_minor?: number
+          pay_currency?: string
+          provider?: string
+          provider_ref?: string | null
+          quoted_rate?: number
+          settled_at?: string | null
+          shekels_agorot?: number
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "funding_events_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "ledger_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      holds: {
+        Row: {
+          amount_agorot: number
+          category: string
+          created_at: string
+          external_ref: string | null
+          icon: string
+          id: string
+          idempotency_key: string
+          merchant: string
+          resolved_at: string | null
+          settled_amount_agorot: number | null
+          settled_entry_id: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_agorot: number
+          category?: string
+          created_at?: string
+          external_ref?: string | null
+          icon?: string
+          id?: string
+          idempotency_key: string
+          merchant: string
+          resolved_at?: string | null
+          settled_amount_agorot?: number | null
+          settled_entry_id?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_agorot?: number
+          category?: string
+          created_at?: string
+          external_ref?: string | null
+          icon?: string
+          id?: string
+          idempotency_key?: string
+          merchant?: string
+          resolved_at?: string | null
+          settled_amount_agorot?: number | null
+          settled_entry_id?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "holds_settled_entry_id_fkey"
+            columns: ["settled_entry_id"]
+            isOneToOne: false
+            referencedRelation: "ledger_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ledger_entries: {
+        Row: {
+          amount_agorot: number
+          balance_after_agorot: number
+          category: string
+          counterparty: string | null
+          created_at: string
+          direction: string
+          external_ref: string | null
+          hold_id: string | null
+          icon: string
+          id: string
+          idempotency_key: string
+          merchant: string
+          user_id: string
+        }
+        Insert: {
+          amount_agorot: number
+          balance_after_agorot: number
+          category?: string
+          counterparty?: string | null
+          created_at?: string
+          direction: string
+          external_ref?: string | null
+          hold_id?: string | null
+          icon?: string
+          id?: string
+          idempotency_key: string
+          merchant: string
+          user_id: string
+        }
+        Update: {
+          amount_agorot?: number
+          balance_after_agorot?: number
+          category?: string
+          counterparty?: string | null
+          created_at?: string
+          direction?: string
+          external_ref?: string | null
+          hold_id?: string | null
+          icon?: string
+          id?: string
+          idempotency_key?: string
+          merchant?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      ensure_account: {
+        Args: { _user_id: string }
+        Returns: {
+          balance_agorot: number
+          created_at: string
+          currency: string
+          held_agorot: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "accounts"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      funding_settle: {
+        Args: {
+          _fee_minor: number
+          _idempotency_key?: string
+          _interbank_rate: number
+          _method?: string
+          _pay_amount_minor: number
+          _pay_currency: string
+          _provider?: string
+          _provider_ref?: string
+          _quoted_rate: number
+          _shekels_agorot: number
+          _user_id: string
+        }
+        Returns: {
+          created_at: string
+          entry_id: string | null
+          fee_minor: number
+          id: string
+          idempotency_key: string
+          interbank_rate: number
+          method: string
+          pay_amount_minor: number
+          pay_currency: string
+          provider: string
+          provider_ref: string | null
+          quoted_rate: number
+          settled_at: string | null
+          shekels_agorot: number
+          status: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "funding_events"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      hold_create: {
+        Args: {
+          _amount_agorot: number
+          _category?: string
+          _external_ref?: string
+          _icon?: string
+          _idempotency_key?: string
+          _merchant: string
+          _user_id: string
+        }
+        Returns: {
+          amount_agorot: number
+          category: string
+          created_at: string
+          external_ref: string | null
+          icon: string
+          id: string
+          idempotency_key: string
+          merchant: string
+          resolved_at: string | null
+          settled_amount_agorot: number | null
+          settled_entry_id: string | null
+          status: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "holds"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      hold_release: {
+        Args: { _hold_id: string; _user_id: string }
+        Returns: {
+          amount_agorot: number
+          category: string
+          created_at: string
+          external_ref: string | null
+          icon: string
+          id: string
+          idempotency_key: string
+          merchant: string
+          resolved_at: string | null
+          settled_amount_agorot: number | null
+          settled_entry_id: string | null
+          status: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "holds"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      hold_settle: {
+        Args: {
+          _final_amount_agorot?: number
+          _hold_id: string
+          _user_id: string
+        }
+        Returns: {
+          amount_agorot: number
+          balance_after_agorot: number
+          category: string
+          counterparty: string | null
+          created_at: string
+          direction: string
+          external_ref: string | null
+          hold_id: string | null
+          icon: string
+          id: string
+          idempotency_key: string
+          merchant: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "ledger_entries"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      ledger_post: {
+        Args: {
+          _amount_agorot: number
+          _category?: string
+          _counterparty?: string
+          _direction: string
+          _external_ref?: string
+          _hold_id?: string
+          _icon?: string
+          _idempotency_key?: string
+          _merchant: string
+          _user_id: string
+        }
+        Returns: {
+          amount_agorot: number
+          balance_after_agorot: number
+          category: string
+          counterparty: string | null
+          created_at: string
+          direction: string
+          external_ref: string | null
+          hold_id: string | null
+          icon: string
+          id: string
+          idempotency_key: string
+          merchant: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "ledger_entries"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       [_ in never]: never

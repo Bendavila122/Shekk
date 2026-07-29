@@ -1,55 +1,86 @@
-ns# Complete the Shekk Siddur
+## What Airwallex actually gives us
 
-Today the Siddur has the right shell — home screen, categories, reader, favourites, recents, nusach selector, prefs — but only excerpt-level text (Modeh Ani, Mah Tovu, Ashrei opening, Shema, Aleinu, Tefilat HaDerech, brachot, Havdalah, first bracha of bentching), and Sephard / Edot HaMizrach are largely empty. This plan fills the content out so it works as a real davening siddur.
+Airwallex is a licensed EMI (UK FCA, plus AU/SG/HK/EU/US licences). It covers four of the things Shekk needs:
 
-## Where the text comes from
+| Shekk need | Airwallex product |
+|---|---|
+| Take GBP/USD/EUR/CAD/AUD/ZAR from students (Apple Pay, card) | Payments / Payment Intents |
+| Hold that money in named currency accounts | Global Accounts |
+| Convert to ILS at a real rate | FX & Conversions API |
+| The Shekk card | Issuing (**Visa**, not Mastercard) |
+| Paying Gett's monthly invoice | Payouts / Transfers |
 
-Hand-typing a full siddur is both enormous and error-prone. Instead we pull the Hebrew from **Sefaria's public-domain Siddur texts** (Siddur Ashkenaz, Siddur Sefard, Siddur Edot HaMizrach — all public domain / CC0 on Sefaria), via a one-off generation script that runs at build time on our machine, not in the app.
+Two things Airwallex does **not** do for us:
+- It does not know that "Rivka has ₪240." Airwallex holds one pooled balance for Shekk. The per-student balance is **our** ledger, which we build. This is the standard closed-loop wallet architecture.
+- Named per-user accounts and per-user cards require **Airwallex Scale (Connected Accounts)** — an approved-partner tier. Until that's approved, we run pooled: one Airwallex account, our ledger splits it.
 
-- A script (`scripts/build-siddur.ts`) fetches each required section per nusach, normalises it into our existing `PrayerSection` / `PrayerLine` shape, and writes `src/lib/siddur-content.generated.ts`.
-- The text ships **bundled in the app** — no runtime API calls, works offline, no dependency on Sefaria staying up.
-- English: public-domain renderings only (JPS 1917 for verses, and Sefaria's public-domain English where the licence allows). Where no public-domain English exists for a passage, the Hebrew ships alone and bilingual mode simply shows Hebrew — never invented translation.
-- Attribution line at the foot of the reader credits Sefaria and the public-domain sources.
+## Architecture
 
-If any text turns out not to be cleanly public domain, that section is left out and listed in the existing honest "not yet available" mechanism rather than shipped.
+```text
+Student's Apple Pay
+      |
+      v
+Airwallex Payment Intent (GBP)  --> Airwallex GBP Global Account
+      |                                     |
+      | webhook: payment succeeded          | FX conversion GBP->ILS
+      v                                     v
+Shekk ledger (our database)         Airwallex ILS balance (the float)
+  credits student's balance          backs every shekel we owe
+      |
+      v
+Spend (Gett ride, merchant) -> hold -> settle -> ledger entry
+```
 
-## Content to complete
+The invariant: **sum of all student ledger balances must always equal the ILS float held at Airwallex.** A daily reconciliation job asserts this and alarms in the admin console when it drifts.
 
-**Shacharit (weekday)** — Birchot HaShachar, Birchot HaTorah, Korbanot (brief), Pesukei DeZimra (Baruch She'amar, Ashrei in full, Hallelukah psalms 146–150, Yishtabach), Yotzer Or / Birchot Kriat Shema, full Shema (all three parashiyot), Emet V'yatziv, **the weekday Amidah in full (19 brachot)**, Tachanun, Torah reading order (Mon/Thu), Ashrei–Uva LeTzion, Aleinu, Shir shel Yom, Kaddish forms.
+## Build phases
 
-**Mincha** — Ashrei, weekday Amidah, Tachanun, Aleinu.
+### Phase 1 — Server-side ledger (build now, no Airwallex account needed)
 
-**Maariv** — Barchu, Ma'ariv Aravim, Shema with brachot, Hashkiveinu, weekday Amidah, Aleinu.
+Move money out of `localStorage` into the backend database.
 
-**Shema before sleeping** — HaMapil in full, the Shema, the standard psalms and verses, Hareini Mochel.
+- `accounts` — one row per user, ILS balance in **integer agorot** (never floats).
+- `ledger_entries` — append-only, double-entry. Never updated, never deleted. Every row: account, direction, amount, currency, category, counterparty, external reference, timestamp.
+- `holds` — pending authorisations (a Gett ride booked at estimate price). Holds reduce *available* balance but not *settled* balance, then settle to a final amount or release.
+- `funding_events` — one row per Airwallex payment intent, with its FX quote captured at the moment of purchase.
+- RLS so a user can only read their own rows, and **no client can ever write a balance** — all mutations go through server functions that recompute the balance from entries.
+- Idempotency keys on every money-moving operation so a double-tap or webhook retry can't double-charge.
 
-**Birkat Hamazon** — all four brachot plus the Harachaman section, Al Hanisim / Ya'aleh V'yavo insertions marked as conditional.
+This makes the demo genuinely credible and is the foundation everything else bolts onto.
 
-**Havdalah** — the opening verses (Hinei Kel Yeshuati) plus the four brachot already present.
+### Phase 2 — Airwallex adapter
 
-**Common brachot** — extend the existing set to the full everyday list (food categories, Shehecheyanu, Asher Yatzar, Birkat HaGomel, Netilat Yadayim, candles, blessings on natural phenomena).
+Replace the simulators in `src/lib/banking.ts` with real calls, keeping the same function signatures so no UI changes.
 
-**Tefilat HaDerech** — already complete; add the Sephard/Edot variants.
+- Server-only Airwallex client: `client_id` + `api_key` exchanged for a bearer token, cached and refreshed.
+- `quoteFx` → real Airwallex FX quote, our margin applied on top and shown explicitly to the student.
+- `requestFunding` → create a Payment Intent, confirm with Apple Pay, return the intent for client-side confirmation.
+- Webhook at `/api/public/webhooks/airwallex` with signature verification — this is the **only** thing that credits a ledger balance. Never credit from the client saying "payment worked."
+- Everything stays behind a feature flag: no keys → current simulator; keys present → live. Same pattern as the Gett fallback.
 
-Each of the three nusachim gets its own text where it differs; where two are identical the generator stores one and points the other at it.
+### Phase 3 — Card and per-user accounts
 
-## Reader upgrades needed to carry that much text
+Needs Airwallex Scale approval. Card becomes a Shekk **Visa**; `ShekkCard.tsx` art and copy updated accordingly.
 
-- **Contents sheet** becomes a proper jump-to-section index with progress, since Shacharit is now long.
-- **Sticky section header** showing where you are as you scroll.
-- **Conditional-passage chips** — Ya'aleh V'yavo, Al Hanisim, Tal/Geshem, Aneinu — rendered inline as collapsible blocks labelled by when they're said, rather than silently dropped or silently included.
-- **Weekday vs Shabbat/Yom Tov switch** at the top of Shacharit/Mincha/Maariv, defaulting to the correct one for today's date (we already compute Hebrew dates elsewhere in the app).
-- **Resume** continues to work — it stores section id, which the longer text makes far more useful.
-- **Transliteration toggle** for the short high-use prayers that already have translit (Tefilat HaDerech, brachot, Modeh Ani).
+### Phase 4 — Gett reconciliation
 
-## Scope boundary
+Ride booking creates a hold at the estimate; Gett's final fare settles it. Monthly, match Gett's invoice line items to ledger entries by Gett ride ID and flag mismatches in the admin console.
 
-This covers weekday davening plus Shabbat variants of the fixed services, bentching, brachot, Havdalah and bedtime Shema. Explicitly **not** in this pass: full Shabbat Musaf and Kabbalat Shabbat, the Yom Tov and Yamim Nora'im machzor, Hallel, Megillot, Selichot, and lifecycle texts. Those stay listed as "not yet available" so nothing looks complete when it isn't.
+## What you need to do commercially
 
-## Technical details
+1. Apply for an **Airwallex business account** (airwallex.com) — company registration, directors' IDs, business model description. Say clearly you're building a closed-loop wallet for students in Israel; this is a platform use case and they'll route it to the right team.
+2. Ask specifically about **Scale / Connected Accounts** and **Issuing** eligibility for your entity and target market. Approval is manual and can take weeks.
+3. Get **API credentials** — sandbox first (`api-demo.airwallex.com`), production later (`api.airwallex.com`). I'll open a secure form for `AIRWALLEX_CLIENT_ID`, `AIRWALLEX_API_KEY`, `AIRWALLEX_WEBHOOK_SECRET` and `AIRWALLEX_API_BASE` when you have them.
+4. Get legal advice on your own regulatory position. Even riding on Airwallex's licence, running a student wallet in Israel with an agent/distributor arrangement has requirements — that's a lawyer question, not one I can answer.
 
-- New: `scripts/build-siddur.ts` (Node, run manually), `src/lib/siddur-content.generated.ts` (bundled data, ~large but static and tree-shaken per prayer via lazy import).
-- `src/lib/siddur.ts` keeps the types, categories and prayer metadata; it imports text from the generated module instead of inlining it.
-- `src/lib/siddur-prefs.ts` gains `showTranslit` and `serviceVariant` (weekday/shabbat) preferences.
-- `src/routes/siddur/$id.tsx` gains the sticky section header, contents index with progress, conditional-passage blocks and variant switch.
-- Because the content module is sizeable, the reader route loads it with a dynamic import so the rest of the app's bundle is unaffected.
+## Technical notes
+
+- All amounts stored as integers (agorot/cents). No floating-point money anywhere.
+- The ledger is append-only; a correction is a new reversing entry, never an edit.
+- Airwallex secrets are read inside server function handlers only, never at module scope, never client-side.
+- Webhook signature verified with timing-safe HMAC comparison before any write.
+- Existing `src/lib/banking.ts` signatures preserved so `wallet`, `card`, `exchange`, `topup` and the Gett flow keep working throughout.
+
+## Recommendation
+
+Start Phase 1 now. It's pure build work, needs no approvals, and it's the thing that turns Shekk from a prototype into something you can put in front of Airwallex and Gett. Phases 2–4 unlock as credentials land.

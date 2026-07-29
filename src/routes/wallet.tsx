@@ -36,7 +36,7 @@ const ACTIONS = [
 
 function WalletScreen() {
   const ready = useOnboardedGate();
-  const { state, isPremium } = useApp();
+  const { state, isPremium, held, available } = useApp();
   const [hidden, setHidden] = useState(state.settings.hideBalance);
 
   const thisMonth = useMemo(
@@ -75,7 +75,9 @@ function WalletScreen() {
               {hidden ? "₪ ••••" : ils(state.balance)}
             </p>
             <p className="mt-2 text-xs opacity-70">
-              Available now · ≈ {hidden ? "••••" : refIn(state.settings.payCurrency, state.balance)}
+              {held > 0
+                ? `${hidden ? "••••" : ils(available)} available · ${hidden ? "••••" : ils(held)} reserved`
+                : `Available now · ≈ ${hidden ? "••••" : refIn(state.settings.payCurrency, state.balance)}`}
             </p>
 
             <div className="mt-5 grid grid-cols-5 gap-1.5">
