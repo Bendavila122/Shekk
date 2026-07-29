@@ -219,7 +219,7 @@ export type Database = {
     }
     Functions: {
       ensure_account: {
-        Args: never
+        Args: { _user_id: string }
         Returns: {
           balance_agorot: number
           created_at: string
@@ -248,6 +248,7 @@ export type Database = {
           _provider_ref?: string
           _quoted_rate: number
           _shekels_agorot: number
+          _user_id: string
         }
         Returns: {
           created_at: string
@@ -282,6 +283,7 @@ export type Database = {
           _icon?: string
           _idempotency_key?: string
           _merchant: string
+          _user_id: string
         }
         Returns: {
           amount_agorot: number
@@ -306,7 +308,7 @@ export type Database = {
         }
       }
       hold_release: {
-        Args: { _hold_id: string }
+        Args: { _hold_id: string; _user_id: string }
         Returns: {
           amount_agorot: number
           category: string
@@ -330,7 +332,11 @@ export type Database = {
         }
       }
       hold_settle: {
-        Args: { _final_amount_agorot?: number; _hold_id: string }
+        Args: {
+          _final_amount_agorot?: number
+          _hold_id: string
+          _user_id: string
+        }
         Returns: {
           amount_agorot: number
           balance_after_agorot: number
@@ -364,6 +370,7 @@ export type Database = {
           _icon?: string
           _idempotency_key?: string
           _merchant: string
+          _user_id: string
         }
         Returns: {
           amount_agorot: number
