@@ -14,6 +14,64 @@ function priceIdOf(item: any) {
   return item?.price?.lookup_key || item?.price?.metadata?.lovable_external_id || item?.price?.id;
 }
 
+const APP_URL = "https://shekk.app";
+
+function planLabel(priceId?: string) {
+  return priceId === "shekk_plus_yearly" ? "£99 a year" : "£9.99 a month";
+}
+
+function formatDate(iso?: string | null) {
+  if (!iso) return undefined;
+  return new Date(iso).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+/** Best-effort recipient lookup: member profile first, then the auth record. */
+async function memberContact(userId: string): Promise<{ email?: string; firstName?: string }> {
+  const supabase = getSupabase();
+  const { data: profile } = await supabase
+    .from("member_profiles")
+    .select("email, legal_first_name")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  let email: string | undefined = profile?.email ?? undefined;
+  let firstName: string | undefined = profile?.legal_first_name ?? undefined;
+
+  if (!email) {
+    const { data } = await supabase.auth.admin.getUserById(userId);
+    email = data?.user?.email ?? undefined;
+    firstName =
+      firstName ||
+      (data?.user?.user_metadata?.full_name as string | undefined)?.split(" ")[0] ||
+      undefined;
+  }
+  return { email, firstName };
+}
+
+/** Emails are a courtesy — never let a send failure fail the webhook. */
+async function notify(
+  userId: string,
+  templateName: "membership-welcome" | "membership-payment-failed",
+  templateData: Record<string, unknown>,
+  idempotencyKey: string,
+) {
+  try {
+    const { email, firstName } = await memberContact(userId);
+    if (!email) return;
+    const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+    await sendTemplateEmail(templateName, email, {
+      templateData: { firstName: firstName ?? "there", ...templateData },
+      idempotencyKey,
+    });
+  } catch (e) {
+    console.error("Membership email failed:", e);
+  }
+}
+
 async function upsertSubscription(subscription: any, env: StripeEnv) {
   const userId = subscription.metadata?.userId;
   if (!userId) {
