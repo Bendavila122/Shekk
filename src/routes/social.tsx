@@ -186,7 +186,7 @@ function CohortThread() {
 }
 
 function SplitFlow() {
-  const { state, addSplit, addFriend } = useApp();
+  const { state, addFriend } = useApp();
   const [newFriend, setNewFriend] = useState("");
   const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
   const [picked, setPicked] = useState<string[]>([]);
