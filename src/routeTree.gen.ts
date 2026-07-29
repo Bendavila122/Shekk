@@ -46,6 +46,7 @@ import { Route as ExploreCommunityRouteImport } from './routes/explore/community
 import { Route as ExploreAdminRouteImport } from './routes/explore/admin'
 import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
 import { Route as AdminMoneyRouteImport } from './routes/admin/money'
+import { Route as AdminMembershipsRouteImport } from './routes/admin/memberships'
 import { Route as AdminAccountsRouteImport } from './routes/admin/accounts'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
@@ -239,6 +240,11 @@ const AdminMoneyRoute = AdminMoneyRouteImport.update({
   path: '/money',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminMembershipsRoute = AdminMembershipsRouteImport.update({
+  id: '/memberships',
+  path: '/memberships',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminAccountsRoute = AdminAccountsRouteImport.update({
   id: '/accounts',
   path: '/accounts',
@@ -300,6 +306,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/accounts': typeof AdminAccountsRoute
+  '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
@@ -345,6 +352,7 @@ export interface FileRoutesByTo {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/accounts': typeof AdminAccountsRoute
+  '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
@@ -392,6 +400,7 @@ export interface FileRoutesById {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/accounts': typeof AdminAccountsRoute
+  '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/admin': typeof ExploreAdminRoute
@@ -440,6 +449,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin/accounts'
+    | '/admin/memberships'
     | '/admin/money'
     | '/benefits/$id'
     | '/explore/admin'
@@ -485,6 +495,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin/accounts'
+    | '/admin/memberships'
     | '/admin/money'
     | '/benefits/$id'
     | '/explore/admin'
@@ -531,6 +542,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin/accounts'
+    | '/admin/memberships'
     | '/admin/money'
     | '/benefits/$id'
     | '/explore/admin'
@@ -861,6 +873,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMoneyRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/memberships': {
+      id: '/admin/memberships'
+      path: '/memberships'
+      fullPath: '/admin/memberships'
+      preLoaderRoute: typeof AdminMembershipsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/accounts': {
       id: '/admin/accounts'
       path: '/accounts'
@@ -915,12 +934,14 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteRouteChildren {
   AdminAccountsRoute: typeof AdminAccountsRoute
+  AdminMembershipsRoute: typeof AdminMembershipsRoute
   AdminMoneyRoute: typeof AdminMoneyRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAccountsRoute: AdminAccountsRoute,
+  AdminMembershipsRoute: AdminMembershipsRoute,
   AdminMoneyRoute: AdminMoneyRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
