@@ -255,7 +255,9 @@ export type Database = {
           address_postcode: string | null
           address_state: string | null
           airwallex_account_id: string | null
+          airwallex_account_status: string
           airwallex_cardholder_id: string | null
+          airwallex_rejection_reason: string | null
           arrival_date: string | null
           city: string | null
           cohort: string | null
@@ -271,6 +273,7 @@ export type Database = {
           il_address_city: string | null
           il_address_line1: string | null
           il_address_postcode: string | null
+          ils_account_approved_at: string | null
           is_pep: boolean
           is_us_person: boolean
           kyc_rejection_reason: string | null
@@ -303,7 +306,9 @@ export type Database = {
           address_postcode?: string | null
           address_state?: string | null
           airwallex_account_id?: string | null
+          airwallex_account_status?: string
           airwallex_cardholder_id?: string | null
+          airwallex_rejection_reason?: string | null
           arrival_date?: string | null
           city?: string | null
           cohort?: string | null
@@ -319,6 +324,7 @@ export type Database = {
           il_address_city?: string | null
           il_address_line1?: string | null
           il_address_postcode?: string | null
+          ils_account_approved_at?: string | null
           is_pep?: boolean
           is_us_person?: boolean
           kyc_rejection_reason?: string | null
@@ -351,7 +357,9 @@ export type Database = {
           address_postcode?: string | null
           address_state?: string | null
           airwallex_account_id?: string | null
+          airwallex_account_status?: string
           airwallex_cardholder_id?: string | null
+          airwallex_rejection_reason?: string | null
           arrival_date?: string | null
           city?: string | null
           cohort?: string | null
@@ -367,6 +375,7 @@ export type Database = {
           il_address_city?: string | null
           il_address_line1?: string | null
           il_address_postcode?: string | null
+          ils_account_approved_at?: string | null
           is_pep?: boolean
           is_us_person?: boolean
           kyc_rejection_reason?: string | null
