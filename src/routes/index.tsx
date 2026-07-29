@@ -158,51 +158,8 @@ function HomeScreen() {
 
       <ActiveNow />
 
-      {/* Paying people */}
-      <section className="px-4 pt-6">
-        <Card className="p-0">
-          <div className="flex items-center gap-3 p-4">
-            <span className="flex size-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
-              <Users className="size-5" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold">Paying people</p>
-              <p className="text-xs text-muted-foreground">
-                Send shekels to friends on Shekk or split a bill with your cohort.
-              </p>
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-2 border-t border-border p-3">
-            <Link
-              to="/social"
-              className="tap rounded-xl bg-primary px-2 py-2.5 text-center text-xs font-semibold text-primary-foreground"
-            >
-              Send money
-            </Link>
-            <Link to="/social" className="tap rounded-xl bg-muted px-2 py-2.5 text-center text-xs font-semibold">
-              Split a bill
-            </Link>
-            <button
-              onClick={() => setShowCode((v) => !v)}
-              className="tap flex items-center justify-center gap-1 rounded-xl bg-muted px-2 py-2.5 text-xs font-semibold"
-            >
-              <QrCode className="size-4" /> My code
-            </button>
-          </div>
-          {showCode ? (
-            <div className="flex flex-col items-center border-t border-border p-4">
-              <QRCode value={`shekk:${state.name || "student"}:${state.cohort}`} className="h-36 w-36" />
-              <div className="mt-2 flex items-center gap-2">
-                <Avatar name={state.name || "You"} src={state.avatar} className="size-7" textClassName="text-[10px]" />
-                <p className="text-xs font-semibold">{state.name || "Your"} · friend code</p>
-              </div>
-              <p className="text-center text-[11px] text-muted-foreground">
-                A friend scans this to send you shekels. It isn't a merchant payment code.
-              </p>
-            </div>
-          ) : null}
-        </Card>
-      </section>
+
+
 
       {/* Promotions published from the console */}
       {promos.length > 0 ? (
