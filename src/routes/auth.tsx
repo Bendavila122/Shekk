@@ -48,20 +48,22 @@ function Auth() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  async function google() {
+  async function social(provider: "google" | "apple") {
+    const label = provider === "google" ? "Google" : "Apple";
     setBusy(true);
     setError(null);
-    const result = await lovable.auth.signInWithOAuth("google", {
+    const result = await lovable.auth.signInWithOAuth(provider, {
       redirect_uri: window.location.origin,
     });
     if (result.error) {
       setBusy(false);
-      return setError(result.error.message ?? "Google sign-in failed. Try email instead.");
+      return setError(result.error.message ?? `${label} sign-in failed. Try email instead.`);
     }
     if (result.redirected) return;
     setBusy(false);
     window.location.href = next === "/" ? "/verify" : next;
   }
+
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
