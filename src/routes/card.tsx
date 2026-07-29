@@ -20,6 +20,7 @@ import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { ils } from "@/lib/mock";
 import { issueCard, provisionToWallet, PARTNERS } from "@/lib/banking";
+import { useProfile } from "@/lib/useProfile";
 
 export const Route = createFileRoute("/card")({
   head: () => ({
@@ -53,6 +54,7 @@ function CardScreen() {
   const [reveal, setReveal] = useState(false);
   const [issuing, setIssuing] = useState(false);
   const [walletBusy, setWalletBusy] = useState(false);
+  const kyc = useProfile();
 
   if (!ready) {
     return (
