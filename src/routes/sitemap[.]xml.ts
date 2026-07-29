@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
-// TODO: replace with your project URL once a project name or custom domain is set.
-const BASE_URL = "";
+const BASE_URL = "https://shekel-connect.lovable.app";
 
 interface SitemapEntry {
   path: string;
@@ -17,21 +16,7 @@ export const Route = createFileRoute("/sitemap.xml")({
       GET: async () => {
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
-          { path: "/topup", changefreq: "monthly", priority: "0.8" },
-          { path: "/explore", changefreq: "weekly", priority: "0.9" },
-          { path: "/explore/transit", changefreq: "weekly", priority: "0.6" },
-          { path: "/explore/rides", changefreq: "weekly", priority: "0.6" },
-          { path: "/explore/food", changefreq: "weekly", priority: "0.6" },
-          { path: "/explore/reserve", changefreq: "weekly", priority: "0.6" },
-          { path: "/explore/events", changefreq: "weekly", priority: "0.6" },
-          { path: "/explore/housing", changefreq: "weekly", priority: "0.6" },
-          { path: "/explore/health", changefreq: "monthly", priority: "0.5" },
-          { path: "/explore/admin", changefreq: "monthly", priority: "0.5" },
-          { path: "/explore/community", changefreq: "weekly", priority: "0.6" },
-          { path: "/explore/shops", changefreq: "weekly", priority: "0.5" },
-          { path: "/social", changefreq: "weekly", priority: "0.7" },
-          { path: "/me", changefreq: "monthly", priority: "0.6" },
-          { path: "/reverify", changefreq: "yearly", priority: "0.4" },
+          { path: "/welcome", changefreq: "monthly", priority: "0.9" },
           { path: "/terms", changefreq: "yearly", priority: "0.4" },
         ];
 

@@ -29,7 +29,9 @@ export const Route = createFileRoute("/welcome")({
       { property: "og:description", content: "Your first week in Israel, sorted before you land." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { property: "og:url", content: "https://shekel-connect.lovable.app/welcome" },
     ],
+    links: [{ rel: "canonical", href: "https://shekel-connect.lovable.app/welcome" }],
   }),
   component: Welcome,
 });
