@@ -468,36 +468,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
           payCurrency: p.payCurrency ?? s.settings.payCurrency,
         },
       })),
-    addMoney: (shekels, paid, sourceLabel) => {
-      if (signedIn) {
-        void money(() =>
-          completeTopUp({
-            data: {
-              payCurrency: state.settings.payCurrency,
-              payAmount: paid,
-              method: "apple-pay",
-              idempotencyKey: `topup:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`,
-            },
-          }),
-        );
-        return;
-      }
-      setState((s) => ({
-        ...s,
-        balance: +(s.balance + shekels).toFixed(2),
-        txns: [
-          {
-            id: `tx${Date.now()}`,
-            merchant: `Money added · ${sourceLabel ?? `$${paid.toFixed(2)}`}`,
-            category: "Top up",
-            amount: shekels,
-            date: "Just now",
-            icon: "💳",
-          },
-          ...s.txns,
-        ],
-      }));
-    },
+    // No addMoney here on purpose. The app cannot credit itself — shekels
+    // arrive only from the verified Airwallex webhook. See useFunding.ts.
+
     sendMoney: (to, amount, note) => {
       if (signedIn) {
         void money(() =>
