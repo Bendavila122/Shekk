@@ -82,18 +82,13 @@ export function useSubscription() {
     };
   }, [load]);
 
-  const active = subscription ? isActive(subscription as never) : false;
+  const isPlus = subscription
+    ? isActive({
+        status: subscription.status,
+        current_period_end: subscription.currentPeriodEnd,
+      })
+    : false;
 
-  return {
-    subscription,
-    isPlus: subscription
-      ? isActive({
-          status: subscription.status,
-          current_period_end: subscription.currentPeriodEnd,
-        })
-      : false,
-    active,
-    loading,
-    refresh: load,
-  };
+  return { subscription, isPlus, loading, refresh: load };
 }
+
