@@ -132,13 +132,14 @@ function Me() {
         <Card className="space-y-2">
           <h2 className="text-base font-semibold">How your Shekk account works</h2>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>• Your shekel account is a real, regulated payment account provided by Shekk&rsquo;s payments partner — not app credits.</li>
-            <li>• You add money with Apple Pay or a bank transfer and your balance lands in shekels, ready to spend.</li>
+            <li>• Your shekel account is a real, regulated ILS payment account held with Airwallex — not app credits.</li>
+            <li>• You add money from a card or bank account in your own name and your balance lands in shekels, ready to spend.</li>
             <li>• Order through a partner app inside Shekk and <span className="font-medium text-foreground">we pay them</span> — your card is never charged at checkout.</li>
             <li>• We then deduct that order from your shekel balance.</li>
             <li>• Every time you add money you see the rate and the exact shekels you get before you confirm.</li>
-            <li>• You must be 18 or over, opening the account for yourself, with valid ID — our partner runs the identity checks and makes the decision.</li>
-            <li>• Keep your details and ID current; our partner can ask for updated documents at any time.</li>
+            <li>• You must be 16 or over, living outside Israel in a country Airwallex supports, opening the account for yourself with valid ID — Airwallex runs the identity checks and makes the decision.</li>
+            <li>• We re-check your identity every 12 months; Airwallex can ask for updated documents at any time.</li>
+            <li>• If you close your account, unspent shekels go back to a card or bank account in your own name.</li>
             <li>• The full account terms live in the <span className="font-medium text-foreground">Terms & Conditions</span>.</li>
           </ul>
 
