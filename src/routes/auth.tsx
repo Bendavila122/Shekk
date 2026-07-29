@@ -56,19 +56,28 @@ function Auth() {
     setBusy(true);
     setHandoff(label);
     setError(null);
-    const result = await lovable.auth.signInWithOAuth(provider, {
-      redirect_uri: window.location.origin,
-      ...(provider === "google" ? { extraParams: { prompt: "select_account" } } : {}),
-    });
-    if (result.error) {
+    try {
+      const result = await lovable.auth.signInWithOAuth(provider, {
+        redirect_uri: window.location.origin,
+        ...(provider === "google" ? { extraParams: { prompt: "select_account" } } : {}),
+      });
+      if (result.error) {
+        setBusy(false);
+        setHandoff(null);
+        return setError(result.error.message ?? `${label} sign-in failed. Try email instead.`);
+      }
+      if (result.redirected) return;
+    } catch (e) {
       setBusy(false);
       setHandoff(null);
-      return setError(result.error.message ?? `${label} sign-in failed. Try email instead.`);
+      return setError(
+        e instanceof Error ? e.message : `${label} sign-in failed. Try email instead.`,
+      );
     }
-    if (result.redirected) return;
     setBusy(false);
     window.location.href = next === "/" ? "/verify" : next;
   }
+
 
 
   async function submit(e: React.FormEvent) {
