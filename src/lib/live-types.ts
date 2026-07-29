@@ -61,3 +61,16 @@ export function describeWeatherCode(code: number, isDay: boolean): { label: stri
   if (code >= 95) return { label: "Thunderstorms", emoji: "⛈" };
   return { label: "Cloudy", emoji: "☁️" };
 }
+
+export type Coords = { lat: number; lon: number };
+
+/** Validates + rounds coordinates (rounding keeps upstream caches warm). */
+export function parseCoords(input: unknown): Coords {
+  const d = input as Partial<Coords> | undefined;
+  const lat = Number(d?.lat);
+  const lon = Number(d?.lon);
+  if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) {
+    throw new Error("Valid coordinates required");
+  }
+  return { lat: Math.round(lat * 10000) / 10000, lon: Math.round(lon * 10000) / 10000 };
+}
