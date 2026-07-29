@@ -304,11 +304,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   /** Run a money operation and adopt whatever the server says the truth is. */
   const money = useCallback(
-    async <T extends { balance: number; entries: unknown[] }>(run: () => Promise<T>) => {
+    async (run: () => Promise<Awaited<ReturnType<typeof getLedger>>>) => {
       setMoneyError(null);
       try {
-        const snap = (await run()) as Awaited<ReturnType<typeof getLedger>>;
-        applySnapshot(snap);
+        applySnapshot(await run());
         return true;
       } catch (error) {
         const message = error instanceof Error ? error.message : "That payment could not be completed";
