@@ -17,6 +17,17 @@ import { CURRENCIES, type CurrencyCode } from "./currencies";
 export const ADMIN_CODE = "0161";
 const SESSION_KEY = "shekk.admin.unlocked";
 
+/** Drop the operator session (used by the console's "Lock" action). */
+export function clearAdminSession() {
+  try {
+    sessionStorage.removeItem(SESSION_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
+
+
 export function useAdminGate() {
   const [unlocked, setUnlocked] = useState(false);
   const [checked, setChecked] = useState(false);
