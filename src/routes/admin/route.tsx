@@ -13,6 +13,7 @@ import {
   Users,
 } from "lucide-react";
 import { useAdminGate } from "@/lib/admin";
+import { useAdminSession, useClaimConsole } from "@/lib/admin-data";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -100,7 +101,9 @@ function AdminLayout() {
           })}
         </div>
         <main className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-10">
-          <Outlet />
+          <ConsoleAccess>
+            <Outlet />
+          </ConsoleAccess>
         </main>
       </div>
     </div>
@@ -157,4 +160,60 @@ function CodeGate({ onSubmit }: { onSubmit: (code: string) => boolean }) {
       </form>
     </div>
   );
+}
+
+/**
+ * The operator code opens the console shell; real member data needs a signed-in
+ * account holding the `admin` role. The first operator to claim an unclaimed
+ * console becomes that admin.
+ */
+function ConsoleAccess({ children }: { children: React.ReactNode }) {
+  const { data, isLoading, error } = useAdminSession();
+  const claim = useClaimConsole();
+
+  if (isLoading) {
+    return <p className="py-16 text-center text-sm text-muted-foreground">Checking operator access…</p>;
+  }
+
+  if (error || !data) {
+    return (
+      <div className="mx-auto max-w-md rounded-2xl border border-border bg-card p-6 text-center shadow-card">
+        <p className="font-display text-lg font-bold">Sign in to continue</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          The console reads live member data, so it needs a signed-in Shekk account as well as the operator code.
+        </p>
+        <Link
+          to="/auth"
+          className="mt-4 inline-block rounded-xl bg-ink px-5 py-3 text-sm font-bold text-ink-foreground"
+        >
+          Go to sign in
+        </Link>
+      </div>
+    );
+  }
+
+  if (!data.isAdmin) {
+    return (
+      <div className="mx-auto max-w-md rounded-2xl border border-border bg-card p-6 text-center shadow-card">
+        <p className="font-display text-lg font-bold">This account is not an operator</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          If nobody has claimed the console yet, you can take the admin role now. Otherwise ask an existing operator
+          to add you.
+        </p>
+        <button
+          type="button"
+          disabled={claim.isPending}
+          onClick={() => claim.mutate()}
+          className="mt-4 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground disabled:opacity-60"
+        >
+          {claim.isPending ? "Claiming…" : "Claim operator access"}
+        </button>
+        {claim.data && !claim.data.isAdmin ? (
+          <p className="mt-3 text-xs text-destructive">The console already has an admin.</p>
+        ) : null}
+      </div>
+    );
+  }
+
+  return <>{children}</>;
 }
