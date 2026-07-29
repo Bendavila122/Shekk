@@ -299,30 +299,17 @@ function SplitFlow() {
             <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-success-soft text-2xl">
               📨
             </span>
-            <p className="text-sm font-semibold">Requests sent for “{note}”</p>
+            <p className="text-sm font-semibold">Requests sent{note ? ` for “${note}”` : ""}</p>
             <p className="text-xs text-muted-foreground">
               {picked.length} friend{picked.length === 1 ? "" : "s"} asked for {ils(each)} each. They can pay in one tap.
             </p>
-            <PrimaryButton
-              onClick={() => {
-                addSplit({
-                  id: `sp${Date.now()}`,
-                  from: state.friends.find((f) => f.id === picked[0])?.name ?? "Friend",
-                  reason: `${note} (their share)`,
-                  amount: each,
-                  paid: false,
-                });
-                setStep(3);
-              }}
-            >
-              Simulate a friend splitting back
-            </PrimaryButton>
+            <PrimaryButton onClick={() => setStep(3)}>Done</PrimaryButton>
           </div>
         )}
 
         {step === 3 && (
           <div className="space-y-3 text-center">
-            <p className="text-sm font-semibold">New request added above ↑</p>
+            <p className="text-sm font-semibold">You'll see who has paid as they settle up.</p>
             <button onClick={() => { setStep(0); setPicked([]); }} className="tap text-sm font-semibold text-primary">
               Start another split
             </button>
