@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useApp } from "@/lib/store";
+import { Splash } from "@/components/Splash";
 
 /** Routes a signed-out visitor is allowed to reach. */
 const OPEN_PREFIXES = [
