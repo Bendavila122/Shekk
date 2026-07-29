@@ -271,8 +271,9 @@ function MembershipScreen() {
           </Card>
         </Link>
         <p className="mt-3 px-1 text-[11px] text-muted-foreground">
-          Shekk+ is billed at £9.99 a month and renews until you cancel. Membership is separate from
-          your shekel account, which is provided by our regulated payment partner.
+          Shekk+ is billed at £9.99 a month or £99 a year and renews until you cancel. Cancelling
+          keeps everything running until the end of the period you have already paid for. Membership
+          is separate from your shekel account, which is provided by our regulated payment partner.
         </p>
       </section>
     </AppShell>
