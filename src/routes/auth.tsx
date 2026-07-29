@@ -290,12 +290,17 @@ function Auth() {
                   Shekk is a shekel spending account. You add money from your own card or bank in
                   your home currency; it is converted to shekels at the rate shown before you
                   confirm, with the conversion cost always displayed. Money is held with our
-                  regulated payment partner, not by Shekk.
+                  regulated payment partner, Airwallex, not by Shekk.
                 </p>
                 <p className="mt-1">
                   You must be 16 or over, verify your identity before spending, and use the account
                   yourself — never for someone else. We check your identity again every 12 months.
                   Unspent shekels can be returned to you on closure to a source in your own name.
+                </p>
+                <p className="mt-1">
+                  Accounts are for people coming to Israel from abroad: you must live in a country
+                  Airwallex supports for onboarding, and you cannot open an account if you are
+                  resident in Israel.
                 </p>
               </div>
               <label className="flex items-start gap-3 text-sm">
@@ -310,7 +315,7 @@ function Auth() {
                   <Link to="/terms" className="font-semibold underline">
                     Terms &amp; Conditions
                   </Link>{" "}
-                  and privacy notice. I confirm I am 18 or over and opening this account for myself, and I consent to electronic records and to identity checks run by Shekk&rsquo;s regulated payments partner.
+                  and privacy notice. I confirm I am 16 or over, resident outside Israel, and opening this account for myself, and I consent to electronic records and to identity checks run by Airwallex.
                 </span>
               </label>
             </Card>
