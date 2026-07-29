@@ -1,11 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { Apple, Building2, Check, ShieldCheck } from "lucide-react";
+import { Apple, Building2, Check, Loader2, Lock, ShieldCheck } from "lucide-react";
 import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
 import { ils } from "@/lib/mock";
 import { CURRENCIES, currency, money } from "@/lib/currencies";
 import { quoteFx } from "@/lib/banking";
 import { useApp } from "@/lib/store";
+import { useFunding } from "@/lib/useFunding";
 
 export const Route = createFileRoute("/topup")({
   head: () => ({
@@ -26,11 +27,11 @@ export const Route = createFileRoute("/topup")({
 const PRESETS = [50, 100, 250, 500];
 
 function AddMoney() {
-  const { addMoney, state, moneyError } = useApp();
+  const { state } = useApp();
+  const { blocked, phase, error, fund, resetFunding } = useFunding();
   const [amount, setAmount] = useState("100");
   const [source, setSource] = useState(state.settings.payCurrency);
   const [sheet, setSheet] = useState<"apple" | "bank" | null>(null);
-  const [done, setDone] = useState(false);
   const cur = currency(source);
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -39,21 +40,41 @@ function AddMoney() {
   const q = quoteFx(source, value);
   const isCustom = !PRESETS.includes(value);
 
-  if (done) {
+  if (phase === "awaiting" || phase === "settled") {
+    const settled = phase === "settled";
     return (
       <FocusScreen>
         <div className="flex min-h-screen flex-col justify-between px-6 pb-10 pt-24 sm:min-h-[860px]">
           <div className="text-center">
-            <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-success-soft">
-              <Check className="size-10 text-success" />
+            <div
+              className={`mx-auto flex size-20 items-center justify-center rounded-full ${
+                settled ? "bg-success-soft" : "bg-muted"
+              }`}
+            >
+              {settled ? (
+                <Check className="size-10 text-success" />
+              ) : (
+                <Loader2 className="size-9 animate-spin text-muted-foreground" />
+              )}
             </div>
-            <h1 className="mt-6 font-display text-3xl font-bold">{ils(q.shekels)} added</h1>
+            <h1 className="mt-6 font-display text-3xl font-bold">
+              {settled ? `${ils(q.shekels)} added` : "Waiting for your payment"}
+            </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              {money(cur.code, q.amount)} converted and settled into your Shekk balance. The receipt is in Activity.
+              {settled
+                ? `${money(cur.code, q.amount)} settled into your shekel balance. The receipt is in Activity.`
+                : `${money(cur.code, q.amount)} is with the payment partner. Your shekels appear the moment the payment settles — usually a few seconds.`}
             </p>
           </div>
           <div className="space-y-3">
-            <PrimaryButton onClick={() => navigate({ to: "/wallet" })}>Back to wallet</PrimaryButton>
+            <PrimaryButton
+              onClick={() => {
+                resetFunding();
+                navigate({ to: "/wallet" });
+              }}
+            >
+              Back to wallet
+            </PrimaryButton>
             <Link to="/explore" className="tap block rounded-2xl bg-muted py-4 text-center text-sm font-semibold">
               Explore Israel
             </Link>
@@ -73,6 +94,13 @@ function AddMoney() {
         <p className="mt-1 text-sm text-muted-foreground">
           Pay in {cur.code}, hold shekels. Your balance lands in your Shekk account.
         </p>
+
+        {blocked ? (
+          <div className="mt-4 flex items-start gap-2 rounded-2xl border border-notice-border bg-notice-soft px-4 py-3 text-xs leading-relaxed text-notice-foreground">
+            <Lock className="mt-0.5 size-4 shrink-0" />
+            <span>{blocked}</span>
+          </div>
+        ) : null}
 
         {/* Source currency */}
         <div className="-mx-6 mt-5 flex gap-2 overflow-x-auto px-6 pb-1 no-scrollbar">
@@ -146,7 +174,8 @@ function AddMoney() {
 
         <p className="mt-3 flex items-start gap-2 px-1 text-[11px] leading-relaxed text-muted-foreground">
           <ShieldCheck className="mt-0.5 size-3.5 shrink-0" />
-          Accounts and payments are provided by Shekk's regulated banking partner. Simulated in this prototype.{" "}
+          Accounts, payments and FX are provided by Shekk's regulated payment partner. Shekels are credited only once
+          they confirm your payment has settled.{" "}
           <Link to="/terms" className="font-semibold underline">
             Terms
           </Link>
@@ -154,14 +183,14 @@ function AddMoney() {
 
         <div className="mt-auto space-y-2 pt-6">
           <PrimaryButton
-            disabled={value <= 0}
+            disabled={value <= 0 || Boolean(blocked)}
             onClick={() => setSheet("apple")}
             className="flex items-center justify-center gap-2"
           >
             <Apple className="size-5" /> Pay {money(cur.code, q.amount)}
           </PrimaryButton>
           <button
-            disabled={value <= 0}
+            disabled={value <= 0 || Boolean(blocked)}
             onClick={() => setSheet("bank")}
             className="tap flex w-full items-center justify-center gap-2 rounded-2xl bg-muted py-3.5 text-sm font-semibold disabled:opacity-40"
           >
@@ -187,29 +216,43 @@ function AddMoney() {
             </div>
             <div className="mt-4 space-y-2 text-sm">
               <Row label="Shekk" value={money(cur.code, q.amount)} />
-              <Row label={sheet === "apple" ? "Card" : "From"} value={sheet === "apple" ? "•••• 4417 · Visa" : `${cur.code} account`} muted />
+              <Row
+                label={sheet === "apple" ? "Card" : "From"}
+                value={sheet === "apple" ? "Your Apple Pay card" : `${cur.code} account`}
+                muted
+              />
               <Row label="You receive" value={ils(q.shekels)} bold />
             </div>
-            {moneyError ? (
+            {error ? (
               <p className="mt-4 rounded-2xl bg-destructive/10 px-3 py-2 text-xs font-medium text-destructive">
-                {moneyError}
+                {error}
               </p>
             ) : (
               <p className="mt-4 text-xs text-muted-foreground">
-                Simulated — the licensed payment partner is not connected yet.
+                Handled by Shekk's payment partner. Your balance updates when they confirm the payment.
               </p>
             )}
             <div className="mt-5 space-y-2">
               <PrimaryButton
-                onClick={() => {
-                  addMoney(q.shekels, q.amount, `${money(cur.code, q.amount)} · ${sheet === "apple" ? "Apple Pay" : "bank transfer"}`);
-                  setSheet(null);
-                  setDone(true);
+                disabled={phase === "starting"}
+                onClick={async () => {
+                  const res = await fund(source, q.amount);
+                  if (res) setSheet(null);
                 }}
               >
-                {sheet === "apple" ? "Confirm with Face ID" : "Confirm transfer"}
+                {phase === "starting"
+                  ? "Starting payment…"
+                  : sheet === "apple"
+                    ? "Confirm with Face ID"
+                    : "Confirm transfer"}
               </PrimaryButton>
-              <button onClick={() => setSheet(null)} className="tap w-full rounded-2xl bg-muted py-3.5 text-sm font-semibold">
+              <button
+                onClick={() => {
+                  resetFunding();
+                  setSheet(null);
+                }}
+                className="tap w-full rounded-2xl bg-muted py-3.5 text-sm font-semibold"
+              >
                 Cancel
               </button>
             </div>
