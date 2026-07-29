@@ -151,18 +151,6 @@ export function useLocation() {
     };
   }, []);
 
-  // Refresh a GPS fix when the app comes back to the foreground and it is stale.
-  useEffect(() => {
-    const onVisible = () => {
-      if (document.visibilityState !== "visible") return;
-      if (current.status !== "granted" || current.loading) return;
-      if (current.place?.at && Date.now() - current.place.at < 10 * 60_000) return;
-      detectRef.current?.();
-    };
-    document.addEventListener("visibilitychange", onVisible);
-    return () => document.removeEventListener("visibilitychange", onVisible);
-  }, []);
-
   /** Ask the browser for permission, then name the spot properly. */
   const detect = useCallback(() => {
     if (typeof navigator === "undefined" || !("geolocation" in navigator)) {
@@ -195,6 +183,19 @@ export function useLocation() {
       { enableHighAccuracy: true, timeout: 12000, maximumAge: 2 * 60 * 1000 },
     );
   }, []);
+
+  // Refresh a GPS fix when the app comes back to the foreground and it is stale.
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState !== "visible") return;
+      if (current.status !== "granted" || current.loading) return;
+      if (current.place?.at && Date.now() - current.place.at < 10 * 60_000) return;
+      detect();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [detect]);
+
 
   /** Manual override from the picker — sticks until the student re-detects. */
   const setCity = useCallback((city: string) => {
