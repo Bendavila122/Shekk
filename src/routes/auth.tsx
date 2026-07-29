@@ -87,17 +87,21 @@ function Auth() {
         setBusy(false);
         return setError("Please accept the Terms & Conditions to continue.");
       }
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: { emailRedirectTo: `${window.location.origin}/verify` },
       });
       setBusy(false);
       if (error) return setError(error.message);
-      setNotice("Check your email to confirm your account, then sign in to finish verification.");
-      setMode("signin");
+      if (data.session) {
+        window.location.href = next === "/" ? "/verify" : next;
+        return;
+      }
+      setSentTo(email);
       return;
     }
+
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
