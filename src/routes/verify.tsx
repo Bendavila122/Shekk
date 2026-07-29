@@ -342,10 +342,13 @@ function Verify() {
                 onChange={(e) => set("addressCountry", e.target.value)}
               >
                 <option value="">Choose…</option>
-                {COUNTRIES.map((c) => (
+                {COUNTRIES.filter((c) => c !== "Israel").map((c) => (
                   <option key={c}>{c}</option>
                 ))}
               </select>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                Your permanent home outside Israel, in a country Airwallex supports.
+              </p>
             </Field>
           </div>
 
