@@ -96,15 +96,15 @@ function Memberships() {
           <div className="space-y-4">
             <div>
               <div className="mb-1 flex justify-between text-sm font-semibold">
-                <span>Average spend · Premium</span>
-                <span>{shekels(avgPremiumSpend)}</span>
+                <span>Average spend · Shekk+</span>
+                <span>{ils(avgPremiumSpend)}</span>
               </div>
               <Bar value={avgPremiumSpend} max={Math.max(avgPremiumSpend, avgFreeSpend)} />
             </div>
             <div>
               <div className="mb-1 flex justify-between text-sm font-semibold">
                 <span>Average spend · Free</span>
-                <span>{shekels(avgFreeSpend)}</span>
+                <span>{ils(avgFreeSpend)}</span>
               </div>
               <Bar value={avgFreeSpend} max={Math.max(avgPremiumSpend, avgFreeSpend)} />
             </div>
