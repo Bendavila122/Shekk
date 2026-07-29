@@ -30,7 +30,7 @@ const PRESETS = [50, 100, 250, 500];
 
 function AddMoney() {
   const { state } = useApp();
-  const { partner, blocked, phase, error, intent, fund, markSubmitted, failFunding, resetFunding } =
+  const { partner, blocked, needsVerification, phase, error, intent, fund, markSubmitted, failFunding, resetFunding } =
     useFunding();
 
   const [amount, setAmount] = useState("100");
@@ -100,11 +100,22 @@ function AddMoney() {
         </p>
 
         {blocked ? (
-          <div className="mt-4 flex items-start gap-2 rounded-2xl border border-notice-border bg-notice-soft px-4 py-3 text-xs leading-relaxed text-notice-foreground">
-            <Lock className="mt-0.5 size-4 shrink-0" />
-            <span>{blocked}</span>
+          <div className="mt-4 space-y-3 rounded-2xl border border-notice-border bg-notice-soft px-4 py-3 text-xs leading-relaxed text-notice-foreground">
+            <div className="flex items-start gap-2">
+              <Lock className="mt-0.5 size-4 shrink-0" />
+              <span>{blocked}</span>
+            </div>
+            {needsVerification && (
+              <Link
+                to="/verify"
+                className="tap block rounded-xl bg-notice-foreground px-4 py-2.5 text-center text-xs font-semibold text-notice-soft"
+              >
+                Verify my identity
+              </Link>
+            )}
           </div>
         ) : null}
+
 
         {/* Source currency */}
         <div className="-mx-6 mt-5 flex gap-2 overflow-x-auto px-6 pb-1 no-scrollbar">

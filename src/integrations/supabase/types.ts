@@ -165,6 +165,39 @@ export type Database = {
           },
         ]
       }
+      kyc_documents: {
+        Row: {
+          byte_size: number | null
+          created_at: string
+          id: string
+          kind: string
+          mime_type: string | null
+          status: string
+          storage_path: string
+          user_id: string
+        }
+        Insert: {
+          byte_size?: number | null
+          created_at?: string
+          id?: string
+          kind: string
+          mime_type?: string | null
+          status?: string
+          storage_path: string
+          user_id: string
+        }
+        Update: {
+          byte_size?: number | null
+          created_at?: string
+          id?: string
+          kind?: string
+          mime_type?: string | null
+          status?: string
+          storage_path?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ledger_entries: {
         Row: {
           amount_agorot: number
@@ -209,6 +242,153 @@ export type Database = {
           id?: string
           idempotency_key?: string
           merchant?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      member_profiles: {
+        Row: {
+          address_city: string | null
+          address_country: string | null
+          address_line1: string | null
+          address_line2: string | null
+          address_postcode: string | null
+          address_state: string | null
+          airwallex_account_id: string | null
+          airwallex_cardholder_id: string | null
+          arrival_date: string | null
+          city: string | null
+          cohort: string | null
+          created_at: string
+          date_of_birth: string | null
+          email: string | null
+          esign_accepted_at: string | null
+          expected_monthly_ils: number | null
+          id_document_number: string | null
+          id_document_type: string | null
+          id_expiry: string | null
+          id_issuing_country: string | null
+          il_address_city: string | null
+          il_address_line1: string | null
+          il_address_postcode: string | null
+          is_pep: boolean
+          is_us_person: boolean
+          kyc_rejection_reason: string | null
+          kyc_reviewed_at: string | null
+          kyc_status: string
+          kyc_submitted_at: string | null
+          legal_first_name: string | null
+          legal_last_name: string | null
+          legal_middle_name: string | null
+          nationality: string | null
+          occupation: string | null
+          phone_country_code: string | null
+          phone_number: string | null
+          preferred_currency: string
+          privacy_accepted_at: string | null
+          program: string | null
+          reverify_due_at: string | null
+          source_of_funds: string | null
+          tax_country: string | null
+          tax_id: string | null
+          terms_accepted_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address_city?: string | null
+          address_country?: string | null
+          address_line1?: string | null
+          address_line2?: string | null
+          address_postcode?: string | null
+          address_state?: string | null
+          airwallex_account_id?: string | null
+          airwallex_cardholder_id?: string | null
+          arrival_date?: string | null
+          city?: string | null
+          cohort?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
+          esign_accepted_at?: string | null
+          expected_monthly_ils?: number | null
+          id_document_number?: string | null
+          id_document_type?: string | null
+          id_expiry?: string | null
+          id_issuing_country?: string | null
+          il_address_city?: string | null
+          il_address_line1?: string | null
+          il_address_postcode?: string | null
+          is_pep?: boolean
+          is_us_person?: boolean
+          kyc_rejection_reason?: string | null
+          kyc_reviewed_at?: string | null
+          kyc_status?: string
+          kyc_submitted_at?: string | null
+          legal_first_name?: string | null
+          legal_last_name?: string | null
+          legal_middle_name?: string | null
+          nationality?: string | null
+          occupation?: string | null
+          phone_country_code?: string | null
+          phone_number?: string | null
+          preferred_currency?: string
+          privacy_accepted_at?: string | null
+          program?: string | null
+          reverify_due_at?: string | null
+          source_of_funds?: string | null
+          tax_country?: string | null
+          tax_id?: string | null
+          terms_accepted_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address_city?: string | null
+          address_country?: string | null
+          address_line1?: string | null
+          address_line2?: string | null
+          address_postcode?: string | null
+          address_state?: string | null
+          airwallex_account_id?: string | null
+          airwallex_cardholder_id?: string | null
+          arrival_date?: string | null
+          city?: string | null
+          cohort?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
+          esign_accepted_at?: string | null
+          expected_monthly_ils?: number | null
+          id_document_number?: string | null
+          id_document_type?: string | null
+          id_expiry?: string | null
+          id_issuing_country?: string | null
+          il_address_city?: string | null
+          il_address_line1?: string | null
+          il_address_postcode?: string | null
+          is_pep?: boolean
+          is_us_person?: boolean
+          kyc_rejection_reason?: string | null
+          kyc_reviewed_at?: string | null
+          kyc_status?: string
+          kyc_submitted_at?: string | null
+          legal_first_name?: string | null
+          legal_last_name?: string | null
+          legal_middle_name?: string | null
+          nationality?: string | null
+          occupation?: string | null
+          phone_country_code?: string | null
+          phone_number?: string | null
+          preferred_currency?: string
+          privacy_accepted_at?: string | null
+          program?: string | null
+          reverify_due_at?: string | null
+          source_of_funds?: string | null
+          tax_country?: string | null
+          tax_id?: string | null
+          terms_accepted_at?: string | null
+          updated_at?: string
           user_id?: string
         }
         Relationships: []

@@ -11,12 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as WalletRouteImport } from './routes/wallet'
+import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as TopupRouteImport } from './routes/topup'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SocialRouteImport } from './routes/social'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReverifyRouteImport } from './routes/reverify'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -69,6 +71,11 @@ const WalletRoute = WalletRouteImport.update({
   path: '/wallet',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TopupRoute = TopupRouteImport.update({
   id: '/topup',
   path: '/topup',
@@ -97,6 +104,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const ReverifyRoute = ReverifyRouteImport.update({
   id: '/reverify',
   path: '/reverify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MembershipRoute = MembershipRouteImport.update({
@@ -320,12 +332,14 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/verify': typeof VerifyRoute
   '/wallet': typeof WalletRoute
   '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -370,12 +384,14 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/verify': typeof VerifyRoute
   '/wallet': typeof WalletRoute
   '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -422,12 +438,14 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
+  '/verify': typeof VerifyRoute
   '/wallet': typeof WalletRoute
   '/welcome': typeof WelcomeRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -475,12 +493,14 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/membership'
+    | '/reset-password'
     | '/reverify'
     | '/settings'
     | '/sitemap.xml'
     | '/social'
     | '/terms'
     | '/topup'
+    | '/verify'
     | '/wallet'
     | '/welcome'
     | '/.mcp/list-tools'
@@ -525,12 +545,14 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/membership'
+    | '/reset-password'
     | '/reverify'
     | '/settings'
     | '/sitemap.xml'
     | '/social'
     | '/terms'
     | '/topup'
+    | '/verify'
     | '/wallet'
     | '/welcome'
     | '/.mcp/list-tools'
@@ -576,12 +598,14 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/membership'
+    | '/reset-password'
     | '/reverify'
     | '/settings'
     | '/sitemap.xml'
     | '/social'
     | '/terms'
     | '/topup'
+    | '/verify'
     | '/wallet'
     | '/welcome'
     | '/.mcp/list-tools'
@@ -628,12 +652,14 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   MeRoute: typeof MeRoute
   MembershipRoute: typeof MembershipRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ReverifyRoute: typeof ReverifyRoute
   SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SocialRoute: typeof SocialRoute
   TermsRoute: typeof TermsRoute
   TopupRoute: typeof TopupRoute
+  VerifyRoute: typeof VerifyRoute
   WalletRoute: typeof WalletRoute
   WelcomeRoute: typeof WelcomeRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
@@ -678,6 +704,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WalletRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/topup': {
       id: '/topup'
       path: '/topup'
@@ -718,6 +751,13 @@ declare module '@tanstack/react-router' {
       path: '/reverify'
       fullPath: '/reverify'
       preLoaderRoute: typeof ReverifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/membership': {
@@ -1045,12 +1085,14 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   MeRoute: MeRoute,
   MembershipRoute: MembershipRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ReverifyRoute: ReverifyRoute,
   SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SocialRoute: SocialRoute,
   TermsRoute: TermsRoute,
   TopupRoute: TopupRoute,
+  VerifyRoute: VerifyRoute,
   WalletRoute: WalletRoute,
   WelcomeRoute: WelcomeRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
