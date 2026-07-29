@@ -62,6 +62,10 @@ export type MemberProfile = {
   kycRejectionReason: string | null;
   reverifyDueAt: string | null;
   hasCardholder: boolean;
+  /** Where our regulated partner's review of this member's shekel account stands. */
+  ilsAccountStatus: IlsAccountStatus;
+  ilsAccountApprovedAt: string | null;
+  ilsAccountRejectionReason: string | null;
   documents: Array<{ id: string; kind: string; createdAt: string }>;
 };
 
@@ -190,6 +194,9 @@ function shape(row: Row, docs: Row[]): MemberProfile {
     kycRejectionReason: s("kyc_rejection_reason"),
     reverifyDueAt: s("reverify_due_at"),
     hasCardholder: Boolean(row.airwallex_cardholder_id),
+    ilsAccountStatus: (s("airwallex_account_status") ?? "not_submitted") as IlsAccountStatus,
+    ilsAccountApprovedAt: s("ils_account_approved_at"),
+    ilsAccountRejectionReason: s("airwallex_rejection_reason"),
     documents: docs.map((d) => ({
       id: String(d.id),
       kind: String(d.kind),
@@ -363,6 +370,11 @@ export async function submitKyc(
     kyc_rejection_reason: null,
     updated_at: new Date().toISOString(),
   };
+  // Handing the file to the partner is what starts their shekel-account review.
+  if (profile.ilsAccountStatus === "not_submitted" || profile.ilsAccountStatus === "rejected") {
+    patch.airwallex_account_status = "pending";
+    patch.airwallex_rejection_reason = null;
+  }
 
   const { isConfigured, createCardholder } = await import("./airwallex.server");
   if (isConfigured() && !profile.hasCardholder) {
