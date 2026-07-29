@@ -52,7 +52,7 @@ function WalletScreen() {
     );
   }
 
-  const firstName = state.name.split(" ")[0];
+  const firstName = state.name.split(" ")[0] || "Shekk member";
 
   return (
     <AppShell>

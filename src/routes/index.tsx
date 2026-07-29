@@ -99,7 +99,7 @@ function HomeScreen() {
           />
           <span className="font-display text-xl font-bold leading-none tracking-tight text-primary">Shekk</span>
         </div>
-        <p className="mt-2 text-xs uppercase tracking-widest text-muted-foreground">Shalom, {firstName}</p>
+        <p className="mt-2 text-xs uppercase tracking-widest text-muted-foreground">Shalom{firstName ? `, ${firstName}` : ""}</p>
       </div>
 
       <LocationBar />
