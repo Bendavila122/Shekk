@@ -44,46 +44,27 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     id: "transit",
     label: "Getting around",
     emoji: "🚌",
-    tagline: "One Rav-Kav, one fare, one balance.",
+    tagline: "Book a ride and pay from your Shekk balance.",
     services: [
-      { id: "ravkav", name: "Rav-Kav", partner: "Rav-Kav Online", emoji: "🎫", domain: "ravkavonline.co.il", blurb: "Load your travel card with Shekk", status: "live", featured: true, to: "/explore/transit", detail: ["Top up any Rav-Kav from your credit balance", "Student profile discounts applied automatically", "Balance shown next to your Shekk credits"] },
-      { id: "moovit", name: "Moovit", partner: "Moovit", emoji: "🧭", domain: "moovit.com", blurb: "Live bus, light rail & sherut times", status: "live", to: "/explore/transit", detail: ["Real-time departures embedded in the Transit screen", "Line alerts for chagim and Shabbat timetables"] },
-      { id: "rail", name: "Israel Railways", partner: "Rakevet Israel", emoji: "🚆", domain: "rail.co.il", blurb: "Book intercity train tickets", status: "live", featured: true, to: "/explore/transit", detail: ["Jerusalem ↔ Tel Aviv ↔ Haifa ↔ Be'er Sheva", "Ticket lives in your wallet as a QR"] },
       { id: "gett", name: "Gett", partner: "Gett", emoji: "🚕", domain: "gett.com", blurb: "Order a taxi, pay with Shekk", status: "live", featured: true, to: "/explore/rides", detail: ["The real Gett booking flow, running inside Shekk", "Fare settles straight from your Shekk balance"] },
-      { id: "goto", name: "Go-To", partner: "Go To Global", emoji: "🚙", domain: "go-to.global", blurb: "Car & scooter sharing by the minute", status: "live", featured: true, to: "/explore/rides", detail: ["Unlock a Go-To car or scooter without leaving Shekk", "Minutes billed to your Shekk balance"] },
-      { id: "waze", name: "Waze", partner: "Waze", emoji: "📍", domain: "waze.com", blurb: "Navigate, with in-app handoff", status: "integrating" },
-      { id: "gmaps", name: "Google Maps", partner: "Google", emoji: "🗺️", domain: "google.com", blurb: "Places, routes and hotspot map", status: "integrating" },
-      { id: "pango", name: "Pango", partner: "Pango", emoji: "🅿️", domain: "pango.co.il", blurb: "Street parking, paid by the minute", status: "integrating" },
-      { id: "carrental", name: "Car rental", partner: "Shlomo Sixt · Eldan", emoji: "🚗", domain: "shlomo-sixt.co.il", blurb: "Under-25 friendly rentals", status: "integrating" },
-      { id: "flights", name: "Flights", partner: "Kiwi", emoji: "✈️", domain: "kiwi.com", blurb: "Chagim flights home and back", status: "integrating" },
     ],
   },
   {
     id: "eat",
     label: "Eating & going out",
     emoji: "🥙",
-    tagline: "Platforms, not one-by-one venue signups.",
+    tagline: "What to know until the ordering platforms are live.",
     services: [
-      { id: "wolt", name: "Wolt", partner: "Wolt", emoji: "🛵", domain: "wolt.com", blurb: "Full delivery catalogue, kosher filter on", status: "live", featured: true, to: "/explore/food", detail: ["Every Wolt restaurant, ordered without leaving Shekk", "Kosher / Badatz / dairy-meat filters", "Erev Shabbat cut-off reminders"] },
-      { id: "cibus", name: "Cibus", partner: "Cibus", emoji: "🍱", domain: "cibus.co.il", blurb: "Meal credit at thousands of spots", status: "integrating" },
-      { id: "10bis", name: "Tenbis", partner: "10bis", emoji: "🍽️", domain: "10bis.co.il", blurb: "Lunch ordering and pickup", status: "integrating" },
-      { id: "reserve", name: "Table reservations", partner: "Ontopo", emoji: "📖", domain: "ontopo.com", blurb: "Book restaurants, bars & cafés", status: "live", to: "/explore/reserve" },
-      { id: "supermarkets", name: "Supermarkets", partner: "Shufersal · Rami Levy", emoji: "🛒", domain: "shufersal.co.il", blurb: "Grocery delivery to your dira", status: "integrating" },
       { id: "shuk", name: "Shuk guide", emoji: "🍅", blurb: "Machane Yehuda & Carmel, how to haggle", status: "guide", detail: ["Best days and hours to go", "What a fair price looks like", "Which stalls take card vs cash only"] },
     ],
   },
   {
     id: "nightlife",
-    label: "Nightlife & things to do",
+    label: "Things to do",
     emoji: "🎟️",
-    tagline: "Ticketing platforms cover the individual venues.",
+    tagline: "Tiyulim, chesed and where students actually go.",
     services: [
-      { id: "events", name: "Events & tickets", partner: "Eventbuzz", emoji: "🎫", domain: "eventbuzz.co.il", blurb: "Shabbatonim, tiyulim, concerts", status: "live", to: "/explore/events" },
-      { id: "secrettlv", name: "Secret TLV", partner: "Secret Tel Aviv", emoji: "🌃", domain: "secrettelaviv.com", blurb: "What's on tonight, curated", status: "integrating" },
-      { id: "clubs", name: "Clubs & bars", partner: "via ticketing partners", emoji: "🎧", blurb: "Guest lists and entry through partner platforms", status: "integrating" },
       { id: "thingstodo", name: "Things to do", emoji: "🏜️", blurb: "Tiyulim, hikes, day trips", status: "guide" },
-      { id: "map", name: "Hotspot map", emoji: "🗺️", blurb: "Destinations students actually go", status: "integrating" },
-      { id: "gyms", name: "Gyms & fitness", partner: "Holmes Place · Icon", emoji: "🏋️", domain: "holmesplace.co.il", blurb: "Short-term memberships and day passes", status: "integrating" },
       { id: "volunteer", name: "Volunteering", partner: "Yad Sarah · Leket", emoji: "🤝", blurb: "Chesed shifts near your program", status: "guide" },
     ],
   },
@@ -91,15 +72,9 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     id: "living",
     label: "Living here",
     emoji: "🏠",
-    tagline: "From a week in a hostel to a year-long dira.",
+    tagline: "The boring stuff nobody explains to you.",
     services: [
-      { id: "housing", name: "Rentals & house shares", partner: "Yad2", emoji: "🏘️", domain: "yad2.co.il", blurb: "Long-term diras and roommates", status: "live", to: "/explore/housing" },
-      { id: "airbnb", name: "Airbnb", partner: "Airbnb", emoji: "🛏️", domain: "airbnb.com", blurb: "Short stays for bein hazmanim", status: "integrating" },
-      { id: "hotels", name: "Hotels & hostels", partner: "Booking.com", emoji: "🏨", domain: "booking.com", blurb: "Book a bed anywhere in the country", status: "integrating" },
-      { id: "bills", name: "Utility bills", partner: "IEC · Hot · Bezeq", emoji: "💡", domain: "iec.co.il", blurb: "Electric, water, internet from credits", status: "integrating" },
       { id: "arnona", name: "Arnona & taxes", partner: "Municipality", emoji: "🧾", blurb: "Council tax and student exemptions", status: "guide" },
-      { id: "sim", name: "SIM cards", partner: "Partner · Cellcom · Pelephone", emoji: "📱", domain: "partner.co.il", blurb: "eSIM in minutes, no Israeli ID needed", status: "integrating" },
-      { id: "shops", name: "Shops & discounts", partner: "student network", emoji: "🏷️", blurb: "Promo codes and where to find things", status: "live", to: "/explore/shops" },
       { id: "cash", name: "Cash & exchange", emoji: "💵", blurb: "How to get cash, what a fair rate is", status: "guide", detail: ["Shekk rate vs street changers", "Which ATMs skip the double conversion", "Where cash is still king (shuk, sherut, monit)"] },
     ],
   },
@@ -109,7 +84,6 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     emoji: "🩺",
     tagline: "The stuff you hope you never need, one tap away.",
     services: [
-      { id: "hospitalcard", name: "Hospital card", partner: "Harel · Clal", emoji: "🪪", domain: "harel-group.co.il", blurb: "Insurance card in your wallet", status: "live", to: "/explore/health" },
       { id: "hospitals", name: "Hospitals & clinics", partner: "Terem · Meuhedet", emoji: "🏥", blurb: "Nearest English-speaking care", status: "guide" },
       { id: "emergency", name: "Emergency services", partner: "MDA · Hatzalah", emoji: "🚨", blurb: "101 / 100 / 102, one tap", status: "guide", detail: ["MDA ambulance — 101", "Police — 100", "Fire — 102", "United Hatzalah — 1221"] },
       { id: "helplines", name: "Help lines", partner: "ERAN · Crisis Center", emoji: "☎️", blurb: "Mental health, in English", status: "guide" },
@@ -123,23 +97,20 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     emoji: "🛂",
     tagline: "Visas, army, and every form nobody explained.",
     services: [
-      { id: "visa", name: "Visa guides", partner: "Misrad HaPnim", emoji: "🛂", blurb: "A/2 student visa, extensions, overstays", status: "live", to: "/explore/admin" },
+      { id: "visa", name: "Visa guides", partner: "Misrad HaPnim", emoji: "🛂", blurb: "A/2 student visa, extensions, overstays", status: "guide", to: "/explore/admin" },
       { id: "army", name: "Army info", partner: "IDF · Nefesh B'Nefesh", emoji: "🎖️", blurb: "Draft, Mahal, Garin Tzabar", status: "guide" },
       { id: "lonesoldier", name: "Lone soldier support", partner: "LSC", emoji: "🪖", blurb: "Rights, benefits, care packages", status: "guide" },
       { id: "uni", name: "Uni & school help", emoji: "🎓", blurb: "Applications, credits transfer, tuition", status: "guide" },
-      { id: "translation", name: "Translation", emoji: "🔤", blurb: "Photograph any Hebrew form", status: "integrating" },
-      { id: "weather", name: "Weather", emoji: "🌤️", blurb: "Sharav, rain, hiking conditions", status: "integrating" },
     ],
   },
   {
     id: "community",
     label: "Jewish life",
     emoji: "🕍",
-    tagline: "Zmanim, shuls and your program's calendar.",
+    tagline: "Your siddur, plus what's worth knowing.",
     services: [
-      { id: "community", name: "Shuls & minyanim", partner: "Aish · Chabad", emoji: "🕍", blurb: "Minyan times near you", status: "live", to: "/explore/community" },
+      { id: "siddur", name: "Siddur", emoji: "📖", blurb: "Nusach-aware siddur, Hebrew & English", status: "live", featured: true, to: "/siddur", detail: ["Shacharit, Mincha, Maariv, bedtime Shema", "Tefilat HaDerech, Birkat Hamazon, brachot, Havdalah", "Pick your nusach, text size and translation"] },
       { id: "programs", name: "Yeshivas, sems & schools", emoji: "📚", blurb: "Program directory and open shiurim", status: "guide" },
-      { id: "siddur", name: "Siddur", emoji: "📖", blurb: "Nusach-aware siddur, Hebrew & English", status: "live", to: "/siddur", detail: ["Shacharit, Mincha, Maariv, bedtime Shema", "Tefilat HaDerech, Birkat Hamazon, brachot, Havdalah", "Pick your nusach, text size and translation"] },
       { id: "chagim", name: "Chagim & national holidays", emoji: "🕯️", blurb: "What closes, when, and where to be", status: "guide", detail: ["Public transport stops before Shabbat and chag", "Yom HaZikaron / Yom HaAtzmaut siren times", "Chol HaMoed opening hours"] },
     ],
   },
@@ -147,15 +118,14 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     id: "money",
     label: "Money",
     emoji: "💳",
-    tagline: "Credits in, credits out to friends and partners.",
+    tagline: "Your shekels, in and out.",
     services: [
-      { id: "bit", name: "Bit", partner: "Bit", emoji: "🇮🇱", domain: "bitpay.co.il", blurb: "Israelis pay you, you pay them", status: "integrating", detail: ["Accept a Bit request straight into credits", "Settle a landlord or madrich without cash"] },
+      { id: "topup", name: "Add money", emoji: "➕", blurb: "Add shekels with Apple Pay or a card", status: "live", featured: true, to: "/topup" },
       { id: "split", name: "Split a bill", emoji: "👥", blurb: "Split evenly or custom with your cohort", status: "live", to: "/social" },
-      { id: "topup", name: "Add credits", emoji: "➕", blurb: "Buy shekel credits with Apple Pay", status: "live", to: "/topup" },
-      { id: "promos", name: "Promo codes", emoji: "🎁", blurb: "Student discounts across partners", status: "live", to: "/explore/shops" },
     ],
   },
 ];
+
 
 export const FEATURED_SERVICES: Service[] = SERVICE_CATEGORIES.flatMap((c) => c.services).filter(
   (s) => s.featured,
@@ -187,21 +157,17 @@ export function serviceLinkProps(service: Service): {
  */
 const HOME_LAYOUT: { label: string; hint: string; ids: string[] }[] = [
   {
-    label: "Everyday",
-    hint: "The definitive five, plus what you open daily.",
-    ids: ["wolt", "gett", "ravkav", "rail", "goto", "cibus", "10bis", "pango"],
+    label: "Live in Shekk",
+    hint: "What's wired up today. More partners as their APIs land.",
+    ids: ["gett", "siddur", "topup", "split"],
   },
   {
-    label: "Out & about",
-    hint: "Tiyulim, tickets, tables and Thursday nights.",
-    ids: ["events", "reserve", "moovit", "gmaps", "secrettlv", "thingstodo", "gyms", "flights"],
-  },
-  {
-    label: "Life in Israel",
-    hint: "The boring stuff nobody explains to you.",
-    ids: ["sim", "housing", "bills", "visa", "hospitalcard", "emergency", "community", "siddur"],
+    label: "Good to know",
+    hint: "Practical guides for your year here.",
+    ids: ["visa", "emergency", "cash", "shuk", "thingstodo", "chagim"],
   },
 ];
+
 
 export const HOME_SECTIONS = HOME_LAYOUT.map((section) => ({
   label: section.label,

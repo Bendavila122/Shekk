@@ -6,7 +6,7 @@ const KEY = "shekk.recents.v2";
 const MAX = 5;
 
 /** Sensible starting point before the student has opened anything. */
-const DEFAULT_RECENTS = ["wolt", "gett", "ravkav", "rail", "goto"];
+const DEFAULT_RECENTS = ["gett", "siddur", "topup", "split"];
 
 function read(): string[] {
   if (typeof window === "undefined") return DEFAULT_RECENTS;
