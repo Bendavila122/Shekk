@@ -192,9 +192,44 @@ export type OnboardingPayload = {
   payCurrency?: CurrencyCode;
 };
 
+export type OpenHold = {
+  id: string;
+  amount: number;
+  merchant: string;
+  category: string;
+  icon: string;
+  externalRef: string | null;
+  createdAt: string;
+};
+
 type Ctx = {
   state: State;
   hydrated: boolean;
+  /** True once a real account is signed in and its ledger has loaded. */
+  ledgerReady: boolean;
+  /** Signed in against the real backend ledger, rather than the local demo. */
+  signedIn: boolean;
+  /** Money reserved by pending payments, e.g. a taxi booked at an estimate. */
+  held: number;
+  /** Balance minus holds — what can actually be spent right now. */
+  available: number;
+  openHolds: OpenHold[];
+  /** Last money error, e.g. "Not enough money in your account". */
+  moneyError: string | null;
+  clearMoneyError: () => void;
+  refreshLedger: () => Promise<void>;
+  /** Reserve money for a payment whose final amount is not known yet. */
+  holdFor: (input: {
+    amount: number;
+    merchant: string;
+    category?: string;
+    icon?: string;
+    externalRef?: string | null;
+  }) => Promise<string | null>;
+  /** Charge a reservation at its true final amount. */
+  settleHold: (holdId: string, finalAmount?: number) => Promise<void>;
+  /** Give a reservation back without charging. */
+  releaseHold: (holdId: string) => Promise<void>;
   daysLeft: number | null;
   verification: VerificationStatus;
   isPremium: boolean;
@@ -227,6 +262,92 @@ const AppContext = createContext<Ctx | null>(null);
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>(initialState);
   const [hydrated, setHydrated] = useState(false);
+
+  /* ---------------------------------------------------------- real ledger ---
+   * Signed-in members hold their money in the backend ledger: the server owns
+   * the balance and every movement is an append-only entry. Signed-out visitors
+   * keep the local demo wallet so the prototype stays explorable.
+   * -------------------------------------------------------------------------- */
+  const [signedIn, setSignedIn] = useState(false);
+  const [ledgerReady, setLedgerReady] = useState(false);
+  const [held, setHeld] = useState(0);
+  const [openHolds, setOpenHolds] = useState<OpenHold[]>([]);
+  const [moneyError, setMoneyError] = useState<string | null>(null);
+  const signedInRef = useRef(false);
+
+  const applySnapshot = useCallback((snap: Awaited<ReturnType<typeof getLedger>>) => {
+    setState((s) => ({
+      ...s,
+      balance: snap.balance,
+      txns: snap.entries.map((e) => ({
+        id: e.id,
+        merchant: e.merchant,
+        category: e.category,
+        amount: e.amount,
+        date: e.date,
+        icon: e.icon,
+      })),
+    }));
+    setHeld(snap.held);
+    setOpenHolds(snap.holds);
+    setLedgerReady(true);
+  }, []);
+
+  const refreshLedger = useCallback(async () => {
+    if (!signedInRef.current) return;
+    try {
+      applySnapshot(await getLedger());
+    } catch (error) {
+      console.error("[ledger] refresh failed", error);
+    }
+  }, [applySnapshot]);
+
+  /** Run a money operation and adopt whatever the server says the truth is. */
+  const money = useCallback(
+    async <T extends { balance: number; entries: unknown[] }>(run: () => Promise<T>) => {
+      setMoneyError(null);
+      try {
+        const snap = (await run()) as Awaited<ReturnType<typeof getLedger>>;
+        applySnapshot(snap);
+        return true;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "That payment could not be completed";
+        setMoneyError(message.replace(/^Error:\s*/, ""));
+        void refreshLedger();
+        return false;
+      }
+    },
+    [applySnapshot, refreshLedger],
+  );
+
+  useEffect(() => {
+    let active = true;
+
+    const sync = (userId: string | null) => {
+      if (!active) return;
+      const isIn = Boolean(userId);
+      signedInRef.current = isIn;
+      setSignedIn(isIn);
+      if (isIn) {
+        void refreshLedger();
+      } else {
+        setLedgerReady(false);
+        setHeld(0);
+        setOpenHolds([]);
+      }
+    };
+
+    supabase.auth.getSession().then(({ data }) => sync(data.session?.user?.id ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      sync(session?.user?.id ?? null);
+    });
+
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, [refreshLedger]);
 
   useEffect(() => {
     try {
