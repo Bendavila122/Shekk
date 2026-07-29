@@ -16,7 +16,7 @@ import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { serviceLinkProps, type Service } from "@/lib/services";
 import { recordServiceUse, useRecentServices } from "@/lib/recents";
 import { ServiceLogo } from "@/components/ServiceLogo";
-import { useVisibleBenefits, usePromotions } from "@/lib/admin";
+import { usePromotions } from "@/lib/admin";
 
 
 export const Route = createFileRoute("/")({
