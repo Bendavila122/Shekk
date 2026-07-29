@@ -196,7 +196,7 @@ function Verify() {
           <Clock className="mx-auto size-12 text-notice-foreground" />
           <p className="text-lg font-bold">We're reviewing your application</p>
           <p className="text-sm text-muted-foreground">
-            Our payment partner is running the standard identity and sanctions checks. Most are done
+            Airwallex is running the standard identity and sanctions checks. Most are done
             within minutes, some take up to one working day. We'll email you the moment it clears.
           </p>
           <Link to="/wallet" className="block">
@@ -620,7 +620,7 @@ function Verify() {
           )}
 
           <Notice title="What happens next">
-            We hand your details to our regulated payment partner, who runs the identity and
+            We hand your details to Airwallex, our regulated payment partner, who runs the identity and
             sanctions checks and opens your shekel account. Nothing is charged, and you can add
             money the moment it clears.
           </Notice>

@@ -175,7 +175,7 @@ function WalletScreen() {
 
         <p className="mt-4 flex items-start gap-2 px-1 text-[11px] leading-relaxed text-muted-foreground">
           <ShieldCheck className="mt-0.5 size-3.5 shrink-0" />
-          Your shekel account and card are provided by Shekk's regulated banking and issuing partners. Shekk builds the
+          Your shekel account and card are provided by Airwallex, Shekk's regulated payment and issuing partner. Shekk builds the
           app.{" "}
           <Link to="/terms" className="font-semibold underline">
             Terms
