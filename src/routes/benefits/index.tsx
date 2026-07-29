@@ -42,7 +42,7 @@ function BenefitsScreen() {
           <Link to="/membership" className="tap block">
             <div className="grad-premium relative overflow-hidden rounded-2xl p-4 text-ink-foreground">
               <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
-              <p className="relative text-sm font-semibold">Unlock every offer with Shekk Premium</p>
+              <p className="relative text-sm font-semibold">Unlock every offer with Shekk+</p>
               <p className="relative text-xs opacity-85">
                 {BENEFITS.filter((b) => b.premium).length} members-only deals are locked on your plan.
               </p>

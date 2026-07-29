@@ -120,7 +120,7 @@ function WalletScreen() {
                     : `Mastercard •••• ${state.card.last4} · in Apple Pay`
                   : isPremium
                     ? "Ready to issue"
-                    : "Included with Shekk Premium"}
+                    : "Included with Shekk+"}
               </p>
             </div>
             <ChevronRight className="size-5 shrink-0 text-muted-foreground" />

@@ -145,7 +145,7 @@ function ExchangeScreen() {
               >
                 <Info className="mt-0.5 size-4 shrink-0" />
                 <span>
-                  Shekk Premium converts at a 1.2% margin instead of {marginLabel}. On this exchange that's{" "}
+                  Shekk+ converts at a 1.2% margin instead of {marginLabel}. On this exchange that's{" "}
                   {money(cur.code, +(q.fee * 0.6).toFixed(2))} back.
                 </span>
               </Link>
