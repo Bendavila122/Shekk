@@ -31,6 +31,7 @@ import { Route as SiddurIndexRouteImport } from './routes/siddur/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
 import { Route as BenefitsIndexRouteImport } from './routes/benefits/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
 import { Route as GuidesIdRouteImport } from './routes/guides/$id'
 import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
@@ -161,6 +162,11 @@ const BenefitsIndexRoute = BenefitsIndexRouteImport.update({
   path: '/benefits/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const SiddurIdRoute = SiddurIdRouteImport.update({
   id: '/siddur/$id',
   path: '/siddur/$id',
@@ -262,7 +268,7 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/activity': typeof ActivityRoute
   '/auth': typeof AuthRoute
   '/card': typeof CardRoute
@@ -294,6 +300,7 @@ export interface FileRoutesByFullPath {
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
@@ -305,7 +312,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRoute
   '/activity': typeof ActivityRoute
   '/auth': typeof AuthRoute
   '/card': typeof CardRoute
@@ -337,6 +343,7 @@ export interface FileRoutesByTo {
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
+  '/admin': typeof AdminIndexRoute
   '/benefits': typeof BenefitsIndexRoute
   '/explore': typeof ExploreIndexRoute
   '/guides': typeof GuidesIndexRoute
@@ -349,7 +356,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRoute
+  '/admin': typeof AdminRouteRouteWithChildren
   '/activity': typeof ActivityRoute
   '/auth': typeof AuthRoute
   '/card': typeof CardRoute
@@ -381,6 +388,7 @@ export interface FileRoutesById {
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
@@ -426,6 +434,7 @@ export interface FileRouteTypes {
     | '/explore/transit'
     | '/guides/$id'
     | '/siddur/$id'
+    | '/admin/'
     | '/benefits/'
     | '/explore/'
     | '/guides/'
@@ -437,7 +446,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/activity'
     | '/auth'
     | '/card'
@@ -469,6 +477,7 @@ export interface FileRouteTypes {
     | '/explore/transit'
     | '/guides/$id'
     | '/siddur/$id'
+    | '/admin'
     | '/benefits'
     | '/explore'
     | '/guides'
@@ -512,6 +521,7 @@ export interface FileRouteTypes {
     | '/explore/transit'
     | '/guides/$id'
     | '/siddur/$id'
+    | '/admin/'
     | '/benefits/'
     | '/explore/'
     | '/guides/'
@@ -524,7 +534,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRouteRoute: typeof AdminRouteRoute
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   ActivityRoute: typeof ActivityRoute
   AuthRoute: typeof AuthRoute
   CardRoute: typeof CardRoute
@@ -722,6 +732,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BenefitsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/siddur/$id': {
       id: '/siddur/$id'
       path: '/siddur/$id'
@@ -858,9 +875,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRouteRoute: AdminRouteRoute,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   ActivityRoute: ActivityRoute,
   AuthRoute: AuthRoute,
   CardRoute: CardRoute,
