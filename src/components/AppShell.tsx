@@ -39,13 +39,24 @@ export function PhoneFrame({ children, wide = false }: { children: ReactNode; wi
  * Full-page flows (top-up, terms, re-verify) that sit outside the tab shell.
  * Mobile keeps the phone frame; desktop gets a centered card on the app canvas.
  */
-export function FocusScreen({ children }: { children: ReactNode }) {
+export function FocusScreen({
+  children,
+  /** Sign-in and other pre-account screens have no app navigation yet. */
+  nav = true,
+}: {
+  children: ReactNode;
+  nav?: boolean;
+}) {
   return (
     <div className="flex min-h-screen justify-center bg-ink/95 px-0 py-0 sm:px-4 sm:py-8 lg:bg-ink/[0.03] lg:px-8 lg:py-12">
       <div className="relative flex min-h-screen w-full max-w-[430px] flex-col overflow-hidden bg-background shadow-lift sm:min-h-[860px] sm:rounded-[2.5rem] sm:border-8 sm:border-ink lg:min-h-0 lg:max-w-2xl lg:rounded-3xl lg:border lg:border-border lg:shadow-card">
-        <div className="flex-1 pb-24 lg:pb-6">{children}</div>
-        <QuickMenu />
-        <MobileNav />
+        <div className={`flex-1 ${nav ? "pb-24 lg:pb-6" : "pb-6"}`}>{children}</div>
+        {nav ? (
+          <>
+            <QuickMenu />
+            <MobileNav />
+          </>
+        ) : null}
 
       </div>
     </div>

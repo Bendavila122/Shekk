@@ -82,7 +82,7 @@ function Welcome() {
   }
 
   return (
-    <FocusScreen>
+    <FocusScreen nav={false}>
       <header className="px-5 pt-6">
         <div className="flex items-center gap-3">
           <button

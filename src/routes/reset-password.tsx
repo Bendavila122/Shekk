@@ -40,7 +40,7 @@ function ResetPassword() {
   }
 
   return (
-    <FocusScreen>
+    <FocusScreen nav={false}>
       <div className="flex min-h-screen flex-col justify-center gap-6 px-6 py-14 sm:min-h-[860px]">
         <h1 className="text-3xl font-extrabold tracking-tight">
           {done ? "Password updated" : "Set a new password"}
