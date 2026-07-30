@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { SlidersHorizontal, Sparkles, X } from "lucide-react";
+import { ExternalLink, SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { useUserContext, WEATHER_CITIES } from "@/lib/personalise";
 import { placeForCity, useLocation } from "@/lib/location";
 import { useJewish, useWeather } from "@/lib/live";
@@ -230,21 +230,35 @@ function DetailSheet({
 
         {content.ctas.length ? (
           <div className="mt-6 flex flex-wrap gap-2">
-            {content.ctas.map((cta, i) => (
-              <Link
-                key={cta.label}
-                to={cta.to}
-                onClick={() => {
-                  haptic();
-                  onClose();
-                }}
-                className={`tap rounded-full px-4 py-2.5 text-xs font-semibold ${
-                  i === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
-                }`}
-              >
-                {cta.label}
-              </Link>
-            ))}
+            {content.ctas.map((cta, i) => {
+              const cls = `tap rounded-full px-4 py-2.5 text-xs font-semibold ${
+                i === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+              }`;
+              return cta.href ? (
+                <a
+                  key={cta.label}
+                  href={cta.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => haptic()}
+                  className={cls}
+                >
+                  {cta.label}
+                </a>
+              ) : (
+                <Link
+                  key={cta.label}
+                  to={cta.to!}
+                  onClick={() => {
+                    haptic();
+                    onClose();
+                  }}
+                  className={cls}
+                >
+                  {cta.label}
+                </Link>
+              );
+            })}
           </div>
         ) : null}
       </div>
