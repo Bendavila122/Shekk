@@ -48,7 +48,7 @@ function Accounts() {
       if (filter === "pending-kyc" && !PENDING.includes(a.kycStatus)) return false;
       if (filter === "suspended" && a.accountStatus === "active") return false;
       if (!term) return true;
-      return [a.name, a.email, a.city, a.program, a.country, a.userId]
+      return [a.name, a.email, a.city, a.program, a.country, a.userId, a.handle]
         .filter(Boolean)
         .some((v) => String(v).toLowerCase().includes(term));
     });
@@ -76,7 +76,7 @@ function Accounts() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search name, email, city, program"
+              placeholder="Search name, Shekk tag, email, city, program"
               className="w-full bg-transparent text-sm outline-none"
             />
           </div>
@@ -99,6 +99,7 @@ function Accounts() {
             <thead>
               <tr className="border-b border-border text-[11px] uppercase tracking-wide text-muted-foreground">
                 <th className="py-2 pr-3 font-semibold">Member</th>
+                <th className="py-2 pr-3 font-semibold">Shekk tag</th>
                 <th className="py-2 pr-3 font-semibold">Program</th>
                 <th className="py-2 pr-3 font-semibold">Plan</th>
                 <th className="py-2 pr-3 font-semibold">KYC</th>
@@ -120,6 +121,13 @@ function Accounts() {
                     <p className="text-xs text-muted-foreground">
                       {a.email ?? "no email"} · joined {when(a.joinedISO)}
                     </p>
+                  </td>
+                  <td className="py-2.5 pr-3">
+                    {a.handle ? (
+                      <span className="font-semibold text-primary">@{a.handle}</span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">not set</span>
+                    )}
                   </td>
                   <td className="py-2.5 pr-3 text-xs text-muted-foreground">
                     {a.program ?? "—"}
@@ -145,7 +153,7 @@ function Accounts() {
               ))}
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-sm text-muted-foreground">
+                  <td colSpan={9} className="py-8 text-center text-sm text-muted-foreground">
                     {isLoading
                       ? "Loading the member book…"
                       : error
@@ -168,11 +176,13 @@ function Accounts() {
 
 function MemberDrawer({ userId, onClose }: { userId: string; onClose: () => void }) {
   const { data, isLoading } = useAdminMemberDetail(userId);
-  const { setKyc, setAccount } = useAdminActions();
+  const { setKyc, setAccount, setHandle } = useAdminActions();
   const [reason, setReason] = useState("");
+  const [tag, setTag] = useState<string | null>(null);
 
   const p = data?.profile as any;
   const acct = data?.account as any;
+  const currentTag = (data as any)?.handle?.handle ?? "";
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/50 p-0 sm:items-center sm:p-6">
@@ -206,6 +216,32 @@ function MemberDrawer({ userId, onClose }: { userId: string; onClose: () => void
                   <p className="truncate font-semibold capitalize">{String(v).replace(/_/g, " ")}</p>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-5">
+              <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Shekk tag</p>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <div className="flex flex-1 items-center gap-1 rounded-xl border border-border bg-background px-3 py-2">
+                  <span className="text-sm font-semibold text-muted-foreground">@</span>
+                  <input
+                    value={tag ?? currentTag}
+                    onChange={(e) => setTag(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
+                    placeholder="shekk tag"
+                    className="w-full bg-transparent text-sm outline-none"
+                  />
+                </div>
+                <button
+                  type="button"
+                  disabled={setHandle.isPending || (tag ?? currentTag).length < 3 || (tag ?? currentTag) === currentTag}
+                  onClick={() => setHandle.mutate({ userId, handle: tag ?? currentTag })}
+                  className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground disabled:opacity-40"
+                >
+                  Save tag
+                </button>
+              </div>
+              {setHandle.error ? (
+                <p className="mt-1 text-xs font-semibold text-destructive">{(setHandle.error as Error).message}</p>
+              ) : null}
             </div>
 
             <div className="mt-5">
