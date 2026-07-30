@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { type Txn } from "./mock";
 import { useApp } from "./store";
 import type { LiveJewish, LiveWeather } from "./live-types";
+import type { NewsItem } from "./news-types";
 
 /* ---------------------------------------------------------------- seeding */
 
@@ -66,6 +67,10 @@ export type UserContext = {
   weather: LiveWeather | null;
   weatherLoading: boolean;
   weatherError: boolean;
+  /** Live Israeli headlines, newest first. */
+  news: NewsItem[];
+  newsLoading: boolean;
+  newsError: boolean;
   signals: {
     topCategory: string;
     favouriteMerchant: string;
