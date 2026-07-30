@@ -123,6 +123,9 @@ function signalsFrom(txns: Txn[], seed: string) {
 /** Cities the student can pin the widgets to when GPS is unavailable. */
 export { LOCATION_CITIES as WEATHER_CITIES } from "./location";
 
+/** Stable identity so the memo doesn't churn while news is loading. */
+const EMPTY_NEWS: NewsItem[] = [];
+
 export type LiveInput = {
   /** Label for the place the live data was fetched for. */
   cityLabel: string;
