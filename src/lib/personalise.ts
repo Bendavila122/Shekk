@@ -153,6 +153,7 @@ export function useUserContext(refreshKey = 0, live?: LiveInput): UserContext {
 
   const jewish = live?.jewish ?? null;
   const weather = live?.weather ?? null;
+  const news = live?.news ?? EMPTY_NEWS;
 
   return useMemo<UserContext>(() => {
     const d = now ?? new Date(2026, 0, 1, 9, 0, 0);
