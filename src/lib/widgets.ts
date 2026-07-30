@@ -1,6 +1,7 @@
 /** "For You" widget catalogue — content + relevance scoring. */
 import type { ReactNode } from "react";
 import { ils } from "./mock";
+import { relativeTime } from "./news-types";
 import { pick, rand, type UserContext } from "./personalise";
 
 export type WidgetCta = { label: string; to: string };
@@ -153,6 +154,43 @@ export const WIDGETS: WidgetDef[] = [
   },
 
   {
+    id: "news",
+    title: "Israel news",
+    emoji: "📰",
+    gradient: "grad-news",
+    gradientFor: (c) => (c.news.some((n) => n.urgent) ? "grad-alert" : "grad-news"),
+    relevance: (c) => {
+      if (!c.news.length) return c.newsLoading ? 30 : 10;
+      const urgent = c.news.slice(0, 8).some((n) => n.urgent);
+      const freshMins = (Date.now() - Date.parse(c.news[0].publishedAt)) / 60_000;
+      return clamp(48 + (urgent ? 50 : 0) + (freshMins < 90 ? 10 : 0) + (c.timeOfDay === "morning" ? 8 : 0));
+    },
+    build: (c) => {
+      if (!c.news.length) {
+        return {
+          headline: c.newsError ? "Headlines unavailable" : "Loading headlines…",
+          sub: c.newsError ? "Couldn't reach the news feeds" : "Times of Israel · JPost · Ynet · Arutz Sheva",
+          rows: [],
+          ctas: [{ label: "Open news", to: "/news" }],
+        };
+      }
+      const urgent = c.news.find((n) => n.urgent);
+      const lead = urgent ?? c.news[0];
+      const rest = c.news.filter((n) => n.id !== lead.id).slice(0, 5);
+      return {
+        headline: lead.title,
+        sub: `${lead.sourceName} · ${relativeTime(lead.publishedAt)}${urgent ? " · developing" : ""}`,
+        rows: rest.map((n) => ({
+          icon: n.urgent ? "🚨" : "•",
+          label: n.title,
+          value: relativeTime(n.publishedAt),
+        })),
+        ctas: [{ label: "All headlines", to: "/news" }],
+      };
+    },
+  },
+
+  {
     id: "social",
     title: "Requests",
     emoji: "👥",
@@ -172,6 +210,7 @@ export const WIDGETS: WidgetDef[] = [
   },
 
 ];
+
 
 export const WIDGET_BY_ID = Object.fromEntries(WIDGETS.map((w) => [w.id, w])) as Record<string, WidgetDef>;
 
