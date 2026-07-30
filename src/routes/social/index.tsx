@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import {
-  ArrowRight,
   Check,
   MessageCircle,
   Plus,
@@ -9,14 +8,13 @@ import {
   Send,
   ShieldOff,
   UserPlus,
-  Users,
   X,
 } from "lucide-react";
 import { AppShell, Card, PrimaryButton } from "@/components/AppShell";
 import { Avatar } from "@/components/Avatar";
 import { ils } from "@/lib/mock";
 import { useApp } from "@/lib/store";
-import { useConversations, useFriends, useProgramLink, useSendMoney, useSplits } from "@/lib/useSocial";
+import { useConversations, useFriends, useSplits } from "@/lib/useSocial";
 import type { MemberCard } from "@/lib/social.server";
 import { SendMoneySheet } from "@/components/social/SendMoneySheet";
 import { SplitFlow } from "@/components/social/SplitFlow";
@@ -417,7 +415,7 @@ function FriendsTab() {
   );
 }
 
-export function MemberRow({
+function MemberRow({
   member,
   action,
   extra,
@@ -549,18 +547,3 @@ function SplitTab() {
     </div>
   );
 }
-
-/* Kept here so the tab bar has a home for a future feed. */
-export function QuickSend({ member }: { member: MemberCard }) {
-  const send = useSendMoney();
-  return (
-    <button
-      onClick={() => send.mutate({ toUserId: member.userId, amount: 10 })}
-      className="tap flex items-center gap-1 text-xs font-semibold text-primary"
-    >
-      Send <ArrowRight className="size-3" />
-    </button>
-  );
-}
-
-export { Users };
