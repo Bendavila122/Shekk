@@ -98,7 +98,9 @@ function imageValue(block: string): string | undefined {
   for (const re of patterns) {
     const m = block.match(re);
     const url = m?.[1]?.trim();
-    if (url && /^https?:\/\//i.test(url) && !/\.(svg|gif)(\?|$)/i.test(url)) {
+    // Arutz Sheva ships a shared placeholder enclosure on every item.
+    const placeholder = /\/pictures\/0\/0\.jpg$/i.test(url ?? "");
+    if (url && !placeholder && /^https?:\/\//i.test(url) && !/\.(svg|gif)(\?|$)/i.test(url)) {
       return url.replace(/&amp;/g, "&");
     }
   }
