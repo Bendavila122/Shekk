@@ -196,6 +196,9 @@ export function useUserContext(refreshKey = 0, live?: LiveInput): UserContext {
       weather,
       weatherLoading: live?.weatherLoading ?? false,
       weatherError: live?.weatherError ?? false,
+      news,
+      newsLoading: live?.newsLoading ?? false,
+      newsError: live?.newsError ?? false,
       signals: {
         ...signalsFrom(state.txns, seed),
         pendingSplits: unpaid.length,
