@@ -30,7 +30,7 @@ export function ProgramLinkCard() {
               params={{ conversationId: mine.conversationId }}
               className="tap flex-1 rounded-2xl bg-primary py-2.5 text-center text-sm font-semibold text-primary-foreground"
             >
-              Open cohort chat
+              Open group chat
             </Link>
           )}
           <button
@@ -103,7 +103,7 @@ export function ProgramLinkCard() {
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {p.cohorts.length === 0 && (
-                  <span className="text-xs text-muted-foreground">Cohorts are invite-only here.</span>
+                  <span className="text-xs text-muted-foreground">Groups are invite-only here.</span>
                 )}
                 {p.cohorts.map((c) => (
                   <button

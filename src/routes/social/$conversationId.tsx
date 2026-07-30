@@ -13,9 +13,9 @@ export const Route = createFileRoute("/social/$conversationId")({
   head: () => ({
     meta: [
       { title: "Chat · Shekk" },
-      { name: "description", content: "Message your cohort and send shekels without leaving the thread." },
+      { name: "description", content: "Message your group and send shekels without leaving the thread." },
       { property: "og:title", content: "Chat · Shekk" },
-      { property: "og:description", content: "Message your cohort and send shekels inside the chat." },
+      { property: "og:description", content: "Message your group and send shekels inside the chat." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

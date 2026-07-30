@@ -34,7 +34,7 @@ const FAQ = [
   },
   {
     q: "Can I pay a friend?",
-    a: "Yes — open Social to send shekels or split a bill with your cohort. Your friend code lives on the home screen.",
+    a: "Yes — open Social to send shekels or split a bill with your group. Your friend code lives on the home screen.",
   },
 ];
 
