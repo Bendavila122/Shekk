@@ -43,7 +43,7 @@ function Events() {
           </Card>
           <Card className="mt-4 text-xs text-muted-foreground">
             Bring water, a hoodie for Tzfat nights, and your teudat zehut/passport copy. Madrich contact is in the
-            cohort thread.
+            group thread.
           </Card>
         </div>
       </AppShell>

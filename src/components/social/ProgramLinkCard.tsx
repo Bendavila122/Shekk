@@ -4,7 +4,7 @@ import { GraduationCap, Search } from "lucide-react";
 import { Card, PrimaryButton } from "@/components/AppShell";
 import { useProgramLink } from "@/lib/useSocial";
 
-/** Join your program by code or from the directory — unlocks the cohort thread. */
+/** Join your program by code or from the directory — unlocks the group thread. */
 export function ProgramLinkCard() {
   const [search, setSearch] = useState("");
   const { mine, programs, programsLoading, join, leave } = useProgramLink(search);

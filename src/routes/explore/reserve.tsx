@@ -38,7 +38,7 @@ function Reserve() {
       <div className="space-y-3 px-4 py-4">
         {confirmed && (
           <Card className="bg-success-soft text-sm">
-            Booked · {confirmed}. Confirmation sent to your cohort thread.
+            Booked · {confirmed}. Confirmation sent to your group thread.
           </Card>
         )}
         {PLACES.map((p) => (
@@ -98,7 +98,7 @@ function Reserve() {
             {isGroup && (
               <p className="rounded-2xl bg-warning-soft p-3 text-xs text-warning-foreground">
                 Group Shabbaton holds require a {ils(deposit)} deposit from credits ({size} × ₪45), split-able with your
-                cohort afterwards.
+                group afterwards.
               </p>
             )}
             <PrimaryButton
