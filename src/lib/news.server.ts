@@ -84,6 +84,27 @@ function linkValue(block: string): string | null {
   return href ? decode(href[1]) : null;
 }
 
+/** Feeds attach art via media:content, media:thumbnail, enclosure or an <img> in the summary. */
+function imageValue(block: string): string | undefined {
+  const patterns = [
+    /<media:content[^>]*url=["']([^"']+)["']/i,
+    /<media:thumbnail[^>]*url=["']([^"']+)["']/i,
+    /<enclosure[^>]*url=["']([^"']+)["'][^>]*type=["']image/i,
+    /<enclosure[^>]*type=["']image[^>]*url=["']([^"']+)["']/i,
+    /<image[^>]*>\s*<url>([^<]+)<\/url>/i,
+    /&lt;img[^&]*src=["']([^"']+)["']/i,
+    /<img[^>]*src=["']([^"']+)["']/i,
+  ];
+  for (const re of patterns) {
+    const m = block.match(re);
+    const url = m?.[1]?.trim();
+    if (url && /^https?:\/\//i.test(url) && !/\.(svg|gif)(\?|$)/i.test(url)) {
+      return url.replace(/&amp;/g, "&");
+    }
+  }
+  return undefined;
+}
+
 function parseDate(block: string): string {
   const raw = tagValue(block, "pubDate") ?? tagValue(block, "updated") ?? tagValue(block, "published") ?? "";
   const d = new Date(raw);
@@ -112,6 +133,7 @@ function parseFeed(xml: string, id: NewsSourceId): NewsItem[] {
       sourceName: NEWS_SOURCE_NAME[id],
       publishedAt: parseDate(block),
       urgent: isUrgentHeadline(clean),
+      image: imageValue(block),
     });
   }
   return out.slice(0, 25);
