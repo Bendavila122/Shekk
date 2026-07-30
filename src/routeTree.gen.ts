@@ -19,6 +19,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReverifyRouteImport } from './routes/reverify'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as NewsRouteImport } from './routes/news'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -113,6 +114,11 @@ const ReverifyRoute = ReverifyRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MembershipRoute = MembershipRouteImport.update({
@@ -358,6 +364,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
+  '/news': typeof NewsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
@@ -414,6 +421,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
+  '/news': typeof NewsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
@@ -472,6 +480,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
+  '/news': typeof NewsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
@@ -531,6 +540,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/membership'
+    | '/news'
     | '/reset-password'
     | '/reverify'
     | '/settings'
@@ -587,6 +597,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/membership'
+    | '/news'
     | '/reset-password'
     | '/reverify'
     | '/settings'
@@ -644,6 +655,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/membership'
+    | '/news'
     | '/reset-password'
     | '/reverify'
     | '/settings'
@@ -702,6 +714,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   MeRoute: typeof MeRoute
   MembershipRoute: typeof MembershipRoute
+  NewsRoute: typeof NewsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ReverifyRoute: typeof ReverifyRoute
   SettingsRoute: typeof SettingsRoute
@@ -812,6 +825,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/membership': {
@@ -1167,6 +1187,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   MeRoute: MeRoute,
   MembershipRoute: MembershipRoute,
+  NewsRoute: NewsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ReverifyRoute: ReverifyRoute,
   SettingsRoute: SettingsRoute,
