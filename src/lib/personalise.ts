@@ -132,6 +132,9 @@ export type LiveInput = {
   jewish: LiveJewish | null;
   jewishLoading: boolean;
   jewishError: boolean;
+  news?: NewsItem[];
+  newsLoading?: boolean;
+  newsError?: boolean;
 };
 
 /**
