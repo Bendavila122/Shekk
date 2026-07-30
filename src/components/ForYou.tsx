@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { SlidersHorizontal, Sparkles, X } from "lucide-react";
+import { ExternalLink, SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { useUserContext, WEATHER_CITIES } from "@/lib/personalise";
 import { placeForCity, useLocation } from "@/lib/location";
 import { useJewish, useWeather } from "@/lib/live";
@@ -103,19 +103,29 @@ function DetailSheet({
   onClose: () => void;
 }) {
   const content = def.build(ctx);
+  const headline = def.id === "wallet" ? ils(balance) : content.headline;
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" role="dialog" aria-modal="true">
       <button className="absolute inset-0 bg-foreground/40" aria-label="Close" onClick={onClose} />
-      <div className="animate-fade-in relative w-full max-w-md rounded-t-[2rem] border border-border bg-card p-6 pb-8 shadow-card sm:rounded-[2rem]">
+      <div className="animate-fade-in relative max-h-[88vh] w-full max-w-md overflow-y-auto rounded-t-[2rem] border border-border bg-card p-6 pb-8 shadow-card sm:rounded-[2rem]">
         <header className="flex items-start gap-3">
           <span className={`${def.gradientFor?.(ctx) ?? def.gradient} widget-tile flex size-12 shrink-0 items-center justify-center rounded-2xl text-2xl`}>
             {def.emoji}
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{def.title}</p>
-            <p className="text-[17px] font-bold leading-tight">
-              {def.id === "wallet" ? ils(balance) : content.headline}
-            </p>
+            {content.href ? (
+              <a
+                href={content.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tap-flat block text-[17px] font-bold leading-tight underline-offset-2 hover:underline"
+              >
+                {headline}
+              </a>
+            ) : (
+              <p className="text-[17px] font-bold leading-tight">{headline}</p>
+            )}
             {content.sub ? <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">{content.sub}</p> : null}
           </div>
           <button onClick={onClose} className="tap rounded-full bg-muted p-2" aria-label="Close">
@@ -123,18 +133,64 @@ function DetailSheet({
           </button>
         </header>
 
+        {content.image ? (
+          <a
+            href={content.href ?? undefined}
+            target={content.href ? "_blank" : undefined}
+            rel="noopener noreferrer"
+            className="mt-4 block overflow-hidden rounded-2xl bg-muted"
+          >
+            <img
+              src={content.image}
+              alt=""
+              loading="lazy"
+              referrerPolicy="no-referrer"
+              className="h-40 w-full object-cover"
+              onError={(e) => {
+                (e.currentTarget.parentElement as HTMLElement).style.display = "none";
+              }}
+            />
+          </a>
+        ) : null}
 
         <ul className="mt-5 space-y-2">
-          {content.rows.map((r, i) => (
-            <li
-              key={`${r.label}-${i}`}
-              className="flex items-center gap-3 rounded-xl bg-muted/60 px-3 py-2.5 text-[13px] leading-snug"
-            >
-              <span className="w-5 shrink-0 text-center">{r.icon}</span>
-              <span className="min-w-0 flex-1">{r.label}</span>
-              {r.value ? <span className="shrink-0 text-[13px] font-semibold text-muted-foreground">{r.value}</span> : null}
-            </li>
-          ))}
+          {content.rows.map((r, i) => {
+            const inner = (
+              <>
+                {r.image ? (
+                  <img
+                    src={r.image}
+                    alt=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    className="size-11 shrink-0 rounded-lg object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                ) : (
+                  <span className="w-5 shrink-0 text-center">{r.icon}</span>
+                )}
+                <span className="min-w-0 flex-1">{r.label}</span>
+                {r.value ? (
+                  <span className="shrink-0 text-[13px] font-semibold text-muted-foreground">{r.value}</span>
+                ) : null}
+              </>
+            );
+            const cls = "flex items-center gap-3 rounded-xl bg-muted/60 px-3 py-2.5 text-[13px] leading-snug";
+            return (
+              <li key={`${r.label}-${i}`}>
+                {r.href ? (
+                  <a href={r.href} target="_blank" rel="noopener noreferrer" className={`tap-flat ${cls}`}>
+                    {inner}
+                    <ExternalLink className="size-3.5 shrink-0 text-muted-foreground" />
+                  </a>
+                ) : (
+                  <div className={cls}>{inner}</div>
+                )}
+              </li>
+            );
+          })}
         </ul>
 
 
@@ -174,21 +230,35 @@ function DetailSheet({
 
         {content.ctas.length ? (
           <div className="mt-6 flex flex-wrap gap-2">
-            {content.ctas.map((cta, i) => (
-              <Link
-                key={cta.label}
-                to={cta.to}
-                onClick={() => {
-                  haptic();
-                  onClose();
-                }}
-                className={`tap rounded-full px-4 py-2.5 text-xs font-semibold ${
-                  i === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
-                }`}
-              >
-                {cta.label}
-              </Link>
-            ))}
+            {content.ctas.map((cta, i) => {
+              const cls = `tap rounded-full px-4 py-2.5 text-xs font-semibold ${
+                i === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+              }`;
+              return cta.href ? (
+                <a
+                  key={cta.label}
+                  href={cta.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => haptic()}
+                  className={cls}
+                >
+                  {cta.label}
+                </a>
+              ) : (
+                <Link
+                  key={cta.label}
+                  to={cta.to!}
+                  onClick={() => {
+                    haptic();
+                    onClose();
+                  }}
+                  className={cls}
+                >
+                  {cta.label}
+                </Link>
+              );
+            })}
           </div>
         ) : null}
       </div>

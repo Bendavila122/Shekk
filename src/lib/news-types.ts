@@ -11,6 +11,8 @@ export type NewsItem = {
   /** ISO timestamp of publication. */
   publishedAt: string;
   urgent: boolean;
+  /** Lead image from the feed, when the publisher supplies one. */
+  image?: string;
 };
 
 export type NewsFeed = {

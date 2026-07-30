@@ -34,6 +34,18 @@ function Headline({ item }: { item: NewsItem }) {
       rel="noopener noreferrer"
       className="tap-flat flex items-start gap-3 py-4"
     >
+      {item.image ? (
+        <img
+          src={item.image}
+          alt=""
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          className="size-16 shrink-0 rounded-xl bg-muted object-cover"
+          onError={(e) => {
+            e.currentTarget.style.display = "none";
+          }}
+        />
+      ) : null}
       <div className="min-w-0 flex-1">
         <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           {item.sourceName} · {relativeTime(item.publishedAt)}
@@ -45,7 +57,7 @@ function Headline({ item }: { item: NewsItem }) {
         </p>
         <h2 className="mt-1 text-[15px] font-semibold leading-snug">{item.title}</h2>
       </div>
-      <ExternalLink className="mt-5 size-3.5 shrink-0 text-muted-foreground" />
+      <ExternalLink className="mt-6 size-3.5 shrink-0 text-muted-foreground" />
     </a>
   );
 }
