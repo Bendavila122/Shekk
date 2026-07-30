@@ -6,6 +6,8 @@ import { refIn } from "@/lib/currencies";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { useProfile } from "@/lib/useProfile";
+import { ShekkTagCard } from "@/components/social/ShekkTagCard";
+
 
 export const Route = createFileRoute("/me")({
   head: () => ({
