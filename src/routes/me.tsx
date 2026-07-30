@@ -112,11 +112,14 @@ function Me() {
       <div className="space-y-4 px-4 py-5">
         <ReverifyBanner />
 
+        <ShekkTagCard />
+
         <Card>
           <p className="text-xs uppercase tracking-wide text-muted-foreground">Credit balance</p>
           <p className="font-display text-3xl font-bold">{ils(state.balance)}</p>
           <p className="text-xs text-muted-foreground">≈ {refIn(state.settings.payCurrency, state.balance)} reference</p>
         </Card>
+
 
         <Card className="p-0">
           <RowLink to="/membership" Icon={Crown} label="Shekk Membership" hint={isPremium ? "Premium" : "Free — see Premium"} />
