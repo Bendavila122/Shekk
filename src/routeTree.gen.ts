@@ -36,6 +36,7 @@ import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
 import { Route as BenefitsIndexRouteImport } from './routes/benefits/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as SocialConversationIdRouteImport } from './routes/social/$conversationId'
 import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
 import { Route as GuidesIdRouteImport } from './routes/guides/$id'
 import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
@@ -201,6 +202,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRouteRoute,
+} as any)
+const SocialConversationIdRoute = SocialConversationIdRouteImport.update({
+  id: '/$conversationId',
+  path: '/$conversationId',
+  getParentRoute: () => SocialRoute,
 } as any)
 const SiddurIdRoute = SiddurIdRouteImport.update({
   id: '/siddur/$id',
@@ -402,6 +408,7 @@ export interface FileRoutesByFullPath {
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
+  '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin/': typeof AdminIndexRoute
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
@@ -459,6 +466,7 @@ export interface FileRoutesByTo {
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
+  '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin': typeof AdminIndexRoute
   '/benefits': typeof BenefitsIndexRoute
   '/explore': typeof ExploreIndexRoute
@@ -519,6 +527,7 @@ export interface FileRoutesById {
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
+  '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin/': typeof AdminIndexRoute
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
@@ -580,6 +589,7 @@ export interface FileRouteTypes {
     | '/explore/transit'
     | '/guides/$id'
     | '/siddur/$id'
+    | '/social/$conversationId'
     | '/admin/'
     | '/benefits/'
     | '/explore/'
@@ -637,6 +647,7 @@ export interface FileRouteTypes {
     | '/explore/transit'
     | '/guides/$id'
     | '/siddur/$id'
+    | '/social/$conversationId'
     | '/admin'
     | '/benefits'
     | '/explore'
@@ -696,6 +707,7 @@ export interface FileRouteTypes {
     | '/explore/transit'
     | '/guides/$id'
     | '/siddur/$id'
+    | '/social/$conversationId'
     | '/admin/'
     | '/benefits/'
     | '/explore/'
@@ -956,6 +968,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/social/$conversationId': {
+      id: '/social/$conversationId'
+      path: '/$conversationId'
+      fullPath: '/social/$conversationId'
+      preLoaderRoute: typeof SocialConversationIdRouteImport
+      parentRoute: typeof SocialRoute
+    }
     '/siddur/$id': {
       id: '/siddur/$id'
       path: '/siddur/$id'
@@ -1194,10 +1213,12 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 )
 
 interface SocialRouteChildren {
+  SocialConversationIdRoute: typeof SocialConversationIdRoute
   SocialIndexRoute: typeof SocialIndexRoute
 }
 
 const SocialRouteChildren: SocialRouteChildren = {
+  SocialConversationIdRoute: SocialConversationIdRoute,
   SocialIndexRoute: SocialIndexRoute,
 }
 
