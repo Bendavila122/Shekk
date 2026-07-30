@@ -6,7 +6,7 @@
  * friend requests fresh without polling.
  */
 
-import { useEffect } from "react";
+import { useEffect, useId } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useApp } from "@/lib/store";
@@ -55,10 +55,12 @@ export const socialKeys = {
 /** One subscription for the whole social surface. */
 function useSocialRealtime(enabled: boolean) {
   const qc = useQueryClient();
+  const id = useId();
   useEffect(() => {
     if (!enabled) return;
     const channel = supabase
-      .channel("shekk-social")
+      .channel(`shekk-social:${id}`)
+
       .on("postgres_changes", { event: "*", schema: "public", table: "messages" }, (payload) => {
         const row = payload.new as { conversation_id?: string } | null;
         if (row?.conversation_id) qc.invalidateQueries({ queryKey: socialKeys.chat(row.conversation_id) });
@@ -75,7 +77,7 @@ function useSocialRealtime(enabled: boolean) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [enabled, qc]);
+  }, [enabled, id, qc]);
 }
 
 export function useMyHandle() {
