@@ -14,7 +14,6 @@ import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as TopupRouteImport } from './routes/topup'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as SocialRouteImport } from './routes/social'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReverifyRouteImport } from './routes/reverify'
@@ -93,11 +92,6 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SocialRoute = SocialRouteImport.update({
-  id: '/social',
-  path: '/social',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -174,9 +168,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const SocialIndexRoute = SocialIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => SocialRoute,
+  id: '/social/',
+  path: '/social/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SiddurIndexRoute = SiddurIndexRouteImport.update({
   id: '/siddur/',
@@ -204,9 +198,9 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const SocialConversationIdRoute = SocialConversationIdRouteImport.update({
-  id: '/$conversationId',
-  path: '/$conversationId',
-  getParentRoute: () => SocialRoute,
+  id: '/social/$conversationId',
+  path: '/social/$conversationId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SiddurIdRoute = SiddurIdRouteImport.update({
   id: '/siddur/$id',
@@ -381,7 +375,6 @@ export interface FileRoutesByFullPath {
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/social': typeof SocialRouteWithChildren
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
   '/verify': typeof VerifyRoute
@@ -500,7 +493,6 @@ export interface FileRoutesById {
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/social': typeof SocialRouteWithChildren
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
   '/verify': typeof VerifyRoute
@@ -562,7 +554,6 @@ export interface FileRouteTypes {
     | '/reverify'
     | '/settings'
     | '/sitemap.xml'
-    | '/social'
     | '/terms'
     | '/topup'
     | '/verify'
@@ -680,7 +671,6 @@ export interface FileRouteTypes {
     | '/reverify'
     | '/settings'
     | '/sitemap.xml'
-    | '/social'
     | '/terms'
     | '/topup'
     | '/verify'
@@ -741,7 +731,6 @@ export interface RootRouteChildren {
   ReverifyRoute: typeof ReverifyRoute
   SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  SocialRoute: typeof SocialRouteWithChildren
   TermsRoute: typeof TermsRoute
   TopupRoute: typeof TopupRoute
   VerifyRoute: typeof VerifyRoute
@@ -762,10 +751,12 @@ export interface RootRouteChildren {
   ExploreTransitRoute: typeof ExploreTransitRoute
   GuidesIdRoute: typeof GuidesIdRoute
   SiddurIdRoute: typeof SiddurIdRoute
+  SocialConversationIdRoute: typeof SocialConversationIdRoute
   BenefitsIndexRoute: typeof BenefitsIndexRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   SiddurIndexRoute: typeof SiddurIndexRoute
+  SocialIndexRoute: typeof SocialIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
@@ -812,13 +803,6 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/social': {
-      id: '/social'
-      path: '/social'
-      fullPath: '/social'
-      preLoaderRoute: typeof SocialRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -928,10 +912,10 @@ declare module '@tanstack/react-router' {
     }
     '/social/': {
       id: '/social/'
-      path: '/'
+      path: '/social'
       fullPath: '/social/'
       preLoaderRoute: typeof SocialIndexRouteImport
-      parentRoute: typeof SocialRoute
+      parentRoute: typeof rootRouteImport
     }
     '/siddur/': {
       id: '/siddur/'
@@ -970,10 +954,10 @@ declare module '@tanstack/react-router' {
     }
     '/social/$conversationId': {
       id: '/social/$conversationId'
-      path: '/$conversationId'
+      path: '/social/$conversationId'
       fullPath: '/social/$conversationId'
       preLoaderRoute: typeof SocialConversationIdRouteImport
-      parentRoute: typeof SocialRoute
+      parentRoute: typeof rootRouteImport
     }
     '/siddur/$id': {
       id: '/siddur/$id'
@@ -1212,19 +1196,6 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
   AdminRouteRouteChildren,
 )
 
-interface SocialRouteChildren {
-  SocialConversationIdRoute: typeof SocialConversationIdRoute
-  SocialIndexRoute: typeof SocialIndexRoute
-}
-
-const SocialRouteChildren: SocialRouteChildren = {
-  SocialConversationIdRoute: SocialConversationIdRoute,
-  SocialIndexRoute: SocialIndexRoute,
-}
-
-const SocialRouteWithChildren =
-  SocialRoute._addFileChildren(SocialRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
@@ -1241,7 +1212,6 @@ const rootRouteChildren: RootRouteChildren = {
   ReverifyRoute: ReverifyRoute,
   SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  SocialRoute: SocialRouteWithChildren,
   TermsRoute: TermsRoute,
   TopupRoute: TopupRoute,
   VerifyRoute: VerifyRoute,
@@ -1263,10 +1233,12 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreTransitRoute: ExploreTransitRoute,
   GuidesIdRoute: GuidesIdRoute,
   SiddurIdRoute: SiddurIdRoute,
+  SocialConversationIdRoute: SocialConversationIdRoute,
   BenefitsIndexRoute: BenefitsIndexRoute,
   ExploreIndexRoute: ExploreIndexRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   SiddurIndexRoute: SiddurIndexRoute,
+  SocialIndexRoute: SocialIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ExploreCategoryIdRoute: ExploreCategoryIdRoute,
