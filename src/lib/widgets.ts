@@ -4,13 +4,25 @@ import { ils } from "./mock";
 import { relativeTime } from "./news-types";
 import { pick, rand, type UserContext } from "./personalise";
 
-export type WidgetCta = { label: string; to: string };
+export type WidgetCta = { label: string; to?: string; href?: string };
 
-export type WidgetRow = { icon: string; label: string; value?: string };
+export type WidgetRow = {
+  icon: string;
+  label: string;
+  value?: string;
+  /** External article/link opened in a new tab from the detail sheet. */
+  href?: string;
+  /** Thumbnail shown instead of the icon when present. */
+  image?: string;
+};
 
 export type WidgetContent = {
   headline: string;
   sub?: string;
+  /** Hero image for the detail sheet. */
+  image?: string;
+  /** Makes the sheet headline itself tappable. */
+  href?: string;
   rows: WidgetRow[];
   hero?: ReactNode;
   ctas: WidgetCta[];
@@ -180,12 +192,19 @@ export const WIDGETS: WidgetDef[] = [
       return {
         headline: lead.title,
         sub: `${lead.sourceName} · ${relativeTime(lead.publishedAt)}${urgent ? " · developing" : ""}`,
+        image: lead.image,
+        href: lead.url,
         rows: rest.map((n) => ({
           icon: n.urgent ? "🚨" : "•",
           label: n.title,
           value: relativeTime(n.publishedAt),
+          href: n.url,
+          image: n.image,
         })),
-        ctas: [{ label: "All headlines", to: "/news" }],
+        ctas: [
+          { label: "Read full story", href: lead.url },
+          { label: "All headlines", to: "/news" },
+        ],
       };
     },
   },
