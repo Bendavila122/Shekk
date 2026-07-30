@@ -55,10 +55,12 @@ export const socialKeys = {
 /** One subscription for the whole social surface. */
 function useSocialRealtime(enabled: boolean) {
   const qc = useQueryClient();
+  const id = useId();
   useEffect(() => {
     if (!enabled) return;
     const channel = supabase
-      .channel("shekk-social")
+      .channel(`shekk-social:${id}`)
+
       .on("postgres_changes", { event: "*", schema: "public", table: "messages" }, (payload) => {
         const row = payload.new as { conversation_id?: string } | null;
         if (row?.conversation_id) qc.invalidateQueries({ queryKey: socialKeys.chat(row.conversation_id) });
