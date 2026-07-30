@@ -26,6 +26,7 @@ export type MemberRow = {
   city: string | null;
   program: string | null;
   cohort: string | null;
+  handle: string | null;
   currency: string;
   kycStatus: string;
   accountStatus: string;
@@ -50,12 +51,16 @@ function displayName(p: any): string {
 export async function listMembers(): Promise<MemberRow[]> {
   const db = await admin();
 
-  const [{ data: profiles }, { data: accounts }, { data: subs }, { data: entries }] = await Promise.all([
-    db.from("member_profiles").select("*").order("created_at", { ascending: false }),
-    db.from("accounts").select("*"),
-    db.from("subscriptions").select("user_id, status, current_period_end"),
-    db.from("ledger_entries").select("user_id, direction, amount_agorot, created_at"),
-  ]);
+  const [{ data: profiles }, { data: accounts }, { data: subs }, { data: entries }, { data: handles }] =
+    await Promise.all([
+      db.from("member_profiles").select("*").order("created_at", { ascending: false }),
+      db.from("accounts").select("*"),
+      db.from("subscriptions").select("user_id, status, current_period_end"),
+      db.from("ledger_entries").select("user_id, direction, amount_agorot, created_at"),
+      db.from("member_handles").select("user_id, handle"),
+    ]);
+
+  const handleBy = new Map<string, string>((handles ?? []).map((h: any) => [h.user_id, h.handle]));
 
   const accountBy = new Map<string, any>((accounts ?? []).map((a: any) => [a.user_id, a]));
   const premium = new Set<string>(
@@ -88,6 +93,7 @@ export async function listMembers(): Promise<MemberRow[]> {
       city: p.city ?? p.address_city ?? null,
       program: p.program ?? null,
       cohort: p.cohort ?? null,
+      handle: handleBy.get(p.user_id) ?? null,
       currency: p.preferred_currency ?? "USD",
       kycStatus: p.kyc_status ?? "not_started",
       accountStatus: acct?.status ?? "none",
@@ -234,8 +240,11 @@ export async function memberDetail(userId: string) {
       db.from("kyc_documents").select("id, kind, status, created_at").eq("user_id", userId),
     ]);
 
+  const { data: handle } = await db.from("member_handles").select("*").eq("user_id", userId).maybeSingle();
+
   return {
     profile: profile ?? null,
+    handle: handle ?? null,
     account: account ?? null,
     entries: entries ?? [],
     holds: holds ?? [],
@@ -273,6 +282,49 @@ export async function setAccountStatus(userId: string, status: string) {
     .eq("user_id", userId);
   if (error) throw new Error(error.message);
   return { ok: true };
+}
+
+/** Set (or claim) a member's Shekk tag from the console. */
+export async function setMemberHandle(userId: string, raw: string) {
+  const db = await admin();
+  const { normaliseHandle } = await import("./social.server");
+  const handle = normaliseHandle(raw);
+  if (handle.length < 3) throw new Error("Shekk tags need at least 3 letters or numbers");
+
+  const { data: taken } = await db
+    .from("member_handles")
+    .select("user_id")
+    .ilike("handle", handle)
+    .neq("user_id", userId)
+    .maybeSingle();
+  if (taken) throw new Error("That Shekk tag is already taken");
+
+  const { data: existing } = await db
+    .from("member_handles")
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (existing) {
+    const { error } = await db
+      .from("member_handles")
+      .update({ handle, updated_at: new Date().toISOString() })
+      .eq("user_id", userId);
+    if (error) throw new Error(error.message);
+  } else {
+    const { data: profile } = await db
+      .from("member_profiles")
+      .select("legal_first_name, legal_last_name, email")
+      .eq("user_id", userId)
+      .maybeSingle();
+    const displayName =
+      [profile?.legal_first_name, profile?.legal_last_name].filter(Boolean).join(" ") ||
+      profile?.email ||
+      "Shekk member";
+    const { error } = await db.from("member_handles").insert({ user_id: userId, handle, display_name: displayName });
+    if (error) throw new Error(error.message);
+  }
+  return { ok: true, handle };
 }
 
 export async function isAdmin(userId: string) {
