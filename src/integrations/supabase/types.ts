@@ -44,6 +44,188 @@ export type Database = {
         }
         Relationships: []
       }
+      cohort_members: {
+        Row: {
+          cohort_id: string
+          id: string
+          joined_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          cohort_id: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          cohort_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cohort_members_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cohorts: {
+        Row: {
+          created_at: string
+          ends_on: string | null
+          id: string
+          is_public: boolean
+          join_code: string
+          name: string
+          program_id: string
+          starts_on: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          ends_on?: string | null
+          id?: string
+          is_public?: boolean
+          join_code: string
+          name: string
+          program_id: string
+          starts_on?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          ends_on?: string | null
+          id?: string
+          is_public?: boolean
+          join_code?: string
+          name?: string
+          program_id?: string
+          starts_on?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cohorts_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversation_members: {
+        Row: {
+          conversation_id: string
+          id: string
+          joined_at: string
+          last_read_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          id?: string
+          joined_at?: string
+          last_read_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          id?: string
+          joined_at?: string
+          last_read_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_members_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          cohort_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          last_message_at: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          cohort_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          last_message_at?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cohort_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          last_message_at?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      friendships: {
+        Row: {
+          addressee_id: string
+          blocked_by: string | null
+          created_at: string
+          id: string
+          requester_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          addressee_id: string
+          blocked_by?: string | null
+          created_at?: string
+          id?: string
+          requester_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          addressee_id?: string
+          blocked_by?: string | null
+          created_at?: string
+          id?: string
+          requester_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       funding_events: {
         Row: {
           created_at: string
@@ -246,6 +428,36 @@ export type Database = {
         }
         Relationships: []
       }
+      member_handles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          discoverable: boolean
+          display_name: string
+          handle: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          discoverable?: boolean
+          display_name?: string
+          handle: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          discoverable?: boolean
+          display_name?: string
+          handle?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       member_profiles: {
         Row: {
           address_city: string | null
@@ -402,6 +614,200 @@ export type Database = {
         }
         Relationships: []
       }
+      member_reports: {
+        Row: {
+          created_at: string
+          detail: string | null
+          id: string
+          message_id: string | null
+          reason: string
+          reporter_id: string
+          status: string
+          target_user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          id?: string
+          message_id?: string | null
+          reason: string
+          reporter_id: string
+          status?: string
+          target_user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          id?: string
+          message_id?: string | null
+          reason?: string
+          reporter_id?: string
+          status?: string
+          target_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_reports_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          body: string
+          conversation_id: string
+          created_at: string
+          id: string
+          kind: string
+          meta: Json
+          sender_id: string | null
+        }
+        Insert: {
+          body?: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          kind?: string
+          meta?: Json
+          sender_id?: string | null
+        }
+        Update: {
+          body?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          meta?: Json
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programs: {
+        Row: {
+          city: string | null
+          created_at: string
+          id: string
+          is_public: boolean
+          kind: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          kind?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          kind?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      split_bills: {
+        Row: {
+          conversation_id: string | null
+          created_at: string
+          creator_id: string
+          id: string
+          mode: string
+          note: string
+          status: string
+          total_agorot: number
+          updated_at: string
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string
+          creator_id: string
+          id?: string
+          mode?: string
+          note?: string
+          status?: string
+          total_agorot: number
+          updated_at?: string
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string
+          creator_id?: string
+          id?: string
+          mode?: string
+          note?: string
+          status?: string
+          total_agorot?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "split_bills_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      split_shares: {
+        Row: {
+          amount_agorot: number
+          bill_id: string
+          created_at: string
+          entry_id: string | null
+          id: string
+          paid_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount_agorot: number
+          bill_id: string
+          created_at?: string
+          entry_id?: string | null
+          id?: string
+          paid_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount_agorot?: number
+          bill_id?: string
+          created_at?: string
+          entry_id?: string | null
+          id?: string
+          paid_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "split_shares_bill_id_fkey"
+            columns: ["bill_id"]
+            isOneToOne: false
+            referencedRelation: "split_bills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean
@@ -476,6 +882,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
       claim_first_admin: { Args: { _user_id: string }; Returns: boolean }
       ensure_account: {
         Args: { _user_id: string }
@@ -629,6 +1036,11 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      in_conversation: {
+        Args: { _conversation_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_blocked_pair: { Args: { _a: string; _b: string }; Returns: boolean }
       ledger_post: {
         Args: {
           _amount_agorot: number
@@ -641,6 +1053,42 @@ export type Database = {
           _idempotency_key?: string
           _merchant: string
           _user_id: string
+        }
+        Returns: {
+          amount_agorot: number
+          balance_after_agorot: number
+          category: string
+          counterparty: string | null
+          created_at: string
+          direction: string
+          external_ref: string | null
+          hold_id: string | null
+          icon: string
+          id: string
+          idempotency_key: string
+          merchant: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "ledger_entries"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      owes_on_bill: {
+        Args: { _bill_id: string; _user_id: string }
+        Returns: boolean
+      }
+      shares_cohort: { Args: { _a: string; _b: string }; Returns: boolean }
+      transfer_post: {
+        Args: {
+          _amount_agorot: number
+          _daily_cap_agorot?: number
+          _idempotency_key?: string
+          _note?: string
+          _recipient: string
+          _sender: string
         }
         Returns: {
           amount_agorot: number

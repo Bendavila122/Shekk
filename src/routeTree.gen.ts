@@ -14,7 +14,6 @@ import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as TopupRouteImport } from './routes/topup'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as SocialRouteImport } from './routes/social'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReverifyRouteImport } from './routes/reverify'
@@ -30,11 +29,13 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SocialIndexRouteImport } from './routes/social/index'
 import { Route as SiddurIndexRouteImport } from './routes/siddur/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
 import { Route as BenefitsIndexRouteImport } from './routes/benefits/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as SocialConversationIdRouteImport } from './routes/social/$conversationId'
 import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
 import { Route as GuidesIdRouteImport } from './routes/guides/$id'
 import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
@@ -89,11 +90,6 @@ const TopupRoute = TopupRouteImport.update({
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SocialRoute = SocialRouteImport.update({
-  id: '/social',
-  path: '/social',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -171,6 +167,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SocialIndexRoute = SocialIndexRouteImport.update({
+  id: '/social/',
+  path: '/social/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SiddurIndexRoute = SiddurIndexRouteImport.update({
   id: '/siddur/',
   path: '/siddur/',
@@ -195,6 +196,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRouteRoute,
+} as any)
+const SocialConversationIdRoute = SocialConversationIdRouteImport.update({
+  id: '/social/$conversationId',
+  path: '/social/$conversationId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SiddurIdRoute = SiddurIdRouteImport.update({
   id: '/siddur/$id',
@@ -369,7 +375,6 @@ export interface FileRoutesByFullPath {
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
   '/verify': typeof VerifyRoute
@@ -396,11 +401,13 @@ export interface FileRoutesByFullPath {
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
+  '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin/': typeof AdminIndexRoute
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
   '/siddur/': typeof SiddurIndexRoute
+  '/social/': typeof SocialIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
@@ -426,7 +433,6 @@ export interface FileRoutesByTo {
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
   '/verify': typeof VerifyRoute
@@ -453,11 +459,13 @@ export interface FileRoutesByTo {
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
+  '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin': typeof AdminIndexRoute
   '/benefits': typeof BenefitsIndexRoute
   '/explore': typeof ExploreIndexRoute
   '/guides': typeof GuidesIndexRoute
   '/siddur': typeof SiddurIndexRoute
+  '/social': typeof SocialIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
@@ -485,7 +493,6 @@ export interface FileRoutesById {
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/social': typeof SocialRoute
   '/terms': typeof TermsRoute
   '/topup': typeof TopupRoute
   '/verify': typeof VerifyRoute
@@ -512,11 +519,13 @@ export interface FileRoutesById {
   '/explore/transit': typeof ExploreTransitRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
+  '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin/': typeof AdminIndexRoute
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
   '/siddur/': typeof SiddurIndexRoute
+  '/social/': typeof SocialIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
@@ -545,7 +554,6 @@ export interface FileRouteTypes {
     | '/reverify'
     | '/settings'
     | '/sitemap.xml'
-    | '/social'
     | '/terms'
     | '/topup'
     | '/verify'
@@ -572,11 +580,13 @@ export interface FileRouteTypes {
     | '/explore/transit'
     | '/guides/$id'
     | '/siddur/$id'
+    | '/social/$conversationId'
     | '/admin/'
     | '/benefits/'
     | '/explore/'
     | '/guides/'
     | '/siddur/'
+    | '/social/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
@@ -602,7 +612,6 @@ export interface FileRouteTypes {
     | '/reverify'
     | '/settings'
     | '/sitemap.xml'
-    | '/social'
     | '/terms'
     | '/topup'
     | '/verify'
@@ -629,11 +638,13 @@ export interface FileRouteTypes {
     | '/explore/transit'
     | '/guides/$id'
     | '/siddur/$id'
+    | '/social/$conversationId'
     | '/admin'
     | '/benefits'
     | '/explore'
     | '/guides'
     | '/siddur'
+    | '/social'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
@@ -660,7 +671,6 @@ export interface FileRouteTypes {
     | '/reverify'
     | '/settings'
     | '/sitemap.xml'
-    | '/social'
     | '/terms'
     | '/topup'
     | '/verify'
@@ -687,11 +697,13 @@ export interface FileRouteTypes {
     | '/explore/transit'
     | '/guides/$id'
     | '/siddur/$id'
+    | '/social/$conversationId'
     | '/admin/'
     | '/benefits/'
     | '/explore/'
     | '/guides/'
     | '/siddur/'
+    | '/social/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
@@ -719,7 +731,6 @@ export interface RootRouteChildren {
   ReverifyRoute: typeof ReverifyRoute
   SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  SocialRoute: typeof SocialRoute
   TermsRoute: typeof TermsRoute
   TopupRoute: typeof TopupRoute
   VerifyRoute: typeof VerifyRoute
@@ -740,10 +751,12 @@ export interface RootRouteChildren {
   ExploreTransitRoute: typeof ExploreTransitRoute
   GuidesIdRoute: typeof GuidesIdRoute
   SiddurIdRoute: typeof SiddurIdRoute
+  SocialConversationIdRoute: typeof SocialConversationIdRoute
   BenefitsIndexRoute: typeof BenefitsIndexRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   SiddurIndexRoute: typeof SiddurIndexRoute
+  SocialIndexRoute: typeof SocialIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
@@ -790,13 +803,6 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/social': {
-      id: '/social'
-      path: '/social'
-      fullPath: '/social'
-      preLoaderRoute: typeof SocialRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -904,6 +910,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/social/': {
+      id: '/social/'
+      path: '/social'
+      fullPath: '/social/'
+      preLoaderRoute: typeof SocialIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/siddur/': {
       id: '/siddur/'
       path: '/siddur'
@@ -938,6 +951,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
+    }
+    '/social/$conversationId': {
+      id: '/social/$conversationId'
+      path: '/social/$conversationId'
+      fullPath: '/social/$conversationId'
+      preLoaderRoute: typeof SocialConversationIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/siddur/$id': {
       id: '/siddur/$id'
@@ -1192,7 +1212,6 @@ const rootRouteChildren: RootRouteChildren = {
   ReverifyRoute: ReverifyRoute,
   SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  SocialRoute: SocialRoute,
   TermsRoute: TermsRoute,
   TopupRoute: TopupRoute,
   VerifyRoute: VerifyRoute,
@@ -1214,10 +1233,12 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreTransitRoute: ExploreTransitRoute,
   GuidesIdRoute: GuidesIdRoute,
   SiddurIdRoute: SiddurIdRoute,
+  SocialConversationIdRoute: SocialConversationIdRoute,
   BenefitsIndexRoute: BenefitsIndexRoute,
   ExploreIndexRoute: ExploreIndexRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   SiddurIndexRoute: SiddurIndexRoute,
+  SocialIndexRoute: SocialIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ExploreCategoryIdRoute: ExploreCategoryIdRoute,
