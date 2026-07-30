@@ -6,7 +6,7 @@
  * friend requests fresh without polling.
  */
 
-import { useEffect } from "react";
+import { useEffect, useId } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useApp } from "@/lib/store";
@@ -77,7 +77,7 @@ function useSocialRealtime(enabled: boolean) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [enabled, qc]);
+  }, [enabled, id, qc]);
 }
 
 export function useMyHandle() {
