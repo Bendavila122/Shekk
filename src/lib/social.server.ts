@@ -172,7 +172,12 @@ export async function updateHandle(
   const db = await admin();
   await ensureHandle(userId);
 
-  const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  const patch: {
+    updated_at: string;
+    handle?: string;
+    display_name?: string;
+    discoverable?: boolean;
+  } = { updated_at: new Date().toISOString() };
   if (input.handle != null) {
     const handle = normaliseHandle(input.handle);
     if (handle.length < 3) throw new Error("Handles need at least 3 letters or numbers");
@@ -900,7 +905,13 @@ async function postSystemMessage(
   meta: Record<string, unknown>,
 ) {
   const db = await admin();
-  await db.from("messages").insert({ conversation_id: conversationId, sender_id: senderId, kind, body, meta });
+  await db.from("messages").insert({
+    conversation_id: conversationId,
+    sender_id: senderId,
+    kind,
+    body,
+    meta: meta as never,
+  });
   await db.from("conversations").update({ last_message_at: new Date().toISOString() }).eq("id", conversationId);
 }
 
