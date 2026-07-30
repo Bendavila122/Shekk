@@ -54,6 +54,15 @@ export type ConversationSummary = {
   otherUserId: string | null;
 };
 
+/** Only the small, JSON-safe extras a message can carry. */
+export type MessageMeta = {
+  amount?: number;
+  toUserId?: string;
+  entryId?: string | null;
+  billId?: string;
+  total?: number;
+};
+
 export type ChatMessage = {
   id: string;
   conversationId: string;
@@ -61,7 +70,7 @@ export type ChatMessage = {
   senderName: string;
   kind: "text" | "payment" | "request" | "system";
   body: string;
-  meta: Record<string, unknown>;
+  meta: MessageMeta;
   createdAt: string;
   mine: boolean;
 };
@@ -840,7 +849,7 @@ export async function readConversation(userId: string, conversationId: string): 
       sender_id: string | null;
       kind: ChatMessage["kind"];
       body: string;
-      meta: Record<string, unknown>;
+      meta: MessageMeta | null;
       created_at: string;
     }>).map((m) => ({
       id: m.id,
@@ -902,7 +911,7 @@ async function postSystemMessage(
   senderId: string | null,
   kind: ChatMessage["kind"],
   body: string,
-  meta: Record<string, unknown>,
+  meta: MessageMeta,
 ) {
   const db = await admin();
   await db.from("messages").insert({
