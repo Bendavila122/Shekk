@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { type Txn } from "./mock";
 import { useApp } from "./store";
 import type { LiveJewish, LiveWeather } from "./live-types";
+import type { NewsItem } from "./news-types";
 
 /* ---------------------------------------------------------------- seeding */
 
@@ -66,6 +67,10 @@ export type UserContext = {
   weather: LiveWeather | null;
   weatherLoading: boolean;
   weatherError: boolean;
+  /** Live Israeli headlines, newest first. */
+  news: NewsItem[];
+  newsLoading: boolean;
+  newsError: boolean;
   signals: {
     topCategory: string;
     favouriteMerchant: string;
@@ -118,6 +123,9 @@ function signalsFrom(txns: Txn[], seed: string) {
 /** Cities the student can pin the widgets to when GPS is unavailable. */
 export { LOCATION_CITIES as WEATHER_CITIES } from "./location";
 
+/** Stable identity so the memo doesn't churn while news is loading. */
+const EMPTY_NEWS: NewsItem[] = [];
+
 export type LiveInput = {
   /** Label for the place the live data was fetched for. */
   cityLabel: string;
@@ -127,6 +135,9 @@ export type LiveInput = {
   jewish: LiveJewish | null;
   jewishLoading: boolean;
   jewishError: boolean;
+  news?: NewsItem[];
+  newsLoading?: boolean;
+  newsError?: boolean;
 };
 
 /**
@@ -145,6 +156,7 @@ export function useUserContext(refreshKey = 0, live?: LiveInput): UserContext {
 
   const jewish = live?.jewish ?? null;
   const weather = live?.weather ?? null;
+  const news = live?.news ?? EMPTY_NEWS;
 
   return useMemo<UserContext>(() => {
     const d = now ?? new Date(2026, 0, 1, 9, 0, 0);
@@ -188,6 +200,9 @@ export function useUserContext(refreshKey = 0, live?: LiveInput): UserContext {
       weather,
       weatherLoading: live?.weatherLoading ?? false,
       weatherError: live?.weatherError ?? false,
+      news,
+      newsLoading: live?.newsLoading ?? false,
+      newsError: live?.newsError ?? false,
       signals: {
         ...signalsFrom(state.txns, seed),
         pendingSplits: unpaid.length,
@@ -205,6 +220,9 @@ export function useUserContext(refreshKey = 0, live?: LiveInput): UserContext {
     live?.weatherError,
     live?.jewishLoading,
     live?.jewishError,
+    news,
+    live?.newsLoading,
+    live?.newsError,
     state.name,
     state.txns,
     state.splits,

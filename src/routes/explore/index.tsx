@@ -126,6 +126,22 @@ function Explore() {
             </div>
           </Link>
 
+          {/* Live Israeli headlines */}
+          <Link to="/news" className="tap block">
+            <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-card">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-muted text-xl">📰</span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold">Israel news</p>
+                <p className="text-xs text-muted-foreground">
+                  Live English headlines from Times of Israel, JPost, Ynet and Arutz Sheva.
+                </p>
+              </div>
+              <ChevronRight className="size-5 shrink-0 text-muted-foreground" />
+            </div>
+          </Link>
+
+
+
           {/* Category folders — one big icon each */}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {catalogue.map((cat) => (

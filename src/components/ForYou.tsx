@@ -4,6 +4,7 @@ import { SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { useUserContext, WEATHER_CITIES } from "@/lib/personalise";
 import { placeForCity, useLocation } from "@/lib/location";
 import { useJewish, useWeather } from "@/lib/live";
+import { useNews } from "@/lib/news";
 import { orderWidgets, type WidgetDef } from "@/lib/widgets";
 
 import { useForYouPrefs, haptic } from "@/lib/foryou-prefs";
@@ -215,6 +216,7 @@ export function ForYou() {
 
   const weather = useWeather(place);
   const jewish = useJewish(place);
+  const news = useNews();
 
   const ctx = useUserContext(tick, {
     cityLabel: place ? (place.area ? `${place.area}, ${place.city}` : place.city) : "Israel",
@@ -224,6 +226,9 @@ export function ForYou() {
     jewish: jewish.data ?? null,
     jewishLoading: jewish.isPending && !!place,
     jewishError: jewish.isError || (!place && loc.status !== "asking"),
+    news: news.data?.items,
+    newsLoading: news.isPending,
+    newsError: news.isError,
   });
 
   const [settingsOpen, setSettingsOpen] = useState(false);

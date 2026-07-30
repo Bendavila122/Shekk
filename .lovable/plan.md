@@ -1,46 +1,56 @@
 ## Goal
 
-Right now both widgets are simulated. `src/lib/personalise.ts` invents the weather from a hash of the student's name and reads candle lighting / havdalah / sunrise / sunset from a hardcoded `CITY_PROFILE` table (Jerusalem always 16:38 / 17:53), and the sedra comes from a fixed 54-week counter anchored to "12 October", so it drifts and ignores double parshiyot and chagim. The Hebrew date is the only genuinely correct value.
+Live English-language Israeli headlines on the For You page, tapping through to a full news screen, with urgent/security items visually elevated.
 
-Plan: replace both with live data keyed off the student's actual coordinates.
+## Sources
 
-## 1. Live Jewish Life data (Hebcal)
+Four public English RSS feeds, merged and de-duplicated:
+- Times of Israel
+- Jerusalem Post
+- Ynetnews
+- Arutz Sheva (Israel National News)
 
-New `src/lib/jewish.ts` + a server function that calls Hebcal (free, no key) for the current location:
+Each headline keeps its source name, publish time and link out to the original article. Nothing is rewritten or summarised — headline + source + time only, so there's no editorial or copyright exposure.
 
-- Zmanim (`/zmanim`): sunrise, sunset, alot hashachar, chatzot, pliag, tzeit — computed from the exact lat/lon and timezone, not a city table.
-- Shabbat/chag times (`/shabbat`): candle lighting (correct local minhag offset — 40 min Jerusalem, 18/20 min elsewhere), havdalah, and the parsha for that week including double parshiyot ("Matot-Masei") and "Shabbat Chazon" style specials.
-- Holidays (`/hebcal`): today's yom tov / fast / minor day with real fast start and end times, replacing the hardcoded `JEWISH_CALENDAR` MM-DD table.
-- Hebrew date from Hebcal converter (keeps the existing `Intl` value as an offline fallback).
+## Data layer
 
-Cached per city+date, refreshed in the background, with the current static values kept only as a last-resort offline fallback (labelled as such in the sheet, so the widget never silently shows a wrong candle time).
+- `src/lib/news-types.ts` — `NewsItem` shape (id, title, source, url, publishedAt, urgent) plus the urgency heuristic.
+- `src/lib/news.server.ts` — fetches all four feeds in parallel with a short timeout, parses the XML with a small dependency-free reader (no Node-only libraries; must run in the edge worker), normalises dates, drops duplicates by normalised title, sorts newest-first, caps the list, and degrades gracefully if a feed is down (returns whatever succeeded).
+- `src/lib/news.functions.ts` — `getIsraelNews` server function (GET, no auth, public read).
+- `src/lib/news.ts` — `useNews()` React Query hook: 5-minute stale time, refetch on window focus, same pattern as the existing weather/Jewish hooks.
 
-The widget itself gains real state: on Friday it shows tonight's candle lighting with a countdown; on Shabbat it shows havdalah; on a fast day, real fast begin/end; otherwise sedra + zmanim.
+## Urgent highlighting
 
-## 2. Live weather (Open-Meteo)
+A keyword heuristic over the headline (rocket, siren, Home Front Command, attack, alert, security incident, etc.). Urgent items:
+- push the news tile to the top of For You and switch it to an alert gradient,
+- get a red "Live" pill on the /news page.
 
-New `src/lib/weather.ts` server function calling Open-Meteo forecast + air-quality endpoints for the location's lat/lon:
+The tile and page carry a one-line disclaimer that this is press coverage, not an official Home Front Command alert.
 
-- Current temp, apparent temp, WMO weather code mapped to our condition labels/emoji, UV index, precipitation probability, daily high/low, plus European AQI from the air-quality endpoint.
-- Condition mapping drives the existing `gradientFor` colours (sun / cloud / rain / haze / night), so tiles keep reacting to real weather.
-- Short client cache (~15 min) and a stale-data indicator; if the call fails, the tile shows "Weather unavailable" rather than fabricated numbers.
+## For You tile
 
-## 3. Location logic, properly
+New `news` widget in `src/lib/widgets.ts`:
+- title "Israel news", headline = latest item, rows = next few headlines with source and relative time,
+- relevance boosted when an urgent item is present (jumps to hero position), otherwise mid-pack,
+- detail sheet lists ~6 headlines and a "See all news" CTA to `/news`,
+- loading and unavailable states matching the existing weather widget behaviour.
 
-- `LocationBar` keeps the one-time permission ask, but on success we now reverse-geocode the coordinates (Open-Meteo's geocoding/BigData-style reverse lookup, Israel-scoped) so any location in Israel resolves to a real city/neighbourhood name, falling back to `nearestPlace()` from the current list when the lookup fails.
-- Watch and refresh: re-detect when the app returns to the foreground, and re-fetch weather/zmanim when the student moves more than ~5 km.
-- Manual picker becomes the authoritative override — expanded to all Israeli cities we support, searchable, and once set it sticks until the student taps "Use my current location" again.
-- Denied / unavailable / timeout each get a distinct, honest message plus a direct route to the picker; both widgets then use the picked city's coordinates.
-- Everything — weather, zmanim, candle lighting, sedra specials — reads from one shared `place` (lat/lon), so the two widgets can never disagree about where you are.
+The tile also appears in For You settings automatically, so it can be pinned or hidden like every other widget.
 
-## 4. Widget UI
+## /news route
 
-- Jewish Life detail sheet: full zmanim list for the day (alot, sunrise, sof zman kriat shema, chatzot, mincha gedola, shkia, tzeit), candle/havdalah, upcoming chag, and a "times for <city>" line with a change-location control.
-- Today/weather sheet: hourly-ish summary, high/low, UV, rain chance, AQI, and the same city control (currently a separate `WEATHER_CITIES` list — merged into the single location source).
-- Loading skeletons instead of placeholder numbers; timestamp of last refresh.
+`src/routes/news.tsx` inside `AppShell`:
+- urgent items in a highlighted band at the top when present,
+- source filter chips (All / Times of Israel / JPost / Ynet / Arutz Sheva),
+- headline list with source, relative time and outbound link (new tab, `rel="noopener noreferrer"`),
+- pull-to-refresh style refresh button, last-updated stamp, empty/error state,
+- its own `head()` with Shekk-specific title, description, og and twitter tags.
+
+Also linked from the Explore tab's list so it's reachable without the widget.
 
 ## Technical notes
 
-- Both fetches go through `createServerFn` so upstream calls are server-side and cacheable, wrapped in TanStack Query with `staleTime` (weather 15 min, zmanim until midnight).
-- `personalise.ts` keeps its role for spending signals and seeding, but its `CITY_PROFILE` zmanim, `CONDITIONS` random weather and `JEWISH_CALENDAR` table are removed from the live path.
-- No API keys or new secrets needed; Hebcal and Open-Meteo are both free and unauthenticated.
+- Feeds are fetched server-side only — avoids browser CORS entirely and keeps one warm cache per deployment.
+- Parsing is regex/string based over `<item>`/`<entry>` blocks with HTML entity decoding; no `xml2js`/`sharp`-class dependencies that break on the worker runtime.
+- All titles are rendered as text, never `dangerouslySetInnerHTML`.
+- No database changes, no auth changes, no money-layer changes.
