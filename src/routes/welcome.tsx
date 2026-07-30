@@ -142,7 +142,7 @@ function Welcome() {
         ) : null}
 
         {step === 2 ? (
-          <Step title="Your programme" blurb="This shapes your cohort thread, offers and local recommendations.">
+          <Step title="Your programme" blurb="This shapes your group thread, offers and local recommendations.">
             <Field label="Programme or institution">
               <div className="space-y-2">
                 {PROGRAMS.map((p) => (
@@ -162,7 +162,7 @@ function Welcome() {
                 ))}
               </div>
             </Field>
-            <Field label="Cohort">
+            <Field label="Group">
               <input
                 value={cohort}
                 onChange={(e) => setCohort(e.target.value)}

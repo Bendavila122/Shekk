@@ -232,7 +232,7 @@ function SettingsPage() {
           <Divider />
           <Toggle
             label="Discoverable by friend code"
-            hint="Let cohort friends find you to send Shekk"
+            hint="Let group friends find you to send Shekk"
             checked={s.discoverable}
             onChange={(v) => setSetting("discoverable", v)}
           />

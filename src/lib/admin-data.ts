@@ -10,6 +10,7 @@ import {
   adminOverview,
   adminSession,
   adminSetAccountStatus,
+  adminSetHandle,
   adminSetKycStatus,
   claimConsole,
 } from "./admin.functions";
@@ -67,6 +68,7 @@ export function useAdminMemberDetail(userId: string | null) {
 export function useAdminActions() {
   const kycFn = useServerFn(adminSetKycStatus);
   const acctFn = useServerFn(adminSetAccountStatus);
+  const handleFn = useServerFn(adminSetHandle);
   const qc = useQueryClient();
   const refresh = () => qc.invalidateQueries({ queryKey: ["admin"] });
 
@@ -81,5 +83,10 @@ export function useAdminActions() {
     onSuccess: refresh,
   });
 
-  return { setKyc, setAccount };
+  const setHandle = useMutation({
+    mutationFn: (v: { userId: string; handle: string }) => handleFn({ data: v }),
+    onSuccess: refresh,
+  });
+
+  return { setKyc, setAccount, setHandle };
 }

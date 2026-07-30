@@ -6,6 +6,8 @@ import { refIn } from "@/lib/currencies";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { useProfile } from "@/lib/useProfile";
+import { ShekkTagCard } from "@/components/social/ShekkTagCard";
+
 
 export const Route = createFileRoute("/me")({
   head: () => ({
@@ -13,7 +15,7 @@ export const Route = createFileRoute("/me")({
       { title: "Me · Shekk" },
       {
         name: "description",
-        content: "Verification badge, program and cohort details, order history and plain-language account terms.",
+        content: "Verification badge, program and group details, order history and plain-language account terms.",
       },
       { property: "og:title", content: "Me · Shekk" },
       { property: "og:description", content: "Your Shekk account, verification status and account terms." },
@@ -112,11 +114,14 @@ function Me() {
       <div className="space-y-4 px-4 py-5">
         <ReverifyBanner />
 
+        <ShekkTagCard />
+
         <Card>
           <p className="text-xs uppercase tracking-wide text-muted-foreground">Credit balance</p>
           <p className="font-display text-3xl font-bold">{ils(state.balance)}</p>
           <p className="text-xs text-muted-foreground">≈ {refIn(state.settings.payCurrency, state.balance)} reference</p>
         </Card>
+
 
         <Card className="p-0">
           <RowLink to="/membership" Icon={Crown} label="Shekk Membership" hint={isPremium ? "Premium" : "Free — see Premium"} />

@@ -89,3 +89,14 @@ export const adminSetAccountStatus = createServerFn({ method: "POST" })
     const { setAccountStatus } = await import("./admin.server");
     return setAccountStatus(data.userId, data.status);
   });
+
+export const adminSetHandle = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) =>
+    z.object({ userId: z.string().uuid(), handle: z.string().trim().max(24) }).parse(data),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { setMemberHandle } = await import("./admin.server");
+    return setMemberHandle(data.userId, data.handle);
+  });

@@ -84,7 +84,7 @@ export const EVENTS = [
   { id: "e1", name: "Shabbaton in Tzfat", host: "Aish Gap Year", when: "Fri 24 Jan · 2 nights", price: 180, emoji: "🕯️", spots: 12 },
   { id: "e2", name: "Tiyul: Ein Gedi + Masada sunrise", host: "Israel Experience", when: "Tue 21 Jan · 04:00", price: 145, emoji: "🏜️", spots: 6 },
   { id: "e3", name: "Shiur: Rabbi Zeff on Emunah", host: "Ohr Somayach", when: "Mon 20 Jan · 20:30", price: 0, emoji: "📖", spots: 40 },
-  { id: "e4", name: "Thursday night at HaTachana", host: "Cohort J26", when: "Thu 23 Jan · 22:00", price: 55, emoji: "🎶", spots: 25 },
+  { id: "e4", name: "Thursday night at HaTachana", host: "Group J26", when: "Thu 23 Jan · 22:00", price: 55, emoji: "🎶", spots: 25 },
 ];
 
 export const HOUSING = [

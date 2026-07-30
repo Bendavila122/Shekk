@@ -19,6 +19,7 @@ import type { MemberCard } from "@/lib/social.server";
 import { SendMoneySheet } from "@/components/social/SendMoneySheet";
 import { SplitFlow } from "@/components/social/SplitFlow";
 import { ProgramLinkCard } from "@/components/social/ProgramLinkCard";
+import { FriendCodes } from "@/components/social/FriendCodes";
 
 export const Route = createFileRoute("/social/")({
   head: () => ({
@@ -27,10 +28,10 @@ export const Route = createFileRoute("/social/")({
       {
         name: "description",
         content:
-          "Chat with your cohort, split a bill in seconds and send shekels to friends on your program — all inside Shekk.",
+          "Chat with your group, split a bill in seconds and send shekels to friends on your program — all inside Shekk.",
       },
       { property: "og:title", content: "Social · Shekk" },
-      { property: "og:description", content: "Chat, split the bill and send shekels to your cohort." },
+      { property: "og:description", content: "Chat, split the bill and send shekels to your group." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -50,7 +51,7 @@ function Social() {
         <div className="px-5 py-20 text-center">
           <h1 className="text-2xl font-bold">Social</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Sign in to chat with your cohort, split bills and send shekels to friends.
+            Sign in to chat with your group, split bills and send shekels to friends.
           </p>
           <Link
             to="/auth"
@@ -68,7 +69,7 @@ function Social() {
     <AppShell>
       <header className="px-5 pt-7">
         <h1 className="text-3xl font-bold">Social</h1>
-        <p className="text-sm text-muted-foreground">Your cohort, your crew, your split of the bill.</p>
+        <p className="text-sm text-muted-foreground">Your group, your crew, your split of the bill.</p>
       </header>
 
       <div className="mx-5 mt-4 grid grid-cols-3 gap-1 rounded-2xl bg-muted p-1">
@@ -180,7 +181,7 @@ function ChatsTab() {
           <MessageCircle className="mx-auto size-8 text-muted-foreground" />
           <p className="text-sm font-semibold">No chats yet</p>
           <p className="text-xs text-muted-foreground">
-            Add a friend or join your program cohort and your threads land here.
+            Add a friend or join your program group and your threads land here.
           </p>
         </Card>
       )}
@@ -198,7 +199,7 @@ function ChatsTab() {
               <p className="truncate text-sm font-semibold">{c.title}</p>
               {c.kind === "cohort" && (
                 <span className="rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-semibold text-primary">
-                  Cohort
+                  Group
                 </span>
               )}
             </div>
@@ -241,6 +242,8 @@ function FriendsTab() {
   return (
     <div className="space-y-5">
       {payTo && <SendMoneySheet member={payTo} onClose={() => setPayTo(null)} />}
+
+      <FriendCodes />
 
       <Card className="space-y-3">
         <p className="text-sm font-semibold">Find someone</p>
@@ -348,7 +351,7 @@ function FriendsTab() {
         <Card className="divide-y divide-border p-0">
           {(!data || data.friends.length === 0) && (
             <p className="p-4 text-sm text-muted-foreground">
-              No friends yet. Search a handle above, or scan a friend's pay code on the Card screen.
+              No friends yet. Search a Shekk tag above, or scan a friend's code.
             </p>
           )}
           {data?.friends.map((m) => (
