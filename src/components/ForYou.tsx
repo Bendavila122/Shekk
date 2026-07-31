@@ -403,6 +403,64 @@ export function ForYou() {
   );
   const openDef = widgets.find((w) => w.id === openId) ?? null;
 
+  /* ---- iPhone-style edit mode: long-press to wiggle, drag to reorder ---- */
+  const [editing, setEditing] = useState(false);
+  const [dragId, setDragId] = useState<string | null>(null);
+  const pressRef = useRef<{ id: string; x: number; y: number } | null>(null);
+  const timerRef = useRef<number | null>(null);
+  const ids = widgets.map((w) => w.id);
+
+  const cancelPress = () => {
+    if (timerRef.current) window.clearTimeout(timerRef.current);
+    timerRef.current = null;
+    pressRef.current = null;
+  };
+  useEffect(() => cancelPress, []);
+
+  const onTilePointerDown = (e: React.PointerEvent, id: string) => {
+    if (editing) {
+      setDragId(id);
+      try {
+        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+      return;
+    }
+    pressRef.current = { id, x: e.clientX, y: e.clientY };
+    timerRef.current = window.setTimeout(() => {
+      haptic(18);
+      setEditing(true);
+      pressRef.current = null;
+    }, 480);
+  };
+
+  const onTilePointerMove = (e: React.PointerEvent) => {
+    if (!editing) {
+      const p = pressRef.current;
+      if (p && (Math.abs(e.clientX - p.x) > 8 || Math.abs(e.clientY - p.y) > 8)) cancelPress();
+      return;
+    }
+    if (!dragId) return;
+    const el = (document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null)?.closest(
+      "[data-wid]",
+    ) as HTMLElement | null;
+    const over = el?.dataset.wid;
+    if (!over || over === dragId) return;
+    const next = ids.slice();
+    const from = next.indexOf(dragId);
+    const to = next.indexOf(over);
+    if (from < 0 || to < 0) return;
+    next.splice(to, 0, next.splice(from, 1)[0]);
+    haptic(6);
+    setOrder(next);
+  };
+
+  const onTilePointerUp = () => {
+    cancelPress();
+    setDragId(null);
+  };
+
   /**
    * Layout engine — mosaic of widget tiles and boxless guide tiles that share
    * the exact same shapes (square or wide). A column cursor keeps every row
@@ -466,16 +524,28 @@ export function ForYou() {
         <h2 className="flex items-center gap-1.5 text-base font-bold">
           <Sparkles className="size-4 text-primary" /> For You
         </h2>
-        <button
-          onClick={() => {
-            haptic();
-            setSettingsOpen(true);
-          }}
-          className="tap rounded-full bg-muted p-2"
-          aria-label="Customise For You"
-        >
-          <SlidersHorizontal className="size-4" />
-        </button>
+        {editing ? (
+          <button
+            onClick={() => {
+              haptic();
+              setEditing(false);
+            }}
+            className="tap flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground"
+          >
+            <Check className="size-3.5" /> Done
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              haptic();
+              setSettingsOpen(true);
+            }}
+            className="tap rounded-full bg-muted p-2"
+            aria-label="Customise For You"
+          >
+            <SlidersHorizontal className="size-4" />
+          </button>
+        )}
       </div>
 
 
@@ -484,27 +554,61 @@ export function ForYou() {
           <Skeleton />
         </div>
       ) : (
-        <div className="mt-3 grid auto-rows-min grid-cols-2 gap-3 px-5">
-          {items.map((item, i) =>
+        <div className="mt-3 grid auto-rows-min grid-cols-2 gap-3 px-5" style={{ touchAction: editing ? "none" : undefined }}>
+          {(editing ? items.filter((it) => it.kind === "widget") : items).map((item, i) =>
             item.kind === "guide" ? (
               <GuideStrip key={item.key} guide={item.guide} wide={item.wide} index={i} />
             ) : (
-              <Tile
+              <div
                 key={item.key}
-                def={item.def}
-                ctx={ctx}
-                balance={state.balance}
-                wide={item.wide}
-                index={i}
-                onOpen={() => setOpenId(item.def.id)}
-              />
+                data-wid={item.def.id}
+                onPointerDown={(e) => onTilePointerDown(e, item.def.id)}
+                onPointerMove={onTilePointerMove}
+                onPointerUp={onTilePointerUp}
+                onPointerCancel={onTilePointerUp}
+                onContextMenu={(e) => editing && e.preventDefault()}
+                style={editing ? { animationDelay: `${(i % 4) * 90}ms` } : undefined}
+                className={`relative ${item.wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"} ${
+                  editing ? "wiggle select-none" : ""
+                } ${dragId === item.def.id ? "wiggle-lift" : ""}`}
+              >
+                <Tile
+                  def={item.def}
+                  ctx={ctx}
+                  balance={state.balance}
+                  wide={item.wide}
+                  index={i}
+                  editing={editing}
+                  onOpen={() => setOpenId(item.def.id)}
+                />
+                {editing ? (
+                  <button
+                    type="button"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={() => {
+                      haptic();
+                      toggleHide(item.def.id);
+                    }}
+                    aria-label={`Remove ${item.def.title}`}
+                    className="absolute -left-1.5 -top-1.5 z-10 grid size-6 place-items-center rounded-full bg-foreground text-background shadow-card"
+                  >
+                    <X className="size-3.5" strokeWidth={3} />
+                  </button>
+                ) : null}
+              </div>
             ),
           )}
         </div>
       )}
 
 
-      {openDef ? (
+      {editing ? (
+        <p className="mt-3 px-5 text-center text-[11px] text-muted-foreground">
+          Drag tiles to rearrange · tap ✕ to remove · Done when you're happy
+        </p>
+      ) : null}
+
+      {openDef && !editing ? (
         <DetailSheet
           def={openDef}
           ctx={ctx}

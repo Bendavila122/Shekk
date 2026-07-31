@@ -791,3 +791,23 @@
       0 0;
   }
 }
+
+/* iPhone-style edit mode for the For You tiles */
+@keyframes tile-wiggle {
+  0% { transform: rotate(-0.7deg) scale(0.995); }
+  50% { transform: rotate(0.7deg) scale(0.995); }
+  100% { transform: rotate(-0.7deg) scale(0.995); }
+}
+.wiggle {
+  animation: tile-wiggle 0.22s ease-in-out infinite;
+  transform-origin: 50% 50%;
+}
+.wiggle-lift {
+  animation: none;
+  transform: scale(1.06);
+  z-index: 20;
+  filter: drop-shadow(0 12px 22px oklch(0.14 0.03 274 / 0.28));
+}
+@media (prefers-reduced-motion: reduce) {
+  .wiggle { animation: none; opacity: 0.92; }
+}
