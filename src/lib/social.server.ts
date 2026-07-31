@@ -343,7 +343,12 @@ export async function searchMembers(userId: string, rawQuery: string): Promise<M
 
 /** Resolve a scanned pay code (`shekk:u/<handle>` or a bare handle). */
 export async function resolveHandle(userId: string, raw: string): Promise<MemberCard | null> {
-  const handle = normaliseHandle(raw.replace(/^shekk:u\//i, ""));
+  const cleaned = raw
+    .trim()
+    .replace(/^https?:\/\/[^/]+\/(?:u|pay)\//i, "")
+    .replace(/^shekk:(?:\/\/)?(?:u\/|pay\/)?/i, "")
+    .split(/[?#]/)[0];
+  const handle = normaliseHandle(cleaned);
   if (handle.length < 3) return null;
   const db = await admin();
   const { data } = await db.from("member_handles").select("*").ilike("handle", handle).maybeSingle();
