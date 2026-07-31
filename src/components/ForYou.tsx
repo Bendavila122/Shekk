@@ -140,14 +140,30 @@ function DetailSheet({
 }) {
   const content = def.build(ctx);
   const headline = def.id === "wallet" ? ils(balance) : content.headline;
+  const sky =
+    def.id === "today"
+      ? skyKind({
+          condition: ctx.weather?.condition,
+          rain: ctx.weather?.rain,
+          isDay: ctx.weather?.isDay,
+          night: ctx.weather ? undefined : ctx.hour >= 20 || ctx.hour < 5,
+        })
+      : null;
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" role="dialog" aria-modal="true">
       <button className="absolute inset-0 bg-foreground/40" aria-label="Close" onClick={onClose} />
       <div className="animate-fade-in relative max-h-[88vh] w-full max-w-md overflow-y-auto rounded-t-[2rem] border border-border bg-card p-6 pb-8 shadow-card sm:rounded-[2rem]">
+        {sky ? (
+          <div className="widget-tile relative mb-4 h-32 w-full overflow-hidden rounded-[1.5rem]">
+            <SkyScene kind={sky} dense />
+          </div>
+        ) : null}
         <header className="flex items-start gap-3">
-          <span className={`${def.gradientFor?.(ctx) ?? def.gradient} widget-tile flex size-12 shrink-0 items-center justify-center rounded-2xl text-2xl`}>
-            {def.emoji}
+          <span className={`${sky ? "" : (def.gradientFor?.(ctx) ?? def.gradient)} widget-tile relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl text-2xl`}>
+            {sky ? <SkyScene kind={sky} /> : null}
+            <span className="relative z-[1]">{def.emoji}</span>
           </span>
+
           <div className="min-w-0 flex-1">
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{def.title}</p>
             {content.href ? (
