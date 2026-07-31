@@ -302,15 +302,17 @@ function FriendsTab() {
                 </div>
                 <button
                   aria-label="Accept"
+                  disabled={respond.isPending}
                   onClick={() => respond.mutate({ friendshipId: r.id, action: "accept" })}
-                  className="tap rounded-full bg-success p-2 text-white"
+                  className="tap flex items-center gap-1.5 rounded-full bg-success px-3 py-2 text-xs font-semibold text-success-foreground disabled:opacity-60"
                 >
-                  <Check className="size-4" />
+                  <Check className="size-4" /> Accept
                 </button>
                 <button
                   aria-label="Decline"
+                  disabled={respond.isPending}
                   onClick={() => respond.mutate({ friendshipId: r.id, action: "decline" })}
-                  className="tap rounded-full bg-muted p-2"
+                  className="tap rounded-full bg-muted p-2 text-foreground disabled:opacity-60"
                 >
                   <X className="size-4" />
                 </button>
