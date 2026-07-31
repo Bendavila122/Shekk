@@ -469,6 +469,66 @@ export type Database = {
           },
         ]
       }
+      insurance_cards: {
+        Row: {
+          back_path: string | null
+          covers: string | null
+          created_at: string
+          front_path: string | null
+          group_number: string | null
+          hotline: string | null
+          id: string
+          is_primary: boolean
+          member_number: string | null
+          plan: string | null
+          policy_holder: string | null
+          provider_id: string
+          provider_name: string
+          updated_at: string
+          user_id: string
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          back_path?: string | null
+          covers?: string | null
+          created_at?: string
+          front_path?: string | null
+          group_number?: string | null
+          hotline?: string | null
+          id?: string
+          is_primary?: boolean
+          member_number?: string | null
+          plan?: string | null
+          policy_holder?: string | null
+          provider_id: string
+          provider_name: string
+          updated_at?: string
+          user_id: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          back_path?: string | null
+          covers?: string | null
+          created_at?: string
+          front_path?: string | null
+          group_number?: string | null
+          hotline?: string | null
+          id?: string
+          is_primary?: boolean
+          member_number?: string | null
+          plan?: string | null
+          policy_holder?: string | null
+          provider_id?: string
+          provider_name?: string
+          updated_at?: string
+          user_id?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       kyc_documents: {
         Row: {
           byte_size: number | null

@@ -84,7 +84,9 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     emoji: "🩺",
     tagline: "The stuff you hope you never need, one tap away.",
     services: [
+      { id: "insurance", name: "Health cover", emoji: "🩺", blurb: "Your insurance card, one tap away", status: "live", featured: true, to: "/explore/health", detail: ["Maccabi, Harel, PassportCard, Cigna and more", "Member number in big type for the clinic desk", "Assistance line and 101 / 100 / 102 one tap away"] },
       { id: "hospitals", name: "Hospitals & clinics", partner: "Terem · Meuhedet", emoji: "🏥", blurb: "Nearest English-speaking care", status: "guide" },
+
       { id: "emergency", name: "Emergency services", partner: "MDA · Hatzalah", emoji: "🚨", blurb: "101 / 100 / 102, one tap", status: "guide", detail: ["MDA ambulance — 101", "Police — 100", "Fire — 102", "United Hatzalah — 1221"] },
       { id: "helplines", name: "Help lines", partner: "ERAN · Crisis Center", emoji: "☎️", blurb: "Mental health, in English", status: "guide" },
       { id: "safety", name: "Safety guides", emoji: "🛡️", blurb: "Sirens, shelters, what to do", status: "guide" },
@@ -159,7 +161,7 @@ const HOME_LAYOUT: { label: string; hint: string; ids: string[] }[] = [
   {
     label: "Live in Shekk",
     hint: "What's wired up today. More partners as their APIs land.",
-    ids: ["gett", "siddur", "topup", "split"],
+    ids: ["gett", "siddur", "insurance", "topup", "split"],
   },
   {
     label: "Good to know",

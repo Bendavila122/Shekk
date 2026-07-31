@@ -23,7 +23,9 @@ const PAGES: { title: string; subtitle: string; emoji: string; to: LinkProps["to
   { title: "Me", subtitle: "Profile, program, verification, settings", emoji: "🙋", to: "/me", keywords: "me profile settings account program cohort verification badge saved places photo" },
   { title: "Re-verify", subtitle: "Annual ID re-verification", emoji: "🪪", to: "/reverify", keywords: "reverify re-verify verification id passport annual kyc deadline" },
   { title: "Terms & Conditions", subtitle: "Credit terms in full", emoji: "📄", to: "/terms", keywords: "terms conditions t&c legal credits policy" },
+  { title: "Health cover", subtitle: "Insurance card, member number, hotlines", emoji: "🩺", to: "/explore/health", keywords: "health cover insurance card maccabi clalit meuhedet leumit harel yedidim passportcard cigna geoblue kupah kupat holim doctor clinic terem hospital member number policy emergency 101 ambulance dentist" },
   { title: "Siddur", subtitle: "Prayers, your nusach, Hebrew & English", emoji: "📖", to: "/siddur", keywords: "siddur prayer tefilla tefillah davening daven shema shacharit mincha maariv bentching birkat hamazon brachot bracha havdalah tefilat haderech nusach ashkenaz sephard edot hamizrach" },
+
   { title: "Help", subtitle: "Support and FAQs", emoji: "🛟", to: "/help", keywords: "help support faq contact problem question" },
 ];
 
