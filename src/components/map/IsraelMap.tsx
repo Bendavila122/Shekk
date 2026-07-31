@@ -159,6 +159,17 @@ export function IsraelMap({
 
   const tapped = () => moved.current < 8;
 
+  const onRegionRef = useRef(onRegion);
+  onRegionRef.current = onRegion;
+
+  /** Stable handler so the heavy land layer never re-renders while panning. */
+  const onRegionTap = useCallback((id: string, e: React.MouseEvent) => {
+    if (moved.current >= 8) return;
+    const rect = wrap.current!.getBoundingClientRect();
+    onRegionRef.current(id, { x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }, []);
+
+
   const toScreen = (mx: number, my: number): MapPoint => ({
     x: mx * view.k + view.x,
     y: my * view.k + view.y,
