@@ -52,7 +52,7 @@ export type MapPlace = {
 
 /* ------------------------------------------------------------------ areas */
 
-export const REGIONS: Region[] = REGION_SHAPES;
+export const REGIONS: Region[] = [...REGION_SHAPES, ...GAZA_SHAPES];
 
 /* ------------------------------------------------------------------ places */
 
