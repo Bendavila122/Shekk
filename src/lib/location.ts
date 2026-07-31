@@ -78,8 +78,11 @@ export function nearestPlace(lat: number, lon: number): Place {
   return { ...best, lat, lon };
 }
 
-export const placeForCity = (city: string): Place =>
-  ISRAEL_PLACES.find((p) => p.city === city) ?? ISRAEL_PLACES[0];
+/** A hand-picked city always resolves to that city itself — never a neighbourhood label. */
+export const placeForCity = (city: string): Place => {
+  const p = ISRAEL_PLACES.find((x) => x.city === city) ?? ISRAEL_PLACES[0];
+  return { city: p.city, lat: p.lat, lon: p.lon };
+};
 
 // ---- tiny shared store so every screen shows the same location ----
 
