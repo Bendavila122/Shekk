@@ -637,10 +637,21 @@ export function ForYou() {
                 onPointerMove={onTilePointerMove}
                 onPointerUp={onTilePointerUp}
                 onContextMenu={(e) => editing && e.preventDefault()}
-                style={editing ? { animationDelay: `${(i % 4) * 90}ms` } : undefined}
+                style={
+                  dragId === item.def.id
+                    ? {
+                        transform: `translate3d(${lift.x}px, ${lift.y}px, 0) scale(1.08) rotate(1.5deg)`,
+                        touchAction: "none",
+                      }
+                    : editing
+                      ? { animationDelay: `${(i % 4) * 90}ms` }
+                      : undefined
+                }
                 className={`relative ${item.wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"} ${
                   editing ? "wiggle select-none" : ""
-                } ${dragId === item.def.id ? "wiggle-lift" : ""}`}
+                } ${dragId && dragId !== item.def.id ? "wiggle-settle" : ""} ${
+                  dragId === item.def.id ? "wiggle-lift" : ""
+                }`}
               >
                 <Tile
                   def={item.def}
