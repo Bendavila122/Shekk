@@ -167,53 +167,171 @@ export function IsraelMap({
   const rel = view.k / (fitRef.current.k || 1);
   const showAllLabels = rel > 1.35;
 
+  /** Pins in map space, ordered so the headline places win any collision. */
+  const projected = useMemo(
+    () =>
+      MAP_PLACES.map((p) => {
+        const [mx, my] = project(p.lon, p.lat);
+        return { place: p, mx, my, anchor: ANCHOR_PINS.has(p.id) };
+      }).sort((a, b) => Number(b.anchor) - Number(a.anchor)),
+    [],
+  );
+
+  /* Spread the pins out: at low zoom, drop anything that would sit on top of a
+     pin already drawn, so the map breathes instead of turning into a blob. */
+  const gap = rel > 3 ? 0 : rel > 1.8 ? 16 : rel > 1.2 ? 24 : 30;
+  const drawn: MapPoint[] = [];
+  const pins = projected
+    .map((p) => ({ ...p, s: toScreen(p.mx, p.my) }))
+    .filter(({ s, place }) => {
+      if (s.x < -60 || s.y < -40 || s.x > size.w + 60 || s.y > size.h + 40) return false;
+      if (activePlace === place.id || gap === 0) {
+        drawn.push(s);
+        return true;
+      }
+      if (drawn.some((d) => Math.hypot(d.x - s.x, d.y - s.y) < gap)) return false;
+      drawn.push(s);
+      return true;
+    });
+
+  const labelled: MapPoint[] = [];
+
   return (
     <div
       ref={wrap}
-      className="relative h-full w-full touch-none overflow-hidden bg-secondary"
+      className="relative h-full w-full touch-none overflow-hidden"
+      style={{ background: "var(--map-sea)" }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={endPointer}
       onPointerCancel={endPointer}
     >
       <svg width={size.w} height={size.h} className="block select-none">
+        <defs>
+          {/* the country's terrain, north to south */}
+          <linearGradient
+            id="terrain"
+            gradientUnits="userSpaceOnUse"
+            x1={0}
+            y1={0}
+            x2={MAP_WIDTH * 0.35}
+            y2={MAP_HEIGHT}
+          >
+            <stop offset="0" style={{ stopColor: "var(--map-green)" }} />
+            <stop offset="0.16" style={{ stopColor: "var(--map-hills)" }} />
+            <stop offset="0.3" style={{ stopColor: "var(--map-plain)" }} />
+            <stop offset="0.42" style={{ stopColor: "var(--map-steppe)" }} />
+            <stop offset="0.55" style={{ stopColor: "var(--map-sand)" }} />
+            <stop offset="0.78" style={{ stopColor: "var(--map-desert)" }} />
+            <stop offset="1" style={{ stopColor: "var(--map-arava)" }} />
+          </linearGradient>
+          {/* the east always runs drier than the coast */}
+          <linearGradient
+            id="terrain-dry"
+            gradientUnits="userSpaceOnUse"
+            x1={MAP_WIDTH * 0.25}
+            y1={0}
+            x2={MAP_WIDTH}
+            y2={0}
+          >
+            <stop offset="0" style={{ stopColor: "var(--map-dry)", stopOpacity: 0 }} />
+            <stop offset="1" style={{ stopColor: "var(--map-dry)", stopOpacity: 0.6 }} />
+          </linearGradient>
+          <pattern id="dunes" width="7" height="7" patternUnits="userSpaceOnUse">
+            <circle cx="1.4" cy="1.4" r="0.55" fill="var(--map-arava)" opacity="0.35" />
+          </pattern>
+          <filter id="land-shadow" x="-20%" y="-20%" width="150%" height="150%">
+            <feDropShadow dy="1.4" dx="0.6" stdDeviation="1.6" floodOpacity="0.18" />
+          </filter>
+        </defs>
+
         {/* sea */}
         <rect
           width={size.w}
           height={size.h}
-          className="fill-secondary"
+          fill="var(--map-sea)"
           onClick={() => {
             if (tapped()) onClear();
           }}
         />
 
         <g transform={`translate(${view.x} ${view.y}) scale(${view.k})`}>
-          {REGIONS.map((r) => {
-            const visited = visitedRegions.includes(r.id);
-            const active = activeRegion === r.id;
-            return (
-              <g key={r.id}>
-                {r.paths.map((d, i) => (
-                  <path
-                    key={i}
-                    d={d}
-                    role={i === 0 ? "button" : undefined}
-                    aria-label={i === 0 ? `${r.name}${visited ? " — visited" : ""}` : undefined}
-                    onClick={(e) => {
-                      if (!tapped()) return;
-                      const rect = wrap.current!.getBoundingClientRect();
-                      onRegion(r.id, { x: e.clientX - rect.left, y: e.clientY - rect.top });
-                    }}
-                    className={`cursor-pointer outline-none transition-colors ${
-                      visited ? "fill-primary/85" : "fill-card"
-                    } ${active ? "stroke-ink" : "stroke-border"}`}
-                    strokeWidth={(active ? 2 : 0.8) / view.k}
-                    vectorEffect="non-scaling-stroke"
-                  />
-                ))}
-              </g>
-            );
-          })}
+          {/* land, painted with the terrain gradient */}
+          <g filter="url(#land-shadow)">
+            {REGIONS.map((r) => {
+              const visited = visitedRegions.includes(r.id);
+              const active = activeRegion === r.id;
+              const terr = territoryOf(r.id);
+              const disputed = terr !== "israel";
+              return (
+                <g key={r.id}>
+                  {r.paths.map((d, i) => (
+                    <path
+                      key={i}
+                      d={d}
+                      role={i === 0 ? "button" : undefined}
+                      aria-label={i === 0 ? `${r.name}${visited ? " — visited" : ""}` : undefined}
+                      onClick={(e) => {
+                        if (!tapped()) return;
+                        const rect = wrap.current!.getBoundingClientRect();
+                        onRegion(r.id, { x: e.clientX - rect.left, y: e.clientY - rect.top });
+                      }}
+                      fill={visited ? undefined : "url(#terrain)"}
+                      className={`cursor-pointer outline-none transition-colors ${
+                        visited ? "fill-primary/80" : ""
+                      } ${active ? "stroke-ink" : disputed ? "stroke-ink/35" : "stroke-ink/15"}`}
+                      strokeWidth={active ? 2.2 : 0.8}
+                      strokeDasharray={disputed && !active ? "3 2.5" : undefined}
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  ))}
+                </g>
+              );
+            })}
+          </g>
+
+          {/* the dry east, and a dune wash over the deep Negev */}
+          <g className="pointer-events-none">
+            {REGIONS.filter((r) => !visitedRegions.includes(r.id)).map((r) =>
+              r.paths.map((d, i) => (
+                <path key={`dry-${r.id}-${i}`} d={d} fill="url(#terrain-dry)" opacity={0.5} />
+              )),
+            )}
+            {REGIONS.filter((r) => r.id === "negev-arava" && !visitedRegions.includes(r.id)).map((r) =>
+              r.paths.map((d, i) => <path key={`dune-${i}`} d={d} fill="url(#dunes)" />),
+            )}
+          </g>
+
+          {/* disputed territory borders, dotted */}
+          <g className="pointer-events-none" fill="none">
+            {TERRITORY_OUTLINES.map((t) => (
+              <path
+                key={t.id}
+                d={t.d}
+                className="stroke-ink"
+                strokeWidth={2}
+                strokeDasharray="5 4"
+                strokeLinejoin="round"
+                vectorEffect="non-scaling-stroke"
+                opacity={0.75}
+              />
+            ))}
+            {/* the northern line: the Golan, also disputed */}
+            {REGIONS.filter((r) => r.id === "golan").map((r) =>
+              r.paths.map((d, i) => (
+                <path
+                  key={`golan-${i}`}
+                  d={d}
+                  className="stroke-ink"
+                  strokeWidth={2}
+                  strokeDasharray="5 4"
+                  strokeLinejoin="round"
+                  vectorEffect="non-scaling-stroke"
+                  opacity={0.7}
+                />
+              )),
+            )}
+          </g>
         </g>
 
         {/* area names, in screen space so they stay legible at any zoom */}
@@ -227,10 +345,10 @@ export function IsraelMap({
                   x={p.x}
                   y={p.y}
                   textAnchor="middle"
-                  className="pointer-events-none fill-muted-foreground"
-                  fontSize={10}
+                  className="pointer-events-none fill-ink/55"
+                  fontSize={9.5}
                   fontWeight={700}
-                  letterSpacing={0.4}
+                  letterSpacing={0.5}
                 >
                   {r.name.toUpperCase()}
                 </text>
@@ -238,15 +356,37 @@ export function IsraelMap({
             })
           : null}
 
+        {/* territory captions */}
+        {rel > 0.9
+          ? TERRITORY_OUTLINES.map((t) => {
+              const box = t.id === "gaza" ? toScreen(30, 430) : toScreen(210, 250);
+              if (box.x < -60 || box.x > size.w + 60) return null;
+              return (
+                <text
+                  key={`t-${t.id}`}
+                  x={box.x}
+                  y={box.y}
+                  textAnchor="middle"
+                  className="pointer-events-none fill-ink/45"
+                  fontSize={8.5}
+                  fontWeight={700}
+                  letterSpacing={0.8}
+                >
+                  {t.label.toUpperCase()}
+                </text>
+              );
+            })
+          : null}
+
         {/* pins */}
-        {MAP_PLACES.map((p) => {
-          const [mx, my] = project(p.lon, p.lat);
-          const s = toScreen(mx, my);
-          if (s.x < -60 || s.y < -40 || s.x > size.w + 60 || s.y > size.h + 40) return null;
+        {pins.map(({ place: p, s }) => {
           const been = visitedPlaces.includes(p.id);
           const active = activePlace === p.id;
-          const label = showAllLabels || ANCHOR_PINS.has(p.id);
           const flip = s.x > size.w * 0.62;
+          const wantLabel = showAllLabels || ANCHOR_PINS.has(p.id) || active;
+          const label =
+            wantLabel && !labelled.some((d) => Math.hypot(d.x - s.x, d.y - s.y) < 26);
+          if (label) labelled.push(s);
           return (
             <g
               key={p.id}
@@ -267,29 +407,37 @@ export function IsraelMap({
               }}
               className="cursor-pointer outline-none"
             >
-              <circle cx={s.x} cy={s.y} r={14} fill="transparent" />
-              {active ? (
-                <circle cx={s.x} cy={s.y} r={12} className="fill-primary/25" />
-              ) : null}
+              <circle cx={s.x} cy={s.y} r={16} fill="transparent" />
+              {active ? <circle cx={s.x} cy={s.y} r={16} className="fill-primary/20" /> : null}
               <circle
                 cx={s.x}
                 cy={s.y}
-                r={active ? 6.5 : 4.5}
-                className={`stroke-ink ${been ? "fill-primary" : "fill-card"}`}
-                strokeWidth={1.6}
+                r={active ? 12 : 9.5}
+                className={`${been ? "fill-primary stroke-primary" : "fill-card stroke-ink/25"}`}
+                strokeWidth={1.2}
               />
+              <text
+                x={s.x}
+                y={s.y}
+                textAnchor="middle"
+                dominantBaseline="central"
+                className="pointer-events-none"
+                fontSize={active ? 13 : 10.5}
+              >
+                {placeEmoji(p)}
+              </text>
               {label ? (
                 <text
-                  x={flip ? s.x - 9 : s.x + 9}
+                  x={flip ? s.x - 13 : s.x + 13}
                   y={s.y + 3.4}
                   textAnchor={flip ? "end" : "start"}
                   className={active ? "fill-primary" : "fill-foreground"}
                   fontSize={10.5}
                   fontWeight={650}
                   paintOrder="stroke"
-                  stroke="white"
-                  strokeWidth={3}
-                  strokeOpacity={0.8}
+                  stroke="var(--card)"
+                  strokeWidth={3.5}
+                  strokeOpacity={0.85}
                 >
                   {p.name}
                 </text>
@@ -298,6 +446,7 @@ export function IsraelMap({
           );
         })}
       </svg>
+
 
       {/* zoom controls */}
       <div className="absolute bottom-4 right-3 flex flex-col gap-2">
