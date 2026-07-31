@@ -5,6 +5,7 @@ import { useApp } from "@/lib/store";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
 import { MembershipDunningBanner } from "@/components/MembershipDunningBanner";
+import { useUnreadChats } from "@/lib/useSocial";
 
 
 
@@ -91,6 +92,7 @@ export function Notice({
 /** Bottom tab bar, shared by every screen (mobile). Home sits centred and raised. */
 export function MobileNav() {
   const isActive = useActive();
+  const unread = useUnreadChats();
   const side = TABS.filter((t) => t.to !== "/me" && t.to !== "/");
   const left = side.slice(0, 2);
   const right = side.slice(2);
@@ -98,6 +100,7 @@ export function MobileNav() {
 
   const item = (to: string, label: string, Icon: typeof Home) => {
     const active = isActive(to);
+    const badge = to === "/social" && unread > 0 ? unread : 0;
     return (
       <Link
         key={to}
@@ -106,11 +109,19 @@ export function MobileNav() {
           active ? "text-primary" : "text-muted-foreground"
         }`}
       >
-        <Icon className="size-6" strokeWidth={active ? 2.6 : 1.8} />
+        <span className="relative">
+          <Icon className="size-6" strokeWidth={active ? 2.6 : 1.8} />
+          {badge > 0 && (
+            <span className="absolute -right-2 -top-1 min-w-4 rounded-full bg-destructive px-1 text-center text-[10px] font-bold leading-4 text-white">
+              {badge > 9 ? "9+" : badge}
+            </span>
+          )}
+        </span>
         <span>{label}</span>
       </Link>
     );
   };
+
 
   return (
     <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[430px] -translate-x-1/2 border-t border-border bg-card lg:hidden">
@@ -244,6 +255,8 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const isActive = useActive();
+  const unread = useUnreadChats();
+
 
 
   return (
@@ -267,6 +280,12 @@ export function AppShell({ children }: { children: ReactNode }) {
             >
               <Icon className="size-5 shrink-0" strokeWidth={active ? 2.4 : 1.8} />
               <span className="truncate">{label}</span>
+              {to === "/social" && unread > 0 && (
+                <span className="ml-auto min-w-5 rounded-full bg-destructive px-1.5 text-center text-[11px] font-bold leading-5 text-white">
+                  {unread > 9 ? "9+" : unread}
+                </span>
+              )}
+
             </Link>
           );
         })}
