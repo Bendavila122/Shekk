@@ -646,9 +646,9 @@
   --jl-city: oklch(0.17 0.02 262);
 }
 .jl-day {
-  --jl-top: oklch(0.8 0.09 226);
-  --jl-bottom: oklch(0.62 0.1 62);
-  --jl-city: oklch(0.42 0.07 66);
+  --jl-top: oklch(0.7 0.15 236);
+  --jl-bottom: oklch(0.72 0.13 74);
+  --jl-city: oklch(0.36 0.07 62);
 }
 
 /* Warm light bleeding off the horizon. */
@@ -677,7 +677,7 @@
 
 .jl-scene .jl-city {
   color: var(--jl-city);
-  height: 46%;
+  height: 52%;
   filter: drop-shadow(0 -6px 14px oklch(0.95 0.12 76 / 0.25));
 }
 .jl-scene .jl-skyline {
