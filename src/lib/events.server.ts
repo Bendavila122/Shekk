@@ -271,7 +271,7 @@ export async function purchase(
     _user_id: userId,
     _event_id: eventId,
     _quantity: quantity,
-    _idempotency_key: idempotencyKey ?? null,
+    _idempotency_key: idempotencyKey ?? undefined,
   });
 
   if (error) rethrow(error.message ?? "", "Could not buy this ticket");
