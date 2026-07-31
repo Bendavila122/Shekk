@@ -10,6 +10,7 @@ import {
   LogOut,
   Megaphone,
   Settings2,
+  Ticket,
   Users,
 } from "lucide-react";
 import { useAdminGate } from "@/lib/admin";
