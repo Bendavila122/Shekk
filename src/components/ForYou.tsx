@@ -1,11 +1,11 @@
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ExternalLink, SlidersHorizontal, Sparkles, X } from "lucide-react";
+import { Check, ExternalLink, SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { useUserContext, WEATHER_CITIES } from "@/lib/personalise";
 import { placeForCity, useLocation } from "@/lib/location";
 import { useJewish, useWeather } from "@/lib/live";
 import { useNews } from "@/lib/news";
-import { orderWidgets, type WidgetDef } from "@/lib/widgets";
+import { arrangeWidgets, type WidgetDef } from "@/lib/widgets";
 import { SkyScene, skyKind } from "@/components/SkyScene";
 import { JewishScene, jewishSceneKind } from "@/components/JewishScene";
 
@@ -37,6 +37,7 @@ function Tile({
   balance,
   wide,
   index,
+  editing,
   onOpen,
 }: {
   def: WidgetDef;
@@ -44,6 +45,7 @@ function Tile({
   balance: number;
   wide: boolean;
   index: number;
+  editing?: boolean;
   onOpen: () => void;
 }) {
   const content = def.build(ctx);
@@ -83,12 +85,15 @@ function Tile({
     <button
       type="button"
       onClick={() => {
+        if (editing) return;
         haptic();
         onOpen();
       }}
       style={{ animationDelay: `${Math.min(index, 6) * 45}ms` }}
-      className={`${scene ? "" : (def.gradientFor?.(ctx) ?? def.gradient)} ${paper ? "news-paper" : ""} widget-tile tap-icon animate-fade-in relative overflow-hidden flex flex-col gap-2 p-3 text-left ${
-        wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"
+      className={`${scene ? "" : (def.gradientFor?.(ctx) ?? def.gradient)} ${paper ? "news-paper" : ""} widget-tile ${
+        editing ? "" : "tap-icon"
+      } animate-fade-in relative size-full overflow-hidden flex flex-col gap-2 p-3 text-left ${
+        wide ? "min-h-[8.5rem]" : ""
       }`}
     >
       {sky ? <SkyScene kind={sky} dense={wide} /> : null}
@@ -342,7 +347,7 @@ export function ForYou() {
   const { state } = useApp();
   // Live: re-derive context on a timer and whenever the tab regains focus.
   const [tick, setTick] = useState(0);
-  const { prefs, togglePin, toggleHide, move, setSize, setWeatherCity, reset } = useForYouPrefs();
+  const { prefs, togglePin, toggleHide, move, setOrder, setSize, setWeatherCity, reset } = useForYouPrefs();
   const loc = useLocation();
 
   // A manual city pin wins; otherwise follow the live GPS fix.
@@ -391,7 +396,11 @@ export function ForYou() {
     };
   }, []);
 
-  const widgets = useMemo(() => orderWidgets(ctx, prefs.pinned, prefs.hidden), [ctx, prefs.pinned, prefs.hidden]);
+  // Tiles are stuck where the member left them — no relevance reshuffling.
+  const widgets = useMemo(
+    () => arrangeWidgets(prefs.order.length ? prefs.order : prefs.pinned, prefs.hidden),
+    [prefs.order, prefs.pinned, prefs.hidden],
+  );
   const openDef = widgets.find((w) => w.id === openId) ?? null;
 
   /**
@@ -400,7 +409,7 @@ export function ForYou() {
    * complete, so wide items only start a fresh row and nothing ever orphans.
    */
   const items = useMemo(() => {
-    const seed = Math.floor(Date.now() / 86_400_000);
+    const seed = 7; // fixed: the mosaic never rearranges itself
     let s = (seed * 9301 + 49297) % 233280;
     const rnd = () => ((s = (s * 9301 + 49297) % 233280) / 233280);
     const pool = [...GUIDES].sort(() => rnd() - 0.5);
