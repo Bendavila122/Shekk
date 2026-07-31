@@ -595,17 +595,28 @@ export function ForYou() {
             <Check className="size-3.5" /> Done
           </button>
         ) : (
-          <button
-            onClick={() => {
-              haptic();
-              setSettingsOpen(true);
-            }}
-            className="tap rounded-full bg-muted p-2"
-            aria-label="Customise For You"
-          >
-            <SlidersHorizontal className="size-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={refreshAll}
+              disabled={refreshing}
+              className="tap rounded-full bg-muted p-2 disabled:opacity-70"
+              aria-label="Refresh widgets"
+            >
+              <RotateCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
+            </button>
+            <button
+              onClick={() => {
+                haptic();
+                setSettingsOpen(true);
+              }}
+              className="tap rounded-full bg-muted p-2"
+              aria-label="Customise For You"
+            >
+              <SlidersHorizontal className="size-4" />
+            </button>
+          </div>
         )}
+
       </div>
 
 
