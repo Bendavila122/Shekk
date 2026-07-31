@@ -124,7 +124,7 @@ function Events() {
               {group.items.map((e) => (
                 <Link
                   key={e.id}
-                  to="/explore/events/$id"
+                  to="/explore/event/$id"
                   params={{ id: e.id }}
                   className="tap block"
                 >
