@@ -1,11 +1,11 @@
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ExternalLink, SlidersHorizontal, Sparkles, X } from "lucide-react";
+import { Check, ExternalLink, SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { useUserContext, WEATHER_CITIES } from "@/lib/personalise";
 import { placeForCity, useLocation } from "@/lib/location";
 import { useJewish, useWeather } from "@/lib/live";
 import { useNews } from "@/lib/news";
-import { orderWidgets, type WidgetDef } from "@/lib/widgets";
+import { arrangeWidgets, type WidgetDef } from "@/lib/widgets";
 import { SkyScene, skyKind } from "@/components/SkyScene";
 import { JewishScene, jewishSceneKind } from "@/components/JewishScene";
 
@@ -37,6 +37,7 @@ function Tile({
   balance,
   wide,
   index,
+  editing,
   onOpen,
 }: {
   def: WidgetDef;
@@ -44,6 +45,7 @@ function Tile({
   balance: number;
   wide: boolean;
   index: number;
+  editing?: boolean;
   onOpen: () => void;
 }) {
   const content = def.build(ctx);
@@ -83,12 +85,15 @@ function Tile({
     <button
       type="button"
       onClick={() => {
+        if (editing) return;
         haptic();
         onOpen();
       }}
       style={{ animationDelay: `${Math.min(index, 6) * 45}ms` }}
-      className={`${scene ? "" : (def.gradientFor?.(ctx) ?? def.gradient)} ${paper ? "news-paper" : ""} widget-tile tap-icon animate-fade-in relative overflow-hidden flex flex-col gap-2 p-3 text-left ${
-        wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"
+      className={`${scene ? "" : (def.gradientFor?.(ctx) ?? def.gradient)} ${paper ? "news-paper" : ""} widget-tile ${
+        editing ? "" : "tap-icon"
+      } animate-fade-in relative size-full overflow-hidden flex flex-col gap-2 p-3 text-left ${
+        wide ? "min-h-[8.5rem]" : ""
       }`}
     >
       {sky ? <SkyScene kind={sky} dense={wide} /> : null}
@@ -342,7 +347,7 @@ export function ForYou() {
   const { state } = useApp();
   // Live: re-derive context on a timer and whenever the tab regains focus.
   const [tick, setTick] = useState(0);
-  const { prefs, togglePin, toggleHide, move, setSize, setWeatherCity, reset } = useForYouPrefs();
+  const { prefs, togglePin, toggleHide, move, setOrder, setSize, setWeatherCity, reset } = useForYouPrefs();
   const loc = useLocation();
 
   // A manual city pin wins; otherwise follow the live GPS fix.
@@ -391,8 +396,101 @@ export function ForYou() {
     };
   }, []);
 
-  const widgets = useMemo(() => orderWidgets(ctx, prefs.pinned, prefs.hidden), [ctx, prefs.pinned, prefs.hidden]);
+  // Tiles are stuck where the member left them — no relevance reshuffling.
+  const widgets = useMemo(
+    () => arrangeWidgets(prefs.order.length ? prefs.order : prefs.pinned, prefs.hidden),
+    [prefs.order, prefs.pinned, prefs.hidden],
+  );
   const openDef = widgets.find((w) => w.id === openId) ?? null;
+
+  /* ---- iPhone-style edit mode: long-press to wiggle, drag to reorder ---- */
+  const [editing, setEditing] = useState(false);
+  const [dragId, setDragId] = useState<string | null>(null);
+  const pressRef = useRef<{ id: string; x: number; y: number } | null>(null);
+  const timerRef = useRef<number | null>(null);
+  const ids = widgets.map((w) => w.id);
+
+  const cancelPress = () => {
+    if (timerRef.current) window.clearTimeout(timerRef.current);
+    timerRef.current = null;
+    pressRef.current = null;
+  };
+  useEffect(() => cancelPress, []);
+
+  const dragTo = (x: number, y: number) => {
+    if (!dragId) return;
+    const el = (document.elementFromPoint(x, y) as HTMLElement | null)?.closest(
+      "[data-wid]",
+    ) as HTMLElement | null;
+    const over = el?.dataset.wid;
+    if (!over || over === dragId) return;
+    const next = ids.slice();
+    const from = next.indexOf(dragId);
+    const to = next.indexOf(over);
+    if (from < 0 || to < 0) return;
+    next.splice(to, 0, next.splice(from, 1)[0]);
+    haptic(6);
+    setOrder(next);
+  };
+
+  const onTilePointerDown = (e: React.PointerEvent, id: string) => {
+    if (editing) {
+      setDragId(id);
+      try {
+        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+      return;
+    }
+    pressRef.current = { id, x: e.clientX, y: e.clientY };
+    const target = e.currentTarget as HTMLElement;
+    const pointerId = e.pointerId;
+    timerRef.current = window.setTimeout(() => {
+      haptic(18);
+      setEditing(true);
+      // Keep the finger on the tile: the same press becomes the drag.
+      setDragId(id);
+      try {
+        target.setPointerCapture(pointerId);
+      } catch {
+        /* ignore */
+      }
+      pressRef.current = null;
+    }, 480);
+  };
+
+  const onTilePointerMove = (e: React.PointerEvent) => {
+    if (!editing) {
+      const p = pressRef.current;
+      if (p && (Math.abs(e.clientX - p.x) > 8 || Math.abs(e.clientY - p.y) > 8)) cancelPress();
+      return;
+    }
+    dragTo(e.clientX, e.clientY);
+  };
+
+  // The drag itself is tracked on the window so the pointer can leave the tile.
+  useEffect(() => {
+    if (!dragId) return;
+    const move = (ev: PointerEvent) => {
+      ev.preventDefault();
+      dragTo(ev.clientX, ev.clientY);
+    };
+    const up = () => onTilePointerUp();
+    window.addEventListener("pointermove", move, { passive: false });
+    window.addEventListener("pointerup", up);
+
+    return () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+
+    };
+  });
+
+  const onTilePointerUp = () => {
+    cancelPress();
+    setDragId(null);
+  };
 
   /**
    * Layout engine — mosaic of widget tiles and boxless guide tiles that share
@@ -400,7 +498,7 @@ export function ForYou() {
    * complete, so wide items only start a fresh row and nothing ever orphans.
    */
   const items = useMemo(() => {
-    const seed = Math.floor(Date.now() / 86_400_000);
+    const seed = 7; // fixed: the mosaic never rearranges itself
     let s = (seed * 9301 + 49297) % 233280;
     const rnd = () => ((s = (s * 9301 + 49297) % 233280) / 233280);
     const pool = [...GUIDES].sort(() => rnd() - 0.5);
@@ -457,16 +555,28 @@ export function ForYou() {
         <h2 className="flex items-center gap-1.5 text-base font-bold">
           <Sparkles className="size-4 text-primary" /> For You
         </h2>
-        <button
-          onClick={() => {
-            haptic();
-            setSettingsOpen(true);
-          }}
-          className="tap rounded-full bg-muted p-2"
-          aria-label="Customise For You"
-        >
-          <SlidersHorizontal className="size-4" />
-        </button>
+        {editing ? (
+          <button
+            onClick={() => {
+              haptic();
+              setEditing(false);
+            }}
+            className="tap flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground"
+          >
+            <Check className="size-3.5" /> Done
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              haptic();
+              setSettingsOpen(true);
+            }}
+            className="tap rounded-full bg-muted p-2"
+            aria-label="Customise For You"
+          >
+            <SlidersHorizontal className="size-4" />
+          </button>
+        )}
       </div>
 
 
@@ -475,27 +585,60 @@ export function ForYou() {
           <Skeleton />
         </div>
       ) : (
-        <div className="mt-3 grid auto-rows-min grid-cols-2 gap-3 px-5">
-          {items.map((item, i) =>
+        <div className="mt-3 grid auto-rows-min grid-cols-2 gap-3 px-5" style={{ touchAction: editing ? "none" : undefined }}>
+          {(editing ? items.filter((it) => it.kind === "widget") : items).map((item, i) =>
             item.kind === "guide" ? (
               <GuideStrip key={item.key} guide={item.guide} wide={item.wide} index={i} />
             ) : (
-              <Tile
+              <div
                 key={item.key}
-                def={item.def}
-                ctx={ctx}
-                balance={state.balance}
-                wide={item.wide}
-                index={i}
-                onOpen={() => setOpenId(item.def.id)}
-              />
+                data-wid={item.def.id}
+                onPointerDown={(e) => onTilePointerDown(e, item.def.id)}
+                onPointerMove={onTilePointerMove}
+                onPointerUp={onTilePointerUp}
+                onContextMenu={(e) => editing && e.preventDefault()}
+                style={editing ? { animationDelay: `${(i % 4) * 90}ms` } : undefined}
+                className={`relative ${item.wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"} ${
+                  editing ? "wiggle select-none" : ""
+                } ${dragId === item.def.id ? "wiggle-lift" : ""}`}
+              >
+                <Tile
+                  def={item.def}
+                  ctx={ctx}
+                  balance={state.balance}
+                  wide={item.wide}
+                  index={i}
+                  editing={editing}
+                  onOpen={() => setOpenId(item.def.id)}
+                />
+                {editing ? (
+                  <button
+                    type="button"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={() => {
+                      haptic();
+                      toggleHide(item.def.id);
+                    }}
+                    aria-label={`Remove ${item.def.title}`}
+                    className="absolute -left-1.5 -top-1.5 z-10 grid size-6 place-items-center rounded-full bg-foreground text-background shadow-card"
+                  >
+                    <X className="size-3.5" strokeWidth={3} />
+                  </button>
+                ) : null}
+              </div>
             ),
           )}
         </div>
       )}
 
 
-      {openDef ? (
+      {editing ? (
+        <p className="mt-3 px-5 text-center text-[11px] text-muted-foreground">
+          Drag tiles to rearrange · tap ✕ to remove · Done when you're happy
+        </p>
+      ) : null}
+
+      {openDef && !editing ? (
         <DetailSheet
           def={openDef}
           ctx={ctx}

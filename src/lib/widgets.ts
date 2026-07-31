@@ -242,6 +242,24 @@ export function jitter(ctx: UserContext, id: string) {
   return rand(`${ctx.signals.seed}|${id}`) * 8;
 }
 
+/**
+ * Fixed arrangement — tiles stay exactly where the member left them. Saved
+ * order first, then any widget that didn't exist yet, in registry order.
+ */
+export function arrangeWidgets(order: string[], hidden: string[]): WidgetDef[] {
+  const seen = new Set<string>();
+  const out: WidgetDef[] = [];
+  for (const id of order) {
+    const w = WIDGET_BY_ID[id];
+    if (w && !seen.has(id) && !hidden.includes(id)) {
+      out.push(w);
+      seen.add(id);
+    }
+  }
+  for (const w of WIDGETS) if (!seen.has(w.id) && !hidden.includes(w.id)) out.push(w);
+  return out;
+}
+
 export function orderWidgets(ctx: UserContext, pinned: string[], hidden: string[]): WidgetDef[] {
   const pinnedDefs = pinned.map((id) => WIDGET_BY_ID[id]).filter(Boolean).filter((w) => !hidden.includes(w.id));
   const rest = WIDGETS.filter((w) => !pinned.includes(w.id) && !hidden.includes(w.id)).sort(
