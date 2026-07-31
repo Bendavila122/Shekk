@@ -19,6 +19,7 @@ import {
   REGION_SHAPES,
   type RegionShape,
 } from "@/lib/israel-geo";
+import { GAZA_SHAPES, TERRITORY_OUTLINES } from "@/lib/israel-geo-disputed";
 import { MORE_PLACES } from "@/lib/israel-map-places";
 
 export { MAP_HEIGHT, MAP_WIDTH, LON_SCALE };
