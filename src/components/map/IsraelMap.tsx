@@ -426,3 +426,87 @@ export function IsraelMap({
     </div>
   );
 }
+
+/**
+ * Land, terrain wash and disputed borders. Memoised: the geometry is thousands of
+ * path segments, so it must never re-render while panning or zooming — only the
+ * parent <g transform> changes, which the browser handles on the compositor.
+ */
+const LandLayer = memo(function LandLayer({
+  visitedRegions,
+  activeRegion,
+  onRegionTap,
+}: {
+  visitedRegions: string[];
+  activeRegion: string | null;
+  onRegionTap: (id: string, e: React.MouseEvent) => void;
+}) {
+  const visited = useMemo(() => new Set(visitedRegions), [visitedRegions]);
+  return (
+    <>
+      {/* land, painted with the terrain gradient */}
+      <g>
+        {REGIONS.map((r) => {
+          const been = visited.has(r.id);
+          const active = activeRegion === r.id;
+          const disputed = territoryOf(r.id) !== "israel";
+          return r.paths.map((d, i) => (
+            <path
+              key={`${r.id}-${i}`}
+              d={d}
+              role={i === 0 ? "button" : undefined}
+              aria-label={i === 0 ? `${r.name}${been ? " — visited" : ""}` : undefined}
+              onClick={(e) => onRegionTap(r.id, e)}
+              fill={been ? undefined : "url(#terrain)"}
+              className={`cursor-pointer outline-none ${been ? "fill-primary/80" : ""} ${
+                active ? "stroke-ink" : disputed ? "stroke-ink/35" : "stroke-ink/15"
+              }`}
+              strokeWidth={active ? 2.2 : 0.8}
+              strokeDasharray={disputed && !active ? "3 2.5" : undefined}
+              vectorEffect="non-scaling-stroke"
+            />
+          ));
+        })}
+      </g>
+
+      {/* the east always runs drier than the coast */}
+      <g className="pointer-events-none">
+        {REGIONS.filter((r) => !visited.has(r.id)).map((r) =>
+          r.paths.map((d, i) => (
+            <path key={`dry-${r.id}-${i}`} d={d} fill="url(#terrain-dry)" opacity={0.5} />
+          )),
+        )}
+      </g>
+
+      {/* disputed territory borders, dotted */}
+      <g className="pointer-events-none" fill="none">
+        {TERRITORY_OUTLINES.map((t) => (
+          <path
+            key={t.id}
+            d={t.d}
+            className="stroke-ink"
+            strokeWidth={2}
+            strokeDasharray="5 4"
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+            opacity={0.75}
+          />
+        ))}
+        {REGIONS.filter((r) => r.id === "golan").map((r) =>
+          r.paths.map((d, i) => (
+            <path
+              key={`golan-${i}`}
+              d={d}
+              className="stroke-ink"
+              strokeWidth={2}
+              strokeDasharray="5 4"
+              strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
+              opacity={0.7}
+            />
+          )),
+        )}
+      </g>
+    </>
+  );
+});
