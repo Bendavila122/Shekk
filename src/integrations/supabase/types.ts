@@ -196,6 +196,128 @@ export type Database = {
           },
         ]
       }
+      event_tickets: {
+        Row: {
+          amount_agorot: number
+          code: string
+          created_at: string
+          entry_id: string | null
+          event_id: string
+          id: string
+          idempotency_key: string
+          quantity: number
+          status: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_agorot: number
+          code: string
+          created_at?: string
+          entry_id?: string | null
+          event_id: string
+          id?: string
+          idempotency_key: string
+          quantity: number
+          status?: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_agorot?: number
+          code?: string
+          created_at?: string
+          entry_id?: string | null
+          event_id?: string
+          id?: string
+          idempotency_key?: string
+          quantity?: number
+          status?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_tickets_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          capacity: number
+          city: string | null
+          cover_url: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          emoji: string
+          ends_at: string | null
+          host: string
+          id: string
+          includes: string | null
+          kind: string
+          per_person_limit: number
+          price_agorot: number
+          provider: string
+          provider_ref: string | null
+          starts_at: string
+          status: string
+          title: string
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          capacity?: number
+          city?: string | null
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          emoji?: string
+          ends_at?: string | null
+          host: string
+          id?: string
+          includes?: string | null
+          kind?: string
+          per_person_limit?: number
+          price_agorot?: number
+          provider?: string
+          provider_ref?: string | null
+          starts_at: string
+          status?: string
+          title: string
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          capacity?: number
+          city?: string | null
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          emoji?: string
+          ends_at?: string | null
+          host?: string
+          id?: string
+          includes?: string | null
+          kind?: string
+          per_person_limit?: number
+          price_agorot?: number
+          provider?: string
+          provider_ref?: string | null
+          starts_at?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          venue?: string | null
+        }
+        Relationships: []
+      }
       friendships: {
         Row: {
           addressee_id: string
@@ -1081,6 +1203,33 @@ export type Database = {
         Returns: boolean
       }
       shares_cohort: { Args: { _a: string; _b: string }; Returns: boolean }
+      ticket_purchase: {
+        Args: {
+          _event_id: string
+          _idempotency_key?: string
+          _quantity: number
+          _user_id: string
+        }
+        Returns: {
+          amount_agorot: number
+          code: string
+          created_at: string
+          entry_id: string | null
+          event_id: string
+          id: string
+          idempotency_key: string
+          quantity: number
+          status: string
+          used_at: string | null
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "event_tickets"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       transfer_post: {
         Args: {
           _amount_agorot: number

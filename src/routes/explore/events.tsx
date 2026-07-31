@@ -1,115 +1,183 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { AppShell, Card, PrimaryButton, ScreenHeader } from "@/components/AppShell";
-import { QRCode } from "@/components/QRCode";
-import { EVENTS, ils } from "@/lib/mock";
-import { useApp } from "@/lib/store";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { Ticket } from "lucide-react";
+import { AppShell, Card, ScreenHeader } from "@/components/AppShell";
+import { EVENT_KIND_LABEL, dayLabel, eventWhen, useEvents } from "@/lib/useEvents";
+import { ils } from "@/lib/mock";
 
 export const Route = createFileRoute("/explore/events")({
   head: () => ({
     meta: [
       { title: "Events & tickets · Shekk" },
-      { name: "description", content: "Shabbatons, tiyulim, shiurim and Thursday nights — booked and paid in-app." },
+      {
+        name: "description",
+        content:
+          "Shabbatons, tiyulim, shiurim and club nights — booked and paid for straight from your Shekk balance.",
+      },
       { property: "og:title", content: "Events & tickets · Shekk" },
-      { property: "og:description", content: "Grab a spot on the next tiyul or Shabbaton." },
+      { property: "og:description", content: "Grab a spot on the next tiyul, Shabbaton or Thursday night." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Events,
 });
 
+const KIND_FILTERS = ["shabbaton", "tiyul", "club", "shiur", "chesed"] as const;
+
 function Events() {
-  const { spend, state } = useApp();
-  const [openId, setOpenId] = useState<string | null>(null);
-  const [ticketFor, setTicketFor] = useState<string | null>(null);
+  const { data, isLoading, error } = useEvents();
+  const [kind, setKind] = useState<string | null>(null);
+  const [city, setCity] = useState<string | null>(null);
 
-  const ev = EVENTS.find((e) => e.id === openId);
-  const ticket = EVENTS.find((e) => e.id === ticketFor);
+  const events = data ?? [];
 
-  if (ticket) {
-    return (
-      <AppShell>
-        <ScreenHeader title="Your ticket" subtitle={ticket.name} onBack={() => { setTicketFor(null); setOpenId(null); }} />
-        <div className="px-4 py-6">
-          <Card className="flex flex-col items-center gap-3 text-center">
-            <span className="text-3xl">{ticket.emoji}</span>
-            <p className="text-lg font-bold">{ticket.name}</p>
-            <p className="text-xs text-muted-foreground">
-              {ticket.host} · {ticket.when}
-            </p>
-            <QRCode value={`ticket:${ticket.id}:${state.name}`} className="h-52 w-52" />
-            <p className="text-xs text-muted-foreground">
-              1 admission · {state.name || "Student"} · show at the bus / door
-            </p>
-          </Card>
-          <Card className="mt-4 text-xs text-muted-foreground">
-            Bring water, a hoodie for Tzfat nights, and your teudat zehut/passport copy. Madrich contact is in the
-            group thread.
-          </Card>
-        </div>
-      </AppShell>
-    );
-  }
+  const cities = useMemo(
+    () => [...new Set(events.map((e) => e.city).filter((c): c is string => Boolean(c)))].sort(),
+    [events],
+  );
+
+  const shown = events.filter(
+    (e) => (kind ? e.kind === kind : true) && (city ? e.city === city : true),
+  );
+
+  const days = useMemo(() => {
+    const groups: { label: string; items: typeof shown }[] = [];
+    for (const e of shown) {
+      const label = dayLabel(e.startsAt);
+      const last = groups[groups.length - 1];
+      if (last && last.label === label) last.items.push(e);
+      else groups.push({ label, items: [e] });
+    }
+    return groups;
+  }, [shown]);
 
   return (
     <AppShell>
-      <ScreenHeader title="Events & tickets" subtitle="Shiurim · Shabbatons · tiyulim · nightlife" />
-      <div className="space-y-3 px-4 py-4">
-        {EVENTS.map((e) => (
-          <button key={e.id} onClick={() => setOpenId(e.id)} className="tap w-full text-left">
-            <Card className="flex items-center gap-3">
-              <span className="flex size-12 items-center justify-center rounded-xl bg-muted text-2xl">{e.emoji}</span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">{e.name}</p>
-                <p className="truncate text-xs text-muted-foreground">
-                  {e.host} · {e.when}
-                </p>
-                <p className="text-xs text-warning-foreground">{e.spots} spots left</p>
-              </div>
-              <span className="text-sm font-bold">{e.price === 0 ? "Free" : ils(e.price)}</span>
-            </Card>
-          </button>
-        ))}
-      </div>
+      <ScreenHeader title="Events & tickets" subtitle="Shabbatons · tiyulim · shiurim · nights out" />
 
-      {ev && (
-        <div className="absolute inset-0 z-30 flex flex-col justify-end bg-ink/60">
-          <div className="rounded-t-3xl bg-card p-6 pb-8">
-            <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-border" />
-            <p className="text-xl font-bold">{ev.name}</p>
-            <p className="text-sm text-muted-foreground">
-              {ev.host} · {ev.when}
-            </p>
-            <div className="mt-4 space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Ticket</span>
-                <span className="font-semibold">{ev.price === 0 ? "Free" : ils(ev.price)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Includes</span>
-                <span className="font-semibold">Transport + meals</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Paid from</span>
-                <span className="font-semibold">Shekk credits</span>
-              </div>
-            </div>
-            <div className="mt-5 space-y-2">
-              <PrimaryButton
-                onClick={() => {
-                  if (ev.price > 0) spend(ev.name, "Events", ev.price, ev.emoji);
-                  setTicketFor(ev.id);
-                  setOpenId(null);
-                }}
-              >
-                {ev.price === 0 ? "Reserve my spot" : `Book · ${ils(ev.price)}`}
-              </PrimaryButton>
-              <button onClick={() => setOpenId(null)} className="tap w-full rounded-2xl bg-muted py-3.5 text-sm font-semibold">
-                Not now
-              </button>
-            </div>
+      <div className="px-4 py-4">
+        <Link
+          to="/tickets"
+          className="tap mb-4 flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-card"
+        >
+          <Ticket className="size-5 shrink-0 text-primary" />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold">My tickets</p>
+            <p className="text-xs text-muted-foreground">Show your QR at the bus or the door</p>
           </div>
+        </Link>
+
+        <div className="mb-4 flex flex-wrap gap-2">
+          <Chip active={!kind && !city} onClick={() => { setKind(null); setCity(null); }}>
+            All
+          </Chip>
+          {KIND_FILTERS.map((k) => (
+            <Chip key={k} active={kind === k} onClick={() => setKind(kind === k ? null : k)}>
+              {EVENT_KIND_LABEL[k]}
+            </Chip>
+          ))}
+          {cities.map((c) => (
+            <Chip key={c} active={city === c} onClick={() => setCity(city === c ? null : c)}>
+              {c}
+            </Chip>
+          ))}
         </div>
-      )}
+
+        {isLoading && (
+          <div className="space-y-3">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="h-20 animate-pulse rounded-2xl bg-muted" />
+            ))}
+          </div>
+        )}
+
+        {error && (
+          <Card className="text-sm text-muted-foreground">
+            Events couldn&apos;t load just now. Pull back in a moment.
+          </Card>
+        )}
+
+        {!isLoading && !error && events.length === 0 && (
+          <Card className="space-y-1.5 text-center">
+            <p className="text-3xl">🎟️</p>
+            <p className="text-sm font-semibold">No events on sale yet</p>
+            <p className="text-xs text-muted-foreground">
+              Shabbatons, tiyulim and club nights land here as programs and venues come online. Ask your madrich
+              to list theirs.
+            </p>
+          </Card>
+        )}
+
+        {!isLoading && !error && events.length > 0 && shown.length === 0 && (
+          <Card className="text-center text-sm text-muted-foreground">
+            Nothing matches that filter yet.
+          </Card>
+        )}
+
+        <div className="space-y-5">
+          {days.map((group) => (
+            <div key={group.label} className="space-y-2">
+              <p className="px-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                {group.label}
+              </p>
+              {group.items.map((e) => (
+                <Link
+                  key={e.id}
+                  to="/explore/event/$id"
+                  params={{ id: e.id }}
+                  className="tap block"
+                >
+                  <Card className="flex items-center gap-3">
+                    <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-muted text-2xl">
+                      {e.emoji}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold">{e.title}</p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {e.host} · {eventWhen(e.startsAt)}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {EVENT_KIND_LABEL[e.kind]}
+                        {e.city ? ` · ${e.city}` : ""}
+                        {e.remaining !== null
+                          ? e.remaining === 0
+                            ? " · Sold out"
+                            : ` · ${e.remaining} left`
+                          : ""}
+                      </p>
+                    </div>
+                    <span className="shrink-0 text-sm font-bold">
+                      {e.price === 0 ? "Free" : ils(e.price)}
+                    </span>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
     </AppShell>
+  );
+}
+
+function Chip({
+  children,
+  active,
+  onClick,
+}: {
+  children: React.ReactNode;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`tap rounded-full px-3 py-1.5 text-xs font-semibold ${
+        active ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+      }`}
+    >
+      {children}
+    </button>
   );
 }

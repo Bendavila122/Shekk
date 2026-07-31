@@ -13,6 +13,7 @@ import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as TopupRouteImport } from './routes/topup'
+import { Route as TicketsRouteImport } from './routes/tickets'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -52,12 +53,14 @@ import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
 import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
 import { Route as AdminMoneyRouteImport } from './routes/admin/money'
 import { Route as AdminMembershipsRouteImport } from './routes/admin/memberships'
+import { Route as AdminEventsRouteImport } from './routes/admin/events'
 import { Route as AdminControlsRouteImport } from './routes/admin/controls'
 import { Route as AdminAppsRouteImport } from './routes/admin/apps'
 import { Route as AdminAccountsRouteImport } from './routes/admin/accounts'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
+import { Route as ExploreEventIdRouteImport } from './routes/explore/event.$id'
 import { Route as ExploreCategoryIdRouteImport } from './routes/explore/category.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
@@ -85,6 +88,11 @@ const VerifyRoute = VerifyRouteImport.update({
 const TopupRoute = TopupRouteImport.update({
   id: '/topup',
   path: '/topup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TicketsRoute = TicketsRouteImport.update({
+  id: '/tickets',
+  path: '/tickets',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -282,6 +290,11 @@ const AdminMembershipsRoute = AdminMembershipsRouteImport.update({
   path: '/memberships',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminEventsRoute = AdminEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminControlsRoute = AdminControlsRouteImport.update({
   id: '/controls',
   path: '/controls',
@@ -312,6 +325,11 @@ const Char91DotmcpChar93ListToolsRoute =
 const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
   id: '/explore/service/$id',
   path: '/explore/service/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreEventIdRoute = ExploreEventIdRouteImport.update({
+  id: '/explore/event/$id',
+  path: '/explore/event/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreCategoryIdRoute = ExploreCategoryIdRouteImport.update({
@@ -376,6 +394,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/tickets': typeof TicketsRoute
   '/topup': typeof TopupRoute
   '/verify': typeof VerifyRoute
   '/wallet': typeof WalletRoute
@@ -385,6 +404,7 @@ export interface FileRoutesByFullPath {
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/apps': typeof AdminAppsRoute
   '/admin/controls': typeof AdminControlsRoute
+  '/admin/events': typeof AdminEventsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -411,6 +431,7 @@ export interface FileRoutesByFullPath {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
+  '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
@@ -434,6 +455,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/tickets': typeof TicketsRoute
   '/topup': typeof TopupRoute
   '/verify': typeof VerifyRoute
   '/wallet': typeof WalletRoute
@@ -443,6 +465,7 @@ export interface FileRoutesByTo {
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/apps': typeof AdminAppsRoute
   '/admin/controls': typeof AdminControlsRoute
+  '/admin/events': typeof AdminEventsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -469,6 +492,7 @@ export interface FileRoutesByTo {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
+  '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
@@ -494,6 +518,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/tickets': typeof TicketsRoute
   '/topup': typeof TopupRoute
   '/verify': typeof VerifyRoute
   '/wallet': typeof WalletRoute
@@ -503,6 +528,7 @@ export interface FileRoutesById {
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/apps': typeof AdminAppsRoute
   '/admin/controls': typeof AdminControlsRoute
+  '/admin/events': typeof AdminEventsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -529,6 +555,7 @@ export interface FileRoutesById {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
+  '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
@@ -555,6 +582,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sitemap.xml'
     | '/terms'
+    | '/tickets'
     | '/topup'
     | '/verify'
     | '/wallet'
@@ -564,6 +592,7 @@ export interface FileRouteTypes {
     | '/admin/accounts'
     | '/admin/apps'
     | '/admin/controls'
+    | '/admin/events'
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
@@ -590,6 +619,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
+    | '/explore/event/$id'
     | '/explore/service/$id'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
@@ -613,6 +643,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sitemap.xml'
     | '/terms'
+    | '/tickets'
     | '/topup'
     | '/verify'
     | '/wallet'
@@ -622,6 +653,7 @@ export interface FileRouteTypes {
     | '/admin/accounts'
     | '/admin/apps'
     | '/admin/controls'
+    | '/admin/events'
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
@@ -648,6 +680,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
+    | '/explore/event/$id'
     | '/explore/service/$id'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
@@ -672,6 +705,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sitemap.xml'
     | '/terms'
+    | '/tickets'
     | '/topup'
     | '/verify'
     | '/wallet'
@@ -681,6 +715,7 @@ export interface FileRouteTypes {
     | '/admin/accounts'
     | '/admin/apps'
     | '/admin/controls'
+    | '/admin/events'
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
@@ -707,6 +742,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
+    | '/explore/event/$id'
     | '/explore/service/$id'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
@@ -732,6 +768,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  TicketsRoute: typeof TicketsRoute
   TopupRoute: typeof TopupRoute
   VerifyRoute: typeof VerifyRoute
   WalletRoute: typeof WalletRoute
@@ -760,6 +797,7 @@ export interface RootRouteChildren {
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
+  ExploreEventIdRoute: typeof ExploreEventIdRoute
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicWebhooksAirwallexRoute: typeof ApiPublicWebhooksAirwallexRoute
@@ -796,6 +834,13 @@ declare module '@tanstack/react-router' {
       path: '/topup'
       fullPath: '/topup'
       preLoaderRoute: typeof TopupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tickets': {
+      id: '/tickets'
+      path: '/tickets'
+      fullPath: '/tickets'
+      preLoaderRoute: typeof TicketsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -1071,6 +1116,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMembershipsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/events': {
+      id: '/admin/events'
+      path: '/events'
+      fullPath: '/admin/events'
+      preLoaderRoute: typeof AdminEventsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/controls': {
       id: '/admin/controls'
       path: '/controls'
@@ -1111,6 +1163,13 @@ declare module '@tanstack/react-router' {
       path: '/explore/service/$id'
       fullPath: '/explore/service/$id'
       preLoaderRoute: typeof ExploreServiceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/event/$id': {
+      id: '/explore/event/$id'
+      path: '/explore/event/$id'
+      fullPath: '/explore/event/$id'
+      preLoaderRoute: typeof ExploreEventIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore/category/$id': {
@@ -1176,6 +1235,7 @@ interface AdminRouteRouteChildren {
   AdminAccountsRoute: typeof AdminAccountsRoute
   AdminAppsRoute: typeof AdminAppsRoute
   AdminControlsRoute: typeof AdminControlsRoute
+  AdminEventsRoute: typeof AdminEventsRoute
   AdminMembershipsRoute: typeof AdminMembershipsRoute
   AdminMoneyRoute: typeof AdminMoneyRoute
   AdminPromotionsRoute: typeof AdminPromotionsRoute
@@ -1186,6 +1246,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAccountsRoute: AdminAccountsRoute,
   AdminAppsRoute: AdminAppsRoute,
   AdminControlsRoute: AdminControlsRoute,
+  AdminEventsRoute: AdminEventsRoute,
   AdminMembershipsRoute: AdminMembershipsRoute,
   AdminMoneyRoute: AdminMoneyRoute,
   AdminPromotionsRoute: AdminPromotionsRoute,
@@ -1213,6 +1274,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  TicketsRoute: TicketsRoute,
   TopupRoute: TopupRoute,
   VerifyRoute: VerifyRoute,
   WalletRoute: WalletRoute,
@@ -1242,6 +1304,7 @@ const rootRouteChildren: RootRouteChildren = {
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ExploreCategoryIdRoute: ExploreCategoryIdRoute,
+  ExploreEventIdRoute: ExploreEventIdRoute,
   ExploreServiceIdRoute: ExploreServiceIdRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicWebhooksAirwallexRoute: ApiPublicWebhooksAirwallexRoute,
