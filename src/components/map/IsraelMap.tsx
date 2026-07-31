@@ -15,18 +15,11 @@ export function IsraelMap({
 }) {
   return (
     <svg
-      viewBox={`-8 -8 ${MAP_WIDTH + 16} ${MAP_HEIGHT + 16}`}
+      viewBox={`-10 -10 ${MAP_WIDTH + 110} ${MAP_HEIGHT + 20}`}
       className="h-auto w-full touch-manipulation select-none"
       role="group"
       aria-label="Interactive map of Israel"
     >
-      <defs>
-        <linearGradient id="visitedFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.55" />
-        </linearGradient>
-      </defs>
-
       {REGIONS.map((r) => {
         const visited = visitedRegions.includes(r.id);
         return (
@@ -43,9 +36,9 @@ export function IsraelMap({
                 onRegion(r.id);
               }
             }}
-            className="cursor-pointer outline-none transition-[fill,opacity] duration-200"
-            fill={visited ? "url(#visitedFill)" : "hsl(var(--muted))"}
-            stroke="hsl(var(--card))"
+            className={`cursor-pointer stroke-card outline-none transition-all duration-200 ${
+              visited ? "fill-primary opacity-90" : "fill-muted"
+            }`}
             strokeWidth={1.4}
           />
         );
@@ -53,9 +46,7 @@ export function IsraelMap({
 
       <path
         d={ringToPath(OUTLINE)}
-        fill="none"
-        stroke="hsl(var(--foreground))"
-        strokeOpacity={0.35}
+        className="fill-none stroke-foreground/40"
         strokeWidth={1.6}
         pointerEvents="none"
       />
@@ -64,6 +55,7 @@ export function IsraelMap({
         const [x, y] = project(p.lon, p.lat);
         const been = visitedPlaces.includes(p.id);
         const active = activePlace === p.id;
+        const flip = x > MAP_WIDTH * 0.62;
         return (
           <g
             key={p.id}
@@ -83,18 +75,21 @@ export function IsraelMap({
             <circle
               cx={x}
               cy={y}
-              r={active ? 6 : 4.2}
-              fill={been ? "hsl(var(--success, var(--primary)))" : "hsl(var(--card))"}
-              stroke="hsl(var(--foreground))"
-              strokeWidth={1.6}
+              r={active ? 6 : 4}
+              className={`stroke-foreground ${been ? "fill-primary" : "fill-card"}`}
+              strokeWidth={1.5}
             />
             <text
-              x={x + 7}
-              y={y + 3}
-              className="pointer-events-none"
+              x={flip ? x - 8 : x + 8}
+              y={y + 3.2}
+              textAnchor={flip ? "end" : "start"}
+              className={`pointer-events-none ${active ? "fill-primary" : "fill-foreground"}`}
               fontSize={9}
               fontWeight={600}
-              fill="hsl(var(--foreground))"
+              paintOrder="stroke"
+              stroke="white"
+              strokeWidth={2.6}
+              strokeOpacity={0.75}
             >
               {p.name}
             </text>
