@@ -7,6 +7,8 @@ import { useJewish, useWeather } from "@/lib/live";
 import { useNews } from "@/lib/news";
 import { orderWidgets, type WidgetDef } from "@/lib/widgets";
 import { SkyScene, skyKind } from "@/components/SkyScene";
+import { JewishScene, jewishSceneKind } from "@/components/JewishScene";
+
 
 
 import { useForYouPrefs, haptic } from "@/lib/foryou-prefs";
