@@ -255,6 +255,8 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const isActive = useActive();
+  const unread = useUnreadChats();
+
 
 
   return (
