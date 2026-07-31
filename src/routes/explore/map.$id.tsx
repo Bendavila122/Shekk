@@ -50,7 +50,7 @@ function PlaceScreen() {
     <AppShell>
       <ScreenHeader
         title={place.name}
-        subtitle={region(place.region)?.name}
+        subtitle={regionOfPlace(place)?.name}
         back="/explore/map"
         onBack={() => navigate({ to: "/explore/map" })}
       />
