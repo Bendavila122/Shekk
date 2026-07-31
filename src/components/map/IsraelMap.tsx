@@ -260,83 +260,13 @@ export function IsraelMap({
         />
 
         <g transform={`translate(${view.x} ${view.y}) scale(${view.k})`}>
-          {/* land, painted with the terrain gradient */}
-          <g filter="url(#land-shadow)">
-            {REGIONS.map((r) => {
-              const visited = visitedRegions.includes(r.id);
-              const active = activeRegion === r.id;
-              const terr = territoryOf(r.id);
-              const disputed = terr !== "israel";
-              return (
-                <g key={r.id}>
-                  {r.paths.map((d, i) => (
-                    <path
-                      key={i}
-                      d={d}
-                      role={i === 0 ? "button" : undefined}
-                      aria-label={i === 0 ? `${r.name}${visited ? " — visited" : ""}` : undefined}
-                      onClick={(e) => {
-                        if (!tapped()) return;
-                        const rect = wrap.current!.getBoundingClientRect();
-                        onRegion(r.id, { x: e.clientX - rect.left, y: e.clientY - rect.top });
-                      }}
-                      fill={visited ? undefined : "url(#terrain)"}
-                      className={`cursor-pointer outline-none transition-colors ${
-                        visited ? "fill-primary/80" : ""
-                      } ${active ? "stroke-ink" : disputed ? "stroke-ink/35" : "stroke-ink/15"}`}
-                      strokeWidth={active ? 2.2 : 0.8}
-                      strokeDasharray={disputed && !active ? "3 2.5" : undefined}
-                      vectorEffect="non-scaling-stroke"
-                    />
-                  ))}
-                </g>
-              );
-            })}
-          </g>
-
-          {/* the dry east, and a dune wash over the deep Negev */}
-          <g className="pointer-events-none">
-            {REGIONS.filter((r) => !visitedRegions.includes(r.id)).map((r) =>
-              r.paths.map((d, i) => (
-                <path key={`dry-${r.id}-${i}`} d={d} fill="url(#terrain-dry)" opacity={0.5} />
-              )),
-            )}
-            {REGIONS.filter((r) => r.id === "negev-arava" && !visitedRegions.includes(r.id)).map((r) =>
-              r.paths.map((d, i) => <path key={`dune-${i}`} d={d} fill="url(#dunes)" />),
-            )}
-          </g>
-
-          {/* disputed territory borders, dotted */}
-          <g className="pointer-events-none" fill="none">
-            {TERRITORY_OUTLINES.map((t) => (
-              <path
-                key={t.id}
-                d={t.d}
-                className="stroke-ink"
-                strokeWidth={2}
-                strokeDasharray="5 4"
-                strokeLinejoin="round"
-                vectorEffect="non-scaling-stroke"
-                opacity={0.75}
-              />
-            ))}
-            {/* the northern line: the Golan, also disputed */}
-            {REGIONS.filter((r) => r.id === "golan").map((r) =>
-              r.paths.map((d, i) => (
-                <path
-                  key={`golan-${i}`}
-                  d={d}
-                  className="stroke-ink"
-                  strokeWidth={2}
-                  strokeDasharray="5 4"
-                  strokeLinejoin="round"
-                  vectorEffect="non-scaling-stroke"
-                  opacity={0.7}
-                />
-              )),
-            )}
-          </g>
+          <LandLayer
+            visitedRegions={visitedRegions}
+            activeRegion={activeRegion ?? null}
+            onRegionTap={onRegionTap}
+          />
         </g>
+
 
         {/* area names, in screen space so they stay legible at any zoom */}
         {rel > 1.1
