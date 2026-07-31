@@ -417,6 +417,22 @@ export function ForYou() {
   };
   useEffect(() => cancelPress, []);
 
+  const dragTo = (x: number, y: number) => {
+    if (!dragId) return;
+    const el = (document.elementFromPoint(x, y) as HTMLElement | null)?.closest(
+      "[data-wid]",
+    ) as HTMLElement | null;
+    const over = el?.dataset.wid;
+    if (!over || over === dragId) return;
+    const next = ids.slice();
+    const from = next.indexOf(dragId);
+    const to = next.indexOf(over);
+    if (from < 0 || to < 0) return;
+    next.splice(to, 0, next.splice(from, 1)[0]);
+    haptic(6);
+    setOrder(next);
+  };
+
   const onTilePointerDown = (e: React.PointerEvent, id: string) => {
     if (editing) {
       setDragId(id);
@@ -445,28 +461,31 @@ export function ForYou() {
   };
 
   const onTilePointerMove = (e: React.PointerEvent) => {
-    console.log("DBG raw", editing, dragId);
     if (!editing) {
       const p = pressRef.current;
       if (p && (Math.abs(e.clientX - p.x) > 8 || Math.abs(e.clientY - p.y) > 8)) cancelPress();
       return;
     }
-    console.log("DBG move", dragId, editing);
-    if (!dragId) return;
-    const el = (document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null)?.closest(
-      "[data-wid]",
-    ) as HTMLElement | null;
-    const over = el?.dataset.wid;
-    console.log("DBG over", over);
-    if (!over || over === dragId) return;
-    const next = ids.slice();
-    const from = next.indexOf(dragId);
-    const to = next.indexOf(over);
-    if (from < 0 || to < 0) return;
-    next.splice(to, 0, next.splice(from, 1)[0]);
-    haptic(6);
-    setOrder(next);
+    dragTo(e.clientX, e.clientY);
   };
+
+  // The drag itself is tracked on the window so the pointer can leave the tile.
+  useEffect(() => {
+    if (!dragId) return;
+    const move = (ev: PointerEvent) => {
+      ev.preventDefault();
+      dragTo(ev.clientX, ev.clientY);
+    };
+    const up = () => onTilePointerUp();
+    window.addEventListener("pointermove", move, { passive: false });
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+    return () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+    };
+  });
 
   const onTilePointerUp = () => {
     cancelPress();
