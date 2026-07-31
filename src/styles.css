@@ -610,3 +610,184 @@
   }
 }
 
+
+/* ============================================================
+   Jerusalem scenery — illustrated backdrop for the Jewish Life
+   widget. Skyline silhouette, sky wash, candles, stars.
+   ============================================================ */
+
+.jl-scene {
+  --jl-top: oklch(0.62 0.14 268);
+  --jl-bottom: oklch(0.32 0.12 274);
+  --jl-city: oklch(0.22 0.05 272);
+  isolation: isolate;
+}
+.jl-scene .jl-wash {
+  background: linear-gradient(170deg, var(--jl-top), var(--jl-bottom));
+}
+.jl-erev {
+  --jl-top: oklch(0.76 0.14 62);
+  --jl-bottom: oklch(0.34 0.11 292);
+  --jl-city: oklch(0.24 0.06 288);
+}
+.jl-shabbat {
+  --jl-top: oklch(0.42 0.11 278);
+  --jl-bottom: oklch(0.2 0.08 280);
+  --jl-city: oklch(0.15 0.05 280);
+}
+.jl-chag {
+  --jl-top: oklch(0.72 0.13 96);
+  --jl-bottom: oklch(0.4 0.13 32);
+  --jl-city: oklch(0.24 0.06 40);
+}
+.jl-fast {
+  --jl-top: oklch(0.5 0.03 258);
+  --jl-bottom: oklch(0.26 0.03 262);
+  --jl-city: oklch(0.17 0.02 262);
+}
+.jl-day {
+  --jl-top: oklch(0.7 0.15 236);
+  --jl-bottom: oklch(0.72 0.13 74);
+  --jl-city: oklch(0.36 0.07 62);
+}
+
+/* Warm light bleeding off the horizon. */
+.jl-scene .jl-glow {
+  background: radial-gradient(70% 46% at 24% 88%, oklch(0.95 0.14 78 / 0.55), transparent 70%);
+  animation: jl-pulse 8s ease-in-out infinite;
+}
+.jl-fast .jl-glow {
+  opacity: 0.25;
+}
+
+.jl-day .jl-glow {
+  opacity: 0.5;
+}
+.jl-scene .jl-haze {
+  background: radial-gradient(34% 24% at 80% 16%, oklch(1 0.14 96 / 0.85), transparent 70%);
+  animation: jl-pulse 10s ease-in-out infinite;
+}
+
+.jl-scene .jl-stars {
+  background-image:
+    radial-gradient(1.3px 1.3px at 14% 18%, oklch(1 0 0 / 0.85), transparent),
+    radial-gradient(1.1px 1.1px at 34% 34%, oklch(1 0 0 / 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 58% 14%, oklch(1 0 0 / 0.9), transparent),
+    radial-gradient(1.2px 1.2px at 76% 30%, oklch(1 0 0 / 0.7), transparent),
+    radial-gradient(1.1px 1.1px at 90% 12%, oklch(1 0 0 / 0.75), transparent);
+  animation: jl-twinkle 5s ease-in-out infinite;
+}
+
+.jl-scene .jl-city {
+  color: var(--jl-city);
+  height: 52%;
+  filter: drop-shadow(0 -6px 14px oklch(0.95 0.12 76 / 0.25));
+}
+.jl-scene .jl-skyline {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Two Shabbat candles, flames flickering out of sync. */
+.jl-scene .jl-candles {
+  right: 10%;
+  bottom: 16%;
+  display: flex;
+  gap: 0.42rem;
+  align-items: flex-end;
+}
+.jl-scene .jl-candle {
+  position: relative;
+  display: block;
+  width: 5px;
+  height: 26px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, oklch(0.98 0.02 92), oklch(0.86 0.04 88));
+  box-shadow: 0 0 16px oklch(0.95 0.13 84 / 0.4);
+}
+.jl-scene .jl-flame {
+  position: absolute;
+  left: 50%;
+  top: -11px;
+  width: 8px;
+  height: 13px;
+  margin-left: -4px;
+  border-radius: 50% 50% 45% 45%;
+  background: radial-gradient(circle at 50% 70%, oklch(1 0.03 96), oklch(0.92 0.17 84) 50%, oklch(0.78 0.2 52 / 0.85) 80%, transparent);
+  transform-origin: 50% 100%;
+  animation: jl-flicker 1.6s ease-in-out infinite;
+}
+.jl-scene .jl-candle:nth-child(2) .jl-flame {
+  animation-duration: 2.1s;
+  animation-delay: -0.7s;
+}
+
+.jl-scene .jl-vignette {
+  background:
+    linear-gradient(to top, oklch(0.14 0.03 274 / 0.72), oklch(0.14 0.03 274 / 0.15) 62%, transparent),
+    linear-gradient(to bottom, oklch(0.14 0.03 274 / 0.35), transparent 40%);
+}
+
+@keyframes jl-pulse {
+  0%,
+  100% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes jl-twinkle {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes jl-flicker {
+  0%,
+  100% {
+    transform: scale(1) rotate(-1.5deg);
+    opacity: 0.92;
+  }
+  35% {
+    transform: scale(1.12, 0.94) rotate(2deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.94, 1.1) rotate(-2.5deg);
+    opacity: 0.85;
+  }
+}
+
+/* Newsprint backdrop for headline tiles with no photo. */
+@utility news-paper {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image:
+      repeating-linear-gradient(0deg, oklch(1 0 0 / 0.09) 0 1px, transparent 1px 7px),
+      radial-gradient(70% 60% at 88% 10%, oklch(1 0 0 / 0.18), transparent 70%);
+    mask-image: linear-gradient(to top, transparent 6%, oklch(0 0 0) 60%);
+    animation: news-scroll 22s linear infinite;
+    pointer-events: none;
+  }
+}
+@keyframes news-scroll {
+  from {
+    background-position:
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      0 -140px,
+      0 0;
+  }
+}

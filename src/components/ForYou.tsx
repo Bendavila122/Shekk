@@ -7,6 +7,8 @@ import { useJewish, useWeather } from "@/lib/live";
 import { useNews } from "@/lib/news";
 import { orderWidgets, type WidgetDef } from "@/lib/widgets";
 import { SkyScene, skyKind } from "@/components/SkyScene";
+import { JewishScene, jewishSceneKind } from "@/components/JewishScene";
+
 
 
 import { useForYouPrefs, haptic } from "@/lib/foryou-prefs";
@@ -66,6 +68,16 @@ function Tile({
           night: ctx.weather ? undefined : ctx.hour >= 20 || ctx.hour < 5,
         })
       : null;
+  const jl =
+    def.id === "jewish"
+      ? jewishSceneKind({
+          isErevShabbat: ctx.isErevShabbat,
+          isShabbat: ctx.isShabbat,
+          dayKind: ctx.jewishDay?.kind ?? null,
+        })
+      : null;
+  const scene = !!sky || !!jl;
+  const paper = def.id === "news" && !content.image;
 
   return (
     <button
@@ -75,11 +87,12 @@ function Tile({
         onOpen();
       }}
       style={{ animationDelay: `${Math.min(index, 6) * 45}ms` }}
-      className={`${sky ? "" : (def.gradientFor?.(ctx) ?? def.gradient)} widget-tile tap-icon animate-fade-in relative overflow-hidden flex flex-col gap-2 p-3 text-left ${
+      className={`${scene ? "" : (def.gradientFor?.(ctx) ?? def.gradient)} ${paper ? "news-paper" : ""} widget-tile tap-icon animate-fade-in relative overflow-hidden flex flex-col gap-2 p-3 text-left ${
         wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"
       }`}
     >
       {sky ? <SkyScene kind={sky} dense={wide} /> : null}
+      {jl ? <JewishScene kind={jl} /> : null}
 
       {content.image ? (
         <>
@@ -88,14 +101,15 @@ function Tile({
             alt=""
             loading="lazy"
             referrerPolicy="no-referrer"
-            className="pointer-events-none absolute inset-0 size-full rounded-[inherit] object-cover opacity-45"
+            className="pointer-events-none absolute inset-0 size-full rounded-[inherit] object-cover opacity-70"
             onError={(e) => {
               e.currentTarget.style.display = "none";
             }}
           />
-          <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-t from-black/55 via-black/20 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-t from-black/75 via-black/35 to-black/10" />
         </>
       ) : null}
+
 
 
       {/* Header frame */}
@@ -149,20 +163,32 @@ function DetailSheet({
           night: ctx.weather ? undefined : ctx.hour >= 20 || ctx.hour < 5,
         })
       : null;
+  const jl =
+    def.id === "jewish"
+      ? jewishSceneKind({
+          isErevShabbat: ctx.isErevShabbat,
+          isShabbat: ctx.isShabbat,
+          dayKind: ctx.jewishDay?.kind ?? null,
+        })
+      : null;
+  const scene = !!sky || !!jl;
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" role="dialog" aria-modal="true">
       <button className="absolute inset-0 bg-foreground/40" aria-label="Close" onClick={onClose} />
       <div className="animate-fade-in relative max-h-[88vh] w-full max-w-md overflow-y-auto rounded-t-[2rem] border border-border bg-card p-6 pb-8 shadow-card sm:rounded-[2rem]">
-        {sky ? (
+        {scene ? (
           <div className="widget-tile relative mb-4 h-32 w-full overflow-hidden rounded-[1.5rem]">
-            <SkyScene kind={sky} dense />
+            {sky ? <SkyScene kind={sky} dense /> : null}
+            {jl ? <JewishScene kind={jl} /> : null}
           </div>
         ) : null}
         <header className="flex items-start gap-3">
-          <span className={`${sky ? "" : (def.gradientFor?.(ctx) ?? def.gradient)} widget-tile relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl text-2xl`}>
+          <span className={`${scene ? "" : (def.gradientFor?.(ctx) ?? def.gradient)} widget-tile relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl text-2xl`}>
             {sky ? <SkyScene kind={sky} /> : null}
+            {jl ? <JewishScene kind={jl} /> : null}
             <span className="relative z-[1]">{def.emoji}</span>
           </span>
+
 
           <div className="min-w-0 flex-1">
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{def.title}</p>

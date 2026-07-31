@@ -186,10 +186,12 @@ export const WIDGETS: WidgetDef[] = [
           ctas: [{ label: "Open news", to: "/news" }],
         };
       }
-      // Prefer an urgent story; otherwise lead with the newest story that has
-      // its own art, so the picture always belongs to the headline shown.
-      const urgent = c.news.find((n) => n.urgent);
+      // Lead with an urgent story when there is one, preferring an urgent story
+      // that carries its own art; otherwise the newest story with art. The
+      // picture always belongs to the headline shown.
+      const urgent = c.news.find((n) => n.urgent && n.image) ?? c.news.find((n) => n.urgent);
       const lead = urgent ?? c.news.find((n) => n.image) ?? c.news[0];
+
       const rest = c.news.filter((n) => n.id !== lead.id).slice(0, 5);
       return {
         headline: lead.title,
