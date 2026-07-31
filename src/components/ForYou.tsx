@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Check, ExternalLink, SlidersHorizontal, Sparkles, X } from "lucide-react";
+import { Check, ExternalLink, RotateCw, SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { useUserContext, WEATHER_CITIES } from "@/lib/personalise";
 import { placeForCity, useLocation } from "@/lib/location";
 import { useJewish, useWeather } from "@/lib/live";
