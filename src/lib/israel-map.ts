@@ -19,6 +19,7 @@ import {
   REGION_SHAPES,
   type RegionShape,
 } from "@/lib/israel-geo";
+import { GAZA_SHAPES, TERRITORY_OUTLINES } from "@/lib/israel-geo-disputed";
 import { MORE_PLACES } from "@/lib/israel-map-places";
 
 export { MAP_HEIGHT, MAP_WIDTH, LON_SCALE };
@@ -51,7 +52,7 @@ export type MapPlace = {
 
 /* ------------------------------------------------------------------ areas */
 
-export const REGIONS: Region[] = REGION_SHAPES;
+export const REGIONS: Region[] = [...REGION_SHAPES, ...GAZA_SHAPES];
 
 /* ------------------------------------------------------------------ places */
 
@@ -445,6 +446,91 @@ export const KIND_META: Record<MapPlace["kind"], { label: string; emoji: string 
   beach: { label: "Beach", emoji: "🏖️" },
   history: { label: "History", emoji: "🏛️" },
 };
+
+/** A specific emoji per landmark, so the map reads at a glance. */
+const PLACE_EMOJI: Record<string, string> = {
+  kotel: "🧱",
+  "machane-yehuda": "🍇",
+  "mount-of-olives": "🕯️",
+  "har-herzl": "🇮🇱",
+  "city-of-david": "🏺",
+  "kever-rachel": "🕯️",
+  "kever-yosef": "🕯️",
+  "gush-etzion": "🍷",
+  shilo: "📜",
+  meron: "🔥",
+  tzfat: "🕎",
+  "tel-aviv": "🌆",
+  jaffa: "⚓",
+  masada: "🏜️",
+  "ein-gedi": "💧",
+  kinneret: "🚤",
+  haifa: "🌿",
+  akko: "🛡️",
+  caesarea: "🏛️",
+  "beer-sheva": "🐪",
+  "mitzpe-ramon": "🌌",
+  eilat: "🐠",
+  chevron: "🕍",
+  "beit-shemesh": "⛰️",
+  ashkelon: "🏖️",
+  golan: "🍒",
+  banias: "🌊",
+  "rosh-hanikra": "🕳️",
+  tiberias: "♨️",
+  nazareth: "⛪",
+  "beit-shean": "🎭",
+  netanya: "🏄",
+  modiin: "🏘️",
+  ashdod: "🚢",
+  "beit-guvrin": "🕳️",
+  sderot: "🎗️",
+  arad: "🧭",
+  "dead-sea": "🧂",
+  timna: "⛏️",
+  yericho: "🌴",
+};
+
+export function placeEmoji(place: MapPlace) {
+  return PLACE_EMOJI[place.id] ?? KIND_META[place.kind].emoji;
+}
+
+/* ------------------------------------------------------ territory & borders */
+
+export { TERRITORY_OUTLINES };
+
+export type Territory = "israel" | "west-bank" | "gaza" | "golan";
+
+const WEST_BANK = new Set([
+  "jericho-the-jordan-valley",
+  "tulkarm-area",
+  "qalqilya-area",
+  "jenin-area",
+  "shomron-ariel",
+  "chevron-hills",
+  "binyamin",
+  "tubas-the-eastern-shomron",
+  "shomron-shechem",
+  "gush-etzion-bethlehem",
+]);
+
+const GAZA = new Set(GAZA_SHAPES.map((r) => r.id));
+
+export function territoryOf(regionId: string): Territory {
+  if (GAZA.has(regionId)) return "gaza";
+  if (WEST_BANK.has(regionId)) return "west-bank";
+  if (regionId === "golan") return "golan";
+  return "israel";
+}
+
+/** Status line shown in the info box for areas outside the Green Line. */
+export const TERRITORY_NOTE: Record<Territory, string | null> = {
+  israel: null,
+  "west-bank": "West Bank — status disputed",
+  gaza: "Gaza Strip — status disputed",
+  golan: "Golan Heights — status disputed",
+};
+
 
 export function findMapPlace(id: string) {
   return MAP_PLACES.find((p) => p.id === id) ?? null;

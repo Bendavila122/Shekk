@@ -5,13 +5,17 @@ import { AppShell, ScreenHeader } from "@/components/AppShell";
 import { IsraelMap, type MapPoint } from "@/components/map/IsraelMap";
 import {
   KIND_META,
+  TERRITORY_NOTE,
   MAP_PLACES,
   REGIONS,
   findMapPlace,
   placesInRegion,
   region as findRegion,
   regionOfPlace,
+  placeEmoji,
+  territoryOf,
 } from "@/lib/israel-map";
+import { useWikiInfo } from "@/lib/useWikiInfo";
 import { useVisited } from "@/lib/israel-map-prefs";
 import { haptic } from "@/lib/foryou-prefs";
 
@@ -50,6 +54,8 @@ function MapScreen() {
 
   const place = sel?.kind === "place" ? findMapPlace(sel.id) : null;
   const area = sel?.kind === "region" ? findRegion(sel.id) : null;
+  const wiki = useWikiInfo(place ? [place.wiki] : []);
+  const photo = place ? (wiki.data[place.wiki]?.image ?? null) : null;
   const areaPlaces = useMemo(() => (area ? placesInRegion(area.id) : []), [area]);
 
   const pop = sel
@@ -111,7 +117,7 @@ function MapScreen() {
             style={{
               width: CARD_W,
               left: `min(${pop.left}px, calc(100% - ${CARD_W + 10}px))`,
-              top: `min(${pop.top}px, calc(100% - 190px))`,
+              top: `min(${pop.top}px, calc(100% - 280px))`,
             }}
           >
             <button
@@ -125,8 +131,22 @@ function MapScreen() {
 
             {place ? (
               <>
+                <div className="relative mb-2 h-24 w-full overflow-hidden rounded-xl bg-muted">
+                  {photo ? (
+                    <img
+                      src={photo}
+                      alt={place.name}
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-2xl">
+                      {placeEmoji(place)}
+                    </div>
+                  )}
+                </div>
                 <p className="pr-6 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  {KIND_META[place.kind].emoji} {KIND_META[place.kind].label} ·{" "}
+                  {placeEmoji(place)} {KIND_META[place.kind].label} ·{" "}
                   {regionOfPlace(place)?.name}
                 </p>
                 <h2 className="mt-0.5 text-base font-semibold leading-tight">{place.name}</h2>
@@ -163,6 +183,11 @@ function MapScreen() {
                 </p>
                 <h2 className="mt-0.5 text-base font-semibold leading-tight">{area.name}</h2>
                 <p className="mt-1 text-xs text-muted-foreground">{area.hint}</p>
+                {TERRITORY_NOTE[territoryOf(area.id)] ? (
+                  <p className="mt-1.5 rounded-lg bg-muted px-2 py-1 text-[10px] font-semibold text-muted-foreground">
+                    {TERRITORY_NOTE[territoryOf(area.id)]}
+                  </p>
+                ) : null}
                 <button
                   type="button"
                   onClick={() => {
@@ -187,7 +212,7 @@ function MapScreen() {
                         onClick={() => navigate({ to: "/explore/map/$id", params: { id: p.id } })}
                         className="tap-flat flex w-full items-center gap-2 rounded-xl bg-muted/60 px-2 py-1.5 text-left"
                       >
-                        <span className="text-sm">{KIND_META[p.kind].emoji}</span>
+                        <span className="text-sm">{placeEmoji(p)}</span>
                         <span className="min-w-0 flex-1 truncate text-[11px] font-semibold">{p.name}</span>
                         {places.includes(p.id) ? (
                           <Check className="size-3 shrink-0 text-primary" />
