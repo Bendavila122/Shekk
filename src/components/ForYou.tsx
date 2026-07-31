@@ -55,6 +55,16 @@ function Tile({
           ? `${snap.label}${snap.value ? ` · ${snap.value}` : ""}`
           : (content.sub ?? "");
 
+  const sky =
+    def.id === "today"
+      ? skyKind({
+          condition: ctx.weather?.condition,
+          rain: ctx.weather?.rain,
+          isDay: ctx.weather?.isDay,
+          night: ctx.weather ? undefined : ctx.hour >= 20 || ctx.hour < 5,
+        })
+      : null;
+
   return (
     <button
       type="button"
@@ -63,10 +73,12 @@ function Tile({
         onOpen();
       }}
       style={{ animationDelay: `${Math.min(index, 6) * 45}ms` }}
-      className={`${def.gradientFor?.(ctx) ?? def.gradient} widget-tile tap-icon animate-fade-in relative overflow-hidden flex flex-col gap-2 p-3 text-left ${
+      className={`${sky ? "" : (def.gradientFor?.(ctx) ?? def.gradient)} widget-tile tap-icon animate-fade-in relative overflow-hidden flex flex-col gap-2 p-3 text-left ${
         wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"
       }`}
     >
+      {sky ? <SkyScene kind={sky} dense={wide} /> : null}
+
       {content.image ? (
         <>
           <img
@@ -82,6 +94,7 @@ function Tile({
           <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-t from-black/55 via-black/20 to-transparent" />
         </>
       ) : null}
+
 
       {/* Header frame */}
       <div className="widget-frame relative z-[1] flex items-center gap-1.5 px-2 py-1.5">
