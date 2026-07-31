@@ -280,7 +280,7 @@ function Auth() {
       setBusy(false);
       if (error) return setError(error.message);
       if (data.session) {
-        window.location.href = next === "/" ? "/verify" : next;
+        void navigate({ to: afterAuthPath(next), replace: true });
         return;
       }
       setSentTo(email);
@@ -291,7 +291,8 @@ function Auth() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) return setError(error.message);
-    window.location.href = next === "/" ? "/verify" : next;
+    void navigate({ to: afterAuthPath(next), replace: true });
+
   }
 
   if (handoff) {
