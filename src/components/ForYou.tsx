@@ -450,11 +450,13 @@ export function ForYou() {
       if (p && (Math.abs(e.clientX - p.x) > 8 || Math.abs(e.clientY - p.y) > 8)) cancelPress();
       return;
     }
+    console.log("DBG move", dragId, editing);
     if (!dragId) return;
     const el = (document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null)?.closest(
       "[data-wid]",
     ) as HTMLElement | null;
     const over = el?.dataset.wid;
+    console.log("DBG over", over);
     if (!over || over === dragId) return;
     const next = ids.slice();
     const from = next.indexOf(dragId);
