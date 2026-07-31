@@ -336,3 +336,15 @@ export function useProgramLink(search = "") {
     leave: useMutation({ mutationFn: (cohortId: string) => leaveProgram({ data: { cohortId } }), onSuccess: refresh }),
   };
 }
+
+/** Total unread chat messages — powers the Social tab badge. */
+export function useUnreadChats() {
+  const { signedIn } = useApp();
+  const query = useQuery({
+    queryKey: socialKeys.chats,
+    queryFn: () => getConversations(),
+    enabled: signedIn,
+    staleTime: 10_000,
+  });
+  return (query.data ?? []).reduce((n, c) => n + (c.unread ?? 0), 0);
+}
