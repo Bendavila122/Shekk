@@ -207,9 +207,10 @@ function Thread() {
 
       {/* composer sits above the tab bar on mobile, inline on desktop */}
       <div
-        style={{ bottom: "calc(112px + env(safe-area-inset-bottom))" }}
+        style={{ bottom: "calc(60px + env(safe-area-inset-bottom))" }}
         className="fixed left-1/2 z-30 w-full max-w-[430px] -translate-x-1/2 border-t border-border bg-card/95 px-4 py-3 backdrop-blur lg:sticky lg:!bottom-0 lg:left-auto lg:max-w-none lg:translate-x-0"
       >
+
         {send.isError && (
           <p className="pb-2 text-xs text-destructive">{(send.error as Error)?.message ?? "Message didn't send"}</p>
         )}
