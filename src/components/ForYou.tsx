@@ -6,6 +6,8 @@ import { placeForCity, useLocation } from "@/lib/location";
 import { useJewish, useWeather } from "@/lib/live";
 import { useNews } from "@/lib/news";
 import { orderWidgets, type WidgetDef } from "@/lib/widgets";
+import { SkyScene, skyKind } from "@/components/SkyScene";
+
 
 import { useForYouPrefs, haptic } from "@/lib/foryou-prefs";
 import { ForYouSettings } from "@/components/ForYouSettings";
