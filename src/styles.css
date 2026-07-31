@@ -724,7 +724,9 @@
 }
 
 .jl-scene .jl-vignette {
-  background: linear-gradient(to top, oklch(0.14 0.03 274 / 0.62), transparent 58%);
+  background:
+    linear-gradient(to top, oklch(0.14 0.03 274 / 0.72), oklch(0.14 0.03 274 / 0.15) 62%, transparent),
+    linear-gradient(to bottom, oklch(0.14 0.03 274 / 0.35), transparent 40%);
 }
 
 @keyframes jl-pulse {
