@@ -115,6 +115,12 @@ export function IsraelMap({
   const pointers = useRef(new Map<number, MapPoint>());
   const pinch = useRef<{ dist: number } | null>(null);
   const moved = useRef(0);
+  /** Pan deltas are batched into one state update per frame. */
+  const panPending = useRef({ x: 0, y: 0 });
+  const panFrame = useRef<number | null>(null);
+  useEffect(() => () => {
+    if (panFrame.current !== null) cancelAnimationFrame(panFrame.current);
+  }, []);
 
   const local = (e: React.PointerEvent) => {
     const rect = wrap.current!.getBoundingClientRect();
