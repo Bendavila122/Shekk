@@ -162,7 +162,7 @@ const HOME_LAYOUT: { label: string; hint: string; ids: string[] }[] = [
   {
     label: "Live in Shekk",
     hint: "What's wired up today. More partners as their APIs land.",
-    ids: ["gett", "siddur", "insurance", "topup", "split"],
+    ids: ["gett", "siddur", "insurance", "fitness", "topup", "split"],
   },
   {
     label: "Good to know",
