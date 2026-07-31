@@ -198,7 +198,7 @@ export function IsraelMap({
   const boxes: [number, number, number, number][] = [];
   const hits = (b: [number, number, number, number]) =>
     boxes.some((o) => b[0] < o[2] && o[0] < b[2] && b[1] < o[3] && o[1] < b[3]) ||
-    pins.some(({ s }) => s.x - 11 < b[2] && b[0] < s.x + 11 && s.y - 11 < b[3] && b[1] < s.y + 11);
+    pins.some(({ s }) => s.x - 8 < b[2] && b[0] < s.x + 8 && s.y - 8 < b[3] && b[1] < s.y + 8);
 
   return (
     <div
