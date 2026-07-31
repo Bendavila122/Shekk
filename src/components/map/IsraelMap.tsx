@@ -194,7 +194,11 @@ export function IsraelMap({
       return true;
     });
 
-  const labelled: MapPoint[] = [];
+  /** Label boxes already placed, so no two names ever collide. */
+  const boxes: [number, number, number, number][] = [];
+  const hits = (b: [number, number, number, number]) =>
+    boxes.some((o) => b[0] < o[2] && o[0] < b[2] && b[1] < o[3] && o[1] < b[3]) ||
+    pins.some(({ s }) => s.x - 11 < b[2] && b[0] < s.x + 11 && s.y - 11 < b[3] && b[1] < s.y + 11);
 
   return (
     <div
@@ -384,9 +388,12 @@ export function IsraelMap({
           const active = activePlace === p.id;
           const flip = s.x > size.w * 0.62;
           const wantLabel = showAllLabels || ANCHOR_PINS.has(p.id) || active;
-          const label =
-            wantLabel && !labelled.some((d) => Math.abs(d.y - s.y) < 13 && Math.abs(d.x - s.x) < 88);
-          if (label) labelled.push(s);
+          const w = p.name.length * 5.9 + 6;
+          const box: [number, number, number, number] = flip
+            ? [s.x - 13 - w, s.y - 7, s.x - 11, s.y + 7]
+            : [s.x + 11, s.y - 7, s.x + 13 + w, s.y + 7];
+          const label = wantLabel && !hits(box);
+          if (label) boxes.push(box);
           return (
             <g
               key={p.id}
