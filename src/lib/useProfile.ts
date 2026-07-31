@@ -56,6 +56,15 @@ export type ProfileDraft = Partial<{
   acceptTerms: boolean;
 }>;
 
+/** Small clock-skew between the browser's freshly minted token and the server
+ *  makes token verification fail with "JWT issued at future". It resolves on
+ *  its own within a second or two, so retry instead of failing the screen. */
+function isClockSkew(error: unknown) {
+  return /issued at future|iat|Unauthorized/i.test(
+    error instanceof Error ? error.message : String(error),
+  );
+}
+
 export function useProfile() {
   const { signedIn } = useApp();
   const qc = useQueryClient();
@@ -65,7 +74,11 @@ export function useProfile() {
     queryFn: () => getMyProfile(),
     enabled: signedIn,
     staleTime: 15_000,
+    throwOnError: false,
+    retry: (count, error) => count < 4 && isClockSkew(error),
+    retryDelay: (count) => Math.min(1500 * (count + 1), 5000),
   });
+
 
   const save = useMutation({
     mutationFn: (draft: ProfileDraft) => saveMyProfile({ data: draft }),
