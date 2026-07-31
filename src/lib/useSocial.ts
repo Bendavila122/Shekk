@@ -179,12 +179,10 @@ export function useConversation(conversationId: string) {
     enabled: signedIn && Boolean(conversationId),
   });
 
+  // readConversation already stamps last_read_at, so we only refresh the list.
   useEffect(() => {
-    if (!signedIn || !conversationId) return;
-    void markConversationRead({ data: { conversationId } }).then(() =>
-      qc.invalidateQueries({ queryKey: socialKeys.chats }),
-    );
-  }, [conversationId, signedIn, qc]);
+    if (query.data) qc.invalidateQueries({ queryKey: socialKeys.chats });
+  }, [query.data, qc]);
 
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: socialKeys.chat(conversationId) });
@@ -192,12 +190,38 @@ export function useConversation(conversationId: string) {
   };
 
   return {
-    conversation: query.data ?? null,
+    conversation: (query.data ?? null) as ConversationUI | null,
     loading: query.isLoading,
     error: query.error as Error | null,
     send: useMutation({
       mutationFn: (body: string) => postMessage({ data: { conversationId, body } }),
-      onSuccess: invalidate,
+      onMutate: async (body: string) => {
+        await qc.cancelQueries({ queryKey: socialKeys.chat(conversationId) });
+        const previous = qc.getQueryData<ConversationUI>(socialKeys.chat(conversationId));
+        if (previous) {
+          const optimistic: ChatMessageUI = {
+            id: `pending-${Date.now()}`,
+            conversationId,
+            senderId: null,
+            senderName: "You",
+            kind: "text",
+            body,
+            meta: {},
+            createdAt: new Date().toISOString(),
+            mine: true,
+            pending: true,
+          };
+          qc.setQueryData<ConversationUI>(socialKeys.chat(conversationId), {
+            ...previous,
+            messages: [...previous.messages, optimistic],
+          });
+        }
+        return { previous };
+      },
+      onError: (_e, _body, ctx) => {
+        if (ctx?.previous) qc.setQueryData(socialKeys.chat(conversationId), ctx.previous);
+      },
+      onSettled: invalidate,
     }),
     sendMoney: useMutation({
       mutationFn: (v: { toUserId: string; amount: number; note?: string | null }) =>
@@ -217,6 +241,7 @@ export function useConversation(conversationId: string) {
     }),
   };
 }
+
 
 export function useSendMoney() {
   const { refreshLedger } = useApp();
