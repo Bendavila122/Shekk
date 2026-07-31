@@ -61,6 +61,7 @@ import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } fr
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ExploreFitnessIndexRouteImport } from './routes/explore/fitness.index'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
+import { Route as ExploreFitnessIdRouteImport } from './routes/explore/fitness.$id'
 import { Route as ExploreEventIdRouteImport } from './routes/explore/event.$id'
 import { Route as ExploreCategoryIdRouteImport } from './routes/explore/category.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
@@ -333,6 +334,11 @@ const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
   path: '/explore/service/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreFitnessIdRoute = ExploreFitnessIdRouteImport.update({
+  id: '/explore/fitness/$id',
+  path: '/explore/fitness/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreEventIdRoute = ExploreEventIdRouteImport.update({
   id: '/explore/event/$id',
   path: '/explore/event/$id',
@@ -438,6 +444,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
+  '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -500,6 +507,7 @@ export interface FileRoutesByTo {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
+  '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/explore/fitness': typeof ExploreFitnessIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -564,6 +572,7 @@ export interface FileRoutesById {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
+  '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -629,6 +638,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/event/$id'
+    | '/explore/fitness/$id'
     | '/explore/service/$id'
     | '/explore/fitness/'
     | '/api/public/payments/webhook'
@@ -691,6 +701,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/event/$id'
+    | '/explore/fitness/$id'
     | '/explore/service/$id'
     | '/explore/fitness'
     | '/api/public/payments/webhook'
@@ -754,6 +765,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
     | '/explore/event/$id'
+    | '/explore/fitness/$id'
     | '/explore/service/$id'
     | '/explore/fitness/'
     | '/api/public/payments/webhook'
@@ -810,6 +822,7 @@ export interface RootRouteChildren {
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
   ExploreEventIdRoute: typeof ExploreEventIdRoute
+  ExploreFitnessIdRoute: typeof ExploreFitnessIdRoute
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
   ExploreFitnessIndexRoute: typeof ExploreFitnessIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -1185,6 +1198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreServiceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/fitness/$id': {
+      id: '/explore/fitness/$id'
+      path: '/explore/fitness/$id'
+      fullPath: '/explore/fitness/$id'
+      preLoaderRoute: typeof ExploreFitnessIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/event/$id': {
       id: '/explore/event/$id'
       path: '/explore/event/$id'
@@ -1325,6 +1345,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ExploreCategoryIdRoute: ExploreCategoryIdRoute,
   ExploreEventIdRoute: ExploreEventIdRoute,
+  ExploreFitnessIdRoute: ExploreFitnessIdRoute,
   ExploreServiceIdRoute: ExploreServiceIdRoute,
   ExploreFitnessIndexRoute: ExploreFitnessIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
