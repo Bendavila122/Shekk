@@ -189,6 +189,7 @@ function Auth() {
 
   const { next } = Route.useSearch();
   const navigate = useNavigate();
+  const { signedIn, authChecked } = useApp();
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -198,6 +199,18 @@ function Auth() {
   const [notice, setNotice] = useState<string | null>(null);
   const [sentTo, setSentTo] = useState<string | null>(null);
   const [handoff, setHandoff] = useState<string | null>(null);
+
+  /**
+   * Already signed in? Don't ask again.
+   *
+   * If anything ever bounces a member here while their session is fine, they
+   * should land back where they were going instead of typing a password again.
+   */
+  useEffect(() => {
+    if (!authChecked || !signedIn) return;
+    void navigate({ to: afterAuthPath(next), replace: true });
+  }, [authChecked, signedIn, navigate, next]);
+
 
   async function social(provider: "google" | "apple") {
     const label = provider === "google" ? "Google" : "Apple";
