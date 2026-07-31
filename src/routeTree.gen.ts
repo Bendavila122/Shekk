@@ -53,6 +53,7 @@ import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
 import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
 import { Route as AdminMoneyRouteImport } from './routes/admin/money'
 import { Route as AdminMembershipsRouteImport } from './routes/admin/memberships'
+import { Route as AdminEventsRouteImport } from './routes/admin/events'
 import { Route as AdminControlsRouteImport } from './routes/admin/controls'
 import { Route as AdminAppsRouteImport } from './routes/admin/apps'
 import { Route as AdminAccountsRouteImport } from './routes/admin/accounts'
@@ -289,6 +290,11 @@ const AdminMembershipsRoute = AdminMembershipsRouteImport.update({
   path: '/memberships',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminEventsRoute = AdminEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminControlsRoute = AdminControlsRouteImport.update({
   id: '/controls',
   path: '/controls',
@@ -398,6 +404,7 @@ export interface FileRoutesByFullPath {
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/apps': typeof AdminAppsRoute
   '/admin/controls': typeof AdminControlsRoute
+  '/admin/events': typeof AdminEventsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -458,6 +465,7 @@ export interface FileRoutesByTo {
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/apps': typeof AdminAppsRoute
   '/admin/controls': typeof AdminControlsRoute
+  '/admin/events': typeof AdminEventsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -520,6 +528,7 @@ export interface FileRoutesById {
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/apps': typeof AdminAppsRoute
   '/admin/controls': typeof AdminControlsRoute
+  '/admin/events': typeof AdminEventsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -583,6 +592,7 @@ export interface FileRouteTypes {
     | '/admin/accounts'
     | '/admin/apps'
     | '/admin/controls'
+    | '/admin/events'
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
@@ -643,6 +653,7 @@ export interface FileRouteTypes {
     | '/admin/accounts'
     | '/admin/apps'
     | '/admin/controls'
+    | '/admin/events'
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
@@ -704,6 +715,7 @@ export interface FileRouteTypes {
     | '/admin/accounts'
     | '/admin/apps'
     | '/admin/controls'
+    | '/admin/events'
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
@@ -1104,6 +1116,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMembershipsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/events': {
+      id: '/admin/events'
+      path: '/events'
+      fullPath: '/admin/events'
+      preLoaderRoute: typeof AdminEventsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/controls': {
       id: '/admin/controls'
       path: '/controls'
@@ -1216,6 +1235,7 @@ interface AdminRouteRouteChildren {
   AdminAccountsRoute: typeof AdminAccountsRoute
   AdminAppsRoute: typeof AdminAppsRoute
   AdminControlsRoute: typeof AdminControlsRoute
+  AdminEventsRoute: typeof AdminEventsRoute
   AdminMembershipsRoute: typeof AdminMembershipsRoute
   AdminMoneyRoute: typeof AdminMoneyRoute
   AdminPromotionsRoute: typeof AdminPromotionsRoute
@@ -1226,6 +1246,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAccountsRoute: AdminAccountsRoute,
   AdminAppsRoute: AdminAppsRoute,
   AdminControlsRoute: AdminControlsRoute,
+  AdminEventsRoute: AdminEventsRoute,
   AdminMembershipsRoute: AdminMembershipsRoute,
   AdminMoneyRoute: AdminMoneyRoute,
   AdminPromotionsRoute: AdminPromotionsRoute,

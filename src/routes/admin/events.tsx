@@ -13,7 +13,7 @@ import {
 } from "@/lib/useEvents";
 
 export const Route = createFileRoute("/admin/events")({
-  component: EventsAdmin;
+  component: EventsAdmin,
 });
 
 const KINDS: EventDraft["kind"][] = ["shabbaton", "tiyul", "club", "shiur", "chesed", "other"];
