@@ -192,7 +192,7 @@ export const WIDGETS: WidgetDef[] = [
       return {
         headline: lead.title,
         sub: `${lead.sourceName} · ${relativeTime(lead.publishedAt)}${urgent ? " · developing" : ""}`,
-        image: lead.image,
+        image: lead.image ?? c.news.find((n) => n.image)?.image,
         href: lead.url,
         rows: rest.map((n) => ({
           icon: n.urgent ? "🚨" : "•",

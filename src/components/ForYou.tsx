@@ -59,10 +59,26 @@ function Tile({
         onOpen();
       }}
       style={{ animationDelay: `${Math.min(index, 6) * 45}ms` }}
-      className={`${def.gradientFor?.(ctx) ?? def.gradient} widget-tile tap-icon animate-fade-in flex flex-col gap-2 p-3 text-left ${
+      className={`${def.gradientFor?.(ctx) ?? def.gradient} widget-tile tap-icon animate-fade-in relative overflow-hidden flex flex-col gap-2 p-3 text-left ${
         wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"
       }`}
     >
+      {content.image ? (
+        <>
+          <img
+            src={content.image}
+            alt=""
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            className="pointer-events-none absolute inset-0 size-full rounded-[inherit] object-cover opacity-45"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
+          />
+          <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-t from-black/55 via-black/20 to-transparent" />
+        </>
+      ) : null}
+
       {/* Header frame */}
       <div className="widget-frame relative z-[1] flex items-center gap-1.5 px-2 py-1.5">
         <span className="text-[13px] leading-none">{def.emoji}</span>
@@ -76,6 +92,7 @@ function Tile({
           <p className="mt-1 line-clamp-2 text-[11px] leading-snug opacity-80">{footer}</p>
         ) : null}
       </div>
+
     </button>
   );
 }
