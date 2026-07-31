@@ -117,7 +117,7 @@ function MapScreen() {
             style={{
               width: CARD_W,
               left: `min(${pop.left}px, calc(100% - ${CARD_W + 10}px))`,
-              top: `min(${pop.top}px, calc(100% - 190px))`,
+              top: `min(${pop.top}px, calc(100% - 280px))`,
             }}
           >
             <button
