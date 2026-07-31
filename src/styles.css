@@ -660,8 +660,11 @@
   opacity: 0.25;
 }
 
+.jl-day .jl-glow {
+  opacity: 0.5;
+}
 .jl-scene .jl-haze {
-  background: radial-gradient(60% 40% at 78% 18%, oklch(1 0.1 92 / 0.6), transparent 68%);
+  background: radial-gradient(34% 24% at 80% 16%, oklch(1 0.14 96 / 0.85), transparent 70%);
   animation: jl-pulse 10s ease-in-out infinite;
 }
 
