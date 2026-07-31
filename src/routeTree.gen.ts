@@ -46,6 +46,7 @@ import { Route as ExploreReserveRouteImport } from './routes/explore/reserve'
 import { Route as ExploreHousingRouteImport } from './routes/explore/housing'
 import { Route as ExploreHealthRouteImport } from './routes/explore/health'
 import { Route as ExploreFoodRouteImport } from './routes/explore/food'
+import { Route as ExploreFitnessRouteImport } from './routes/explore/fitness'
 import { Route as ExploreEventsRouteImport } from './routes/explore/events'
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
 import { Route as ExploreAdminRouteImport } from './routes/explore/admin'
@@ -255,6 +256,11 @@ const ExploreFoodRoute = ExploreFoodRouteImport.update({
   path: '/explore/food',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreFitnessRoute = ExploreFitnessRouteImport.update({
+  id: '/explore/fitness',
+  path: '/explore/fitness',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreEventsRoute = ExploreEventsRouteImport.update({
   id: '/explore/events',
   path: '/explore/events',
@@ -412,6 +418,7 @@ export interface FileRoutesByFullPath {
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
+  '/explore/fitness': typeof ExploreFitnessRoute
   '/explore/food': typeof ExploreFoodRoute
   '/explore/health': typeof ExploreHealthRoute
   '/explore/housing': typeof ExploreHousingRoute
@@ -473,6 +480,7 @@ export interface FileRoutesByTo {
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
+  '/explore/fitness': typeof ExploreFitnessRoute
   '/explore/food': typeof ExploreFoodRoute
   '/explore/health': typeof ExploreHealthRoute
   '/explore/housing': typeof ExploreHousingRoute
@@ -536,6 +544,7 @@ export interface FileRoutesById {
   '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
+  '/explore/fitness': typeof ExploreFitnessRoute
   '/explore/food': typeof ExploreFoodRoute
   '/explore/health': typeof ExploreHealthRoute
   '/explore/housing': typeof ExploreHousingRoute
@@ -600,6 +609,7 @@ export interface FileRouteTypes {
     | '/explore/admin'
     | '/explore/community'
     | '/explore/events'
+    | '/explore/fitness'
     | '/explore/food'
     | '/explore/health'
     | '/explore/housing'
@@ -661,6 +671,7 @@ export interface FileRouteTypes {
     | '/explore/admin'
     | '/explore/community'
     | '/explore/events'
+    | '/explore/fitness'
     | '/explore/food'
     | '/explore/health'
     | '/explore/housing'
@@ -723,6 +734,7 @@ export interface FileRouteTypes {
     | '/explore/admin'
     | '/explore/community'
     | '/explore/events'
+    | '/explore/fitness'
     | '/explore/food'
     | '/explore/health'
     | '/explore/housing'
@@ -779,6 +791,7 @@ export interface RootRouteChildren {
   ExploreAdminRoute: typeof ExploreAdminRoute
   ExploreCommunityRoute: typeof ExploreCommunityRoute
   ExploreEventsRoute: typeof ExploreEventsRoute
+  ExploreFitnessRoute: typeof ExploreFitnessRoute
   ExploreFoodRoute: typeof ExploreFoodRoute
   ExploreHealthRoute: typeof ExploreHealthRoute
   ExploreHousingRoute: typeof ExploreHousingRoute
@@ -1067,6 +1080,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreFoodRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/fitness': {
+      id: '/explore/fitness'
+      path: '/explore/fitness'
+      fullPath: '/explore/fitness'
+      preLoaderRoute: typeof ExploreFitnessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/events': {
       id: '/explore/events'
       path: '/explore/events'
@@ -1286,6 +1306,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreAdminRoute: ExploreAdminRoute,
   ExploreCommunityRoute: ExploreCommunityRoute,
   ExploreEventsRoute: ExploreEventsRoute,
+  ExploreFitnessRoute: ExploreFitnessRoute,
   ExploreFoodRoute: ExploreFoodRoute,
   ExploreHealthRoute: ExploreHealthRoute,
   ExploreHousingRoute: ExploreHousingRoute,
