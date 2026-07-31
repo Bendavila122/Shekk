@@ -369,3 +369,244 @@
     transform: translateX(300%);
   }
 }
+
+/* ============================================================
+   Illustrated weather scenery — motion-picture backdrop for the
+   Today widget. All CSS, no video files.
+   ============================================================ */
+
+.sky-scene {
+  --sky-top: oklch(0.72 0.13 240);
+  --sky-bottom: oklch(0.48 0.16 258);
+  isolation: isolate;
+}
+
+.sky-scene .sky-wash {
+  background: linear-gradient(170deg, var(--sky-top), var(--sky-bottom));
+}
+
+.sky-clear-day {
+  --sky-top: oklch(0.82 0.11 232);
+  --sky-bottom: oklch(0.52 0.17 252);
+}
+.sky-partly {
+  --sky-top: oklch(0.78 0.09 236);
+  --sky-bottom: oklch(0.5 0.15 254);
+}
+.sky-cloud {
+  --sky-top: oklch(0.72 0.03 248);
+  --sky-bottom: oklch(0.46 0.04 256);
+}
+.sky-rain,
+.sky-storm {
+  --sky-top: oklch(0.58 0.035 246);
+  --sky-bottom: oklch(0.32 0.045 256);
+}
+.sky-haze {
+  --sky-top: oklch(0.83 0.08 82);
+  --sky-bottom: oklch(0.58 0.09 62);
+}
+.sky-clear-night {
+  --sky-top: oklch(0.34 0.09 268);
+  --sky-bottom: oklch(0.18 0.07 272);
+}
+
+/* Sun — soft disc with a slow breathing halo. */
+.sky-scene .sky-sun {
+  top: -14%;
+  right: -8%;
+  width: 58%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle at 50% 50%,
+    oklch(1 0.11 96) 0%,
+    oklch(0.93 0.16 88 / 0.92) 26%,
+    oklch(0.9 0.16 78 / 0.35) 48%,
+    transparent 72%
+  );
+  animation: sky-breathe 7s ease-in-out infinite;
+}
+.sky-haze .sky-sun {
+  filter: blur(6px);
+  opacity: 0.8;
+}
+
+/* Moon + stars. */
+.sky-scene .sky-moon {
+  top: 10%;
+  right: 12%;
+  width: 18%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 35%, oklch(0.98 0.02 96), oklch(0.86 0.04 96) 60%, transparent 72%);
+  box-shadow: 0 0 28px oklch(0.95 0.05 96 / 0.45);
+  animation: sky-breathe 9s ease-in-out infinite;
+}
+.sky-scene .sky-stars {
+  background-image:
+    radial-gradient(1.4px 1.4px at 12% 22%, oklch(1 0 0 / 0.9), transparent),
+    radial-gradient(1.2px 1.2px at 28% 62%, oklch(1 0 0 / 0.7), transparent),
+    radial-gradient(1.6px 1.6px at 46% 18%, oklch(1 0 0 / 0.85), transparent),
+    radial-gradient(1.1px 1.1px at 62% 48%, oklch(1 0 0 / 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 78% 28%, oklch(1 0 0 / 0.85), transparent),
+    radial-gradient(1.2px 1.2px at 88% 66%, oklch(1 0 0 / 0.7), transparent),
+    radial-gradient(1.3px 1.3px at 36% 84%, oklch(1 0 0 / 0.6), transparent);
+  animation: sky-twinkle 4.5s ease-in-out infinite;
+}
+
+/* Clouds — three puffs per cloud, drifting across on their own clocks. */
+.sky-scene .sky-cloud {
+  position: absolute;
+  width: 62%;
+  height: 34%;
+  opacity: 0.85;
+  filter: blur(0.4px);
+}
+.sky-scene .sky-cloud span {
+  position: absolute;
+  border-radius: 999px;
+  background: linear-gradient(180deg, oklch(1 0 0 / 0.95), oklch(0.92 0.01 250 / 0.72));
+}
+.sky-scene .sky-cloud span:nth-child(1) {
+  left: 0;
+  bottom: 0;
+  width: 62%;
+  height: 62%;
+}
+.sky-scene .sky-cloud span:nth-child(2) {
+  left: 24%;
+  bottom: 18%;
+  width: 56%;
+  height: 82%;
+}
+.sky-scene .sky-cloud span:nth-child(3) {
+  right: 0;
+  bottom: 2%;
+  width: 52%;
+  height: 56%;
+}
+.sky-scene .sky-cloud-a {
+  top: 6%;
+  animation: sky-drift 26s linear infinite;
+}
+.sky-scene .sky-cloud-b {
+  top: 34%;
+  width: 48%;
+  opacity: 0.6;
+  animation: sky-drift 38s linear infinite;
+  animation-delay: -12s;
+}
+.sky-scene .sky-cloud-c {
+  top: 54%;
+  width: 74%;
+  opacity: 0.45;
+  animation: sky-drift 48s linear infinite;
+  animation-delay: -30s;
+}
+.sky-rain .sky-cloud span,
+.sky-storm .sky-cloud span {
+  background: linear-gradient(180deg, oklch(0.88 0.01 254 / 0.9), oklch(0.62 0.02 256 / 0.75));
+}
+
+/* Rain streaks. */
+.sky-scene .sky-rain span {
+  position: absolute;
+  top: -18%;
+  width: 1.5px;
+  height: 22%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, transparent, oklch(0.95 0.02 240 / 0.75));
+  animation-name: sky-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* Hamsin dust drifting through. */
+.sky-scene .sky-dust {
+  background:
+    radial-gradient(60% 40% at 20% 70%, oklch(0.92 0.07 78 / 0.45), transparent 70%),
+    radial-gradient(50% 35% at 80% 40%, oklch(0.88 0.08 66 / 0.4), transparent 70%);
+  animation: sky-drift-soft 22s ease-in-out infinite alternate;
+}
+
+/* Lightning. */
+.sky-scene .sky-flash {
+  background: oklch(1 0.04 250 / 0.85);
+  opacity: 0;
+  animation: sky-lightning 9s linear infinite;
+}
+
+.sky-scene .sky-vignette {
+  background: linear-gradient(to top, oklch(0.15 0.03 262 / 0.6), transparent 55%);
+}
+
+@keyframes sky-drift {
+  from {
+    transform: translateX(-70%);
+  }
+  to {
+    transform: translateX(160%);
+  }
+}
+@keyframes sky-drift-soft {
+  from {
+    transform: translateX(-6%);
+  }
+  to {
+    transform: translateX(6%);
+  }
+}
+@keyframes sky-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.92;
+  }
+  50% {
+    transform: scale(1.07);
+    opacity: 1;
+  }
+}
+@keyframes sky-twinkle {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes sky-fall {
+  from {
+    transform: translate3d(0, -20%, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(-14%, 140%, 0);
+    opacity: 0.9;
+  }
+}
+@keyframes sky-lightning {
+  0%,
+  92%,
+  100% {
+    opacity: 0;
+  }
+  93% {
+    opacity: 0.55;
+  }
+  94% {
+    opacity: 0;
+  }
+  95.5% {
+    opacity: 0.35;
+  }
+  96.5% {
+    opacity: 0;
+  }
+}
+
