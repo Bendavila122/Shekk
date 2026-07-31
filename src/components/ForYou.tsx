@@ -66,6 +66,16 @@ function Tile({
           night: ctx.weather ? undefined : ctx.hour >= 20 || ctx.hour < 5,
         })
       : null;
+  const jl =
+    def.id === "jewish"
+      ? jewishSceneKind({
+          isErevShabbat: ctx.isErevShabbat,
+          isShabbat: ctx.isShabbat,
+          dayKind: ctx.jewishDay?.kind ?? null,
+        })
+      : null;
+  const scene = !!sky || !!jl;
+  const paper = def.id === "news" && !content.image;
 
   return (
     <button
@@ -75,11 +85,12 @@ function Tile({
         onOpen();
       }}
       style={{ animationDelay: `${Math.min(index, 6) * 45}ms` }}
-      className={`${sky ? "" : (def.gradientFor?.(ctx) ?? def.gradient)} widget-tile tap-icon animate-fade-in relative overflow-hidden flex flex-col gap-2 p-3 text-left ${
+      className={`${scene ? "" : (def.gradientFor?.(ctx) ?? def.gradient)} ${paper ? "news-paper" : ""} widget-tile tap-icon animate-fade-in relative overflow-hidden flex flex-col gap-2 p-3 text-left ${
         wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"
       }`}
     >
       {sky ? <SkyScene kind={sky} dense={wide} /> : null}
+      {jl ? <JewishScene kind={jl} /> : null}
 
       {content.image ? (
         <>
@@ -88,14 +99,15 @@ function Tile({
             alt=""
             loading="lazy"
             referrerPolicy="no-referrer"
-            className="pointer-events-none absolute inset-0 size-full rounded-[inherit] object-cover opacity-45"
+            className="pointer-events-none absolute inset-0 size-full rounded-[inherit] object-cover opacity-70"
             onError={(e) => {
               e.currentTarget.style.display = "none";
             }}
           />
-          <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-t from-black/55 via-black/20 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-t from-black/75 via-black/35 to-black/10" />
         </>
       ) : null}
+
 
 
       {/* Header frame */}
