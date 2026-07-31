@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Minus, Plus, Crosshair } from "lucide-react";
 import {
   KIND_META,
@@ -115,6 +115,12 @@ export function IsraelMap({
   const pointers = useRef(new Map<number, MapPoint>());
   const pinch = useRef<{ dist: number } | null>(null);
   const moved = useRef(0);
+  /** Pan deltas are batched into one state update per frame. */
+  const panPending = useRef({ x: 0, y: 0 });
+  const panFrame = useRef<number | null>(null);
+  useEffect(() => () => {
+    if (panFrame.current !== null) cancelAnimationFrame(panFrame.current);
+  }, []);
 
   const local = (e: React.PointerEvent) => {
     const rect = wrap.current!.getBoundingClientRect();
@@ -149,7 +155,16 @@ export function IsraelMap({
       pinch.current = { dist };
       return;
     }
-    setView((p) => ({ ...p, x: p.x + dx, y: p.y + dy }));
+    panPending.current.x += dx;
+    panPending.current.y += dy;
+    if (panFrame.current === null) {
+      panFrame.current = requestAnimationFrame(() => {
+        panFrame.current = null;
+        const { x, y } = panPending.current;
+        panPending.current = { x: 0, y: 0 };
+        setView((p) => ({ ...p, x: p.x + x, y: p.y + y }));
+      });
+    }
   };
 
   const endPointer = (e: React.PointerEvent) => {
@@ -157,7 +172,20 @@ export function IsraelMap({
     if (pointers.current.size < 2) pinch.current = null;
   };
 
+
   const tapped = () => moved.current < 8;
+
+  const onRegionRef = useRef(onRegion);
+  onRegionRef.current = onRegion;
+
+  /** Stable handler so the heavy land layer never re-renders while panning. */
+  const onRegionTap = useCallback((id: string, e: React.MouseEvent) => {
+    if (moved.current >= 8) return;
+    e.stopPropagation();
+    const rect = wrap.current!.getBoundingClientRect();
+    onRegionRef.current(id, { x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }, []);
+
 
   const toScreen = (mx: number, my: number): MapPoint => ({
     x: mx * view.k + view.x,
@@ -209,8 +237,22 @@ export function IsraelMap({
       onPointerMove={onPointerMove}
       onPointerUp={endPointer}
       onPointerCancel={endPointer}
+      onClick={() => {
+        if (tapped()) onClear();
+      }}
     >
-      <svg width={size.w} height={size.h} className="block select-none">
+      {/* Land gets its own SVG, moved with a CSS transform: panning then stays on
+          the compositor instead of re-rasterising thousands of path segments. */}
+      <svg
+        width={MAP_WIDTH}
+        height={MAP_HEIGHT}
+        className="absolute left-0 top-0 select-none"
+        style={{
+          transformOrigin: "0 0",
+          transform: `translate3d(${view.x}px, ${view.y}px, 0) scale(${view.k})`,
+          willChange: "transform",
+        }}
+      >
         <defs>
           {/* the country's terrain, north to south */}
           <linearGradient
@@ -241,102 +283,25 @@ export function IsraelMap({
             <stop offset="0" style={{ stopColor: "var(--map-dry)", stopOpacity: 0 }} />
             <stop offset="1" style={{ stopColor: "var(--map-dry)", stopOpacity: 0.6 }} />
           </linearGradient>
-          <pattern id="dunes" width="7" height="7" patternUnits="userSpaceOnUse">
-            <circle cx="1.4" cy="1.4" r="0.55" fill="var(--map-arava)" opacity="0.35" />
-          </pattern>
-          <filter id="land-shadow" x="-20%" y="-20%" width="150%" height="150%">
-            <feDropShadow dy="1.4" dx="0.6" stdDeviation="1.6" floodOpacity="0.18" />
-          </filter>
         </defs>
 
-        {/* sea */}
-        <rect
-          width={size.w}
-          height={size.h}
-          fill="var(--map-sea)"
-          onClick={() => {
-            if (tapped()) onClear();
-          }}
+        <LandLayer
+          visitedRegions={visitedRegions}
+          activeRegion={activeRegion ?? null}
+          onRegionTap={onRegionTap}
+          k={view.k}
         />
+      </svg>
 
-        <g transform={`translate(${view.x} ${view.y}) scale(${view.k})`}>
-          {/* land, painted with the terrain gradient */}
-          <g filter="url(#land-shadow)">
-            {REGIONS.map((r) => {
-              const visited = visitedRegions.includes(r.id);
-              const active = activeRegion === r.id;
-              const terr = territoryOf(r.id);
-              const disputed = terr !== "israel";
-              return (
-                <g key={r.id}>
-                  {r.paths.map((d, i) => (
-                    <path
-                      key={i}
-                      d={d}
-                      role={i === 0 ? "button" : undefined}
-                      aria-label={i === 0 ? `${r.name}${visited ? " — visited" : ""}` : undefined}
-                      onClick={(e) => {
-                        if (!tapped()) return;
-                        const rect = wrap.current!.getBoundingClientRect();
-                        onRegion(r.id, { x: e.clientX - rect.left, y: e.clientY - rect.top });
-                      }}
-                      fill={visited ? undefined : "url(#terrain)"}
-                      className={`cursor-pointer outline-none transition-colors ${
-                        visited ? "fill-primary/80" : ""
-                      } ${active ? "stroke-ink" : disputed ? "stroke-ink/35" : "stroke-ink/15"}`}
-                      strokeWidth={active ? 2.2 : 0.8}
-                      strokeDasharray={disputed && !active ? "3 2.5" : undefined}
-                      vectorEffect="non-scaling-stroke"
-                    />
-                  ))}
-                </g>
-              );
-            })}
-          </g>
+      {/* names and pins, in screen space */}
+      <svg
+        width={size.w}
+        height={size.h}
+        className="pointer-events-none absolute left-0 top-0 block select-none"
+      >
 
-          {/* the dry east, and a dune wash over the deep Negev */}
-          <g className="pointer-events-none">
-            {REGIONS.filter((r) => !visitedRegions.includes(r.id)).map((r) =>
-              r.paths.map((d, i) => (
-                <path key={`dry-${r.id}-${i}`} d={d} fill="url(#terrain-dry)" opacity={0.5} />
-              )),
-            )}
-            {REGIONS.filter((r) => r.id === "negev-arava" && !visitedRegions.includes(r.id)).map((r) =>
-              r.paths.map((d, i) => <path key={`dune-${i}`} d={d} fill="url(#dunes)" />),
-            )}
-          </g>
 
-          {/* disputed territory borders, dotted */}
-          <g className="pointer-events-none" fill="none">
-            {TERRITORY_OUTLINES.map((t) => (
-              <path
-                key={t.id}
-                d={t.d}
-                className="stroke-ink"
-                strokeWidth={2}
-                strokeDasharray="5 4"
-                strokeLinejoin="round"
-                vectorEffect="non-scaling-stroke"
-                opacity={0.75}
-              />
-            ))}
-            {/* the northern line: the Golan, also disputed */}
-            {REGIONS.filter((r) => r.id === "golan").map((r) =>
-              r.paths.map((d, i) => (
-                <path
-                  key={`golan-${i}`}
-                  d={d}
-                  className="stroke-ink"
-                  strokeWidth={2}
-                  strokeDasharray="5 4"
-                  strokeLinejoin="round"
-                  vectorEffect="non-scaling-stroke"
-                  opacity={0.7}
-                />
-              )),
-            )}
-          </g>
-        </g>
+
 
         {/* area names, in screen space so they stay legible at any zoom */}
         {rel > 1.1
@@ -412,7 +377,7 @@ export function IsraelMap({
                   onPlace(p.id, s);
                 }
               }}
-              className="cursor-pointer outline-none"
+              className="pointer-events-auto cursor-pointer outline-none"
             >
               <circle cx={s.x} cy={s.y} r={16} fill="transparent" />
               {active ? <circle cx={s.x} cy={s.y} r={16} className="fill-primary/20" /> : null}
@@ -485,3 +450,91 @@ export function IsraelMap({
     </div>
   );
 }
+
+/**
+ * Land, terrain wash and disputed borders. Memoised: the geometry is thousands of
+ * path segments, so it must never re-render while panning or zooming — only the
+ * parent <g transform> changes, which the browser handles on the compositor.
+ */
+const LandLayer = memo(function LandLayer({
+  visitedRegions,
+  activeRegion,
+  onRegionTap,
+  k,
+}: {
+  visitedRegions: string[];
+  activeRegion: string | null;
+  onRegionTap: (id: string, e: React.MouseEvent) => void;
+  k: number;
+}) {
+  const visited = useMemo(() => new Set(visitedRegions), [visitedRegions]);
+  /* The SVG is scaled with CSS, so strokes are pre-divided to keep hairlines. */
+  const hair = 0.8 / k;
+  const bold = 2.2 / k;
+  const dash = `${5 / k} ${4 / k}`;
+  return (
+    <>
+      {/* land, painted with the terrain gradient */}
+      <g>
+        {REGIONS.map((r) => {
+          const been = visited.has(r.id);
+          const active = activeRegion === r.id;
+          const disputed = territoryOf(r.id) !== "israel";
+          return r.paths.map((d, i) => (
+            <path
+              key={`${r.id}-${i}`}
+              d={d}
+              role={i === 0 ? "button" : undefined}
+              aria-label={i === 0 ? `${r.name}${been ? " — visited" : ""}` : undefined}
+              onClick={(e) => onRegionTap(r.id, e)}
+              fill={been ? undefined : "url(#terrain)"}
+              className={`cursor-pointer outline-none ${been ? "fill-primary/80" : ""} ${
+                active ? "stroke-ink" : disputed ? "stroke-ink/35" : "stroke-ink/15"
+              }`}
+              strokeWidth={active ? bold : hair}
+              strokeDasharray={disputed && !active ? `${3 / k} ${2.5 / k}` : undefined}
+            />
+          ));
+        })}
+      </g>
+
+      {/* the east always runs drier than the coast */}
+      <g className="pointer-events-none">
+        {REGIONS.filter((r) => !visited.has(r.id)).map((r) =>
+          r.paths.map((d, i) => (
+            <path key={`dry-${r.id}-${i}`} d={d} fill="url(#terrain-dry)" opacity={0.5} />
+          )),
+        )}
+      </g>
+
+      {/* disputed territory borders, dotted */}
+      <g className="pointer-events-none" fill="none">
+        {TERRITORY_OUTLINES.map((t) => (
+          <path
+            key={t.id}
+            d={t.d}
+            className="stroke-ink"
+            strokeWidth={bold}
+            strokeDasharray={dash}
+            strokeLinejoin="round"
+            opacity={0.75}
+          />
+        ))}
+        {REGIONS.filter((r) => r.id === "golan").map((r) =>
+          r.paths.map((d, i) => (
+            <path
+              key={`golan-${i}`}
+              d={d}
+              className="stroke-ink"
+              strokeWidth={bold}
+              strokeDasharray={dash}
+              strokeLinejoin="round"
+              opacity={0.7}
+            />
+          )),
+        )}
+      </g>
+
+    </>
+  );
+});
