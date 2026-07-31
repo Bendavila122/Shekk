@@ -1,21 +1,29 @@
 /**
  * "Been There" — an interactive map of Israel.
  *
- * The country is cut into scratchable areas you can tap to mark as visited,
- * with pins on the places students actually end up: the Kotel, Masada, the
- * Kinneret, Machane Yehuda, Eilat.
+ * Areas are the country's real subdistricts plus the Shomron / Yehuda
+ * governorates, generated from geoBoundaries (CC0) into `israel-geo.ts`, so
+ * the outlines are the actual borders rather than hand-drawn boxes.
  *
- * Geometry is stored in real lon/lat degrees and projected to SVG space, so
- * pins and areas always line up.
+ * Places are stored in lon/lat and projected into the same SVG space, so pins
+ * always sit inside the right area.
  */
 
-export type Region = {
-  id: string;
-  name: string;
-  hint: string;
-  /** [lon, lat] ring, roughly following borders and the coast. */
-  ring: [number, number][];
-};
+import {
+  LAT_MAX,
+  LON_MIN,
+  LON_SCALE,
+  MAP_HEIGHT,
+  MAP_WIDTH,
+  PROJ_K,
+  REGION_SHAPES,
+  type RegionShape,
+} from "@/lib/israel-geo";
+import { MORE_PLACES } from "@/lib/israel-map-places";
+
+export { MAP_HEIGHT, MAP_WIDTH, LON_SCALE };
+
+export type Region = RegionShape;
 
 export type Landmark = {
   /** Wikipedia page title — used for a real photo and live summary. */
@@ -27,7 +35,8 @@ export type MapPlace = {
   id: string;
   name: string;
   hebrew?: string;
-  region: string;
+  /** Legacy hand-assigned area; the real one is resolved from the geometry. */
+  region?: string;
   kind: "city" | "holy" | "nature" | "beach" | "history";
   lat: number;
   lon: number;
@@ -42,117 +51,12 @@ export type MapPlace = {
 
 /* ------------------------------------------------------------------ areas */
 
-export const REGIONS: Region[] = [
-  {
-    id: "galilee",
-    name: "Galilee & Golan",
-    hint: "Tzfat, Kinneret, Golan wineries",
-    ring: [
-      [35.10, 33.09],
-      [35.58, 33.28],
-      [35.78, 33.25],
-      [35.63, 32.85],
-      [35.57, 32.70],
-      [34.95, 32.70],
-      [34.95, 32.83],
-      [35.07, 32.92],
-    ],
-  },
-  {
-    id: "carmel",
-    name: "Haifa & Carmel",
-    hint: "Bahai gardens, Jezreel valley",
-    ring: [
-      [34.95, 32.70],
-      [35.57, 32.70],
-      [35.55, 32.40],
-      [34.89, 32.40],
-    ],
-  },
-  {
-    id: "sharon",
-    name: "Sharon & Shomron",
-    hint: "Netanya, Ra'anana, Caesarea",
-    ring: [
-      [34.89, 32.40],
-      [35.55, 32.40],
-      [35.53, 32.05],
-      [34.76, 32.08],
-    ],
-  },
-  {
-    id: "center",
-    name: "Tel Aviv & the centre",
-    hint: "Tel Aviv, Modiin, Beit Shemesh",
-    ring: [
-      [34.76, 32.08],
-      [35.53, 32.05],
-      [35.52, 31.80],
-      [34.65, 31.80],
-    ],
-  },
-  {
-    id: "jerusalem",
-    name: "Jerusalem & Judean hills",
-    hint: "Old City, Gush Etzion, Dead Sea",
-    ring: [
-      [35.00, 31.80],
-      [35.52, 31.80],
-      [35.50, 31.55],
-      [35.00, 31.55],
-    ],
-  },
-  {
-    id: "shfela",
-    name: "Shfela & south coast",
-    hint: "Ashdod, Ashkelon, Beit Guvrin",
-    ring: [
-      [34.65, 31.80],
-      [35.00, 31.80],
-      [35.00, 31.55],
-      [34.55, 31.67],
-    ],
-  },
-  {
-    id: "negev-north",
-    name: "Northern Negev",
-    hint: "Be'er Sheva, Arad, Dead Sea south",
-    ring: [
-      [34.48, 31.55],
-      [35.50, 31.55],
-      [35.37, 31.10],
-      [34.90, 30.90],
-      [34.27, 31.22],
-    ],
-  },
-  {
-    id: "negev-central",
-    name: "Central Negev",
-    hint: "Mitzpe Ramon, the Machtesh",
-    ring: [
-      [34.27, 31.22],
-      [34.90, 30.90],
-      [35.37, 31.10],
-      [35.20, 30.40],
-      [34.58, 30.40],
-    ],
-  },
-  {
-    id: "arava",
-    name: "Arava & Eilat",
-    hint: "Timna, Red Sea, Jordan border",
-    ring: [
-      [34.58, 30.40],
-      [35.20, 30.40],
-      [35.00, 29.53],
-      [34.92, 29.53],
-    ],
-  },
-];
+export const REGIONS: Region[] = REGION_SHAPES;
 
 /* ------------------------------------------------------------------ places */
 
-export const MAP_PLACES: MapPlace[] = [
+const CORE_PLACES: MapPlace[] = [
+
   {
     id: "kotel",
     name: "Western Wall",
