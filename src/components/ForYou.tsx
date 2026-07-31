@@ -585,7 +585,7 @@ export function ForYou() {
           <Skeleton />
         </div>
       ) : (
-        <div data-drag={dragId ?? "none"} data-editing={String(editing)} className="mt-3 grid auto-rows-min grid-cols-2 gap-3 px-5" style={{ touchAction: editing ? "none" : undefined }}>
+        <div className="mt-3 grid auto-rows-min grid-cols-2 gap-3 px-5" style={{ touchAction: editing ? "none" : undefined }}>
           {(editing ? items.filter((it) => it.kind === "widget") : items).map((item, i) =>
             item.kind === "guide" ? (
               <GuideStrip key={item.key} guide={item.guide} wide={item.wide} index={i} />
