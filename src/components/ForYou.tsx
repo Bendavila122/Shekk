@@ -445,6 +445,7 @@ export function ForYou() {
   };
 
   const onTilePointerMove = (e: React.PointerEvent) => {
+    console.log("DBG raw", editing, dragId);
     if (!editing) {
       const p = pressRef.current;
       if (p && (Math.abs(e.clientX - p.x) > 8 || Math.abs(e.clientY - p.y) > 8)) cancelPress();
