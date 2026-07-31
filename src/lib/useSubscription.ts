@@ -65,11 +65,13 @@ export function useSubscription() {
 
   useEffect(() => {
     void load();
+    let cancelled = false;
     let channel: ReturnType<typeof supabase.channel> | null = null;
+    const instance = Math.random().toString(36).slice(2);
     void supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return;
+      if (!user || cancelled) return;
       channel = supabase
-        .channel(`subscriptions:${user.id}`)
+        .channel(`subscriptions:${user.id}:${instance}`)
         .on(
           "postgres_changes",
           { event: "*", schema: "public", table: "subscriptions", filter: `user_id=eq.${user.id}` },
@@ -78,9 +80,11 @@ export function useSubscription() {
         .subscribe();
     });
     return () => {
+      cancelled = true;
       if (channel) void supabase.removeChannel(channel);
     };
   }, [load]);
+
 
   const isPlus = subscription
     ? isActive({
