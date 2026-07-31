@@ -220,8 +220,22 @@ export function IsraelMap({
       onPointerMove={onPointerMove}
       onPointerUp={endPointer}
       onPointerCancel={endPointer}
+      onClick={() => {
+        if (tapped()) onClear();
+      }}
     >
-      <svg width={size.w} height={size.h} className="block select-none">
+      {/* Land gets its own SVG, moved with a CSS transform: panning then stays on
+          the compositor instead of re-rasterising thousands of path segments. */}
+      <svg
+        width={MAP_WIDTH}
+        height={MAP_HEIGHT}
+        className="absolute left-0 top-0 select-none"
+        style={{
+          transformOrigin: "0 0",
+          transform: `translate3d(${view.x}px, ${view.y}px, 0) scale(${view.k})`,
+          willChange: "transform",
+        }}
+      >
         <defs>
           {/* the country's terrain, north to south */}
           <linearGradient
@@ -254,23 +268,22 @@ export function IsraelMap({
           </linearGradient>
         </defs>
 
-        {/* sea */}
-        <rect
-          width={size.w}
-          height={size.h}
-          fill="var(--map-sea)"
-          onClick={() => {
-            if (tapped()) onClear();
-          }}
+        <LandLayer
+          visitedRegions={visitedRegions}
+          activeRegion={activeRegion ?? null}
+          onRegionTap={onRegionTap}
+          k={view.k}
         />
+      </svg>
 
-        <g transform={`translate(${view.x} ${view.y}) scale(${view.k})`}>
-          <LandLayer
-            visitedRegions={visitedRegions}
-            activeRegion={activeRegion ?? null}
-            onRegionTap={onRegionTap}
-          />
-        </g>
+      {/* names and pins, in screen space */}
+      <svg
+        width={size.w}
+        height={size.h}
+        className="pointer-events-none absolute left-0 top-0 block select-none"
+      >
+
+
 
 
         {/* area names, in screen space so they stay legible at any zoom */}
