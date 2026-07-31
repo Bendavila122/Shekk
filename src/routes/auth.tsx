@@ -5,6 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
 import { Splash } from "@/components/Splash";
+import { useApp } from "@/lib/store";
+
 
 function safeNext(value: unknown): string {
   if (typeof value !== "string") return "/";
