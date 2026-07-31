@@ -443,12 +443,18 @@ const LandLayer = memo(function LandLayer({
   visitedRegions,
   activeRegion,
   onRegionTap,
+  k,
 }: {
   visitedRegions: string[];
   activeRegion: string | null;
   onRegionTap: (id: string, e: React.MouseEvent) => void;
+  k: number;
 }) {
   const visited = useMemo(() => new Set(visitedRegions), [visitedRegions]);
+  /* The SVG is scaled with CSS, so strokes are pre-divided to keep hairlines. */
+  const hair = 0.8 / k;
+  const bold = 2.2 / k;
+  const dash = `${5 / k} ${4 / k}`;
   return (
     <>
       {/* land, painted with the terrain gradient */}
@@ -468,9 +474,8 @@ const LandLayer = memo(function LandLayer({
               className={`cursor-pointer outline-none ${been ? "fill-primary/80" : ""} ${
                 active ? "stroke-ink" : disputed ? "stroke-ink/35" : "stroke-ink/15"
               }`}
-              strokeWidth={active ? 2.2 : 0.8}
-              strokeDasharray={disputed && !active ? "3 2.5" : undefined}
-              vectorEffect="non-scaling-stroke"
+              strokeWidth={active ? bold : hair}
+              strokeDasharray={disputed && !active ? `${3 / k} ${2.5 / k}` : undefined}
             />
           ));
         })}
@@ -492,10 +497,9 @@ const LandLayer = memo(function LandLayer({
             key={t.id}
             d={t.d}
             className="stroke-ink"
-            strokeWidth={2}
-            strokeDasharray="5 4"
+            strokeWidth={bold}
+            strokeDasharray={dash}
             strokeLinejoin="round"
-            vectorEffect="non-scaling-stroke"
             opacity={0.75}
           />
         ))}
@@ -505,15 +509,15 @@ const LandLayer = memo(function LandLayer({
               key={`golan-${i}`}
               d={d}
               className="stroke-ink"
-              strokeWidth={2}
-              strokeDasharray="5 4"
+              strokeWidth={bold}
+              strokeDasharray={dash}
               strokeLinejoin="round"
-              vectorEffect="non-scaling-stroke"
               opacity={0.7}
             />
           )),
         )}
       </g>
+
     </>
   );
 });
