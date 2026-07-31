@@ -4,13 +4,15 @@ import { useCallback, useEffect, useState } from "react";
 const KEY = "shekk.foryou.v1";
 
 export type ForYouPrefs = {
+  /** Explicit tile order (widget ids). Empty = registry order. */
+  order: string[];
   pinned: string[];
   hidden: string[];
   size: "compact" | "expanded";
   weatherCity: string | null;
 };
 
-const DEFAULTS: ForYouPrefs = { pinned: [], hidden: [], size: "expanded", weatherCity: null };
+const DEFAULTS: ForYouPrefs = { order: [], pinned: [], hidden: [], size: "expanded", weatherCity: null };
 
 function read(): ForYouPrefs {
   if (typeof window === "undefined") return DEFAULTS;
@@ -67,13 +69,15 @@ export function useForYouPrefs() {
     [prefs, save],
   );
 
+  const setOrder = useCallback((order: string[]) => save({ ...prefs, order }), [prefs, save]);
+
   const setSize = useCallback((size: ForYouPrefs["size"]) => save({ ...prefs, size }), [prefs, save]);
 
   const setWeatherCity = useCallback((weatherCity: string | null) => save({ ...prefs, weatherCity }), [prefs, save]);
 
   const reset = useCallback(() => save(DEFAULTS), [save]);
 
-  return { prefs, togglePin, toggleHide, move, setSize, setWeatherCity, reset };
+  return { prefs, togglePin, toggleHide, move, setOrder, setSize, setWeatherCity, reset };
 }
 
 export function haptic(ms = 8) {
