@@ -1,7 +1,7 @@
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { Check, ExternalLink, LoaderCircle } from "lucide-react";
 import { AppShell, Card, ScreenHeader } from "@/components/AppShell";
-import { KIND_META, findMapPlace, region } from "@/lib/israel-map";
+import { KIND_META, findMapPlace, regionOfPlace } from "@/lib/israel-map";
 import { useVisited } from "@/lib/israel-map-prefs";
 import { useWikiInfo } from "@/lib/useWikiInfo";
 import { haptic } from "@/lib/foryou-prefs";
