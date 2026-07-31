@@ -75,6 +75,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     emoji: "🏠",
     tagline: "The boring stuff nobody explains to you.",
     services: [
+      { id: "beenthere", name: "Been There", emoji: "🗺️", blurb: "Scratch-off map of Israel", status: "live", featured: true, to: "/explore/map", detail: ["Tap each area of the country to fill it in as visited", "Pins on the Kotel, Masada, Kinneret, Eilat and more", "History, photos and things to do for every place"] },
       { id: "arnona", name: "Arnona & taxes", partner: "Municipality", emoji: "🧾", blurb: "Council tax and student exemptions", status: "guide" },
       { id: "cash", name: "Cash & exchange", emoji: "💵", blurb: "How to get cash, what a fair rate is", status: "guide", detail: ["Shekk rate vs street changers", "Which ATMs skip the double conversion", "Where cash is still king (shuk, sherut, monit)"] },
     ],
@@ -167,7 +168,7 @@ const HOME_LAYOUT: { label: string; hint: string; ids: string[] }[] = [
   {
     label: "Good to know",
     hint: "Practical guides for your year here.",
-    ids: ["visa", "emergency", "cash", "shuk", "thingstodo", "chagim"],
+    ids: ["beenthere", "visa", "emergency", "cash", "shuk", "thingstodo", "chagim"],
   },
 ];
 
