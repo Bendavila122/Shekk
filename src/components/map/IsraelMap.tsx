@@ -149,13 +149,23 @@ export function IsraelMap({
       pinch.current = { dist };
       return;
     }
-    setView((p) => ({ ...p, x: p.x + dx, y: p.y + dy }));
+    panPending.current.x += dx;
+    panPending.current.y += dy;
+    if (panFrame.current === null) {
+      panFrame.current = requestAnimationFrame(() => {
+        panFrame.current = null;
+        const { x, y } = panPending.current;
+        panPending.current = { x: 0, y: 0 };
+        setView((p) => ({ ...p, x: p.x + x, y: p.y + y }));
+      });
+    }
   };
 
   const endPointer = (e: React.PointerEvent) => {
     pointers.current.delete(e.pointerId);
     if (pointers.current.size < 2) pinch.current = null;
   };
+
 
   const tapped = () => moved.current < 8;
 
