@@ -71,7 +71,15 @@ export function IsraelMap({
             }}
             className="cursor-pointer outline-none"
           >
-            <circle cx={x} cy={y} r={11} fill="transparent" />
+            {/* Generous transparent hit area over the dot and its label. */}
+            <rect
+              x={flip ? x - 10 - p.name.length * 5.2 : x - 10}
+              y={y - 9}
+              width={p.name.length * 5.2 + 20}
+              height={18}
+              fill="transparent"
+            />
+
             <circle
               cx={x}
               cy={y}
