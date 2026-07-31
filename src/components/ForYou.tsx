@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Check, ExternalLink, SlidersHorizontal, Sparkles, X } from "lucide-react";
+import { Check, ExternalLink, RotateCw, SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { useUserContext, WEATHER_CITIES } from "@/lib/personalise";
 import { placeForCity, useLocation } from "@/lib/location";
 import { useJewish, useWeather } from "@/lib/live";
@@ -403,9 +403,25 @@ export function ForYou() {
   );
   const openDef = widgets.find((w) => w.id === openId) ?? null;
 
-  /* ---- iPhone-style edit mode: long-press to wiggle, drag to reorder ---- */
+  /* ---- Manual refresh: re-pull every live feed behind the tiles ---- */
+  const [refreshing, setRefreshing] = useState(false);
+  const refreshAll = async () => {
+    if (refreshing) return;
+    haptic();
+    setRefreshing(true);
+    try {
+      await Promise.allSettled([weather.refetch(), jewish.refetch(), news.refetch()]);
+    } finally {
+      setTick((t) => t + 1);
+      setRefreshing(false);
+    }
+  };
+
+  /* ---- iPhone-style edit mode: long-press to pick up, drag to reorder ---- */
   const [editing, setEditing] = useState(false);
   const [dragId, setDragId] = useState<string | null>(null);
+  const [lift, setLift] = useState({ x: 0, y: 0 });
+  const originRef = useRef<{ x: number; y: number } | null>(null);
   const pressRef = useRef<{ id: string; x: number; y: number } | null>(null);
   const timerRef = useRef<number | null>(null);
   const ids = widgets.map((w) => w.id);
@@ -419,6 +435,9 @@ export function ForYou() {
 
   const dragTo = (x: number, y: number) => {
     if (!dragId) return;
+    const origin = originRef.current;
+    if (origin) setLift({ x: x - origin.x, y: y - origin.y });
+
     const el = (document.elementFromPoint(x, y) as HTMLElement | null)?.closest(
       "[data-wid]",
     ) as HTMLElement | null;
@@ -431,31 +450,37 @@ export function ForYou() {
     next.splice(to, 0, next.splice(from, 1)[0]);
     haptic(6);
     setOrder(next);
+    // The tile just moved into a new slot under the finger — re-anchor there.
+    originRef.current = { x, y };
+    setLift({ x: 0, y: 0 });
+  };
+
+  const pickUp = (id: string, x: number, y: number, target: HTMLElement, pointerId: number) => {
+    setDragId(id);
+    originRef.current = { x, y };
+    setLift({ x: 0, y: 0 });
+    try {
+      target.setPointerCapture(pointerId);
+    } catch {
+      /* ignore */
+    }
   };
 
   const onTilePointerDown = (e: React.PointerEvent, id: string) => {
     if (editing) {
-      setDragId(id);
-      try {
-        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-      } catch {
-        /* ignore */
-      }
+      haptic(10);
+      pickUp(id, e.clientX, e.clientY, e.currentTarget as HTMLElement, e.pointerId);
       return;
     }
     pressRef.current = { id, x: e.clientX, y: e.clientY };
     const target = e.currentTarget as HTMLElement;
     const pointerId = e.pointerId;
+    const { clientX, clientY } = e;
     timerRef.current = window.setTimeout(() => {
       haptic(18);
       setEditing(true);
       // Keep the finger on the tile: the same press becomes the drag.
-      setDragId(id);
-      try {
-        target.setPointerCapture(pointerId);
-      } catch {
-        /* ignore */
-      }
+      pickUp(id, clientX, clientY, target, pointerId);
       pressRef.current = null;
     }, 480);
   };
@@ -489,8 +514,12 @@ export function ForYou() {
 
   const onTilePointerUp = () => {
     cancelPress();
+    // Drop: the tile settles back into its slot.
+    originRef.current = null;
+    setLift({ x: 0, y: 0 });
     setDragId(null);
   };
+
 
   /**
    * Layout engine — mosaic of widget tiles and boxless guide tiles that share
@@ -566,17 +595,28 @@ export function ForYou() {
             <Check className="size-3.5" /> Done
           </button>
         ) : (
-          <button
-            onClick={() => {
-              haptic();
-              setSettingsOpen(true);
-            }}
-            className="tap rounded-full bg-muted p-2"
-            aria-label="Customise For You"
-          >
-            <SlidersHorizontal className="size-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={refreshAll}
+              disabled={refreshing}
+              className="tap rounded-full bg-muted p-2 disabled:opacity-70"
+              aria-label="Refresh widgets"
+            >
+              <RotateCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
+            </button>
+            <button
+              onClick={() => {
+                haptic();
+                setSettingsOpen(true);
+              }}
+              className="tap rounded-full bg-muted p-2"
+              aria-label="Customise For You"
+            >
+              <SlidersHorizontal className="size-4" />
+            </button>
+          </div>
         )}
+
       </div>
 
 
@@ -597,10 +637,21 @@ export function ForYou() {
                 onPointerMove={onTilePointerMove}
                 onPointerUp={onTilePointerUp}
                 onContextMenu={(e) => editing && e.preventDefault()}
-                style={editing ? { animationDelay: `${(i % 4) * 90}ms` } : undefined}
+                style={
+                  dragId === item.def.id
+                    ? {
+                        transform: `translate3d(${lift.x}px, ${lift.y}px, 0) scale(1.08) rotate(1.5deg)`,
+                        touchAction: "none",
+                      }
+                    : editing
+                      ? { animationDelay: `${(i % 4) * 90}ms` }
+                      : undefined
+                }
                 className={`relative ${item.wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"} ${
                   editing ? "wiggle select-none" : ""
-                } ${dragId === item.def.id ? "wiggle-lift" : ""}`}
+                } ${dragId && dragId !== item.def.id ? "wiggle-settle" : ""} ${
+                  dragId === item.def.id ? "wiggle-lift" : ""
+                }`}
               >
                 <Tile
                   def={item.def}
