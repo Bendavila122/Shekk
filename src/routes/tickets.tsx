@@ -152,7 +152,7 @@ function TicketCard({
       {open && !cancelled ? (
         <div className="mt-4 flex flex-col items-center gap-2 border-t border-border pt-4">
           <div className="rounded-2xl bg-white p-3">
-            <QRCode value={`shekk:ticket:${ticket.code}`} size={180} />
+            <QRCode value={`shekk:ticket:${ticket.code}`} className="size-[180px]" />
           </div>
           <p className="font-mono text-sm font-bold tracking-widest">{ticket.code}</p>
           <p className="text-center text-xs text-muted-foreground">
