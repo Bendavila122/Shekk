@@ -126,7 +126,7 @@ function Thread() {
       )}
 
       {/* messages — bottom padding clears the fixed composer + tab bar */}
-      <div className="space-y-2 px-4 py-4 pb-52 lg:pb-6">
+      <div className="space-y-2 px-4 py-4 pb-40 lg:pb-6">
         {loading && (
           <div className="space-y-3">
             {[0, 1, 2].map((i) => (
