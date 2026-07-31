@@ -32,6 +32,7 @@ const NAV = [
   { to: "/admin/accounts", label: "Accounts", Icon: Users },
   { to: "/admin/memberships", label: "Memberships", Icon: Crown },
   { to: "/admin/apps", label: "Apps & services", Icon: LayoutGrid },
+  { to: "/admin/events", label: "Events & tickets", Icon: Ticket },
   { to: "/admin/promotions", label: "Promotions", Icon: Megaphone },
   { to: "/admin/controls", label: "Controls", Icon: Settings2 },
 ] as const;
