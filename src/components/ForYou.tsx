@@ -428,9 +428,18 @@ export function ForYou() {
       return;
     }
     pressRef.current = { id, x: e.clientX, y: e.clientY };
+    const target = e.currentTarget as HTMLElement;
+    const pointerId = e.pointerId;
     timerRef.current = window.setTimeout(() => {
       haptic(18);
       setEditing(true);
+      // Keep the finger on the tile: the same press becomes the drag.
+      setDragId(id);
+      try {
+        target.setPointerCapture(pointerId);
+      } catch {
+        /* ignore */
+      }
       pressRef.current = null;
     }, 480);
   };
