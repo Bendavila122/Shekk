@@ -131,6 +131,8 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AppProvider>
+        <ChatNotifications />
+        <Toaster position="top-center" />
         <RequireAccount>
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
@@ -139,3 +141,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
