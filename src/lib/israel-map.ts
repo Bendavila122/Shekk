@@ -1,21 +1,29 @@
 /**
  * "Been There" — an interactive map of Israel.
  *
- * The country is cut into scratchable areas you can tap to mark as visited,
- * with pins on the places students actually end up: the Kotel, Masada, the
- * Kinneret, Machane Yehuda, Eilat.
+ * Areas are the country's real subdistricts plus the Shomron / Yehuda
+ * governorates, generated from geoBoundaries (CC0) into `israel-geo.ts`, so
+ * the outlines are the actual borders rather than hand-drawn boxes.
  *
- * Geometry is stored in real lon/lat degrees and projected to SVG space, so
- * pins and areas always line up.
+ * Places are stored in lon/lat and projected into the same SVG space, so pins
+ * always sit inside the right area.
  */
 
-export type Region = {
-  id: string;
-  name: string;
-  hint: string;
-  /** [lon, lat] ring, roughly following borders and the coast. */
-  ring: [number, number][];
-};
+import {
+  LAT_MAX,
+  LON_MIN,
+  LON_SCALE,
+  MAP_HEIGHT,
+  MAP_WIDTH,
+  PROJ_K,
+  REGION_SHAPES,
+  type RegionShape,
+} from "@/lib/israel-geo";
+import { MORE_PLACES } from "@/lib/israel-map-places";
+
+export { MAP_HEIGHT, MAP_WIDTH, LON_SCALE };
+
+export type Region = RegionShape;
 
 export type Landmark = {
   /** Wikipedia page title — used for a real photo and live summary. */
@@ -27,7 +35,8 @@ export type MapPlace = {
   id: string;
   name: string;
   hebrew?: string;
-  region: string;
+  /** Legacy hand-assigned area; the real one is resolved from the geometry. */
+  region?: string;
   kind: "city" | "holy" | "nature" | "beach" | "history";
   lat: number;
   lon: number;
@@ -42,117 +51,12 @@ export type MapPlace = {
 
 /* ------------------------------------------------------------------ areas */
 
-export const REGIONS: Region[] = [
-  {
-    id: "galilee",
-    name: "Galilee & Golan",
-    hint: "Tzfat, Kinneret, Golan wineries",
-    ring: [
-      [35.10, 33.09],
-      [35.58, 33.28],
-      [35.78, 33.25],
-      [35.63, 32.85],
-      [35.57, 32.70],
-      [34.95, 32.70],
-      [34.95, 32.83],
-      [35.07, 32.92],
-    ],
-  },
-  {
-    id: "carmel",
-    name: "Haifa & Carmel",
-    hint: "Bahai gardens, Jezreel valley",
-    ring: [
-      [34.95, 32.70],
-      [35.57, 32.70],
-      [35.55, 32.40],
-      [34.89, 32.40],
-    ],
-  },
-  {
-    id: "sharon",
-    name: "Sharon & Shomron",
-    hint: "Netanya, Ra'anana, Caesarea",
-    ring: [
-      [34.89, 32.40],
-      [35.55, 32.40],
-      [35.53, 32.05],
-      [34.76, 32.08],
-    ],
-  },
-  {
-    id: "center",
-    name: "Tel Aviv & the centre",
-    hint: "Tel Aviv, Modiin, Beit Shemesh",
-    ring: [
-      [34.76, 32.08],
-      [35.53, 32.05],
-      [35.52, 31.80],
-      [34.65, 31.80],
-    ],
-  },
-  {
-    id: "jerusalem",
-    name: "Jerusalem & Judean hills",
-    hint: "Old City, Gush Etzion, Dead Sea",
-    ring: [
-      [35.00, 31.80],
-      [35.52, 31.80],
-      [35.50, 31.55],
-      [35.00, 31.55],
-    ],
-  },
-  {
-    id: "shfela",
-    name: "Shfela & south coast",
-    hint: "Ashdod, Ashkelon, Beit Guvrin",
-    ring: [
-      [34.65, 31.80],
-      [35.00, 31.80],
-      [35.00, 31.55],
-      [34.55, 31.67],
-    ],
-  },
-  {
-    id: "negev-north",
-    name: "Northern Negev",
-    hint: "Be'er Sheva, Arad, Dead Sea south",
-    ring: [
-      [34.48, 31.55],
-      [35.50, 31.55],
-      [35.37, 31.10],
-      [34.90, 30.90],
-      [34.27, 31.22],
-    ],
-  },
-  {
-    id: "negev-central",
-    name: "Central Negev",
-    hint: "Mitzpe Ramon, the Machtesh",
-    ring: [
-      [34.27, 31.22],
-      [34.90, 30.90],
-      [35.37, 31.10],
-      [35.20, 30.40],
-      [34.58, 30.40],
-    ],
-  },
-  {
-    id: "arava",
-    name: "Arava & Eilat",
-    hint: "Timna, Red Sea, Jordan border",
-    ring: [
-      [34.58, 30.40],
-      [35.20, 30.40],
-      [35.00, 29.53],
-      [34.92, 29.53],
-    ],
-  },
-];
+export const REGIONS: Region[] = REGION_SHAPES;
 
 /* ------------------------------------------------------------------ places */
 
-export const MAP_PLACES: MapPlace[] = [
+const CORE_PLACES: MapPlace[] = [
+
   {
     id: "kotel",
     name: "Western Wall",
@@ -532,6 +436,8 @@ export const MAP_PLACES: MapPlace[] = [
   },
 ];
 
+export const MAP_PLACES: MapPlace[] = [...CORE_PLACES, ...MORE_PLACES];
+
 export const KIND_META: Record<MapPlace["kind"], { label: string; emoji: string }> = {
   city: { label: "City", emoji: "🏙️" },
   holy: { label: "Holy site", emoji: "🕍" },
@@ -544,65 +450,66 @@ export function findMapPlace(id: string) {
   return MAP_PLACES.find((p) => p.id === id) ?? null;
 }
 
-export function region(id: string) {
+export function region(id: string | undefined) {
   return REGIONS.find((r) => r.id === id) ?? null;
 }
 
 /* -------------------------------------------------------------- projection */
 
-const LON_MIN = 34.2;
-const LON_MAX = 35.85;
-const LAT_MIN = 29.45;
-const LAT_MAX = 33.35;
-const K = 220; // degrees → svg units
-
-/** Equirectangular projection, squeezed by latitude so shapes stay honest. */
-export const LON_SCALE = Math.cos((31.5 * Math.PI) / 180);
-
-export const MAP_WIDTH = +((LON_MAX - LON_MIN) * LON_SCALE * K).toFixed(2);
-export const MAP_HEIGHT = +((LAT_MAX - LAT_MIN) * K).toFixed(2);
-
 export function project(lon: number, lat: number): [number, number] {
   return [
-    +((lon - LON_MIN) * LON_SCALE * K).toFixed(2),
-    +((LAT_MAX - lat) * K).toFixed(2),
+    +((lon - LON_MIN) * LON_SCALE * PROJ_K).toFixed(2),
+    +((LAT_MAX - lat) * PROJ_K).toFixed(2),
   ];
 }
 
-export function ringToPath(ring: [number, number][]): string {
-  return (
-    ring
-      .map(([lon, lat], i) => {
-        const [x, y] = project(lon, lat);
-        return `${i === 0 ? "M" : "L"}${x} ${y}`;
-      })
-      .join(" ") + " Z"
-  );
+/* ------------------------------------------------- which area is a pin in */
+
+type Poly = [number, number][];
+
+let polyCache: { id: string; polys: Poly[] }[] | null = null;
+
+function parsePath(d: string): Poly {
+  return d
+    .replace(/[MLZ]/g, " ")
+    .trim()
+    .split(/\s+/)
+    .reduce<Poly>((acc, _v, i, arr) => {
+      if (i % 2 === 0) acc.push([Number(arr[i]), Number(arr[i + 1])]);
+      return acc;
+    }, []);
 }
 
-/** Rough national outline, drawn over the areas so the country reads as one. */
-export const OUTLINE: [number, number][] = [
-  [35.10, 33.09],
-  [35.58, 33.28],
-  [35.78, 33.25],
-  [35.63, 32.85],
-  [35.57, 32.70],
-  [35.55, 32.40],
-  [35.53, 32.05],
-  [35.52, 31.80],
-  [35.50, 31.55],
-  [35.37, 31.10],
-  [35.20, 30.40],
-  [35.00, 29.53],
-  [34.92, 29.53],
-  [34.58, 30.40],
-  [34.27, 31.22],
-  [34.48, 31.55],
-  [34.55, 31.67],
-  [34.65, 31.80],
-  [34.76, 32.08],
-  [34.89, 32.40],
-  [34.95, 32.70],
-  [34.95, 32.83],
-  [35.07, 32.92],
-];
+function polygons() {
+  if (!polyCache) {
+    polyCache = REGIONS.map((r) => ({ id: r.id, polys: r.paths.map(parsePath) }));
+  }
+  return polyCache;
+}
+
+function inside(pt: [number, number], poly: Poly) {
+  let hit = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [xi, yi] = poly[i]!;
+    const [xj, yj] = poly[j]!;
+    if (yi > pt[1] !== yj > pt[1] && pt[0] < ((xj - xi) * (pt[1] - yi)) / (yj - yi) + xi) {
+      hit = !hit;
+    }
+  }
+  return hit;
+}
+
+/** The area a place sits in, resolved from the real geometry. */
+export function regionOfPlace(place: MapPlace): Region | null {
+  const pt = project(place.lon, place.lat);
+  for (const { id, polys } of polygons()) {
+    if (polys.some((p) => inside(pt, p))) return region(id);
+  }
+  return region(place.region);
+}
+
+/** Places that fall inside an area. */
+export function placesInRegion(regionId: string): MapPlace[] {
+  return MAP_PLACES.filter((p) => regionOfPlace(p)?.id === regionId);
+}
+
