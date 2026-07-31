@@ -479,11 +479,11 @@ export function ForYou() {
     const up = () => onTilePointerUp();
     window.addEventListener("pointermove", move, { passive: false });
     window.addEventListener("pointerup", up);
-    window.addEventListener("pointercancel", up);
+
     return () => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
-      window.removeEventListener("pointercancel", up);
+
     };
   });
 
@@ -596,7 +596,6 @@ export function ForYou() {
                 onPointerDown={(e) => onTilePointerDown(e, item.def.id)}
                 onPointerMove={onTilePointerMove}
                 onPointerUp={onTilePointerUp}
-                onPointerCancel={onTilePointerUp}
                 onContextMenu={(e) => editing && e.preventDefault()}
                 style={editing ? { animationDelay: `${(i % 4) * 90}ms` } : undefined}
                 className={`relative ${item.wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"} ${
