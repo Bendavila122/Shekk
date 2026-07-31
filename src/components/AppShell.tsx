@@ -280,6 +280,12 @@ export function AppShell({ children }: { children: ReactNode }) {
             >
               <Icon className="size-5 shrink-0" strokeWidth={active ? 2.4 : 1.8} />
               <span className="truncate">{label}</span>
+              {to === "/social" && unread > 0 && (
+                <span className="ml-auto min-w-5 rounded-full bg-destructive px-1.5 text-center text-[11px] font-bold leading-5 text-white">
+                  {unread > 9 ? "9+" : unread}
+                </span>
+              )}
+
             </Link>
           );
         })}
