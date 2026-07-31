@@ -42,6 +42,12 @@ import {
   startSplit,
 } from "@/lib/social.functions";
 
+import type { ChatMessage, ConversationView } from "@/lib/social.server";
+
+/** A message that may still be in flight to the server. */
+export type ChatMessageUI = ChatMessage & { pending?: boolean };
+export type ConversationUI = Omit<ConversationView, "messages"> & { messages: ChatMessageUI[] };
+
 export const socialKeys = {
   handle: ["social", "handle"] as const,
   friends: ["social", "friends"] as const,
