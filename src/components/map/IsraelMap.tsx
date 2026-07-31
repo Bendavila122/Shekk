@@ -252,12 +252,6 @@ export function IsraelMap({
             <stop offset="0" style={{ stopColor: "var(--map-dry)", stopOpacity: 0 }} />
             <stop offset="1" style={{ stopColor: "var(--map-dry)", stopOpacity: 0.6 }} />
           </linearGradient>
-          <pattern id="dunes" width="7" height="7" patternUnits="userSpaceOnUse">
-            <circle cx="1.4" cy="1.4" r="0.55" fill="var(--map-arava)" opacity="0.35" />
-          </pattern>
-          <filter id="land-shadow" x="-20%" y="-20%" width="150%" height="150%">
-            <feDropShadow dy="1.4" dx="0.6" stdDeviation="1.6" floodOpacity="0.18" />
-          </filter>
         </defs>
 
         {/* sea */}
