@@ -33,7 +33,7 @@ import { useFitnessShortlist, useFitnessVenues, useVenuesByIds } from "@/lib/use
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { haptic } from "@/lib/foryou-prefs";
 
-export const Route = createFileRoute("/explore/fitness")({
+export const Route = createFileRoute("/explore/fitness/")({
   head: () => ({
     meta: [
       { title: "Fitness · Shekk" },
