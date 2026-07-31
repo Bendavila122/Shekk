@@ -360,7 +360,7 @@ export function IsraelMap({
                   onPlace(p.id, s);
                 }
               }}
-              className="cursor-pointer outline-none"
+              className="pointer-events-auto cursor-pointer outline-none"
             >
               <circle cx={s.x} cy={s.y} r={16} fill="transparent" />
               {active ? <circle cx={s.x} cy={s.y} r={16} className="fill-primary/20" /> : null}
