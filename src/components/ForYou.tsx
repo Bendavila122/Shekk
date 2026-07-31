@@ -45,11 +45,15 @@ function Tile({
   const content = def.build(ctx);
   const headline = def.id === "wallet" ? ils(balance) : content.headline;
   const snap = content.rows[0];
-  const footer = wide
-    ? content.sub ?? (snap ? `${snap.label}${snap.value ? ` · ${snap.value}` : ""}` : "")
-    : snap
-      ? `${snap.label}${snap.value ? ` · ${snap.value}` : ""}`
-      : (content.sub ?? "");
+  // Weather is location-bound: always name the place it's for, on tiles of any size.
+  const footer =
+    def.id === "today"
+      ? (content.sub ?? ctx.weatherCity)
+      : wide
+        ? content.sub ?? (snap ? `${snap.label}${snap.value ? ` · ${snap.value}` : ""}` : "")
+        : snap
+          ? `${snap.label}${snap.value ? ` · ${snap.value}` : ""}`
+          : (content.sub ?? "");
 
   return (
     <button
