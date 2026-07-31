@@ -1,0 +1,410 @@
+/**
+ * Extra pins for the "Been There" map — the second layer of places students
+ * actually reach on a gap year: kevarim, tiyul trailheads, beach towns and
+ * the cities you pass through on the way.
+ */
+
+import type { MapPlace } from "@/lib/israel-map";
+
+export const MORE_PLACES: MapPlace[] = [
+  {
+    id: "har-herzl",
+    name: "Har Herzl",
+    hebrew: "הר הרצל",
+    kind: "history",
+    lat: 31.7736,
+    lon: 35.1817,
+    blurb: "Israel's national cemetery and Herzl's grave, above Yad Vashem.",
+    history:
+      "Theodor Herzl was reburied here in 1949, a year after the state he imagined was declared. The ridge now holds the graves of prime ministers, presidents and the national military cemetery, and is the site of the Yom HaZikaron and Yom HaAtzmaut ceremonies.",
+    todo: [
+      "Herzl's grave and the small museum at the entrance",
+      "Walk down to Yad Vashem — allow three hours",
+      "Ammunition Hill on the other side of town for the 1967 story",
+    ],
+    wiki: "Mount_Herzl",
+    gallery: [
+      { wiki: "Mount_Herzl", label: "Har Herzl" },
+      { wiki: "Yad_Vashem", label: "Yad Vashem" },
+    ],
+  },
+  {
+    id: "city-of-david",
+    name: "City of David",
+    hebrew: "עיר דוד",
+    kind: "history",
+    lat: 31.7739,
+    lon: 35.2358,
+    blurb: "Ancient Jerusalem below the Old City — walk Hizkiyahu's water tunnel.",
+    history:
+      "The ridge south of the Temple Mount is the Jerusalem of David and Shlomo. Excavations since the 1860s have uncovered the Canaanite spring fortress, a large stone structure identified by some as David's palace, and Hizkiyahu's tunnel, cut in the eighth century BCE to bring the Gichon spring inside the walls.",
+    todo: [
+      "Wet walk through Hizkiyahu's tunnel — bring a torch and shorts",
+      "Shiloach pool and the Herodian drainage channel up to the Kotel",
+      "Night show for the 3D orientation film",
+    ],
+    wiki: "City_of_David",
+    gallery: [{ wiki: "City_of_David", label: "City of David" }],
+  },
+  {
+    id: "kever-rachel",
+    name: "Kever Rachel",
+    hebrew: "קבר רחל",
+    kind: "holy",
+    lat: 31.7196,
+    lon: 35.2022,
+    blurb: "Rachel Imenu's kever on the edge of Bethlehem, ten minutes from Jerusalem.",
+    history:
+      "Bereishit places Rachel's burial on the road to Efrat, and the site has drawn Jewish pilgrims for well over a thousand years. The Ottoman-era building was expanded by Moses Montefiore in 1841; today it sits behind a security wall reached by a protected road from Jerusalem.",
+    todo: [
+      "Bus 163 from Jerusalem runs straight there",
+      "Busiest on Rosh Chodesh and the 11th of Cheshvan",
+      "Modest dress, separate men's and women's sides",
+    ],
+    wiki: "Rachel's_Tomb",
+    gallery: [{ wiki: "Rachel's_Tomb", label: "Kever Rachel" }],
+  },
+  {
+    id: "gush-etzion",
+    name: "Gush Etzion",
+    kind: "history",
+    lat: 31.6556,
+    lon: 35.1244,
+    blurb: "Efrat, Alon Shvut and the lone oak — plus the best hummus in the hills.",
+    history:
+      "Jewish farming villages were established here in the 1920s and 40s, fell in the 1948 siege and were rebuilt after 1967 by the children of the original defenders. The lone oak that survived became the symbol of the return.",
+    todo: [
+      "Lone Oak and the Gush Etzion heritage centre",
+      "Wine tasting at Gush Etzion or Tura winery",
+      "Herodion — Herod's cone-shaped palace-fortress nearby",
+    ],
+    wiki: "Gush_Etzion",
+    gallery: [
+      { wiki: "Gush_Etzion", label: "Gush Etzion" },
+      { wiki: "Herodium", label: "Herodion" },
+    ],
+  },
+  {
+    id: "shilo",
+    name: "Shilo",
+    hebrew: "שילה",
+    kind: "history",
+    lat: 32.0553,
+    lon: 35.2897,
+    blurb: "Where the Mishkan stood for 369 years, in the Binyamin hills.",
+    history:
+      "Shilo was Israel's spiritual capital from the conquest until the Aron was captured by the Philistines — the place Chana davened for Shmuel. Excavations have exposed a large flat platform matching the Mishkan's dimensions and storerooms full of Israelite-era vessels.",
+    todo: [
+      "Tel Shilo and the Mishkan visitor centre",
+      "Lookout tower over the Shomron hills",
+      "Combine with Har Bracha's view over Shechem",
+    ],
+    wiki: "Shiloh_(biblical_city)",
+    gallery: [{ wiki: "Shiloh_(biblical_city)", label: "Tel Shilo" }],
+  },
+  {
+    id: "kever-yosef",
+    name: "Kever Yosef",
+    hebrew: "קבר יוסף",
+    kind: "holy",
+    lat: 32.2131,
+    lon: 35.2822,
+    blurb: "Yosef's kever in Shechem — organised convoys only, at night.",
+    history:
+      "Yehoshua records that Yosef's bones, carried out of Egypt, were buried in the plot Yaakov bought at Shechem. The site has been venerated continuously and is now reached on scheduled IDF-escorted visits several times a month.",
+    todo: [
+      "Only with an organised, escorted convoy — never independently",
+      "Check current guidance before booking",
+      "Pair with Har Bracha and Har Grizim by day",
+    ],
+    wiki: "Joseph's_Tomb",
+    gallery: [{ wiki: "Joseph's_Tomb", label: "Kever Yosef" }],
+  },
+  {
+    id: "meron",
+    name: "Meron",
+    hebrew: "מירון",
+    kind: "holy",
+    lat: 32.9797,
+    lon: 35.4383,
+    blurb: "Rashbi's kever above Tzfat — the Lag BaOmer capital of the world.",
+    history:
+      "Rabbi Shimon bar Yochai, to whom the Zohar is attributed, is buried on the slope of Har Meron alongside his son Elazar. Hundreds of thousands come on Lag BaOmer for bonfires, chalakes and dancing; the rest of the year it is quiet.",
+    todo: [
+      "Kever Rashbi and the old Meron synagogue ruins",
+      "Har Meron summit trail — the highest in the Galilee",
+      "Amuka nearby for the shidduch segula",
+    ],
+    wiki: "Meron,_Israel",
+    gallery: [{ wiki: "Meron,_Israel", label: "Meron" }],
+  },
+  {
+    id: "golan",
+    name: "Golan Heights",
+    hebrew: "רמת הגולן",
+    kind: "nature",
+    lat: 32.9979,
+    lon: 35.7439,
+    blurb: "Basalt plateau of wineries, waterfalls and Syria lookouts.",
+    history:
+      "The Golan was captured in 1967 after Syrian artillery had shelled the Galilee below, held again in the 1973 Yom Kippur battles of the Valley of Tears, and brought under Israeli law in 1981. Talmudic-era towns like Katzrin and Gamla dot the plateau.",
+    todo: [
+      "Gamla waterfall and the vulture lookout",
+      "Banias and the Hermon stream trails",
+      "Bental crater and the old bunkers on the Syrian border",
+      "Golan Heights or Pelter winery tasting",
+    ],
+    wiki: "Golan_Heights",
+    gallery: [
+      { wiki: "Golan_Heights", label: "The Golan" },
+      { wiki: "Gamla", label: "Gamla" },
+    ],
+  },
+  {
+    id: "banias",
+    name: "Banias",
+    kind: "nature",
+    lat: 33.2486,
+    lon: 35.6944,
+    blurb: "The biggest waterfall in Israel, at the foot of the Hermon.",
+    history:
+      "One of the three sources of the Jordan, Banias was the Greek shrine of Pan and later Caesarea Philippi, Herod Philip's capital. Crusader and Mamluk remains sit above the spring, with the Nimrod fortress on the ridge.",
+    todo: [
+      "Hanging trail from the spring to the waterfall",
+      "Nimrod Fortress on the way up the Hermon road",
+      "Tel Dan reserve twenty minutes west",
+    ],
+    wiki: "Banias",
+    gallery: [
+      { wiki: "Banias", label: "Banias" },
+      { wiki: "Nimrod_Fortress", label: "Nimrod Fortress" },
+    ],
+  },
+  {
+    id: "rosh-hanikra",
+    name: "Rosh Hanikra",
+    kind: "nature",
+    lat: 33.0895,
+    lon: 35.1053,
+    blurb: "Sea grottoes cut into white chalk cliffs on the Lebanese border.",
+    history:
+      "The cliffs mark the northern end of the coast road; the British blew the railway tunnels here in 1948 to cut the line from Beirut. A cable car drops into caves the Mediterranean has been carving for millennia.",
+    todo: [
+      "Cable car down to the grottoes",
+      "Old railway tunnel walk",
+      "Achziv beach and Akko on the way back south",
+    ],
+    wiki: "Rosh_HaNikra_grottoes",
+    gallery: [{ wiki: "Rosh_HaNikra_grottoes", label: "Rosh Hanikra" }],
+  },
+  {
+    id: "tiberias",
+    name: "Tiberias",
+    hebrew: "טבריה",
+    kind: "holy",
+    lat: 32.7922,
+    lon: 35.5312,
+    blurb: "One of the four holy cities, on the Kinneret shore — Rambam is buried here.",
+    history:
+      "Founded by Herod Antipas around 20 CE, Tiberias became the seat of the Sanhedrin and the place where the Jerusalem Talmud and the Masoretic text were compiled. The Rambam, Rabbi Akiva and Rabbi Meir Baal HaNes are all buried in the city.",
+    todo: [
+      "Kever HaRambam in the town centre",
+      "Hot springs and the promenade at night",
+      "Boat across the Kinneret from the old port",
+    ],
+    wiki: "Tiberias",
+    gallery: [{ wiki: "Tiberias", label: "Tiberias" }],
+  },
+  {
+    id: "nazareth",
+    name: "Nazareth",
+    kind: "city",
+    lat: 32.7018,
+    lon: 35.2977,
+    blurb: "Israel's largest Arab city, with the best knafeh in the north.",
+    history:
+      "A small Jewish village in the Second Temple period, Nazareth grew into a Christian pilgrimage centre and is today the cultural capital of Israel's Arab community. Nazareth Illit, now Nof HaGalil, was built on the ridge above in the 1950s.",
+    todo: [
+      "Old market and the Basilica of the Annunciation",
+      "Knafeh and kanafe-adjacent arguments on Casanova Street",
+      "Mount Precipice lookout over the Jezreel valley",
+    ],
+    wiki: "Nazareth",
+    gallery: [{ wiki: "Nazareth", label: "Nazareth" }],
+  },
+  {
+    id: "beit-shean",
+    name: "Beit She'an",
+    kind: "history",
+    lat: 32.5039,
+    lon: 35.4989,
+    blurb: "The best-preserved Roman city in Israel, in the Jordan valley heat.",
+    history:
+      "Scythopolis was the leading city of the Decapolis, destroyed by the earthquake of 749 CE which left its colonnaded streets, theatre and bathhouses collapsed in place. The tel above it goes back to the Canaanites and the death of Shaul on Mount Gilboa opposite.",
+    todo: [
+      "Roman theatre and the cardo at She'an National Park",
+      "Gan HaShlosha (Sachne) springs ten minutes away",
+      "Mount Gilboa in spring for the irises",
+    ],
+    wiki: "Beit_She'an",
+    gallery: [{ wiki: "Beit_She'an", label: "Beit She'an" }],
+  },
+  {
+    id: "netanya",
+    name: "Netanya",
+    kind: "beach",
+    lat: 32.3215,
+    lon: 34.8532,
+    blurb: "Cliff-top promenade, wide beaches and a large French community.",
+    history:
+      "Founded in 1929 by Bnei Binyamin farmers and named for Nathan Straus, Netanya grew on citrus and then diamonds. Its 14km of beach and cliff lifts made it the Sharon's main resort town.",
+    todo: [
+      "Kikar Ha'atzmaut and the cliff lift to Sironit beach",
+      "Poleg and Beit Yanai beaches for quieter sand",
+      "Utopia orchid park on a rainy day",
+    ],
+    wiki: "Netanya",
+    gallery: [{ wiki: "Netanya", label: "Netanya" }],
+  },
+  {
+    id: "modiin",
+    name: "Modiin",
+    hebrew: "מודיעין",
+    kind: "city",
+    lat: 31.8928,
+    lon: 35.0104,
+    blurb: "Planned city between Jerusalem and Tel Aviv — Chanukah starts here.",
+    history:
+      "The Chashmonaim came from ancient Modiin, where the revolt against the Seleucids began; the modern city was planned by Moshe Safdie and built from 1993. The annual torch relay to Jerusalem still starts at the Maccabee graves nearby.",
+    todo: [
+      "Chashmonaim graves and the Modiin forest trails",
+      "Anava park lake and bike paths",
+      "Ben Shemen forest for a Friday barbecue",
+    ],
+    wiki: "Modi'in-Maccabim-Re'ut",
+    gallery: [{ wiki: "Modi'in-Maccabim-Re'ut", label: "Modiin" }],
+  },
+  {
+    id: "ashdod",
+    name: "Ashdod",
+    kind: "beach",
+    lat: 31.8014,
+    lon: 34.6435,
+    blurb: "Israel's biggest port, long beaches and a big Anglo-Chareidi scene.",
+    history:
+      "Ancient Ashdod was one of the five Philistine cities; the modern city was founded in 1956 on the dunes and grew fast around the deep-water port opened in 1965, absorbing large Moroccan, Georgian and Soviet communities.",
+    todo: [
+      "Lido and Mei Ami beaches",
+      "Ad Halom park and the Givat Yona lookout",
+      "Sand dunes reserve at the city's southern edge",
+    ],
+    wiki: "Ashdod",
+    gallery: [{ wiki: "Ashdod", label: "Ashdod" }],
+  },
+  {
+    id: "beit-guvrin",
+    name: "Beit Guvrin",
+    kind: "history",
+    lat: 31.6119,
+    lon: 34.8961,
+    blurb: "Bell caves and Maresha's underground city, an easy day from Jerusalem.",
+    history:
+      "Quarrying from the Hellenistic period through Byzantine times hollowed out hundreds of caves in the soft chalk, leaving columbaria, olive presses and vast bell-shaped chambers. The area became a UNESCO World Heritage site in 2014.",
+    todo: [
+      "Bell caves and the Sidonian burial caves",
+      "Dig for a Day archaeology programme",
+      "Britannia Park and Tel Lachish nearby",
+    ],
+    wiki: "Beit_Guvrin-Maresha",
+    gallery: [{ wiki: "Beit_Guvrin-Maresha", label: "Beit Guvrin" }],
+  },
+  {
+    id: "sderot",
+    name: "Sderot",
+    kind: "city",
+    lat: 31.5251,
+    lon: 34.5964,
+    blurb: "The western Negev town that has lived under rocket fire for two decades.",
+    history:
+      "Established in 1951 as a ma'abara for immigrants from Kurdistan and Iran, Sderot sits a kilometre from Gaza. Residents have fifteen seconds to reach a shelter, and the town became a symbol of the region's resilience — and of the 7 October attacks.",
+    todo: [
+      "Sderot lookout over the Gaza border",
+      "Learn the shelter drill before you visit",
+      "Volunteer days with farms in the Gaza envelope",
+    ],
+    wiki: "Sderot",
+    gallery: [{ wiki: "Sderot", label: "Sderot" }],
+  },
+  {
+    id: "arad",
+    name: "Arad",
+    kind: "city",
+    lat: 31.2589,
+    lon: 35.2124,
+    blurb: "Desert town on the Dead Sea escarpment, dry air and cheap rent.",
+    history:
+      "Biblical Arad guarded the Negev's eastern approach; the modern town was planned in 1962 as the first designed-from-scratch development town, and its dry climate made it a centre for asthma treatment. It is now a base for Masada and Dead Sea trips.",
+    todo: [
+      "Tel Arad's Canaanite city and Israelite temple",
+      "Masada's western Roman ramp side from here",
+      "Yatir forest — the largest planted forest in Israel",
+    ],
+    wiki: "Arad,_Israel",
+    gallery: [{ wiki: "Arad,_Israel", label: "Arad" }],
+  },
+  {
+    id: "dead-sea",
+    name: "Dead Sea",
+    hebrew: "ים המלח",
+    kind: "nature",
+    lat: 31.5000,
+    lon: 35.4667,
+    blurb: "The lowest point on earth — float, mud, repeat.",
+    history:
+      "At more than 430 metres below sea level, the Dead Sea is nine times saltier than the ocean and shrinking by about a metre a year. Its shore holds Qumran, where the Dead Sea Scrolls were found, and Sodom's salt formations at the southern end.",
+    todo: [
+      "Float at Ein Bokek — free public beaches with showers",
+      "Qumran caves and the Scrolls story",
+      "Never shave the day before, and keep it out of your eyes",
+    ],
+    wiki: "Dead_Sea",
+    gallery: [
+      { wiki: "Dead_Sea", label: "Dead Sea" },
+      { wiki: "Qumran", label: "Qumran" },
+    ],
+  },
+  {
+    id: "timna",
+    name: "Timna Park",
+    kind: "nature",
+    lat: 29.7883,
+    lon: 34.9552,
+    blurb: "Copper mines, Shlomo's pillars and a full-size Mishkan replica.",
+    history:
+      "Egyptians and later Israelite-era miners worked the Timna valley's copper from the fourteenth century BCE, leaving shafts, smelting camps and rock carvings. The sandstone arches and mushroom formations are the classic Arava photo stop.",
+    todo: [
+      "Shlomo's Pillars and the Mishkan model",
+      "Cycle or drive the park loop early morning",
+      "Red Canyon on the same day trip out of Eilat",
+    ],
+    wiki: "Timna_Valley",
+    gallery: [{ wiki: "Timna_Valley", label: "Timna Valley" }],
+  },
+  {
+    id: "yericho",
+    name: "Yericho",
+    kind: "history",
+    lat: 31.8607,
+    lon: 35.4444,
+    blurb: "The oldest walled city on earth, below sea level in the Jordan valley.",
+    history:
+      "Tel es-Sultan has layers going back 10,000 years, including a Neolithic tower older than the pyramids, and is the Yericho whose walls fell to Yehoshua. Herod and later Hasmonean winter palaces sit nearby, along with the Sukkot-era synagogue mosaic of Naaran.",
+    todo: [
+      "Cable car to the Mount of Temptation monastery",
+      "Tel Yericho and the ancient tower",
+      "Only with an organised tour — check guidance first",
+    ],
+    wiki: "Jericho",
+    gallery: [{ wiki: "Jericho", label: "Yericho" }],
+  },
+];
