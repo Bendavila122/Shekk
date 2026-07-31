@@ -1,45 +1,33 @@
-## Events & tickets in Shekk
+## Goal
 
-Students browse events and club nights, buy a ticket with their Shekk balance, and get a scannable QR ticket in a "My tickets" wallet. Tickets are non-refundable and non-transferable, matching the closed-loop terms.
+Staying signed in across a page refresh, instead of being bounced back to the sign-in screen.
 
-Events come from a provider-agnostic events layer with one adapter slot. Until a ticketing partner (Eventer, Tickchak, etc.) grants API credentials, the working source is the events catalogue managed in the Shekk Console — no seeded or fake listings; the screens are empty until real events are added.
+## What I checked
 
-### What the student sees
+- The session store (`src/lib/store.tsx`) calls `supabase.auth.getSession()` once on mount and then only reacts to `SIGNED_IN`, `SIGNED_OUT`, `USER_UPDATED` events.
+- The front door (`src/components/RequireAccount.tsx`) redirects to `/auth` as soon as `authChecked && !signedIn`.
+- Nothing in the app calls `signOut()`, and the auth client is configured with `persistSession: true` + `localStorage`.
+- The sign-in screen (`src/routes/auth.tsx`) has **no** "already signed in" redirect, so once anything bounces you to `/auth`, the only way out is signing in again — which matches the symptom you're seeing (you're on `/auth?next=/` right now).
 
-- **Events list** (replaces the current mock-data `/explore/events` screen): real listings from the backend, grouped by upcoming date, with host, venue, city, time, price in shekels and remaining spots. Filters for type (Shabbaton, tiyul, club night, shiur, chesed) and city. Empty state explains that events land here as programs and venues come online.
-- **Event detail**: full description, host, when/where, what's included, price, ticket limit per person, and the plain-language line that tickets are non-refundable and non-transferable.
-- **Checkout**: confirm sheet showing ticket price, quantity and the balance after purchase. Paid from the Shekk balance only. If the balance is short, the sheet says how much is missing and offers "Top up" straight into the existing top-up flow, returning to checkout after.
-- **My tickets**: a wallet list of purchased tickets — upcoming first, then past. Each ticket opens a big QR code with the event, holder name, quantity and a one-line "show this at the bus/door".
-- **Activity**: each purchase appears as a normal statement line (event name, "Events" category, amount, date), because it goes through the existing ledger.
+I could not read the live preview's stored session (the preview was reloading), so the exact trigger is **not yet confirmed**. Two candidates: the stored session is being dropped/invalidated on reload (e.g. a token refresh failing or two auth clients racing the same refresh token), or the gate flips to "signed out" during the brief window before the session resolves.
 
-### Backend
+## Step 1 — Confirm the cause (first thing I do)
 
-New tables, all with RLS and grants:
+- Run a headless browser session against the app: sign in, hard-refresh, and log every `onAuthStateChange` event, the result of `getSession()` on reload, the `sb-*` localStorage entry before/after refresh, and any `/auth/v1/token` network response (looking for `invalid_grant` / "Refresh Token Already Used").
+- That distinguishes "session is gone from storage" from "session exists but the gate redirected too early". I'll only apply the matching fix.
 
-- `events` — title, kind, description, host, venue, city, starts_at, price_agorot, capacity, per-person limit, status (draft/published/cancelled), plus `provider` and `provider_ref` so partner-sourced events can coexist with console-created ones.
-- `event_tickets` — one row per purchased ticket: event, buyer, quantity, amount paid, QR token, status (valid/used/cancelled), ledger entry reference.
+## Step 2 — Fixes
 
-Purchase runs as a single `security definer` database routine so capacity, per-person limits and the ledger debit happen atomically: it re-reads the price server-side, checks remaining capacity, debits via the existing `ledger_post` path, and writes the ticket. An idempotency key prevents double-charging on a retried tap. Insufficient balance and sold-out come back as clean, plain-language errors. The client can never state a price or a balance.
+Applied based on what Step 1 shows:
 
-Reads: published events are readable by signed-in members; tickets are readable only by their buyer.
+- **If the gate is too eager:** treat auth as unresolved until the Supabase client reports a definitive result — handle `INITIAL_SESSION` and `TOKEN_REFRESHED` in the store's listener, and only mark `authChecked` once a session-or-no-session verdict is in. Keep showing the splash rather than redirecting during that window.
+- **If the stored session is being invalidated:** eliminate the duplicate/competing auth client or refresh race so a single client owns token refresh, and stop the hard `window.location.href` navigations right after sign-in (use router navigation) so the freshly written session isn't disturbed by an immediate full page load.
+- **Regardless:** make `/auth` redirect an already-signed-in visitor straight to their `next` destination. This is the safety net — even if a transient blip sends someone to the sign-in screen, they bounce right back into the app instead of having to re-enter credentials.
 
-### Admin console
+## Step 3 — Verify
 
-A new **Events** section in `/admin`:
-- Create/edit/publish/cancel an event (all fields above).
-- Live sold/remaining counts per event and a ticket list per event.
-- Cancelling an event marks its tickets cancelled (no automatic refund, per the non-refundable rule — the console shows the affected buyers so staff can handle it out of band).
+Re-run the browser script: sign in, refresh three times, and confirm the wallet renders each time with no visit to `/auth`.
 
-This is what makes the feature functional on day one: publish an event in the console and the student flow works end to end with real money.
+## Technical notes
 
-### Partner adapter (later, once you have credentials)
-
-A server-only provider module with a single `listPartnerEvents()` seam and a normaliser into the `events` shape. Nothing is wired to a live partner in this pass. When you obtain partner access from Eventer or Tickchak, the remaining work is: store their key as a secret, write the adapter against their real response shape, and add a sync routine that upserts by `provider_ref`. Partner-sourced rows become read-only in the console.
-
-### Technical notes
-
-- New `src/lib/events.server.ts` (queries + purchase call), `src/lib/events.functions.ts` (authenticated server functions), `src/lib/useEvents.ts` (query hooks).
-- Routes: rebuilt `/explore/events`, new `/explore/events/$id`, new `/tickets`, new `/admin/events`.
-- Existing `EVENTS` mock data and the mock `spend()` path in the events screen are removed.
-- QR rendering reuses the existing `QRCode` component; tokens are random and unguessable.
-- A door-scanner screen is out of scope for this pass (you chose QR + wallet); the ticket `status` column leaves room to add check-in later.
+Files touched: `src/lib/store.tsx` (auth state resolution), `src/routes/auth.tsx` (signed-in redirect, navigation after sign-in), possibly `src/components/RequireAccount.tsx`. No database, schema, or auth-provider configuration changes.

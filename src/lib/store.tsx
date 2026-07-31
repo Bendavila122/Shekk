@@ -339,9 +339,31 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    supabase.auth.getSession().then(({ data }) => sync(data.session?.user?.id ?? null));
+    /**
+     * Never lock someone out on a maybe.
+     *
+     * A first read can come back empty while the session is still being
+     * restored or its token refreshed, and treating that as "signed out"
+     * bounced people to the sign-in screen on every refresh. So an empty
+     * read is confirmed against the auth server before we believe it.
+     */
+    const resolve = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!active) return;
+      if (data.session?.user?.id) {
+        sync(data.session.user.id);
+        return;
+      }
+      const { data: userData } = await supabase.auth.getUser();
+      if (!active) return;
+      sync(userData.user?.id ?? null);
+    };
+
+    void resolve();
+
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      if (event === "TOKEN_REFRESHED") return;
+      if (event === "INITIAL_SESSION" && !session) return; // let resolve() have the final word
       sync(session?.user?.id ?? null);
     });
 
@@ -350,6 +372,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       sub.subscription.unsubscribe();
     };
   }, [refreshLedger]);
+
 
   useEffect(() => {
     try {

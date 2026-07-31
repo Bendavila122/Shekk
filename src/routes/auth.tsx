@@ -5,6 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { FocusScreen, PrimaryButton, Card } from "@/components/AppShell";
 import { Splash } from "@/components/Splash";
+import { useApp } from "@/lib/store";
+
 
 function safeNext(value: unknown): string {
   if (typeof value !== "string") return "/";
@@ -189,6 +191,7 @@ function Auth() {
 
   const { next } = Route.useSearch();
   const navigate = useNavigate();
+  const { signedIn, authChecked } = useApp();
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -198,6 +201,18 @@ function Auth() {
   const [notice, setNotice] = useState<string | null>(null);
   const [sentTo, setSentTo] = useState<string | null>(null);
   const [handoff, setHandoff] = useState<string | null>(null);
+
+  /**
+   * Already signed in? Don't ask again.
+   *
+   * If anything ever bounces a member here while their session is fine, they
+   * should land back where they were going instead of typing a password again.
+   */
+  useEffect(() => {
+    if (!authChecked || !signedIn) return;
+    void navigate({ to: afterAuthPath(next), replace: true });
+  }, [authChecked, signedIn, navigate, next]);
+
 
   async function social(provider: "google" | "apple") {
     const label = provider === "google" ? "Google" : "Apple";
@@ -265,7 +280,7 @@ function Auth() {
       setBusy(false);
       if (error) return setError(error.message);
       if (data.session) {
-        window.location.href = next === "/" ? "/verify" : next;
+        void navigate({ to: afterAuthPath(next), replace: true });
         return;
       }
       setSentTo(email);
@@ -276,7 +291,8 @@ function Auth() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) return setError(error.message);
-    window.location.href = next === "/" ? "/verify" : next;
+    void navigate({ to: afterAuthPath(next), replace: true });
+
   }
 
   if (handoff) {
