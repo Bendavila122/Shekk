@@ -58,6 +58,7 @@ import { Route as AdminAccountsRouteImport } from './routes/admin/accounts'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
+import { Route as ExploreEventIdRouteImport } from './routes/explore/event.$id'
 import { Route as ExploreCategoryIdRouteImport } from './routes/explore/category.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
@@ -314,6 +315,11 @@ const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
   path: '/explore/service/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreEventIdRoute = ExploreEventIdRouteImport.update({
+  id: '/explore/event/$id',
+  path: '/explore/event/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreCategoryIdRoute = ExploreCategoryIdRouteImport.update({
   id: '/explore/category/$id',
   path: '/explore/category/$id',
@@ -411,6 +417,7 @@ export interface FileRoutesByFullPath {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
+  '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
@@ -469,6 +476,7 @@ export interface FileRoutesByTo {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
+  '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
@@ -529,6 +537,7 @@ export interface FileRoutesById {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
+  '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
@@ -590,6 +599,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
+    | '/explore/event/$id'
     | '/explore/service/$id'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
@@ -648,6 +658,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
+    | '/explore/event/$id'
     | '/explore/service/$id'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
@@ -707,6 +718,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/category/$id'
+    | '/explore/event/$id'
     | '/explore/service/$id'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
@@ -760,6 +772,7 @@ export interface RootRouteChildren {
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
+  ExploreEventIdRoute: typeof ExploreEventIdRoute
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicWebhooksAirwallexRoute: typeof ApiPublicWebhooksAirwallexRoute
@@ -1113,6 +1126,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreServiceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/event/$id': {
+      id: '/explore/event/$id'
+      path: '/explore/event/$id'
+      fullPath: '/explore/event/$id'
+      preLoaderRoute: typeof ExploreEventIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/category/$id': {
       id: '/explore/category/$id'
       path: '/explore/category/$id'
@@ -1242,6 +1262,7 @@ const rootRouteChildren: RootRouteChildren = {
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ExploreCategoryIdRoute: ExploreCategoryIdRoute,
+  ExploreEventIdRoute: ExploreEventIdRoute,
   ExploreServiceIdRoute: ExploreServiceIdRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicWebhooksAirwallexRoute: ApiPublicWebhooksAirwallexRoute,
