@@ -235,7 +235,7 @@ function EventDetail() {
                 <Card className="text-center text-sm text-muted-foreground">
                   You&apos;re {ils(shortBy)} short — top up and come back.
                 </Card>
-                <PrimaryButton onClick={() => navigate({ to: "/top-up" })}>Top up</PrimaryButton>
+                <PrimaryButton onClick={() => navigate({ to: "/topup" })}>Top up</PrimaryButton>
               </div>
             )}
           </>
