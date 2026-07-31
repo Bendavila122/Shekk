@@ -13,6 +13,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppProvider } from "../lib/store";
 import { RequireAccount } from "../components/RequireAccount";
+import { ChatNotifications } from "../components/ChatNotifications";
+import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
   return (
