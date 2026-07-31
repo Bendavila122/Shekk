@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Camera, Check, Copy, QrCode, UserPlus, X } from "lucide-react";
 import { Avatar } from "@/components/Avatar";
 import { QRCode } from "@/components/QRCode";
+import { QrScanner } from "@/components/QrScanner";
 import { useFriends, useMyHandle } from "@/lib/useSocial";
 import type { MemberCard } from "@/lib/social.server";
 
@@ -88,73 +89,29 @@ function MyCodeSheet({ onClose }: { onClose: () => void }) {
   );
 }
 
-type Detector = { detect: (source: CanvasImageSource) => Promise<Array<{ rawValue: string }>> };
-
 function ScanSheet({ onClose }: { onClose: () => void }) {
   const { resolveCode, add } = useFriends();
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [status, setStatus] = useState<"starting" | "live" | "unavailable">("starting");
-  const [manual, setManual] = useState("");
   const [found, setFound] = useState<MemberCard | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [manual, setManual] = useState("");
+  const [looking, setLooking] = useState(false);
 
   const lookup = async (code: string) => {
     setError(null);
-    const member = await resolveCode(code);
-    if (!member) {
-      setError("No Shekk member matches that code.");
-      return;
-    }
-    setFound(member);
-  };
-
-  useEffect(() => {
-    if (found) return;
-    let stream: MediaStream | null = null;
-    let timer: ReturnType<typeof setInterval> | null = null;
-    let cancelled = false;
-
-    const Ctor = (window as unknown as { BarcodeDetector?: new (o: { formats: string[] }) => Detector })
-      .BarcodeDetector;
-
-    (async () => {
-      if (!Ctor || !navigator.mediaDevices?.getUserMedia) {
-        setStatus("unavailable");
+    setLooking(true);
+    try {
+      const member = await resolveCode(code);
+      if (!member) {
+        setError("No Shekk member matches that code.");
         return;
       }
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        if (cancelled) return;
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          await videoRef.current.play();
-        }
-        setStatus("live");
-        const detector = new Ctor({ formats: ["qr_code"] });
-        timer = setInterval(async () => {
-          if (!videoRef.current) return;
-          try {
-            const hits = await detector.detect(videoRef.current);
-            if (hits[0]?.rawValue) {
-              if (timer) clearInterval(timer);
-              await lookup(hits[0].rawValue);
-            }
-          } catch {
-            /* keep scanning */
-          }
-        }, 500);
-      } catch {
-        setStatus("unavailable");
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-      if (timer) clearInterval(timer);
-      stream?.getTracks().forEach((t) => t.stop());
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [found]);
+      setFound(member);
+    } catch {
+      setError("Could not look that code up. Try again.");
+    } finally {
+      setLooking(false);
+    }
+  };
 
   return (
     <Sheet title="Scan a Shekk code" onClose={onClose}>
@@ -165,7 +122,7 @@ function ScanSheet({ onClose }: { onClose: () => void }) {
             <p className="text-lg font-bold">{found.displayName}</p>
             <p className="text-sm text-muted-foreground">
               @{found.handle}
-              {found.program ? ` · ${found.program}` : ""}
+              {found.program ? ` \u00b7 ${found.program}` : ""}
             </p>
           </div>
           <button
@@ -181,17 +138,7 @@ function ScanSheet({ onClose }: { onClose: () => void }) {
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="relative aspect-square overflow-hidden rounded-3xl bg-ink">
-            <video ref={videoRef} muted playsInline className="size-full object-cover" />
-            {status !== "live" && (
-              <p className="absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-ink-foreground/80">
-                {status === "starting"
-                  ? "Starting the camera…"
-                  : "Camera scanning is not available on this device — type the tag below instead."}
-              </p>
-            )}
-            <div className="pointer-events-none absolute inset-8 rounded-2xl border-2 border-white/70" />
-          </div>
+          <QrScanner paused={looking} onResult={(value) => void lookup(value)} />
 
           <div className="flex gap-2">
             <input
@@ -201,8 +148,8 @@ function ScanSheet({ onClose }: { onClose: () => void }) {
               className="flex-1 rounded-2xl border border-border px-4 py-3 text-sm outline-none focus:border-primary"
             />
             <button
-              disabled={manual.trim().length < 3}
-              onClick={() => lookup(manual)}
+              disabled={manual.trim().length < 3 || looking}
+              onClick={() => void lookup(manual)}
               className="tap rounded-2xl bg-primary px-4 text-sm font-semibold text-primary-foreground disabled:opacity-50"
             >
               Find
