@@ -179,7 +179,7 @@ export function IsraelMap({
 
   /* Spread the pins out: at low zoom, drop anything that would sit on top of a
      pin already drawn, so the map breathes instead of turning into a blob. */
-  const gap = rel > 3 ? 0 : rel > 1.8 ? 16 : rel > 1.2 ? 24 : 30;
+  const gap = rel > 3.2 ? 0 : rel > 2 ? 18 : rel > 1.3 ? 28 : 36;
   const drawn: MapPoint[] = [];
   const pins = projected
     .map((p) => ({ ...p, s: toScreen(p.mx, p.my) }))
@@ -385,7 +385,7 @@ export function IsraelMap({
           const flip = s.x > size.w * 0.62;
           const wantLabel = showAllLabels || ANCHOR_PINS.has(p.id) || active;
           const label =
-            wantLabel && !labelled.some((d) => Math.hypot(d.x - s.x, d.y - s.y) < 26);
+            wantLabel && !labelled.some((d) => Math.abs(d.y - s.y) < 13 && Math.abs(d.x - s.x) < 88);
           if (label) labelled.push(s);
           return (
             <g
