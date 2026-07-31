@@ -13,6 +13,7 @@ import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as TopupRouteImport } from './routes/topup'
+import { Route as TicketsRouteImport } from './routes/tickets'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -86,6 +87,11 @@ const VerifyRoute = VerifyRouteImport.update({
 const TopupRoute = TopupRouteImport.update({
   id: '/topup',
   path: '/topup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TicketsRoute = TicketsRouteImport.update({
+  id: '/tickets',
+  path: '/tickets',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -382,6 +388,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/tickets': typeof TicketsRoute
   '/topup': typeof TopupRoute
   '/verify': typeof VerifyRoute
   '/wallet': typeof WalletRoute
@@ -441,6 +448,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/tickets': typeof TicketsRoute
   '/topup': typeof TopupRoute
   '/verify': typeof VerifyRoute
   '/wallet': typeof WalletRoute
@@ -502,6 +510,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/tickets': typeof TicketsRoute
   '/topup': typeof TopupRoute
   '/verify': typeof VerifyRoute
   '/wallet': typeof WalletRoute
@@ -564,6 +573,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sitemap.xml'
     | '/terms'
+    | '/tickets'
     | '/topup'
     | '/verify'
     | '/wallet'
@@ -623,6 +633,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sitemap.xml'
     | '/terms'
+    | '/tickets'
     | '/topup'
     | '/verify'
     | '/wallet'
@@ -683,6 +694,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sitemap.xml'
     | '/terms'
+    | '/tickets'
     | '/topup'
     | '/verify'
     | '/wallet'
@@ -744,6 +756,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  TicketsRoute: typeof TicketsRoute
   TopupRoute: typeof TopupRoute
   VerifyRoute: typeof VerifyRoute
   WalletRoute: typeof WalletRoute
@@ -809,6 +822,13 @@ declare module '@tanstack/react-router' {
       path: '/topup'
       fullPath: '/topup'
       preLoaderRoute: typeof TopupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tickets': {
+      id: '/tickets'
+      path: '/tickets'
+      fullPath: '/tickets'
+      preLoaderRoute: typeof TicketsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -1233,6 +1253,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  TicketsRoute: TicketsRoute,
   TopupRoute: TopupRoute,
   VerifyRoute: VerifyRoute,
   WalletRoute: WalletRoute,
