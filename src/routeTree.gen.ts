@@ -59,8 +59,10 @@ import { Route as AdminAppsRouteImport } from './routes/admin/apps'
 import { Route as AdminAccountsRouteImport } from './routes/admin/accounts'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as ExploreMapIndexRouteImport } from './routes/explore/map.index'
 import { Route as ExploreFitnessIndexRouteImport } from './routes/explore/fitness.index'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
+import { Route as ExploreMapIdRouteImport } from './routes/explore/map.$id'
 import { Route as ExploreFitnessIdRouteImport } from './routes/explore/fitness.$id'
 import { Route as ExploreEventIdRouteImport } from './routes/explore/event.$id'
 import { Route as ExploreCategoryIdRouteImport } from './routes/explore/category.$id'
@@ -324,6 +326,11 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ExploreMapIndexRoute = ExploreMapIndexRouteImport.update({
+  id: '/explore/map/',
+  path: '/explore/map/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreFitnessIndexRoute = ExploreFitnessIndexRouteImport.update({
   id: '/explore/fitness/',
   path: '/explore/fitness/',
@@ -332,6 +339,11 @@ const ExploreFitnessIndexRoute = ExploreFitnessIndexRouteImport.update({
 const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
   id: '/explore/service/$id',
   path: '/explore/service/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreMapIdRoute = ExploreMapIdRouteImport.update({
+  id: '/explore/map/$id',
+  path: '/explore/map/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreFitnessIdRoute = ExploreFitnessIdRouteImport.update({
@@ -445,8 +457,10 @@ export interface FileRoutesByFullPath {
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
+  '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
+  '/explore/map/': typeof ExploreMapIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -508,8 +522,10 @@ export interface FileRoutesByTo {
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
+  '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/explore/fitness': typeof ExploreFitnessIndexRoute
+  '/explore/map': typeof ExploreMapIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -573,8 +589,10 @@ export interface FileRoutesById {
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
+  '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
+  '/explore/map/': typeof ExploreMapIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -639,8 +657,10 @@ export interface FileRouteTypes {
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
+    | '/explore/map/$id'
     | '/explore/service/$id'
     | '/explore/fitness/'
+    | '/explore/map/'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
     | '/lovable/email/auth/preview'
@@ -702,8 +722,10 @@ export interface FileRouteTypes {
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
+    | '/explore/map/$id'
     | '/explore/service/$id'
     | '/explore/fitness'
+    | '/explore/map'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
     | '/lovable/email/auth/preview'
@@ -766,8 +788,10 @@ export interface FileRouteTypes {
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
+    | '/explore/map/$id'
     | '/explore/service/$id'
     | '/explore/fitness/'
+    | '/explore/map/'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
     | '/lovable/email/auth/preview'
@@ -823,8 +847,10 @@ export interface RootRouteChildren {
   ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
   ExploreEventIdRoute: typeof ExploreEventIdRoute
   ExploreFitnessIdRoute: typeof ExploreFitnessIdRoute
+  ExploreMapIdRoute: typeof ExploreMapIdRoute
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
   ExploreFitnessIndexRoute: typeof ExploreFitnessIndexRoute
+  ExploreMapIndexRoute: typeof ExploreMapIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicWebhooksAirwallexRoute: typeof ApiPublicWebhooksAirwallexRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -1184,6 +1210,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/map/': {
+      id: '/explore/map/'
+      path: '/explore/map'
+      fullPath: '/explore/map/'
+      preLoaderRoute: typeof ExploreMapIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/fitness/': {
       id: '/explore/fitness/'
       path: '/explore/fitness'
@@ -1196,6 +1229,13 @@ declare module '@tanstack/react-router' {
       path: '/explore/service/$id'
       fullPath: '/explore/service/$id'
       preLoaderRoute: typeof ExploreServiceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/map/$id': {
+      id: '/explore/map/$id'
+      path: '/explore/map/$id'
+      fullPath: '/explore/map/$id'
+      preLoaderRoute: typeof ExploreMapIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore/fitness/$id': {
@@ -1346,8 +1386,10 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreCategoryIdRoute: ExploreCategoryIdRoute,
   ExploreEventIdRoute: ExploreEventIdRoute,
   ExploreFitnessIdRoute: ExploreFitnessIdRoute,
+  ExploreMapIdRoute: ExploreMapIdRoute,
   ExploreServiceIdRoute: ExploreServiceIdRoute,
   ExploreFitnessIndexRoute: ExploreFitnessIndexRoute,
+  ExploreMapIndexRoute: ExploreMapIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicWebhooksAirwallexRoute: ApiPublicWebhooksAirwallexRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
