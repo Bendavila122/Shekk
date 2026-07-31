@@ -65,6 +65,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     tagline: "Tiyulim, chesed and where students actually go.",
     services: [
       { id: "thingstodo", name: "Things to do", emoji: "🏜️", blurb: "Tiyulim, hikes, day trips", status: "guide" },
+      { id: "fitness", name: "Fitness", emoji: "🏋️", blurb: "Gyms, classes, pools & courts near you", status: "live", featured: true, to: "/explore/fitness", detail: ["Nearby gyms, studios, pools, courts and clubs", "Typical prices, contract lengths and short-stay options", "Save a shortlist and compare before you sign"] },
       { id: "volunteer", name: "Volunteering", partner: "Yad Sarah · Leket", emoji: "🤝", blurb: "Chesed shifts near your program", status: "guide" },
     ],
   },
@@ -161,7 +162,7 @@ const HOME_LAYOUT: { label: string; hint: string; ids: string[] }[] = [
   {
     label: "Live in Shekk",
     hint: "What's wired up today. More partners as their APIs land.",
-    ids: ["gett", "siddur", "insurance", "topup", "split"],
+    ids: ["gett", "siddur", "insurance", "fitness", "topup", "split"],
   },
   {
     label: "Good to know",
