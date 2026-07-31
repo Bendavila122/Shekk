@@ -1,6 +1,16 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Minus, Plus, Crosshair } from "lucide-react";
-import { KIND_META, MAP_HEIGHT, MAP_PLACES, MAP_WIDTH, REGIONS, project } from "@/lib/israel-map";
+import {
+  KIND_META,
+  MAP_HEIGHT,
+  MAP_PLACES,
+  MAP_WIDTH,
+  REGIONS,
+  TERRITORY_OUTLINES,
+  placeEmoji,
+  project,
+  territoryOf,
+} from "@/lib/israel-map";
 
 export type MapPoint = { x: number; y: number };
 
@@ -25,6 +35,7 @@ const ANCHOR_PINS = new Set([
 type View = { k: number; x: number; y: number };
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
+
 
 export function IsraelMap({
   visitedRegions,
