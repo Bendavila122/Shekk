@@ -59,7 +59,7 @@ function Tile({
         onOpen();
       }}
       style={{ animationDelay: `${Math.min(index, 6) * 45}ms` }}
-      className={`${def.gradientFor?.(ctx) ?? def.gradient} widget-tile tap-icon animate-fade-in flex flex-col gap-2 p-3 text-left ${
+      className={`${def.gradientFor?.(ctx) ?? def.gradient} widget-tile tap-icon animate-fade-in relative overflow-hidden flex flex-col gap-2 p-3 text-left ${
         wide ? "col-span-2 min-h-[8.5rem]" : "aspect-square"
       }`}
     >
