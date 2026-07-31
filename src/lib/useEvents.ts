@@ -113,17 +113,37 @@ export function useAdminEventTickets(eventId: string | null) {
   });
 }
 
-type Draft = Parameters<typeof adminCreateEvent>[0] extends { data: infer D } ? D : never;
+export type EventDraft = {
+  title: string;
+  kind: "shabbaton" | "tiyul" | "club" | "shiur" | "chesed" | "other";
+  description?: string | null;
+  includes?: string | null;
+  host: string;
+  venue?: string | null;
+  city?: string | null;
+  startsAt: string;
+  endsAt?: string | null;
+  price: number;
+  capacity: number;
+  perPersonLimit: number;
+  coverUrl?: string | null;
+  emoji: string;
+  status: "draft" | "published" | "cancelled";
+};
 
 export function useSaveEvent() {
   const create = useServerFn(adminCreateEvent);
   const update = useServerFn(adminUpdateEvent);
   const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (vars: { eventId?: string | null; draft: Draft }) =>
-      vars.eventId
-        ? update({ data: { ...(vars.draft as object), eventId: vars.eventId } as never })
-        : create({ data: vars.draft as never }),
+  return useMutation<{ ok: true }, Error, { eventId?: string | null; draft: EventDraft }>({
+    mutationFn: async (vars) => {
+      if (vars.eventId) {
+        await update({ data: { ...vars.draft, eventId: vars.eventId } });
+      } else {
+        await create({ data: vars.draft });
+      }
+      return { ok: true };
+    },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "events"] });
       qc.invalidateQueries({ queryKey: ["events"] });
