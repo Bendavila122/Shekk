@@ -83,7 +83,8 @@ export function IsraelMap({
               x={flip ? x - 8 : x + 8}
               y={y + 3.2}
               textAnchor={flip ? "end" : "start"}
-              className={`pointer-events-none ${active ? "fill-primary" : "fill-foreground"}`}
+              className={active ? "fill-primary" : "fill-foreground"}
+
               fontSize={9}
               fontWeight={600}
               paintOrder="stroke"
