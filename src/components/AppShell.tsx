@@ -131,17 +131,18 @@ export function MobileNav() {
         <Link
           to="/"
           aria-label="Home"
-          className="tap-flat -mt-7 flex flex-1 flex-col items-center gap-1 text-[11px] font-semibold"
+          className="tap-flat flex flex-1 flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold"
         >
           <span
-            className={`flex size-14 items-center justify-center rounded-full border-4 border-card shadow-lift transition-transform active:scale-95 ${
-              homeActive ? "bg-primary text-primary-foreground" : "bg-ink text-ink-foreground"
+            className={`flex size-6 items-center justify-center ${
+              homeActive ? "text-primary" : "text-muted-foreground"
             }`}
           >
-            <Home className="size-6" strokeWidth={2.4} />
+            <Home className="size-6" strokeWidth={homeActive ? 2.6 : 1.8} />
           </span>
           <span className={homeActive ? "text-primary" : "text-muted-foreground"}>Home</span>
         </Link>
+
 
         {right.map(({ to, label, Icon }) => item(to, label, Icon))}
       </nav>
