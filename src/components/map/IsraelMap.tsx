@@ -567,13 +567,14 @@ const LandLayer = memo(function LandLayer({
 
 
       {/* the east always runs drier than the coast */}
-      <g className="pointer-events-none">
+      <g className="pointer-events-none" opacity={1 - sat}>
         {REGIONS.filter((r) => !visited.has(r.id)).map((r) =>
           r.paths.map((d, i) => (
             <path key={`dry-${r.id}-${i}`} d={d} fill="url(#terrain-dry)" opacity={0.5} />
           )),
         )}
       </g>
+
 
       {/* disputed territory borders, dotted */}
       <g className="pointer-events-none" fill="none">
