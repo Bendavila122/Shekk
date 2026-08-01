@@ -374,10 +374,15 @@ export function IsraelMap({
                   x={p.x}
                   y={p.y}
                   textAnchor="middle"
-                  className="pointer-events-none fill-ink/55"
-                  fontSize={9.5}
-                  fontWeight={700}
-                  letterSpacing={0.5}
+                  className="pointer-events-none"
+                  fontSize={10}
+                  fontWeight={800}
+                  letterSpacing={0.6}
+                  paintOrder="stroke"
+                  fill={ink.fill}
+                  stroke={ink.stroke}
+                  strokeWidth={3.2}
+                  strokeLinejoin="round"
                 >
                   {r.name.toUpperCase()}
                 </text>
@@ -396,16 +401,23 @@ export function IsraelMap({
                   x={box.x}
                   y={box.y}
                   textAnchor="middle"
-                  className="pointer-events-none fill-ink/45"
-                  fontSize={8.5}
-                  fontWeight={700}
-                  letterSpacing={0.8}
+                  className="pointer-events-none"
+                  fontSize={9}
+                  fontWeight={800}
+                  letterSpacing={0.9}
+                  paintOrder="stroke"
+                  fill={ink.fill}
+                  fillOpacity={0.85}
+                  stroke={ink.stroke}
+                  strokeWidth={3}
+                  strokeLinejoin="round"
                 >
                   {t.label.toUpperCase()}
                 </text>
               );
             })
           : null}
+
 
         {/* pins */}
         {pins.map(({ place: p, s }) => {
