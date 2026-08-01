@@ -1,7 +1,32 @@
 /**
  * Mini apps are the little apps that live inside Shekk. Each one gets its own
- * launch screen and runs full-bleed — no Shekk tab bar, no Shekk top banner.
+ * launch screen and runs full-bleed — no Shekk tab bar, no Shekk top banner,
+ * just a small back button.
+ *
+ * Every mini app also owns a real app icon: a squircle in its own gradient with
+ * a single line glyph, so the icons read as a family instead of a row of emoji.
  */
+import type { LucideIcon } from "lucide-react";
+import {
+  ArrowLeftRight,
+  BookOpenText,
+  BusFront,
+  CalendarCheck,
+  CarFront,
+  Compass,
+  Dumbbell,
+  Handshake,
+  House,
+  MapPin,
+  Map as MapIcon,
+  Newspaper,
+  PartyPopper,
+  ShoppingBag,
+  Stethoscope,
+  Ticket,
+  UtensilsCrossed,
+} from "lucide-react";
+
 export type MiniApp = {
   /** Route prefix that belongs to this mini app. */
   path: string;
@@ -10,6 +35,10 @@ export type MiniApp = {
   /** One line under the name on the launch screen. */
   tagline: string;
   emoji: string;
+  /** Line glyph at the centre of the app icon. */
+  Icon: LucideIcon;
+  /** Icon gradient, from the design tokens in styles.css. */
+  grad: string;
   /** Launch-screen surface, from the design tokens. */
   surface: string;
   /** Text colour that sits on that surface. */
@@ -23,6 +52,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Maps",
     tagline: "Everything around you, on one map",
     emoji: "📍",
+    Icon: MapPin,
+    grad: "var(--grad-travel)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
   },
@@ -32,6 +63,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Been There",
     tagline: "Your map of Israel",
     emoji: "🗺️",
+    Icon: MapIcon,
+    grad: "var(--grad-discover)",
     surface: "bg-primary",
     onSurface: "text-primary-foreground",
   },
@@ -41,6 +74,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Fitness",
     tagline: "Gyms, classes and courts near you",
     emoji: "🏋️",
+    Icon: Dumbbell,
+    grad: "var(--grad-social)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
   },
@@ -50,6 +85,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Health",
     tagline: "Your insurance card, ready at the clinic",
     emoji: "🩺",
+    Icon: Stethoscope,
+    grad: "var(--grad-sky)",
     surface: "bg-primary",
     onSurface: "text-primary-foreground",
   },
@@ -59,6 +96,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Events",
     tagline: "Nights out, tiyulim and Shabbatonim",
     emoji: "🎟️",
+    Icon: PartyPopper,
+    grad: "var(--grad-events)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
   },
@@ -68,6 +107,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Food",
     tagline: "Eat well, pay with Shekk",
     emoji: "🥙",
+    Icon: UtensilsCrossed,
+    grad: "var(--grad-deals)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
   },
@@ -77,6 +118,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Rides",
     tagline: "Get across town",
     emoji: "🚕",
+    Icon: CarFront,
+    grad: "var(--grad-sun)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
   },
@@ -86,6 +129,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Transit",
     tagline: "Buses, trains and Rav-Kav",
     emoji: "🚌",
+    Icon: BusFront,
+    grad: "var(--grad-partly)",
     surface: "bg-primary",
     onSurface: "text-primary-foreground",
   },
@@ -95,6 +140,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Housing",
     tagline: "Rooms, dira hunting and deposits",
     emoji: "🏠",
+    Icon: House,
+    grad: "var(--grad-haze)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
   },
@@ -104,6 +151,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Shops",
     tagline: "Where your shekels go furthest",
     emoji: "🛍️",
+    Icon: ShoppingBag,
+    grad: "var(--grad-chag)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
   },
@@ -113,6 +162,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Community",
     tagline: "Your program, your people",
     emoji: "🤝",
+    Icon: Handshake,
+    grad: "var(--grad-social)",
     surface: "bg-primary",
     onSurface: "text-primary-foreground",
   },
@@ -122,6 +173,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Reserve",
     tagline: "Book a table, a court or a slot",
     emoji: "📅",
+    Icon: CalendarCheck,
+    grad: "var(--grad-wallet)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
   },
@@ -131,6 +184,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Siddur",
     tagline: "Tefillah, brachot and Havdalah",
     emoji: "📖",
+    Icon: BookOpenText,
+    grad: "var(--grad-jewish)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
   },
@@ -140,6 +195,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Guides",
     tagline: "Living here, explained",
     emoji: "🧭",
+    Icon: Compass,
+    grad: "var(--grad-discover)",
     surface: "bg-primary",
     onSurface: "text-primary-foreground",
   },
@@ -149,6 +206,8 @@ const MINI_APPS: MiniApp[] = [
     name: "News",
     tagline: "Israel, right now",
     emoji: "📰",
+    Icon: Newspaper,
+    grad: "var(--grad-news)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
   },
@@ -158,6 +217,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Tickets",
     tagline: "Everything you're going to",
     emoji: "🎫",
+    Icon: Ticket,
+    grad: "var(--grad-events)",
     surface: "bg-primary",
     onSurface: "text-primary-foreground",
   },
@@ -167,6 +228,8 @@ const MINI_APPS: MiniApp[] = [
     name: "Exchange",
     tagline: "Dollars in, shekels out",
     emoji: "💱",
+    Icon: ArrowLeftRight,
+    grad: "var(--grad-wallet)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
   },
