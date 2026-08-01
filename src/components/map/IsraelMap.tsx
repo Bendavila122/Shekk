@@ -11,12 +11,15 @@ import {
   project,
   territoryOf,
 } from "@/lib/israel-map";
+import { tileZoom, tilesForRect } from "@/lib/map-tiles";
 
 export type MapPoint = { x: number; y: number };
 
 const MIN_K = 0.4;
-const MAX_K = 14;
+/** Deep enough to read individual streets and see the hills in relief. */
+const MAX_K = 90;
 const PAD = 12;
+
 
 /** Pins whose labels stay on screen even when zoomed all the way out. */
 const ANCHOR_PINS = new Set([
