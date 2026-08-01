@@ -400,10 +400,17 @@ export function IsraelMap({
             })
           : null}
 
-        {/* territory captions */}
+        {/* closed-area captions */}
         {rel > 0.9
-          ? TERRITORY_OUTLINES.map((t) => {
-              const box = t.id === "gaza" ? toScreen(30, 430) : toScreen(210, 250);
+          ? (
+              [
+                { id: "area-a", label: "Area A · No entry", at: AREA_A_LABEL },
+                { id: "area-b", label: "Area B", at: AREA_B_LABEL },
+                { id: "area-c", label: "Area C", at: AREA_C_LABEL },
+                { id: "gaza", label: "Gaza · No entry", at: [30, 430] as [number, number] },
+              ] as const
+            ).map((t) => {
+              const box = toScreen(t.at[0], t.at[1]);
               if (box.x < -60 || box.x > size.w + 60) return null;
               return (
                 <text
@@ -416,8 +423,7 @@ export function IsraelMap({
                   fontWeight={800}
                   letterSpacing={0.9}
                   paintOrder="stroke"
-                  fill={ink.fill}
-                  fillOpacity={0.85}
+                  fill={CLOSED_RED}
                   stroke={ink.stroke}
                   strokeWidth={3}
                   strokeLinejoin="round"
@@ -427,6 +433,7 @@ export function IsraelMap({
               );
             })
           : null}
+
 
 
         {/* pins */}
