@@ -137,7 +137,7 @@ const MINI_APPS: MiniApp[] = [
   {
     path: "/news",
     id: "news",
-    name: News_NAME,
+    name: "News",
     tagline: "Israel, right now",
     emoji: "📰",
     surface: "bg-ink",
