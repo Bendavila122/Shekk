@@ -264,8 +264,43 @@ export function IsraelMap({
         if (tapped()) onClear();
       }}
     >
+      {/* Aerial imagery, in the same map space and moved by the same transform. */}
+      {tiles.length ? (
+        <div
+          className="pointer-events-none absolute left-0 top-0"
+          style={{
+            width: MAP_WIDTH,
+            height: MAP_HEIGHT,
+            transformOrigin: "0 0",
+            transform: `translate3d(${view.x}px, ${view.y}px, 0) scale(${view.k})`,
+            opacity: sat,
+            willChange: "transform, opacity",
+            transition: "opacity 200ms linear",
+          }}
+        >
+          {tiles.map((t) => (
+            <img
+              key={t.key}
+              src={t.url}
+              alt=""
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+              style={{
+                position: "absolute",
+                left: t.left,
+                top: t.top,
+                width: t.width,
+                height: t.height,
+              }}
+            />
+          ))}
+        </div>
+      ) : null}
+
       {/* Land gets its own SVG, moved with a CSS transform: panning then stays on
           the compositor instead of re-rasterising thousands of path segments. */}
+
       <svg
         width={MAP_WIDTH}
         height={MAP_HEIGHT}
