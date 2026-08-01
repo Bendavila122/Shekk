@@ -18,6 +18,15 @@ export type MiniApp = {
 
 const MINI_APPS: MiniApp[] = [
   {
+    path: "/explore/maps",
+    id: "maps",
+    name: "Maps",
+    tagline: "Everything around you, on one map",
+    emoji: "📍",
+    surface: "bg-ink",
+    onSurface: "text-ink-foreground",
+  },
+  {
     path: "/explore/map",
     id: "been-there",
     name: "Been There",
