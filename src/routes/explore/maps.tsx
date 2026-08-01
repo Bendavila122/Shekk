@@ -48,7 +48,7 @@ export const Route = createFileRoute("/explore/maps")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: MapsApp;
+  component: MapsApp,
 });
 
 function Chip({

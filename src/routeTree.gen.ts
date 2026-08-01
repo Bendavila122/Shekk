@@ -43,6 +43,7 @@ import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
 import { Route as ExploreShopsRouteImport } from './routes/explore/shops'
 import { Route as ExploreRidesRouteImport } from './routes/explore/rides'
 import { Route as ExploreReserveRouteImport } from './routes/explore/reserve'
+import { Route as ExploreMapsRouteImport } from './routes/explore/maps'
 import { Route as ExploreHousingRouteImport } from './routes/explore/housing'
 import { Route as ExploreHealthRouteImport } from './routes/explore/health'
 import { Route as ExploreFoodRouteImport } from './routes/explore/food'
@@ -244,6 +245,11 @@ const ExploreReserveRoute = ExploreReserveRouteImport.update({
   path: '/explore/reserve',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreMapsRoute = ExploreMapsRouteImport.update({
+  id: '/explore/maps',
+  path: '/explore/maps',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreHousingRoute = ExploreHousingRouteImport.update({
   id: '/explore/housing',
   path: '/explore/housing',
@@ -439,6 +445,7 @@ export interface FileRoutesByFullPath {
   '/explore/food': typeof ExploreFoodRoute
   '/explore/health': typeof ExploreHealthRoute
   '/explore/housing': typeof ExploreHousingRoute
+  '/explore/maps': typeof ExploreMapsRoute
   '/explore/reserve': typeof ExploreReserveRoute
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
@@ -504,6 +511,7 @@ export interface FileRoutesByTo {
   '/explore/food': typeof ExploreFoodRoute
   '/explore/health': typeof ExploreHealthRoute
   '/explore/housing': typeof ExploreHousingRoute
+  '/explore/maps': typeof ExploreMapsRoute
   '/explore/reserve': typeof ExploreReserveRoute
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
@@ -571,6 +579,7 @@ export interface FileRoutesById {
   '/explore/food': typeof ExploreFoodRoute
   '/explore/health': typeof ExploreHealthRoute
   '/explore/housing': typeof ExploreHousingRoute
+  '/explore/maps': typeof ExploreMapsRoute
   '/explore/reserve': typeof ExploreReserveRoute
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
@@ -639,6 +648,7 @@ export interface FileRouteTypes {
     | '/explore/food'
     | '/explore/health'
     | '/explore/housing'
+    | '/explore/maps'
     | '/explore/reserve'
     | '/explore/rides'
     | '/explore/shops'
@@ -704,6 +714,7 @@ export interface FileRouteTypes {
     | '/explore/food'
     | '/explore/health'
     | '/explore/housing'
+    | '/explore/maps'
     | '/explore/reserve'
     | '/explore/rides'
     | '/explore/shops'
@@ -770,6 +781,7 @@ export interface FileRouteTypes {
     | '/explore/food'
     | '/explore/health'
     | '/explore/housing'
+    | '/explore/maps'
     | '/explore/reserve'
     | '/explore/rides'
     | '/explore/shops'
@@ -830,6 +842,7 @@ export interface RootRouteChildren {
   ExploreFoodRoute: typeof ExploreFoodRoute
   ExploreHealthRoute: typeof ExploreHealthRoute
   ExploreHousingRoute: typeof ExploreHousingRoute
+  ExploreMapsRoute: typeof ExploreMapsRoute
   ExploreReserveRoute: typeof ExploreReserveRoute
   ExploreRidesRoute: typeof ExploreRidesRoute
   ExploreShopsRoute: typeof ExploreShopsRoute
@@ -1096,6 +1109,13 @@ declare module '@tanstack/react-router' {
       path: '/explore/reserve'
       fullPath: '/explore/reserve'
       preLoaderRoute: typeof ExploreReserveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/maps': {
+      id: '/explore/maps'
+      path: '/explore/maps'
+      fullPath: '/explore/maps'
+      preLoaderRoute: typeof ExploreMapsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore/housing': {
@@ -1369,6 +1389,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreFoodRoute: ExploreFoodRoute,
   ExploreHealthRoute: ExploreHealthRoute,
   ExploreHousingRoute: ExploreHousingRoute,
+  ExploreMapsRoute: ExploreMapsRoute,
   ExploreReserveRoute: ExploreReserveRoute,
   ExploreRidesRoute: ExploreRidesRoute,
   ExploreShopsRoute: ExploreShopsRoute,
