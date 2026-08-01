@@ -1,10 +1,8 @@
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
-import { Check, ExternalLink, LoaderCircle } from "lucide-react";
+import { ExternalLink, LoaderCircle } from "lucide-react";
 import { AppShell, Card, ScreenHeader } from "@/components/AppShell";
 import { KIND_META, findMapPlace, regionOfPlace } from "@/lib/israel-map";
-import { useVisited } from "@/lib/israel-map-prefs";
 import { useWikiInfo } from "@/lib/useWikiInfo";
-import { haptic } from "@/lib/foryou-prefs";
 
 export const Route = createFileRoute("/explore/map/$id")({
   loader: ({ params }) => {
@@ -29,7 +27,6 @@ function PlaceScreen() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
   const place = findMapPlace(id);
-  const { places, togglePlace } = useVisited();
   const titles = place ? [place.wiki, ...place.gallery.map((g) => g.wiki)] : [];
   const { data, loading } = useWikiInfo(Array.from(new Set(titles)));
 
@@ -43,7 +40,6 @@ function PlaceScreen() {
   }
 
   const hero = data[place.wiki];
-  const been = places.includes(place.id);
   const gallery = place.gallery.filter((g) => data[g.wiki]?.image);
 
   return (
@@ -80,19 +76,6 @@ function PlaceScreen() {
             </p>
             <h2 className="text-xl font-semibold">{place.name}</h2>
             <p className="text-sm text-muted-foreground">{place.blurb}</p>
-            <button
-              type="button"
-              onClick={() => {
-                haptic();
-                togglePlace(place.id);
-              }}
-              className={`tap flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold ${
-                been ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
-              }`}
-            >
-              <Check className="size-4" />
-              {been ? "Been there" : "Mark as visited"}
-            </button>
           </div>
         </div>
 

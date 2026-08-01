@@ -7,7 +7,6 @@ import {
   CLOSED_AREA,
   KIND_META,
   TERRITORY_NOTE,
-  MAP_PLACES,
   REGIONS,
   findMapPlace,
   placesInRegion,
@@ -50,7 +49,7 @@ const CARD_W = 250;
 
 function MapScreen() {
   const navigate = useNavigate();
-  const { regions, places, toggleRegion, togglePlace, reset, regionPct } = useVisited();
+  const { regions, toggleRegion, reset, regionPct } = useVisited();
   const [sel, setSel] = useState<Sel>(null);
 
   const place = sel?.kind === "place" ? findMapPlace(sel.id) : null;
@@ -79,7 +78,6 @@ function MapScreen() {
       <div className="relative h-[calc(100dvh-4rem)] w-full overflow-hidden border-y border-border lg:h-[calc(100vh-13rem)]">
         <IsraelMap
           visitedRegions={regions}
-          visitedPlaces={places}
           activePlace={place?.id ?? null}
           activeRegion={area?.id ?? null}
           onRegion={(id, at) => {
@@ -103,7 +101,7 @@ function MapScreen() {
             <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${regionPct}%` }} />
           </div>
           <p className="mt-2 text-[11px] text-muted-foreground">
-            {regions.length}/{REGIONS.length} areas · {places.length}/{MAP_PLACES.length} pins
+            {regions.length}/{REGIONS.length} areas
           </p>
           <button
             type="button"
@@ -158,30 +156,13 @@ function MapScreen() {
                 </p>
                 <h2 className="mt-0.5 text-base font-semibold leading-tight">{place.name}</h2>
                 <p className="mt-1 line-clamp-3 text-xs text-muted-foreground">{place.blurb}</p>
-                <div className="mt-2.5 flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      haptic();
-                      togglePlace(place.id);
-                    }}
-                    className={`tap-flat flex flex-1 items-center justify-center gap-1.5 rounded-full px-2 py-2 text-xs font-semibold ${
-                      places.includes(place.id)
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-foreground"
-                    }`}
-                  >
-                    <Check className="size-3.5" /> {places.includes(place.id) ? "Been" : "Mark been"}
-                  </button>
-                  <button
-                    type="button"
-                    aria-label={`Open ${place.name}`}
-                    onClick={() => navigate({ to: "/explore/map/$id", params: { id: place.id } })}
-                    className="tap flex size-9 shrink-0 items-center justify-center rounded-full bg-ink text-white"
-                  >
-                    <ArrowRight className="size-4" />
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/explore/map/$id", params: { id: place.id } })}
+                  className="tap-flat mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-full bg-ink px-2 py-2 text-xs font-semibold text-white"
+                >
+                  History, photos & getting there <ArrowRight className="size-3.5" />
+                </button>
               </>
             ) : area ? (
               <>
@@ -230,9 +211,6 @@ function MapScreen() {
                       >
                         <span className="text-sm">{placeEmoji(p)}</span>
                         <span className="min-w-0 flex-1 truncate text-[11px] font-semibold">{p.name}</span>
-                        {places.includes(p.id) ? (
-                          <Check className="size-3 shrink-0 text-primary" />
-                        ) : null}
                       </button>
                     ))}
                   </div>
@@ -243,7 +221,7 @@ function MapScreen() {
         ) : null}
 
         {/* first-run hint */}
-        {!sel && regions.length === 0 && places.length === 0 ? (
+        {!sel && regions.length === 0 ? (
           <p className="pointer-events-none absolute inset-x-0 bottom-4 mx-auto w-fit rounded-full bg-ink/85 px-3 py-1.5 text-[11px] font-medium text-white">
             Pinch or scroll to zoom · tap an area to fill it in
           </p>

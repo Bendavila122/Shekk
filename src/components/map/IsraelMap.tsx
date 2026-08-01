@@ -50,7 +50,6 @@ const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v
 
 export function IsraelMap({
   visitedRegions,
-  visitedPlaces,
   activePlace,
   activeRegion,
   onRegion,
@@ -58,7 +57,6 @@ export function IsraelMap({
   onClear,
 }: {
   visitedRegions: string[];
-  visitedPlaces: string[];
   activePlace?: string | null;
   activeRegion?: string | null;
   onRegion: (id: string, at: MapPoint) => void;
@@ -453,7 +451,6 @@ export function IsraelMap({
 
         {/* pins */}
         {pins.map(({ place: p, s }) => {
-          const been = visitedPlaces.includes(p.id);
           const active = activePlace === p.id;
           const flip = s.x > size.w * 0.62;
           const wantLabel = showAllLabels || ANCHOR_PINS.has(p.id) || active;
@@ -489,7 +486,7 @@ export function IsraelMap({
                 cx={s.x}
                 cy={s.y}
                 r={active ? 12 : 9.5}
-                className={`${been ? "fill-primary stroke-primary" : "fill-card stroke-ink/25"}`}
+                className="fill-card stroke-ink/25"
                 strokeWidth={1.2}
               />
               <text
