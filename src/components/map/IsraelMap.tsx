@@ -1,7 +1,10 @@
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Minus, Plus, Crosshair } from "lucide-react";
 import {
+  AREA_A_LABEL,
+  AREA_B_LABEL,
   AREA_B_PATHS,
+  AREA_C_LABEL,
   CLOSED_AREA,
   KIND_META,
   MAP_HEIGHT,
