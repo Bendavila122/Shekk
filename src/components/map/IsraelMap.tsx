@@ -354,7 +354,19 @@ export function IsraelMap({
             <stop offset="0" style={{ stopColor: "var(--map-dry)", stopOpacity: 0 }} />
             <stop offset="1" style={{ stopColor: "var(--map-dry)", stopOpacity: 0.6 }} />
           </linearGradient>
+          {/* closed areas read as red hatching, never as a fillable area */}
+          <pattern
+            id="closed-hatch"
+            width={4}
+            height={4}
+            patternUnits="userSpaceOnUse"
+            patternTransform="rotate(45)"
+          >
+            <rect width={4} height={4} fill={CLOSED_RED} fillOpacity={0.14} />
+            <line x1={0} y1={0} x2={0} y2={4} stroke={CLOSED_RED} strokeWidth={1} opacity={0.55} />
+          </pattern>
         </defs>
+
 
         <LandLayer
           visitedRegions={visitedRegions}
