@@ -80,19 +80,6 @@ function PlaceScreen() {
             </p>
             <h2 className="text-xl font-semibold">{place.name}</h2>
             <p className="text-sm text-muted-foreground">{place.blurb}</p>
-            <button
-              type="button"
-              onClick={() => {
-                haptic();
-                togglePlace(place.id);
-              }}
-              className={`tap flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold ${
-                been ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
-              }`}
-            >
-              <Check className="size-4" />
-              {been ? "Been there" : "Mark as visited"}
-            </button>
           </div>
         </div>
 
