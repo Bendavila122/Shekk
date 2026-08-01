@@ -521,17 +521,23 @@ const LandLayer = memo(function LandLayer({
   activeRegion,
   onRegionTap,
   k,
+  sat,
 }: {
   visitedRegions: string[];
   activeRegion: string | null;
   onRegionTap: (id: string, e: React.MouseEvent) => void;
   k: number;
+  /** 0 = stylised terrain only, 1 = real imagery showing through. */
+  sat: number;
 }) {
   const visited = useMemo(() => new Set(visitedRegions), [visitedRegions]);
   /* The SVG is scaled with CSS, so strokes are pre-divided to keep hairlines. */
   const hair = 0.8 / k;
   const bold = 2.2 / k;
   const dash = `${5 / k} ${4 / k}`;
+  /* Over imagery the wash thins right out so the real relief reads through. */
+  const landFill = 1 - sat * 0.92;
+  const visitedFill = 1 - sat * 0.55;
   return (
     <>
       {/* land, painted with the terrain gradient */}
@@ -548,7 +554,8 @@ const LandLayer = memo(function LandLayer({
               aria-label={i === 0 ? `${r.name}${been ? " — visited" : ""}` : undefined}
               onClick={(e) => onRegionTap(r.id, e)}
               fill={been ? undefined : "url(#terrain)"}
-              className={`cursor-pointer outline-none ${been ? "fill-primary/80" : ""} ${
+              fillOpacity={been ? visitedFill : landFill}
+              className={`cursor-pointer outline-none ${been ? "fill-primary" : ""} ${
                 active ? "stroke-ink" : disputed ? "stroke-ink/35" : "stroke-ink/15"
               }`}
               strokeWidth={active ? bold : hair}
@@ -557,6 +564,7 @@ const LandLayer = memo(function LandLayer({
           ));
         })}
       </g>
+
 
       {/* the east always runs drier than the coast */}
       <g className="pointer-events-none">
