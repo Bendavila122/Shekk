@@ -203,6 +203,11 @@ export function IsraelMap({
      layer only re-renders a handful of times across the whole zoom range. */
   const sat = Math.round(clamp((rel - 1.15) / 1.15, 0, 1) * 4) / 4;
   const onImagery = sat >= 0.5;
+  /* Map lettering flips to white-on-dark once it sits over aerial photography. */
+  const ink = onImagery
+    ? { fill: "#ffffff", stroke: "rgba(12,16,24,0.8)" }
+    : { fill: "var(--ink)", stroke: "var(--card)" };
+
 
   const tiles = useMemo(() => {
     if (!sat || !size.w || !size.h) return [];
