@@ -11,12 +11,15 @@ import {
   project,
   territoryOf,
 } from "@/lib/israel-map";
+import { tileZoom, tilesForRect } from "@/lib/map-tiles";
 
 export type MapPoint = { x: number; y: number };
 
 const MIN_K = 0.4;
-const MAX_K = 14;
+/** Deep enough to read individual streets and see the hills in relief. */
+const MAX_K = 90;
 const PAD = 12;
+
 
 /** Pins whose labels stay on screen even when zoomed all the way out. */
 const ANCHOR_PINS = new Set([
@@ -195,6 +198,31 @@ export function IsraelMap({
   const rel = view.k / (fitRef.current.k || 1);
   const showAllLabels = rel > 1.35;
 
+  /* Real aerial imagery fades in as you zoom past the stylised overview, so the
+     hills, wadis and dunes show up in actual relief. Quantised so the heavy land
+     layer only re-renders a handful of times across the whole zoom range. */
+  const sat = Math.round(clamp((rel - 1.15) / 1.15, 0, 1) * 4) / 4;
+  const onImagery = sat >= 0.5;
+  /* Map lettering flips to white-on-dark once it sits over aerial photography. */
+  const ink = onImagery
+    ? { fill: "#ffffff", stroke: "rgba(12,16,24,0.8)" }
+    : { fill: "var(--ink)", stroke: "var(--card)" };
+
+
+  const tiles = useMemo(() => {
+    if (!sat || !size.w || !size.h) return [];
+    const z = tileZoom(view.k);
+    const rect = {
+      x0: (0 - view.x) / view.k,
+      y0: (0 - view.y) / view.k,
+      x1: (size.w - view.x) / view.k,
+      y1: (size.h - view.y) / view.k,
+    };
+    return tilesForRect(rect, z);
+  }, [sat, size.w, size.h, view.k, view.x, view.y]);
+
+
+
   /** Pins in map space, ordered so the headline places win any collision. */
   const projected = useMemo(
     () =>
@@ -241,8 +269,43 @@ export function IsraelMap({
         if (tapped()) onClear();
       }}
     >
+      {/* Aerial imagery, in the same map space and moved by the same transform. */}
+      {tiles.length ? (
+        <div
+          className="pointer-events-none absolute left-0 top-0"
+          style={{
+            width: MAP_WIDTH,
+            height: MAP_HEIGHT,
+            transformOrigin: "0 0",
+            transform: `translate3d(${view.x}px, ${view.y}px, 0) scale(${view.k})`,
+            opacity: sat,
+            willChange: "transform, opacity",
+            transition: "opacity 200ms linear",
+          }}
+        >
+          {tiles.map((t) => (
+            <img
+              key={t.key}
+              src={t.url}
+              alt=""
+              draggable={false}
+              loading="lazy"
+              decoding="async"
+              style={{
+                position: "absolute",
+                left: t.left,
+                top: t.top,
+                width: t.width,
+                height: t.height,
+              }}
+            />
+          ))}
+        </div>
+      ) : null}
+
       {/* Land gets its own SVG, moved with a CSS transform: panning then stays on
           the compositor instead of re-rasterising thousands of path segments. */}
+
       <svg
         width={MAP_WIDTH}
         height={MAP_HEIGHT}
@@ -290,7 +353,9 @@ export function IsraelMap({
           activeRegion={activeRegion ?? null}
           onRegionTap={onRegionTap}
           k={view.k}
+          sat={sat}
         />
+
       </svg>
 
       {/* names and pins, in screen space */}
@@ -314,10 +379,15 @@ export function IsraelMap({
                   x={p.x}
                   y={p.y}
                   textAnchor="middle"
-                  className="pointer-events-none fill-ink/55"
-                  fontSize={9.5}
-                  fontWeight={700}
-                  letterSpacing={0.5}
+                  className="pointer-events-none"
+                  fontSize={10}
+                  fontWeight={800}
+                  letterSpacing={0.6}
+                  paintOrder="stroke"
+                  fill={ink.fill}
+                  stroke={ink.stroke}
+                  strokeWidth={3.2}
+                  strokeLinejoin="round"
                 >
                   {r.name.toUpperCase()}
                 </text>
@@ -336,16 +406,23 @@ export function IsraelMap({
                   x={box.x}
                   y={box.y}
                   textAnchor="middle"
-                  className="pointer-events-none fill-ink/45"
-                  fontSize={8.5}
-                  fontWeight={700}
-                  letterSpacing={0.8}
+                  className="pointer-events-none"
+                  fontSize={9}
+                  fontWeight={800}
+                  letterSpacing={0.9}
+                  paintOrder="stroke"
+                  fill={ink.fill}
+                  fillOpacity={0.85}
+                  stroke={ink.stroke}
+                  strokeWidth={3}
+                  strokeLinejoin="round"
                 >
                   {t.label.toUpperCase()}
                 </text>
               );
             })
           : null}
+
 
         {/* pins */}
         {pins.map(({ place: p, s }) => {
@@ -403,17 +480,18 @@ export function IsraelMap({
                   x={flip ? s.x - 13 : s.x + 13}
                   y={s.y + 3.4}
                   textAnchor={flip ? "end" : "start"}
-                  className={active ? "fill-primary" : "fill-foreground"}
-                  fontSize={10.5}
-                  fontWeight={650}
+                  fontSize={11}
+                  fontWeight={750}
                   paintOrder="stroke"
-                  stroke="var(--card)"
-                  strokeWidth={3.5}
-                  strokeOpacity={0.85}
+                  fill={active && !onImagery ? "var(--primary)" : ink.fill}
+                  stroke={ink.stroke}
+                  strokeWidth={3.6}
+                  strokeLinejoin="round"
                 >
                   {p.name}
                 </text>
               ) : null}
+
             </g>
           );
         })}
@@ -461,17 +539,23 @@ const LandLayer = memo(function LandLayer({
   activeRegion,
   onRegionTap,
   k,
+  sat,
 }: {
   visitedRegions: string[];
   activeRegion: string | null;
   onRegionTap: (id: string, e: React.MouseEvent) => void;
   k: number;
+  /** 0 = stylised terrain only, 1 = real imagery showing through. */
+  sat: number;
 }) {
   const visited = useMemo(() => new Set(visitedRegions), [visitedRegions]);
   /* The SVG is scaled with CSS, so strokes are pre-divided to keep hairlines. */
   const hair = 0.8 / k;
   const bold = 2.2 / k;
   const dash = `${5 / k} ${4 / k}`;
+  /* Over imagery the wash thins right out so the real relief reads through. */
+  const landFill = 1 - sat * 0.92;
+  const visitedFill = 1 - sat * 0.55;
   return (
     <>
       {/* land, painted with the terrain gradient */}
@@ -488,18 +572,26 @@ const LandLayer = memo(function LandLayer({
               aria-label={i === 0 ? `${r.name}${been ? " — visited" : ""}` : undefined}
               onClick={(e) => onRegionTap(r.id, e)}
               fill={been ? undefined : "url(#terrain)"}
-              className={`cursor-pointer outline-none ${been ? "fill-primary/80" : ""} ${
+              fillOpacity={been ? visitedFill : landFill}
+              className={`cursor-pointer outline-none ${been ? "fill-primary" : ""} ${
                 active ? "stroke-ink" : disputed ? "stroke-ink/35" : "stroke-ink/15"
               }`}
+              style={
+                sat >= 0.5 && !active
+                  ? { stroke: "rgba(255,255,255,0.7)" }
+                  : undefined
+              }
               strokeWidth={active ? bold : hair}
               strokeDasharray={disputed && !active ? `${3 / k} ${2.5 / k}` : undefined}
             />
+
           ));
         })}
       </g>
 
+
       {/* the east always runs drier than the coast */}
-      <g className="pointer-events-none">
+      <g className="pointer-events-none" opacity={1 - sat}>
         {REGIONS.filter((r) => !visited.has(r.id)).map((r) =>
           r.paths.map((d, i) => (
             <path key={`dry-${r.id}-${i}`} d={d} fill="url(#terrain-dry)" opacity={0.5} />
@@ -507,17 +599,21 @@ const LandLayer = memo(function LandLayer({
         )}
       </g>
 
-      {/* disputed territory borders, dotted */}
-      <g className="pointer-events-none" fill="none">
+
+      {/* disputed territory borders, dotted — white once they sit over imagery */}
+      <g
+        className="pointer-events-none"
+        fill="none"
+        style={{ stroke: sat >= 0.5 ? "#ffffff" : "var(--ink)" }}
+      >
         {TERRITORY_OUTLINES.map((t) => (
           <path
             key={t.id}
             d={t.d}
-            className="stroke-ink"
             strokeWidth={bold}
             strokeDasharray={dash}
             strokeLinejoin="round"
-            opacity={0.75}
+            opacity={0.85}
           />
         ))}
         {REGIONS.filter((r) => r.id === "golan").map((r) =>
@@ -525,15 +621,15 @@ const LandLayer = memo(function LandLayer({
             <path
               key={`golan-${i}`}
               d={d}
-              className="stroke-ink"
               strokeWidth={bold}
               strokeDasharray={dash}
               strokeLinejoin="round"
-              opacity={0.7}
+              opacity={0.8}
             />
           )),
         )}
       </g>
+
 
     </>
   );

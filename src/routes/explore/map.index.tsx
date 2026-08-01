@@ -69,7 +69,7 @@ function MapScreen() {
     <AppShell>
       <ScreenHeader title="Been There" subtitle="Your map of Israel" />
 
-      <div className="relative h-[calc(100dvh-9.5rem)] w-full overflow-hidden border-y border-border lg:h-[calc(100vh-13rem)]">
+      <div className="relative h-[calc(100dvh-4rem)] w-full overflow-hidden border-y border-border lg:h-[calc(100vh-13rem)]">
         <IsraelMap
           visitedRegions={regions}
           visitedPlaces={places}

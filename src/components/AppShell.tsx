@@ -254,11 +254,16 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
+/** The five tab destinations; anything deeper is a mini app or info page. */
+const TAB_ROOTS = new Set(TABS.map((t) => t.to));
+
 export function AppShell({ children }: { children: ReactNode }) {
   const isActive = useActive();
   const unread = useUnreadChats();
-
-
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  /* Mini apps and info pages keep the fixed top banner but drop the tab bar, so
+     the screen sits still and the content owns the full height. */
+  const isTabRoot = TAB_ROOTS.has(pathname === "/" ? "/" : pathname.replace(/\/$/, ""));
 
   return (
     <div className="lg:flex lg:min-h-screen lg:bg-ink/[0.03]">
@@ -297,9 +302,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="lg:w-full lg:max-w-3xl lg:overflow-hidden lg:rounded-3xl lg:border lg:border-border lg:bg-background lg:shadow-card">
           <PhoneFrame wide>
             <QuickMenu />
-            <MobileNav />
+            {isTabRoot ? <MobileNav /> : null}
 
-            <div className="flex-1 pb-28 lg:pb-6">
+            <div className={`flex-1 lg:pb-6 ${isTabRoot ? "pb-28" : "pb-[max(1rem,env(safe-area-inset-bottom))]"}`}>
               <MembershipDunningBanner />
               {children}
             </div>
@@ -310,6 +315,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
 
 
 export function ScreenHeader({
