@@ -480,17 +480,18 @@ export function IsraelMap({
                   x={flip ? s.x - 13 : s.x + 13}
                   y={s.y + 3.4}
                   textAnchor={flip ? "end" : "start"}
-                  className={active ? "fill-primary" : "fill-foreground"}
-                  fontSize={10.5}
-                  fontWeight={650}
+                  fontSize={11}
+                  fontWeight={750}
                   paintOrder="stroke"
-                  stroke="var(--card)"
-                  strokeWidth={3.5}
-                  strokeOpacity={0.85}
+                  fill={active && !onImagery ? "var(--primary)" : ink.fill}
+                  stroke={ink.stroke}
+                  strokeWidth={3.6}
+                  strokeLinejoin="round"
                 >
                   {p.name}
                 </text>
               ) : null}
+
             </g>
           );
         })}
