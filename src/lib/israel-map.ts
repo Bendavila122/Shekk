@@ -20,7 +20,16 @@ import {
   type RegionShape,
 } from "@/lib/israel-geo";
 import { GAZA_SHAPES, TERRITORY_OUTLINES } from "@/lib/israel-geo-disputed";
+import {
+  AREA_A_LABEL,
+  AREA_A_PATHS,
+  AREA_B_LABEL,
+  AREA_B_PATHS,
+  AREA_C_LABEL,
+} from "@/lib/israel-areas-abc";
 import { MORE_PLACES } from "@/lib/israel-map-places";
+
+const GAZA_OUTLINE_PATHS = TERRITORY_OUTLINES.filter((t) => t.id === "gaza").map((t) => t.d);
 
 export { MAP_HEIGHT, MAP_WIDTH, LON_SCALE };
 
