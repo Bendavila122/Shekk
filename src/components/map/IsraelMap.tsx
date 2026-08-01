@@ -627,6 +627,13 @@ const LandLayer = memo(function LandLayer({
       </g>
 
 
+      {/* Gaza still gets its land wash — it's just closed, not empty sea. */}
+      <g className="pointer-events-none">
+        {CLOSED_AREA.paths.map((d, i) => (
+          <path key={`closed-land-${i}`} d={d} fill="url(#terrain)" fillOpacity={1 - sat * 0.92} />
+        ))}
+      </g>
+
       {/* Area A + Gaza: one closed area, hard red dotted border. */}
       <g>
         {CLOSED_AREA.paths.map((d, i) => (
