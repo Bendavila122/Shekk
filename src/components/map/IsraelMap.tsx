@@ -198,6 +198,26 @@ export function IsraelMap({
   const rel = view.k / (fitRef.current.k || 1);
   const showAllLabels = rel > 1.35;
 
+  /* Real aerial imagery fades in as you zoom past the stylised overview, so the
+     hills, wadis and dunes show up in actual relief. Quantised so the heavy land
+     layer only re-renders a handful of times across the whole zoom range. */
+  const sat = Math.round(clamp((rel - 1.15) / 1.15, 0, 1) * 4) / 4;
+  const onImagery = sat >= 0.5;
+
+  const tiles = useMemo(() => {
+    if (!sat || !size.w || !size.h) return [];
+    const z = tileZoom(view.k);
+    const rect = {
+      x0: (0 - view.x) / view.k,
+      y0: (0 - view.y) / view.k,
+      x1: (size.w - view.x) / view.k,
+      y1: (size.h - view.y) / view.k,
+    };
+    return tilesForRect(rect, z);
+  }, [sat, size.w, size.h, view.k, view.x, view.y]);
+
+
+
   /** Pins in map space, ordered so the headline places win any collision. */
   const projected = useMemo(
     () =>
