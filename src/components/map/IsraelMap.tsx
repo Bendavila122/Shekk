@@ -558,9 +558,15 @@ const LandLayer = memo(function LandLayer({
               className={`cursor-pointer outline-none ${been ? "fill-primary" : ""} ${
                 active ? "stroke-ink" : disputed ? "stroke-ink/35" : "stroke-ink/15"
               }`}
+              style={
+                sat >= 0.5 && !active
+                  ? { stroke: "rgba(255,255,255,0.7)" }
+                  : undefined
+              }
               strokeWidth={active ? bold : hair}
               strokeDasharray={disputed && !active ? `${3 / k} ${2.5 / k}` : undefined}
             />
+
           ));
         })}
       </g>
