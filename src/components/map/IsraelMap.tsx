@@ -576,17 +576,20 @@ const LandLayer = memo(function LandLayer({
       </g>
 
 
-      {/* disputed territory borders, dotted */}
-      <g className="pointer-events-none" fill="none">
+      {/* disputed territory borders, dotted — white once they sit over imagery */}
+      <g
+        className="pointer-events-none"
+        fill="none"
+        style={{ stroke: sat >= 0.5 ? "#ffffff" : "var(--ink)" }}
+      >
         {TERRITORY_OUTLINES.map((t) => (
           <path
             key={t.id}
             d={t.d}
-            className="stroke-ink"
             strokeWidth={bold}
             strokeDasharray={dash}
             strokeLinejoin="round"
-            opacity={0.75}
+            opacity={0.85}
           />
         ))}
         {REGIONS.filter((r) => r.id === "golan").map((r) =>
@@ -594,15 +597,15 @@ const LandLayer = memo(function LandLayer({
             <path
               key={`golan-${i}`}
               d={d}
-              className="stroke-ink"
               strokeWidth={bold}
               strokeDasharray={dash}
               strokeLinejoin="round"
-              opacity={0.7}
+              opacity={0.8}
             />
           )),
         )}
       </g>
+
 
     </>
   );
