@@ -4,6 +4,7 @@ import { ArrowRight, Check, RotateCcw, X } from "lucide-react";
 import { AppShell, ScreenHeader } from "@/components/AppShell";
 import { IsraelMap, type MapPoint } from "@/components/map/IsraelMap";
 import {
+  CLOSED_AREA,
   KIND_META,
   TERRITORY_NOTE,
   MAP_PLACES,
