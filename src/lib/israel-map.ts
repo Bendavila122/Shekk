@@ -61,7 +61,8 @@ export type MapPlace = {
 
 /* ------------------------------------------------------------------ areas */
 
-export const REGIONS: Region[] = [...REGION_SHAPES, ...GAZA_SHAPES];
+/** Markable areas. Gaza and Area A are closed, so they're not in here. */
+export const REGIONS: Region[] = REGION_SHAPES;
 
 /* ------------------------------------------------------------------ places */
 
