@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { MiniAppIcon } from "@/components/MiniAppIcon";
 import type { MiniApp } from "@/lib/mini-apps";
 
 /**
