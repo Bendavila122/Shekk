@@ -158,30 +158,13 @@ function MapScreen() {
                 </p>
                 <h2 className="mt-0.5 text-base font-semibold leading-tight">{place.name}</h2>
                 <p className="mt-1 line-clamp-3 text-xs text-muted-foreground">{place.blurb}</p>
-                <div className="mt-2.5 flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      haptic();
-                      togglePlace(place.id);
-                    }}
-                    className={`tap-flat flex flex-1 items-center justify-center gap-1.5 rounded-full px-2 py-2 text-xs font-semibold ${
-                      places.includes(place.id)
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-foreground"
-                    }`}
-                  >
-                    <Check className="size-3.5" /> {places.includes(place.id) ? "Been" : "Mark been"}
-                  </button>
-                  <button
-                    type="button"
-                    aria-label={`Open ${place.name}`}
-                    onClick={() => navigate({ to: "/explore/map/$id", params: { id: place.id } })}
-                    className="tap flex size-9 shrink-0 items-center justify-center rounded-full bg-ink text-white"
-                  >
-                    <ArrowRight className="size-4" />
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/explore/map/$id", params: { id: place.id } })}
+                  className="tap-flat mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-full bg-ink px-2 py-2 text-xs font-semibold text-white"
+                >
+                  History, photos & getting there <ArrowRight className="size-3.5" />
+                </button>
               </>
             ) : area ? (
               <>
