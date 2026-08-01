@@ -342,11 +342,19 @@ export function ScreenHeader({
   const router = useRouter();
   const canGoBack = useCanGoBack();
   const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  /* Inside a mini app the bar is the app's own, not a Shekk banner — it floats
+     over the app's content instead of sitting in a card-coloured strip. */
+  const inMiniApp = miniAppFor(pathname) !== null;
   return (
     <>
       {/* spacer keeps content clear of the fixed header on mobile */}
       <div className="h-[60px] lg:hidden" aria-hidden />
-      <header className="fixed left-1/2 top-0 z-40 flex w-full max-w-[430px] -translate-x-1/2 items-center gap-3 border-b border-border bg-card px-4 py-3 pr-16 lg:sticky lg:left-auto lg:max-w-none lg:translate-x-0 lg:pr-4">
+      <header
+        className={`fixed left-1/2 top-0 z-40 flex w-full max-w-[430px] -translate-x-1/2 items-center gap-3 px-4 py-3 pr-16 lg:sticky lg:left-auto lg:max-w-none lg:translate-x-0 lg:pr-4 ${
+          inMiniApp ? "bg-background/80 backdrop-blur" : "border-b border-border bg-card"
+        }`}
+      >
         <button
           type="button"
           aria-label="Go back"
