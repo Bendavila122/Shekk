@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { MiniAppIcon } from "@/components/MiniAppIcon";
+import { miniAppFor } from "@/lib/mini-apps";
 import type { Service } from "@/lib/services";
 
 const LOGO_TOKEN = import.meta.env.VITE_LOVABLE_CONNECTOR_LOGO_DEV_API_KEY as
@@ -28,19 +30,24 @@ export function ServiceLogo({
   size = 40,
   className = "",
 }: {
-  service: Pick<Service, "name" | "emoji" | "domain">;
+  service: Pick<Service, "name" | "emoji" | "domain"> & { to?: string };
   size?: number;
   className?: string;
 }) {
   const [failed, setFailed] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
   const src = service.domain && !failed ? logoUrl(service.domain, size) : null;
+  /* Shekk's own mini apps have real icons, not emoji — a gradient squircle with
+     a line glyph, so they sit next to partner brand marks as equals. */
+  const mini = !src && service.to ? miniAppFor(service.to) : null;
 
   // An image that errored before hydration never fires onError — catch it here.
   useEffect(() => {
     const img = imgRef.current;
     if (img && img.complete && img.naturalWidth === 0) setFailed(true);
   }, [src]);
+
+  if (mini) return <MiniAppIcon app={mini} size={size} className={className} />;
 
   return (
     <span
