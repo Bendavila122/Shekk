@@ -6,6 +6,8 @@ import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
 import { MembershipDunningBanner } from "@/components/MembershipDunningBanner";
 import { useUnreadChats } from "@/lib/useSocial";
+import { MiniAppSplash } from "@/components/MiniAppSplash";
+import { miniAppFor } from "@/lib/mini-apps";
 
 
 
@@ -261,9 +263,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isActive = useActive();
   const unread = useUnreadChats();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  /* Mini apps and info pages keep the fixed top banner but drop the tab bar, so
-     the screen sits still and the content owns the full height. */
+  /* Tab roots get the Shekk chrome. Anything deeper is a mini app or info page:
+     no tab bar, no Shekk quick menu — it runs as its own little app. */
   const isTabRoot = TAB_ROOTS.has(pathname === "/" ? "/" : pathname.replace(/\/$/, ""));
+  const mini = miniAppFor(pathname);
+  const standalone = !isTabRoot;
 
   return (
     <div className="lg:flex lg:min-h-screen lg:bg-ink/[0.03]">
@@ -301,13 +305,19 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="lg:flex lg:min-w-0 lg:flex-1 lg:justify-center lg:px-8 lg:py-8">
         <div className="lg:w-full lg:max-w-3xl lg:overflow-hidden lg:rounded-3xl lg:border lg:border-border lg:bg-background lg:shadow-card">
           <PhoneFrame wide>
-            <QuickMenu />
-            {isTabRoot ? <MobileNav /> : null}
+            {standalone ? null : (
+              <>
+                <QuickMenu />
+                <MobileNav />
+              </>
+            )}
 
-            <div className={`flex-1 lg:pb-6 ${isTabRoot ? "pb-28" : "pb-[max(1rem,env(safe-area-inset-bottom))]"}`}>
-              <MembershipDunningBanner />
+            <div className={`flex-1 lg:pb-6 ${standalone ? "pb-[max(1rem,env(safe-area-inset-bottom))]" : "pb-28"}`}>
+              {standalone ? null : <MembershipDunningBanner />}
               {children}
             </div>
+
+            {mini ? <MiniAppSplash key={mini.id} app={mini} /> : null}
           </PhoneFrame>
 
         </div>
@@ -332,11 +342,19 @@ export function ScreenHeader({
   const router = useRouter();
   const canGoBack = useCanGoBack();
   const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  /* Inside a mini app the bar is the app's own, not a Shekk banner — it floats
+     over the app's content instead of sitting in a card-coloured strip. */
+  const inMiniApp = miniAppFor(pathname) !== null;
   return (
     <>
       {/* spacer keeps content clear of the fixed header on mobile */}
       <div className="h-[60px] lg:hidden" aria-hidden />
-      <header className="fixed left-1/2 top-0 z-40 flex w-full max-w-[430px] -translate-x-1/2 items-center gap-3 border-b border-border bg-card px-4 py-3 pr-16 lg:sticky lg:left-auto lg:max-w-none lg:translate-x-0 lg:pr-4">
+      <header
+        className={`fixed left-1/2 top-0 z-40 flex w-full max-w-[430px] -translate-x-1/2 items-center gap-3 px-4 py-3 pr-16 lg:sticky lg:left-auto lg:max-w-none lg:translate-x-0 lg:pr-4 ${
+          inMiniApp ? "bg-background/80 backdrop-blur" : "border-b border-border bg-card"
+        }`}
+      >
         <button
           type="button"
           aria-label="Go back"
