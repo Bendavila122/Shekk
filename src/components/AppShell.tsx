@@ -261,9 +261,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isActive = useActive();
   const unread = useUnreadChats();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  /* Mini apps and info pages keep the fixed top banner but drop the tab bar, so
-     the screen sits still and the content owns the full height. */
+  /* Tab roots get the Shekk chrome. Anything deeper is a mini app or info page:
+     no tab bar, no Shekk quick menu — it runs as its own little app. */
   const isTabRoot = TAB_ROOTS.has(pathname === "/" ? "/" : pathname.replace(/\/$/, ""));
+  const mini = miniAppFor(pathname);
+  const standalone = !isTabRoot;
 
   return (
     <div className="lg:flex lg:min-h-screen lg:bg-ink/[0.03]">
@@ -301,13 +303,19 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="lg:flex lg:min-w-0 lg:flex-1 lg:justify-center lg:px-8 lg:py-8">
         <div className="lg:w-full lg:max-w-3xl lg:overflow-hidden lg:rounded-3xl lg:border lg:border-border lg:bg-background lg:shadow-card">
           <PhoneFrame wide>
-            <QuickMenu />
-            {isTabRoot ? <MobileNav /> : null}
+            {standalone ? null : (
+              <>
+                <QuickMenu />
+                <MobileNav />
+              </>
+            )}
 
-            <div className={`flex-1 lg:pb-6 ${isTabRoot ? "pb-28" : "pb-[max(1rem,env(safe-area-inset-bottom))]"}`}>
-              <MembershipDunningBanner />
+            <div className={`flex-1 lg:pb-6 ${standalone ? "pb-[max(1rem,env(safe-area-inset-bottom))]" : "pb-28"}`}>
+              {standalone ? null : <MembershipDunningBanner />}
               {children}
             </div>
+
+            {mini ? <MiniAppSplash key={mini.id} app={mini} /> : null}
           </PhoneFrame>
 
         </div>
