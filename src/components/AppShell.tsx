@@ -343,26 +343,41 @@ export function ScreenHeader({
   const canGoBack = useCanGoBack();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  /* Inside a mini app the bar is the app's own, not a Shekk banner — it floats
-     over the app's content instead of sitting in a card-coloured strip. */
+  /* Inside a mini app there is no Shekk banner at all — the app owns its whole
+     screen and gets one small floating back button, like a real app. */
   const inMiniApp = miniAppFor(pathname) !== null;
+
+  const goBack = () => {
+    if (onBack) { onBack(); return; }
+    if (canGoBack) router.history.back();
+    else navigate({ to: back });
+  };
+
+  if (inMiniApp) {
+    return (
+      <>
+        <div className="h-11 lg:h-4" aria-hidden />
+        <button
+          type="button"
+          aria-label="Back to Shekk"
+          onClick={goBack}
+          className="tap fixed left-4 top-3 z-40 rounded-full bg-card/85 p-2 text-foreground shadow-card ring-1 ring-border backdrop-blur lg:absolute"
+        >
+          <ChevronLeft className="size-5" />
+        </button>
+      </>
+    );
+  }
+
   return (
     <>
       {/* spacer keeps content clear of the fixed header on mobile */}
       <div className="h-[60px] lg:hidden" aria-hidden />
-      <header
-        className={`fixed left-1/2 top-0 z-40 flex w-full max-w-[430px] -translate-x-1/2 items-center gap-3 px-4 py-3 pr-16 lg:sticky lg:left-auto lg:max-w-none lg:translate-x-0 lg:pr-4 ${
-          inMiniApp ? "bg-background/80 backdrop-blur" : "border-b border-border bg-card"
-        }`}
-      >
+      <header className="fixed left-1/2 top-0 z-40 flex w-full max-w-[430px] -translate-x-1/2 items-center gap-3 border-b border-border bg-card px-4 py-3 pr-16 lg:sticky lg:left-auto lg:max-w-none lg:translate-x-0 lg:pr-4">
         <button
           type="button"
           aria-label="Go back"
-          onClick={() => {
-            if (onBack) { onBack(); return; }
-            if (canGoBack) router.history.back();
-            else navigate({ to: back });
-          }}
+          onClick={goBack}
           className="tap shrink-0 rounded-full bg-muted p-2 text-foreground"
         >
           <ChevronLeft className="size-5" />
