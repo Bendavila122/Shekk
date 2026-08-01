@@ -204,11 +204,10 @@ export function IsraelMap({
   const rel = view.k / (fitRef.current.k || 1);
   const showAllLabels = rel > 1.35;
 
-  /* Real aerial imagery fades in as you zoom past the stylised overview, so the
-     hills, wadis and dunes show up in actual relief. Quantised so the heavy land
-     layer only re-renders a handful of times across the whole zoom range. */
-  const sat = Math.round(clamp((rel - 1.15) / 1.15, 0, 1) * 4) / 4;
-  const onImagery = sat >= 0.5;
+  /* Real aerial imagery is always on, at every zoom level, so the country reads
+     as the actual place from the first frame — hills, wadis, dunes and sea. */
+  const sat = 1;
+  const onImagery = true;
   /* Map lettering flips to white-on-dark once it sits over aerial photography. */
   const ink = onImagery
     ? { fill: "#ffffff", stroke: "rgba(12,16,24,0.8)" }
