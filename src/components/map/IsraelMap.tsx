@@ -1,6 +1,8 @@
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Minus, Plus, Crosshair } from "lucide-react";
 import {
+  AREA_B_PATHS,
+  CLOSED_AREA,
   KIND_META,
   MAP_HEIGHT,
   MAP_PLACES,
@@ -12,6 +14,9 @@ import {
   territoryOf,
 } from "@/lib/israel-map";
 import { tileZoom, tilesForRect } from "@/lib/map-tiles";
+
+/** Hard red used for every closed-area border on the map. */
+const CLOSED_RED = "#d61f26";
 
 export type MapPoint = { x: number; y: number };
 
