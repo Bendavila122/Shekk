@@ -54,7 +54,13 @@ function MapScreen() {
   const [sel, setSel] = useState<Sel>(null);
 
   const place = sel?.kind === "place" ? findMapPlace(sel.id) : null;
-  const area = sel?.kind === "region" ? findRegion(sel.id) : null;
+  const area =
+    sel?.kind === "region"
+      ? sel.id === CLOSED_AREA.id
+        ? CLOSED_AREA
+        : findRegion(sel.id)
+      : null;
+  const closed = area?.id === CLOSED_AREA.id;
   const wiki = useWikiInfo(place ? [place.wiki] : []);
   const photo = place ? (wiki.data[place.wiki]?.image ?? null) : null;
   const areaPlaces = useMemo(() => (area ? placesInRegion(area.id) : []), [area]);
