@@ -348,7 +348,9 @@ export function IsraelMap({
           activeRegion={activeRegion ?? null}
           onRegionTap={onRegionTap}
           k={view.k}
+          sat={sat}
         />
+
       </svg>
 
       {/* names and pins, in screen space */}
