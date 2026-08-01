@@ -6,6 +6,8 @@ import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
 import { MembershipDunningBanner } from "@/components/MembershipDunningBanner";
 import { useUnreadChats } from "@/lib/useSocial";
+import { MiniAppSplash } from "@/components/MiniAppSplash";
+import { miniAppFor } from "@/lib/mini-apps";
 
 
 
