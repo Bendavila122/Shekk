@@ -1,6 +1,11 @@
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Minus, Plus, Crosshair } from "lucide-react";
 import {
+  AREA_A_LABEL,
+  AREA_B_LABEL,
+  AREA_B_PATHS,
+  AREA_C_LABEL,
+  CLOSED_AREA,
   KIND_META,
   MAP_HEIGHT,
   MAP_PLACES,
@@ -12,6 +17,9 @@ import {
   territoryOf,
 } from "@/lib/israel-map";
 import { tileZoom, tilesForRect } from "@/lib/map-tiles";
+
+/** Hard red used for every closed-area border on the map. */
+const CLOSED_RED = "#d61f26";
 
 export type MapPoint = { x: number; y: number };
 
@@ -346,7 +354,19 @@ export function IsraelMap({
             <stop offset="0" style={{ stopColor: "var(--map-dry)", stopOpacity: 0 }} />
             <stop offset="1" style={{ stopColor: "var(--map-dry)", stopOpacity: 0.6 }} />
           </linearGradient>
+          {/* closed areas read as red hatching, never as a fillable area */}
+          <pattern
+            id="closed-hatch"
+            width={4}
+            height={4}
+            patternUnits="userSpaceOnUse"
+            patternTransform="rotate(45)"
+          >
+            <rect width={4} height={4} fill={CLOSED_RED} fillOpacity={0.14} />
+            <line x1={0} y1={0} x2={0} y2={4} stroke={CLOSED_RED} strokeWidth={1} opacity={0.55} />
+          </pattern>
         </defs>
+
 
         <LandLayer
           visitedRegions={visitedRegions}
@@ -395,10 +415,17 @@ export function IsraelMap({
             })
           : null}
 
-        {/* territory captions */}
+        {/* closed-area captions */}
         {rel > 0.9
-          ? TERRITORY_OUTLINES.map((t) => {
-              const box = t.id === "gaza" ? toScreen(30, 430) : toScreen(210, 250);
+          ? (
+              [
+                { id: "area-a", label: "Area A · No entry", at: AREA_A_LABEL },
+                { id: "area-b", label: "Area B", at: AREA_B_LABEL },
+                { id: "area-c", label: "Area C", at: AREA_C_LABEL },
+                { id: "gaza", label: "Gaza · No entry", at: [30, 430] as [number, number] },
+              ] as const
+            ).map((t) => {
+              const box = toScreen(t.at[0], t.at[1]);
               if (box.x < -60 || box.x > size.w + 60) return null;
               return (
                 <text
@@ -411,8 +438,7 @@ export function IsraelMap({
                   fontWeight={800}
                   letterSpacing={0.9}
                   paintOrder="stroke"
-                  fill={ink.fill}
-                  fillOpacity={0.85}
+                  fill={CLOSED_RED}
                   stroke={ink.stroke}
                   strokeWidth={3}
                   strokeLinejoin="round"
@@ -422,6 +448,7 @@ export function IsraelMap({
               );
             })
           : null}
+
 
 
         {/* pins */}
@@ -600,37 +627,59 @@ const LandLayer = memo(function LandLayer({
       </g>
 
 
-      {/* disputed territory borders, dotted — white once they sit over imagery */}
+      {/* Gaza still gets its land wash — it's just closed, not empty sea. */}
+      <g className="pointer-events-none">
+        {CLOSED_AREA.paths.map((d, i) => (
+          <path key={`closed-land-${i}`} d={d} fill="url(#terrain)" fillOpacity={1 - sat * 0.92} />
+        ))}
+      </g>
+
+      {/* Area A + Gaza: one closed area, hard red dotted border. */}
+      <g>
+        {CLOSED_AREA.paths.map((d, i) => (
+          <path
+            key={`closed-${i}`}
+            d={d}
+            role={i === 0 ? "button" : undefined}
+            aria-label={i === 0 ? "Area A — closed area" : undefined}
+            onClick={(e) => onRegionTap(CLOSED_AREA.id, e)}
+            fill="url(#closed-hatch)"
+            className="cursor-pointer outline-none"
+            style={{ stroke: CLOSED_RED }}
+            strokeWidth={2.4 / k}
+            strokeDasharray={`${3.5 / k} ${3 / k}`}
+            strokeLinejoin="round"
+          />
+        ))}
+      </g>
+
+      {/* Area B ring, and the Area C line around Yehuda & Shomron and Gaza. */}
       <g
         className="pointer-events-none"
         fill="none"
-        style={{ stroke: sat >= 0.5 ? "#ffffff" : "var(--ink)" }}
+        style={{ stroke: CLOSED_RED }}
+        strokeLinejoin="round"
       >
+        {AREA_B_PATHS.map((d, i) => (
+          <path
+            key={`area-b-${i}`}
+            d={d}
+            strokeWidth={1.6 / k}
+            strokeDasharray={`${2 / k} ${2.6 / k}`}
+            opacity={0.8}
+          />
+        ))}
         {TERRITORY_OUTLINES.map((t) => (
           <path
             key={t.id}
             d={t.d}
             strokeWidth={bold}
             strokeDasharray={dash}
-            strokeLinejoin="round"
-            opacity={0.85}
+            opacity={0.9}
           />
         ))}
-        {REGIONS.filter((r) => r.id === "golan").map((r) =>
-          r.paths.map((d, i) => (
-            <path
-              key={`golan-${i}`}
-              d={d}
-              strokeWidth={bold}
-              strokeDasharray={dash}
-              strokeLinejoin="round"
-              opacity={0.8}
-            />
-          )),
-        )}
       </g>
-
-
     </>
   );
 });
+

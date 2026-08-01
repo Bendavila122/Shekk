@@ -20,7 +20,16 @@ import {
   type RegionShape,
 } from "@/lib/israel-geo";
 import { GAZA_SHAPES, TERRITORY_OUTLINES } from "@/lib/israel-geo-disputed";
+import {
+  AREA_A_LABEL,
+  AREA_A_PATHS,
+  AREA_B_LABEL,
+  AREA_B_PATHS,
+  AREA_C_LABEL,
+} from "@/lib/israel-areas-abc";
 import { MORE_PLACES } from "@/lib/israel-map-places";
+
+const GAZA_OUTLINE_PATHS = TERRITORY_OUTLINES.filter((t) => t.id === "gaza").map((t) => t.d);
 
 export { MAP_HEIGHT, MAP_WIDTH, LON_SCALE };
 
@@ -52,7 +61,8 @@ export type MapPlace = {
 
 /* ------------------------------------------------------------------ areas */
 
-export const REGIONS: Region[] = [...REGION_SHAPES, ...GAZA_SHAPES];
+/** Markable areas. Gaza and Area A are closed, so they're not in here. */
+export const REGIONS: Region[] = REGION_SHAPES;
 
 /* ------------------------------------------------------------------ places */
 
@@ -498,6 +508,7 @@ export function placeEmoji(place: MapPlace) {
 /* ------------------------------------------------------ territory & borders */
 
 export { TERRITORY_OUTLINES };
+export { AREA_A_PATHS, AREA_B_PATHS, AREA_A_LABEL, AREA_B_LABEL, AREA_C_LABEL };
 
 export type Territory = "israel" | "west-bank" | "gaza" | "golan";
 
@@ -523,13 +534,26 @@ export function territoryOf(regionId: string): Territory {
   return "israel";
 }
 
-/** Status line shown in the info box for areas outside the Green Line. */
+/** Status line shown in the info box for areas beyond the Green Line. */
 export const TERRITORY_NOTE: Record<Territory, string | null> = {
   israel: null,
-  "west-bank": "West Bank — status disputed",
-  gaza: "Gaza Strip — status disputed",
-  golan: "Golan Heights — status disputed",
+  "west-bank": "Yehuda & Shomron — Area C. Check with your madrich before you travel.",
+  gaza: "Gaza — closed area. Do not travel.",
+  golan: "Golan Heights",
 };
+
+/**
+ * Area A (Palestinian Authority security control) plus Gaza: one single closed
+ * area. Off limits, so it can't be marked as visited.
+ */
+export const CLOSED_AREA: Region = {
+  id: "area-a",
+  name: "Area A",
+  hint: "Closed military area — entry is illegal and unsafe. You can't mark this one.",
+  paths: [...AREA_A_PATHS, ...GAZA_OUTLINE_PATHS],
+  label: AREA_A_LABEL,
+};
+
 
 
 export function findMapPlace(id: string) {

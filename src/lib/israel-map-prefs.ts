@@ -30,7 +30,8 @@ export function useVisited() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setRegions(read(REGION_KEY));
+    const ids = new Set(REGIONS.map((r) => r.id));
+    setRegions(read(REGION_KEY).filter((id) => ids.has(id)));
     setPlaces(read(PLACE_KEY));
     setReady(true);
   }, []);

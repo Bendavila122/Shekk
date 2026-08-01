@@ -4,6 +4,7 @@ import { ArrowRight, Check, RotateCcw, X } from "lucide-react";
 import { AppShell, ScreenHeader } from "@/components/AppShell";
 import { IsraelMap, type MapPoint } from "@/components/map/IsraelMap";
 import {
+  CLOSED_AREA,
   KIND_META,
   TERRITORY_NOTE,
   MAP_PLACES,
@@ -53,7 +54,13 @@ function MapScreen() {
   const [sel, setSel] = useState<Sel>(null);
 
   const place = sel?.kind === "place" ? findMapPlace(sel.id) : null;
-  const area = sel?.kind === "region" ? findRegion(sel.id) : null;
+  const area =
+    sel?.kind === "region"
+      ? sel.id === CLOSED_AREA.id
+        ? CLOSED_AREA
+        : findRegion(sel.id)
+      : null;
+  const closed = area?.id === CLOSED_AREA.id;
   const wiki = useWikiInfo(place ? [place.wiki] : []);
   const photo = place ? (wiki.data[place.wiki]?.image ?? null) : null;
   const areaPlaces = useMemo(() => (area ? placesInRegion(area.id) : []), [area]);
@@ -179,30 +186,39 @@ function MapScreen() {
             ) : area ? (
               <>
                 <p className="pr-6 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Area
+                  {closed ? "Closed area" : "Area"}
                 </p>
                 <h2 className="mt-0.5 text-base font-semibold leading-tight">{area.name}</h2>
                 <p className="mt-1 text-xs text-muted-foreground">{area.hint}</p>
-                {TERRITORY_NOTE[territoryOf(area.id)] ? (
-                  <p className="mt-1.5 rounded-lg bg-muted px-2 py-1 text-[10px] font-semibold text-muted-foreground">
-                    {TERRITORY_NOTE[territoryOf(area.id)]}
+                {closed ? (
+                  <p className="mt-2.5 rounded-lg border border-destructive/40 bg-destructive/10 px-2 py-1.5 text-[11px] font-semibold text-destructive">
+                    Off limits — nothing to mark here.
                   </p>
-                ) : null}
-                <button
-                  type="button"
-                  onClick={() => {
-                    haptic();
-                    toggleRegion(area.id);
-                  }}
-                  className={`tap-flat mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-full px-2 py-2 text-xs font-semibold ${
-                    regions.includes(area.id)
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-foreground"
-                  }`}
-                >
-                  <Check className="size-3.5" />
-                  {regions.includes(area.id) ? "Been here" : "Mark as been"}
-                </button>
+                ) : (
+                  <>
+                    {TERRITORY_NOTE[territoryOf(area.id)] ? (
+                      <p className="mt-1.5 rounded-lg bg-muted px-2 py-1 text-[10px] font-semibold text-muted-foreground">
+                        {TERRITORY_NOTE[territoryOf(area.id)]}
+                      </p>
+                    ) : null}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        haptic();
+                        toggleRegion(area.id);
+                      }}
+                      className={`tap-flat mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-full px-2 py-2 text-xs font-semibold ${
+                        regions.includes(area.id)
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-foreground"
+                      }`}
+                    >
+                      <Check className="size-3.5" />
+                      {regions.includes(area.id) ? "Been here" : "Mark as been"}
+                    </button>
+                  </>
+                )}
+
                 {areaPlaces.length ? (
                   <div className="mt-2 max-h-28 space-y-1 overflow-y-auto">
                     {areaPlaces.map((p) => (
