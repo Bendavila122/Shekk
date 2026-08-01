@@ -22,7 +22,7 @@ export function MiniAppSplash({ app }: { app: MiniApp }) {
         gone ? "opacity-0" : "opacity-100"
       }`}
     >
-      <span className="text-5xl drop-shadow-sm">{app.emoji}</span>
+      <MiniAppIcon app={app} size={92} className="shadow-lift" />
       <p className="font-display text-2xl font-bold leading-none">{app.name}</p>
       <p className="max-w-[70%] text-center text-xs opacity-70">{app.tagline}</p>
       <p className="absolute bottom-8 text-[10px] font-semibold uppercase tracking-[0.3em] opacity-50">
