@@ -76,6 +76,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     tagline: "The boring stuff nobody explains to you.",
     services: [
       { id: "beenthere", name: "Been There", emoji: "🗺️", blurb: "Scratch-off map of Israel", status: "live", featured: true, to: "/explore/map", detail: ["Tap each area of the country to fill it in as visited", "Pins on the Kotel, Masada, Kinneret, Eilat and more", "History, photos and things to do for every place"] },
+      { id: "maps", name: "Maps", emoji: "📍", blurb: "Everything around you, on one map", status: "live", featured: true, to: "/explore/maps", detail: ["Search any place, street or city in Israel", "Nearby food, coffee, pharmacies, cash, transit and sights", "Walking, bus and taxi times from where you're standing"] },
       { id: "arnona", name: "Arnona & taxes", partner: "Municipality", emoji: "🧾", blurb: "Council tax and student exemptions", status: "guide" },
       { id: "cash", name: "Cash & exchange", emoji: "💵", blurb: "How to get cash, what a fair rate is", status: "guide", detail: ["Shekk rate vs street changers", "Which ATMs skip the double conversion", "Where cash is still king (shuk, sherut, monit)"] },
     ],
