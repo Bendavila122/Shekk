@@ -600,37 +600,52 @@ const LandLayer = memo(function LandLayer({
       </g>
 
 
-      {/* disputed territory borders, dotted — white once they sit over imagery */}
+      {/* Area A + Gaza: one closed area, hard red dotted border. */}
+      <g>
+        {CLOSED_AREA.paths.map((d, i) => (
+          <path
+            key={`closed-${i}`}
+            d={d}
+            role={i === 0 ? "button" : undefined}
+            aria-label={i === 0 ? "Area A — closed area" : undefined}
+            onClick={(e) => onRegionTap(CLOSED_AREA.id, e)}
+            fill="url(#closed-hatch)"
+            className="cursor-pointer outline-none"
+            style={{ stroke: CLOSED_RED }}
+            strokeWidth={2.4 / k}
+            strokeDasharray={`${3.5 / k} ${3 / k}`}
+            strokeLinejoin="round"
+          />
+        ))}
+      </g>
+
+      {/* Area B ring, and the Area C line around Yehuda & Shomron and Gaza. */}
       <g
         className="pointer-events-none"
         fill="none"
-        style={{ stroke: sat >= 0.5 ? "#ffffff" : "var(--ink)" }}
+        style={{ stroke: CLOSED_RED }}
+        strokeLinejoin="round"
       >
+        {AREA_B_PATHS.map((d, i) => (
+          <path
+            key={`area-b-${i}`}
+            d={d}
+            strokeWidth={1.6 / k}
+            strokeDasharray={`${2 / k} ${2.6 / k}`}
+            opacity={0.8}
+          />
+        ))}
         {TERRITORY_OUTLINES.map((t) => (
           <path
             key={t.id}
             d={t.d}
             strokeWidth={bold}
             strokeDasharray={dash}
-            strokeLinejoin="round"
-            opacity={0.85}
+            opacity={0.9}
           />
         ))}
-        {REGIONS.filter((r) => r.id === "golan").map((r) =>
-          r.paths.map((d, i) => (
-            <path
-              key={`golan-${i}`}
-              d={d}
-              strokeWidth={bold}
-              strokeDasharray={dash}
-              strokeLinejoin="round"
-              opacity={0.8}
-            />
-          )),
-        )}
       </g>
-
-
     </>
   );
 });
+
