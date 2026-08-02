@@ -39,16 +39,21 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as SocialConversationIdRouteImport } from './routes/social/$conversationId'
 import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
 import { Route as GuidesIdRouteImport } from './routes/guides/$id'
+import { Route as ExploreVisaRouteImport } from './routes/explore/visa'
+import { Route as ExploreUniRouteImport } from './routes/explore/uni'
 import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
 import { Route as ExploreShopsRouteImport } from './routes/explore/shops'
 import { Route as ExploreRidesRouteImport } from './routes/explore/rides'
 import { Route as ExploreReserveRouteImport } from './routes/explore/reserve'
 import { Route as ExploreMapsRouteImport } from './routes/explore/maps'
+import { Route as ExploreLoneSoldierRouteImport } from './routes/explore/lone-soldier'
 import { Route as ExploreHousingRouteImport } from './routes/explore/housing'
 import { Route as ExploreHealthRouteImport } from './routes/explore/health'
 import { Route as ExploreFoodRouteImport } from './routes/explore/food'
 import { Route as ExploreEventsRouteImport } from './routes/explore/events'
+import { Route as ExploreDocumentsRouteImport } from './routes/explore/documents'
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
+import { Route as ExploreArmyRouteImport } from './routes/explore/army'
 import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
 import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
 import { Route as AdminMoneyRouteImport } from './routes/admin/money'
@@ -227,6 +232,16 @@ const GuidesIdRoute = GuidesIdRouteImport.update({
   path: '/guides/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreVisaRoute = ExploreVisaRouteImport.update({
+  id: '/explore/visa',
+  path: '/explore/visa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreUniRoute = ExploreUniRouteImport.update({
+  id: '/explore/uni',
+  path: '/explore/uni',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreTransitRoute = ExploreTransitRouteImport.update({
   id: '/explore/transit',
   path: '/explore/transit',
@@ -252,6 +267,11 @@ const ExploreMapsRoute = ExploreMapsRouteImport.update({
   path: '/explore/maps',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreLoneSoldierRoute = ExploreLoneSoldierRouteImport.update({
+  id: '/explore/lone-soldier',
+  path: '/explore/lone-soldier',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreHousingRoute = ExploreHousingRouteImport.update({
   id: '/explore/housing',
   path: '/explore/housing',
@@ -272,9 +292,19 @@ const ExploreEventsRoute = ExploreEventsRouteImport.update({
   path: '/explore/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreDocumentsRoute = ExploreDocumentsRouteImport.update({
+  id: '/explore/documents',
+  path: '/explore/documents',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreCommunityRoute = ExploreCommunityRouteImport.update({
   id: '/explore/community',
   path: '/explore/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreArmyRoute = ExploreArmyRouteImport.update({
+  id: '/explore/army',
+  path: '/explore/army',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BenefitsIdRoute = BenefitsIdRouteImport.update({
@@ -451,16 +481,21 @@ export interface FileRoutesByFullPath {
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
+  '/explore/army': typeof ExploreArmyRoute
   '/explore/community': typeof ExploreCommunityRoute
+  '/explore/documents': typeof ExploreDocumentsRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
   '/explore/health': typeof ExploreHealthRoute
   '/explore/housing': typeof ExploreHousingRoute
+  '/explore/lone-soldier': typeof ExploreLoneSoldierRoute
   '/explore/maps': typeof ExploreMapsRoute
   '/explore/reserve': typeof ExploreReserveRoute
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
+  '/explore/uni': typeof ExploreUniRoute
+  '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
   '/social/$conversationId': typeof SocialConversationIdRoute
@@ -519,16 +554,21 @@ export interface FileRoutesByTo {
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
+  '/explore/army': typeof ExploreArmyRoute
   '/explore/community': typeof ExploreCommunityRoute
+  '/explore/documents': typeof ExploreDocumentsRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
   '/explore/health': typeof ExploreHealthRoute
   '/explore/housing': typeof ExploreHousingRoute
+  '/explore/lone-soldier': typeof ExploreLoneSoldierRoute
   '/explore/maps': typeof ExploreMapsRoute
   '/explore/reserve': typeof ExploreReserveRoute
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
+  '/explore/uni': typeof ExploreUniRoute
+  '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
   '/social/$conversationId': typeof SocialConversationIdRoute
@@ -589,16 +629,21 @@ export interface FileRoutesById {
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
+  '/explore/army': typeof ExploreArmyRoute
   '/explore/community': typeof ExploreCommunityRoute
+  '/explore/documents': typeof ExploreDocumentsRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
   '/explore/health': typeof ExploreHealthRoute
   '/explore/housing': typeof ExploreHousingRoute
+  '/explore/lone-soldier': typeof ExploreLoneSoldierRoute
   '/explore/maps': typeof ExploreMapsRoute
   '/explore/reserve': typeof ExploreReserveRoute
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
+  '/explore/uni': typeof ExploreUniRoute
+  '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
   '/social/$conversationId': typeof SocialConversationIdRoute
@@ -660,16 +705,21 @@ export interface FileRouteTypes {
     | '/admin/money'
     | '/admin/promotions'
     | '/benefits/$id'
+    | '/explore/army'
     | '/explore/community'
+    | '/explore/documents'
     | '/explore/events'
     | '/explore/food'
     | '/explore/health'
     | '/explore/housing'
+    | '/explore/lone-soldier'
     | '/explore/maps'
     | '/explore/reserve'
     | '/explore/rides'
     | '/explore/shops'
     | '/explore/transit'
+    | '/explore/uni'
+    | '/explore/visa'
     | '/guides/$id'
     | '/siddur/$id'
     | '/social/$conversationId'
@@ -728,16 +778,21 @@ export interface FileRouteTypes {
     | '/admin/money'
     | '/admin/promotions'
     | '/benefits/$id'
+    | '/explore/army'
     | '/explore/community'
+    | '/explore/documents'
     | '/explore/events'
     | '/explore/food'
     | '/explore/health'
     | '/explore/housing'
+    | '/explore/lone-soldier'
     | '/explore/maps'
     | '/explore/reserve'
     | '/explore/rides'
     | '/explore/shops'
     | '/explore/transit'
+    | '/explore/uni'
+    | '/explore/visa'
     | '/guides/$id'
     | '/siddur/$id'
     | '/social/$conversationId'
@@ -797,16 +852,21 @@ export interface FileRouteTypes {
     | '/admin/money'
     | '/admin/promotions'
     | '/benefits/$id'
+    | '/explore/army'
     | '/explore/community'
+    | '/explore/documents'
     | '/explore/events'
     | '/explore/food'
     | '/explore/health'
     | '/explore/housing'
+    | '/explore/lone-soldier'
     | '/explore/maps'
     | '/explore/reserve'
     | '/explore/rides'
     | '/explore/shops'
     | '/explore/transit'
+    | '/explore/uni'
+    | '/explore/visa'
     | '/guides/$id'
     | '/siddur/$id'
     | '/social/$conversationId'
@@ -860,16 +920,21 @@ export interface RootRouteChildren {
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   BenefitsIdRoute: typeof BenefitsIdRoute
+  ExploreArmyRoute: typeof ExploreArmyRoute
   ExploreCommunityRoute: typeof ExploreCommunityRoute
+  ExploreDocumentsRoute: typeof ExploreDocumentsRoute
   ExploreEventsRoute: typeof ExploreEventsRoute
   ExploreFoodRoute: typeof ExploreFoodRoute
   ExploreHealthRoute: typeof ExploreHealthRoute
   ExploreHousingRoute: typeof ExploreHousingRoute
+  ExploreLoneSoldierRoute: typeof ExploreLoneSoldierRoute
   ExploreMapsRoute: typeof ExploreMapsRoute
   ExploreReserveRoute: typeof ExploreReserveRoute
   ExploreRidesRoute: typeof ExploreRidesRoute
   ExploreShopsRoute: typeof ExploreShopsRoute
   ExploreTransitRoute: typeof ExploreTransitRoute
+  ExploreUniRoute: typeof ExploreUniRoute
+  ExploreVisaRoute: typeof ExploreVisaRoute
   GuidesIdRoute: typeof GuidesIdRoute
   SiddurIdRoute: typeof SiddurIdRoute
   SocialConversationIdRoute: typeof SocialConversationIdRoute
@@ -1109,6 +1174,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/visa': {
+      id: '/explore/visa'
+      path: '/explore/visa'
+      fullPath: '/explore/visa'
+      preLoaderRoute: typeof ExploreVisaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/uni': {
+      id: '/explore/uni'
+      path: '/explore/uni'
+      fullPath: '/explore/uni'
+      preLoaderRoute: typeof ExploreUniRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/transit': {
       id: '/explore/transit'
       path: '/explore/transit'
@@ -1144,6 +1223,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreMapsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/lone-soldier': {
+      id: '/explore/lone-soldier'
+      path: '/explore/lone-soldier'
+      fullPath: '/explore/lone-soldier'
+      preLoaderRoute: typeof ExploreLoneSoldierRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/housing': {
       id: '/explore/housing'
       path: '/explore/housing'
@@ -1172,11 +1258,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/documents': {
+      id: '/explore/documents'
+      path: '/explore/documents'
+      fullPath: '/explore/documents'
+      preLoaderRoute: typeof ExploreDocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/community': {
       id: '/explore/community'
       path: '/explore/community'
       fullPath: '/explore/community'
       preLoaderRoute: typeof ExploreCommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/army': {
+      id: '/explore/army'
+      path: '/explore/army'
+      fullPath: '/explore/army'
+      preLoaderRoute: typeof ExploreArmyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/benefits/$id': {
@@ -1423,16 +1523,21 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   BenefitsIdRoute: BenefitsIdRoute,
+  ExploreArmyRoute: ExploreArmyRoute,
   ExploreCommunityRoute: ExploreCommunityRoute,
+  ExploreDocumentsRoute: ExploreDocumentsRoute,
   ExploreEventsRoute: ExploreEventsRoute,
   ExploreFoodRoute: ExploreFoodRoute,
   ExploreHealthRoute: ExploreHealthRoute,
   ExploreHousingRoute: ExploreHousingRoute,
+  ExploreLoneSoldierRoute: ExploreLoneSoldierRoute,
   ExploreMapsRoute: ExploreMapsRoute,
   ExploreReserveRoute: ExploreReserveRoute,
   ExploreRidesRoute: ExploreRidesRoute,
   ExploreShopsRoute: ExploreShopsRoute,
   ExploreTransitRoute: ExploreTransitRoute,
+  ExploreUniRoute: ExploreUniRoute,
+  ExploreVisaRoute: ExploreVisaRoute,
   GuidesIdRoute: GuidesIdRoute,
   SiddurIdRoute: SiddurIdRoute,
   SocialConversationIdRoute: SocialConversationIdRoute,
