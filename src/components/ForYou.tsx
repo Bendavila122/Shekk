@@ -179,8 +179,12 @@ function DetailSheet({
           isErevShabbat: ctx.isErevShabbat,
           isShabbat: ctx.isShabbat,
           dayKind: ctx.jewishDay?.kind ?? null,
+          tzeitAt: ctx.jewish?.tzeitAt ?? null,
+          sunsetAt: ctx.jewish?.sunsetAt ?? null,
+          now: ctx.now,
         })
       : null;
+
   const scene = !!sky || !!jl;
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" role="dialog" aria-modal="true">
