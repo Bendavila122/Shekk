@@ -37,6 +37,10 @@ export type MiniApp = {
   emoji: string;
   /** Line glyph at the centre of the app icon. */
   Icon: LucideIcon;
+  /** Optical size of the glyph as a fraction of the icon. Default 0.44. */
+  iconScale?: number;
+  /** Glyph stroke width. Default 1.8. */
+  iconStroke?: number;
   /** Icon gradient, from the design tokens in styles.css. */
   grad: string;
   /** Launch-screen surface, from the design tokens. */
@@ -45,7 +49,8 @@ export type MiniApp = {
   onSurface: string;
 };
 
-const MINI_APPS: MiniApp[] = [
+
+export const MINI_APPS: MiniApp[] = [
   {
     path: "/explore/maps",
     id: "maps",
@@ -53,6 +58,7 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Everything around you, on one map",
     emoji: "📍",
     Icon: MapPin,
+    iconScale: 0.44,
     grad: "var(--grad-travel)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
@@ -64,6 +70,7 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Your map of Israel",
     emoji: "🗺️",
     Icon: MapIcon,
+    iconScale: 0.46,
     grad: "var(--grad-discover)",
     surface: "bg-primary",
     onSurface: "text-primary-foreground",
@@ -75,7 +82,8 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Gyms, classes and courts near you",
     emoji: "🏋️",
     Icon: Dumbbell,
-    grad: "var(--grad-social)",
+    iconScale: 0.48,
+    grad: "var(--grad-alert)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
   },
@@ -86,7 +94,8 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Your insurance card, ready at the clinic",
     emoji: "🩺",
     Icon: Stethoscope,
-    grad: "var(--grad-sky)",
+    iconScale: 0.44,
+    grad: "var(--grad-social)",
     surface: "bg-primary",
     onSurface: "text-primary-foreground",
   },
@@ -97,6 +106,7 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Nights out, tiyulim and Shabbatonim",
     emoji: "🎟️",
     Icon: PartyPopper,
+    iconScale: 0.45,
     grad: "var(--grad-events)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
@@ -108,6 +118,7 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Eat well, pay with Shekk",
     emoji: "🥙",
     Icon: UtensilsCrossed,
+    iconScale: 0.42,
     grad: "var(--grad-deals)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
@@ -119,6 +130,7 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Get across town",
     emoji: "🚕",
     Icon: CarFront,
+    iconScale: 0.46,
     grad: "var(--grad-sun)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
@@ -130,6 +142,7 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Buses, trains and Rav-Kav",
     emoji: "🚌",
     Icon: BusFront,
+    iconScale: 0.44,
     grad: "var(--grad-partly)",
     surface: "bg-primary",
     onSurface: "text-primary-foreground",
@@ -141,6 +154,7 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Rooms, dira hunting and deposits",
     emoji: "🏠",
     Icon: House,
+    iconScale: 0.44,
     grad: "var(--grad-haze)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
@@ -152,6 +166,7 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Where your shekels go furthest",
     emoji: "🛍️",
     Icon: ShoppingBag,
+    iconScale: 0.43,
     grad: "var(--grad-chag)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
@@ -163,7 +178,8 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Your program, your people",
     emoji: "🤝",
     Icon: Handshake,
-    grad: "var(--grad-social)",
+    iconScale: 0.47,
+    grad: "var(--grad-sky)",
     surface: "bg-primary",
     onSurface: "text-primary-foreground",
   },
@@ -174,6 +190,7 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Book a table, a court or a slot",
     emoji: "📅",
     Icon: CalendarCheck,
+    iconScale: 0.44,
     grad: "var(--grad-wallet)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
@@ -185,6 +202,7 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Tefillah, brachot and Havdalah",
     emoji: "📖",
     Icon: BookOpenText,
+    iconScale: 0.45,
     grad: "var(--grad-jewish)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
@@ -196,6 +214,7 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Living here, explained",
     emoji: "🧭",
     Icon: Compass,
+    iconScale: 0.45,
     grad: "var(--grad-discover)",
     surface: "bg-primary",
     onSurface: "text-primary-foreground",
@@ -207,6 +226,7 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Israel, right now",
     emoji: "📰",
     Icon: Newspaper,
+    iconScale: 0.44,
     grad: "var(--grad-news)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
@@ -218,6 +238,7 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Everything you're going to",
     emoji: "🎫",
     Icon: Ticket,
+    iconScale: 0.45,
     grad: "var(--grad-events)",
     surface: "bg-primary",
     onSurface: "text-primary-foreground",
@@ -229,14 +250,21 @@ const MINI_APPS: MiniApp[] = [
     tagline: "Dollars in, shekels out",
     emoji: "💱",
     Icon: ArrowLeftRight,
+    iconScale: 0.42,
     grad: "var(--grad-wallet)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
   },
 ];
 
+/** Every mini app Shekk owns, in launch order. */
+export function miniApps(): MiniApp[] {
+  return MINI_APPS;
+}
+
 /** Which mini app, if any, owns this route. */
 export function miniAppFor(pathname: string): MiniApp | null {
+
   const clean = pathname.replace(/\/$/, "") || "/";
   let best: MiniApp | null = null;
   for (const app of MINI_APPS) {
