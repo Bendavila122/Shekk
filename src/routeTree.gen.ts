@@ -49,7 +49,6 @@ import { Route as ExploreHealthRouteImport } from './routes/explore/health'
 import { Route as ExploreFoodRouteImport } from './routes/explore/food'
 import { Route as ExploreEventsRouteImport } from './routes/explore/events'
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
-import { Route as ExploreAdminRouteImport } from './routes/explore/admin'
 import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
 import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
 import { Route as AdminMoneyRouteImport } from './routes/admin/money'
@@ -62,11 +61,14 @@ import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } fr
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ExploreMapIndexRouteImport } from './routes/explore/map.index'
 import { Route as ExploreFitnessIndexRouteImport } from './routes/explore/fitness.index'
+import { Route as ExploreAdminIndexRouteImport } from './routes/explore/admin.index'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
 import { Route as ExploreMapIdRouteImport } from './routes/explore/map.$id'
 import { Route as ExploreFitnessIdRouteImport } from './routes/explore/fitness.$id'
 import { Route as ExploreEventIdRouteImport } from './routes/explore/event.$id'
 import { Route as ExploreCategoryIdRouteImport } from './routes/explore/category.$id'
+import { Route as ExploreAdminDocumentsRouteImport } from './routes/explore/admin.documents'
+import { Route as ExploreAdminTrackRouteImport } from './routes/explore/admin.$track'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -275,11 +277,6 @@ const ExploreCommunityRoute = ExploreCommunityRouteImport.update({
   path: '/explore/community',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExploreAdminRoute = ExploreAdminRouteImport.update({
-  id: '/explore/admin',
-  path: '/explore/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BenefitsIdRoute = BenefitsIdRouteImport.update({
   id: '/benefits/$id',
   path: '/benefits/$id',
@@ -342,6 +339,11 @@ const ExploreFitnessIndexRoute = ExploreFitnessIndexRouteImport.update({
   path: '/explore/fitness/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreAdminIndexRoute = ExploreAdminIndexRouteImport.update({
+  id: '/explore/admin/',
+  path: '/explore/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
   id: '/explore/service/$id',
   path: '/explore/service/$id',
@@ -365,6 +367,16 @@ const ExploreEventIdRoute = ExploreEventIdRouteImport.update({
 const ExploreCategoryIdRoute = ExploreCategoryIdRouteImport.update({
   id: '/explore/category/$id',
   path: '/explore/category/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreAdminDocumentsRoute = ExploreAdminDocumentsRouteImport.update({
+  id: '/explore/admin/documents',
+  path: '/explore/admin/documents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreAdminTrackRoute = ExploreAdminTrackRouteImport.update({
+  id: '/explore/admin/$track',
+  path: '/explore/admin/$track',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
@@ -439,7 +451,6 @@ export interface FileRoutesByFullPath {
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
-  '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
@@ -461,11 +472,14 @@ export interface FileRoutesByFullPath {
   '/social/': typeof SocialIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/explore/admin/$track': typeof ExploreAdminTrackRoute
+  '/explore/admin/documents': typeof ExploreAdminDocumentsRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/explore/admin/': typeof ExploreAdminIndexRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -505,7 +519,6 @@ export interface FileRoutesByTo {
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
-  '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
@@ -527,11 +540,14 @@ export interface FileRoutesByTo {
   '/social': typeof SocialIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/explore/admin/$track': typeof ExploreAdminTrackRoute
+  '/explore/admin/documents': typeof ExploreAdminDocumentsRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/explore/admin': typeof ExploreAdminIndexRoute
   '/explore/fitness': typeof ExploreFitnessIndexRoute
   '/explore/map': typeof ExploreMapIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -573,7 +589,6 @@ export interface FileRoutesById {
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
-  '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
@@ -595,11 +610,14 @@ export interface FileRoutesById {
   '/social/': typeof SocialIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/explore/admin/$track': typeof ExploreAdminTrackRoute
+  '/explore/admin/documents': typeof ExploreAdminDocumentsRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/explore/admin/': typeof ExploreAdminIndexRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -642,7 +660,6 @@ export interface FileRouteTypes {
     | '/admin/money'
     | '/admin/promotions'
     | '/benefits/$id'
-    | '/explore/admin'
     | '/explore/community'
     | '/explore/events'
     | '/explore/food'
@@ -664,11 +681,14 @@ export interface FileRouteTypes {
     | '/social/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/explore/admin/$track'
+    | '/explore/admin/documents'
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
     | '/explore/map/$id'
     | '/explore/service/$id'
+    | '/explore/admin/'
     | '/explore/fitness/'
     | '/explore/map/'
     | '/api/public/payments/webhook'
@@ -708,7 +728,6 @@ export interface FileRouteTypes {
     | '/admin/money'
     | '/admin/promotions'
     | '/benefits/$id'
-    | '/explore/admin'
     | '/explore/community'
     | '/explore/events'
     | '/explore/food'
@@ -730,11 +749,14 @@ export interface FileRouteTypes {
     | '/social'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/explore/admin/$track'
+    | '/explore/admin/documents'
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
     | '/explore/map/$id'
     | '/explore/service/$id'
+    | '/explore/admin'
     | '/explore/fitness'
     | '/explore/map'
     | '/api/public/payments/webhook'
@@ -775,7 +797,6 @@ export interface FileRouteTypes {
     | '/admin/money'
     | '/admin/promotions'
     | '/benefits/$id'
-    | '/explore/admin'
     | '/explore/community'
     | '/explore/events'
     | '/explore/food'
@@ -797,11 +818,14 @@ export interface FileRouteTypes {
     | '/social/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/explore/admin/$track'
+    | '/explore/admin/documents'
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
     | '/explore/map/$id'
     | '/explore/service/$id'
+    | '/explore/admin/'
     | '/explore/fitness/'
     | '/explore/map/'
     | '/api/public/payments/webhook'
@@ -836,7 +860,6 @@ export interface RootRouteChildren {
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   BenefitsIdRoute: typeof BenefitsIdRoute
-  ExploreAdminRoute: typeof ExploreAdminRoute
   ExploreCommunityRoute: typeof ExploreCommunityRoute
   ExploreEventsRoute: typeof ExploreEventsRoute
   ExploreFoodRoute: typeof ExploreFoodRoute
@@ -857,11 +880,14 @@ export interface RootRouteChildren {
   SocialIndexRoute: typeof SocialIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ExploreAdminTrackRoute: typeof ExploreAdminTrackRoute
+  ExploreAdminDocumentsRoute: typeof ExploreAdminDocumentsRoute
   ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
   ExploreEventIdRoute: typeof ExploreEventIdRoute
   ExploreFitnessIdRoute: typeof ExploreFitnessIdRoute
   ExploreMapIdRoute: typeof ExploreMapIdRoute
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
+  ExploreAdminIndexRoute: typeof ExploreAdminIndexRoute
   ExploreFitnessIndexRoute: typeof ExploreFitnessIndexRoute
   ExploreMapIndexRoute: typeof ExploreMapIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -1153,13 +1179,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreCommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/explore/admin': {
-      id: '/explore/admin'
-      path: '/explore/admin'
-      fullPath: '/explore/admin'
-      preLoaderRoute: typeof ExploreAdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/benefits/$id': {
       id: '/benefits/$id'
       path: '/benefits/$id'
@@ -1244,6 +1263,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreFitnessIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/admin/': {
+      id: '/explore/admin/'
+      path: '/explore/admin'
+      fullPath: '/explore/admin/'
+      preLoaderRoute: typeof ExploreAdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/service/$id': {
       id: '/explore/service/$id'
       path: '/explore/service/$id'
@@ -1277,6 +1303,20 @@ declare module '@tanstack/react-router' {
       path: '/explore/category/$id'
       fullPath: '/explore/category/$id'
       preLoaderRoute: typeof ExploreCategoryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/admin/documents': {
+      id: '/explore/admin/documents'
+      path: '/explore/admin/documents'
+      fullPath: '/explore/admin/documents'
+      preLoaderRoute: typeof ExploreAdminDocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/admin/$track': {
+      id: '/explore/admin/$track'
+      path: '/explore/admin/$track'
+      fullPath: '/explore/admin/$track'
+      preLoaderRoute: typeof ExploreAdminTrackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.mcp/invoke-tool/$tool': {
@@ -1383,7 +1423,6 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   BenefitsIdRoute: BenefitsIdRoute,
-  ExploreAdminRoute: ExploreAdminRoute,
   ExploreCommunityRoute: ExploreCommunityRoute,
   ExploreEventsRoute: ExploreEventsRoute,
   ExploreFoodRoute: ExploreFoodRoute,
@@ -1404,11 +1443,14 @@ const rootRouteChildren: RootRouteChildren = {
   SocialIndexRoute: SocialIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ExploreAdminTrackRoute: ExploreAdminTrackRoute,
+  ExploreAdminDocumentsRoute: ExploreAdminDocumentsRoute,
   ExploreCategoryIdRoute: ExploreCategoryIdRoute,
   ExploreEventIdRoute: ExploreEventIdRoute,
   ExploreFitnessIdRoute: ExploreFitnessIdRoute,
   ExploreMapIdRoute: ExploreMapIdRoute,
   ExploreServiceIdRoute: ExploreServiceIdRoute,
+  ExploreAdminIndexRoute: ExploreAdminIndexRoute,
   ExploreFitnessIndexRoute: ExploreFitnessIndexRoute,
   ExploreMapIndexRoute: ExploreMapIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,

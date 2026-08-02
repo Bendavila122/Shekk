@@ -1,6 +1,7 @@
 import type { LinkProps } from "@tanstack/react-router";
 import { SERVICE_CATEGORIES, ALL_SERVICES, serviceLinkProps, type Service } from "@/lib/services";
 import { GUIDES, categoryLabel, guideKeywords } from "@/lib/guides";
+import { TRACKS, trackKeywords } from "@/lib/official-content";
 
 
 export type SearchResult = {
@@ -30,6 +31,8 @@ const PAGES: { title: string; subtitle: string; emoji: string; to: LinkProps["to
   { title: "Fitness", subtitle: "Gyms, classes, pools & courts near you", emoji: "🏋️", to: "/explore/fitness", keywords: "fitness gym gyms workout exercise class classes pool swim swimming studio pilates yoga spinning crossfit weights martial arts krav maga boxing climbing bouldering basketball football court pitch sports club country club holmes place icon gymbox go active membership day pass short term contract" },
   { title: "Siddur", subtitle: "Prayers, your nusach, Hebrew & English", emoji: "📖", to: "/siddur", keywords: "siddur prayer tefilla tefillah davening daven shema shacharit mincha maariv bentching birkat hamazon brachot bracha havdalah tefilat haderech nusach ashkenaz sephard edot hamizrach" },
 
+  { title: "Official", subtitle: "Visas, army, uni and paperwork", emoji: "🛂", to: "/explore/admin", keywords: "official admin visa a2 b2 student visa misrad hapnim extension army idf mahal garin tzabar tzav rishon lone soldier chayal boded university masa mechina ulpan transcript credit transfer documents passport paperwork" },
+  { title: "Document vault", subtitle: "Passport, visa, letters and policies", emoji: "🗂️", to: "/explore/admin/documents", keywords: "documents vault upload passport visa acceptance letter insurance policy army papers transcripts storage" },
   { title: "Help", subtitle: "Support and FAQs", emoji: "🛟", to: "/help", keywords: "help support faq contact problem question" },
 ];
 
@@ -66,6 +69,16 @@ const INDEX: SearchResult[] = [
       keywords: `${s.name} ${s.partner ?? ""} ${s.blurb} ${(s.detail ?? []).join(" ")}`.toLowerCase(),
     };
   }),
+  ...TRACKS.map((t) => ({
+    id: `official:${t.id}`,
+    kind: "guide" as const,
+    title: t.name,
+    subtitle: `Official · ${t.tagline}`,
+    emoji: t.emoji,
+    to: "/explore/admin/$track" as LinkProps["to"],
+    params: { track: t.id },
+    keywords: trackKeywords(t.id),
+  })),
   ...GUIDES.map((g) => ({
     id: `guide:${g.id}`,
     kind: "guide" as const,

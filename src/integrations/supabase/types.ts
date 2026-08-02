@@ -875,6 +875,90 @@ export type Database = {
           },
         ]
       }
+      official_documents: {
+        Row: {
+          byte_size: number | null
+          category: string
+          created_at: string
+          expires_on: string | null
+          id: string
+          label: string
+          mime_type: string | null
+          note: string | null
+          storage_path: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          byte_size?: number | null
+          category: string
+          created_at?: string
+          expires_on?: string | null
+          id?: string
+          label: string
+          mime_type?: string | null
+          note?: string | null
+          storage_path: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          byte_size?: number | null
+          category?: string
+          created_at?: string
+          expires_on?: string | null
+          id?: string
+          label?: string
+          mime_type?: string | null
+          note?: string | null
+          storage_path?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      official_tasks: {
+        Row: {
+          created_at: string
+          done: boolean
+          done_at: string | null
+          due_on: string | null
+          id: string
+          note: string | null
+          step_key: string
+          title: string
+          track: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          done?: boolean
+          done_at?: string | null
+          due_on?: string | null
+          id?: string
+          note?: string | null
+          step_key: string
+          title: string
+          track: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          done?: boolean
+          done_at?: string | null
+          due_on?: string | null
+          id?: string
+          note?: string | null
+          step_key?: string
+          title?: string
+          track?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       programs: {
         Row: {
           city: string | null
