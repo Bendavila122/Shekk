@@ -68,6 +68,7 @@ import { Route as ExploreMapIdRouteImport } from './routes/explore/map.$id'
 import { Route as ExploreFitnessIdRouteImport } from './routes/explore/fitness.$id'
 import { Route as ExploreEventIdRouteImport } from './routes/explore/event.$id'
 import { Route as ExploreCategoryIdRouteImport } from './routes/explore/category.$id'
+import { Route as ExploreAdminDocumentsRouteImport } from './routes/explore/admin.documents'
 import { Route as ExploreAdminTrackRouteImport } from './routes/explore/admin.$track'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
@@ -374,6 +375,11 @@ const ExploreCategoryIdRoute = ExploreCategoryIdRouteImport.update({
   path: '/explore/category/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreAdminDocumentsRoute = ExploreAdminDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => ExploreAdminRoute,
+} as any)
 const ExploreAdminTrackRoute = ExploreAdminTrackRouteImport.update({
   id: '/$track',
   path: '/$track',
@@ -474,6 +480,7 @@ export interface FileRoutesByFullPath {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/admin/$track': typeof ExploreAdminTrackRoute
+  '/explore/admin/documents': typeof ExploreAdminDocumentsRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
@@ -541,6 +548,7 @@ export interface FileRoutesByTo {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/admin/$track': typeof ExploreAdminTrackRoute
+  '/explore/admin/documents': typeof ExploreAdminDocumentsRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
@@ -611,6 +619,7 @@ export interface FileRoutesById {
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/admin/$track': typeof ExploreAdminTrackRoute
+  '/explore/admin/documents': typeof ExploreAdminDocumentsRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
@@ -682,6 +691,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/admin/$track'
+    | '/explore/admin/documents'
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
@@ -749,6 +759,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/admin/$track'
+    | '/explore/admin/documents'
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
@@ -818,6 +829,7 @@ export interface FileRouteTypes {
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/admin/$track'
+    | '/explore/admin/documents'
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
@@ -1308,6 +1320,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreCategoryIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/admin/documents': {
+      id: '/explore/admin/documents'
+      path: '/documents'
+      fullPath: '/explore/admin/documents'
+      preLoaderRoute: typeof ExploreAdminDocumentsRouteImport
+      parentRoute: typeof ExploreAdminRoute
+    }
     '/explore/admin/$track': {
       id: '/explore/admin/$track'
       path: '/$track'
@@ -1395,11 +1414,13 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 
 interface ExploreAdminRouteChildren {
   ExploreAdminTrackRoute: typeof ExploreAdminTrackRoute
+  ExploreAdminDocumentsRoute: typeof ExploreAdminDocumentsRoute
   ExploreAdminIndexRoute: typeof ExploreAdminIndexRoute
 }
 
 const ExploreAdminRouteChildren: ExploreAdminRouteChildren = {
   ExploreAdminTrackRoute: ExploreAdminTrackRoute,
+  ExploreAdminDocumentsRoute: ExploreAdminDocumentsRoute,
   ExploreAdminIndexRoute: ExploreAdminIndexRoute,
 }
 
@@ -1470,3 +1491,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

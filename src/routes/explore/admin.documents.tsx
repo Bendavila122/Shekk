@@ -31,7 +31,7 @@ export const Route = createFileRoute("/explore/admin/documents")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: Vault;
+  component: Vault,
 });
 
 function size(bytes: number | null) {
