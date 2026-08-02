@@ -165,16 +165,22 @@ export function useUserContext(refreshKey = 0, live?: LiveInput): UserContext {
     const city = live?.cityLabel ?? "Israel";
 
     // Prefer real candle-lighting / havdalah instants over clock heuristics.
+    // Instant comparisons are timezone-independent, so this stays correct abroad.
     const candleAt = jewish?.candleDate ? new Date(jewish.candleDate) : null;
     const havdalahAt = jewish?.havdalahDate ? new Date(jewish.havdalahDate) : null;
     const withinShabbat =
-      candleAt && havdalahAt ? d >= candleAt && d < havdalahAt : (dayOfWeek === 5 && hour >= 17) || (dayOfWeek === 6 && hour < 18);
+      candleAt && havdalahAt
+        ? d >= candleAt && d < havdalahAt
+        : havdalahAt
+          ? d < havdalahAt && havdalahAt.getTime() - d.getTime() < 26 * 3600_000
+          : (dayOfWeek === 5 && hour >= 17) || (dayOfWeek === 6 && hour < 18);
     const erev = candleAt
-      ? candleAt.toDateString() === d.toDateString() && d < candleAt
+      ? d < candleAt && candleAt.getTime() - d.getTime() <= 8 * 3600_000
       : dayOfWeek === 5 && hour >= 11;
     const motzash = havdalahAt
-      ? havdalahAt.toDateString() === d.toDateString() && d >= havdalahAt
+      ? d >= havdalahAt && d.getTime() - havdalahAt.getTime() < 3 * 3600_000
       : dayOfWeek === 6 && hour >= 18;
+
 
     const seed = `${state.name}|${city}|${d.toDateString()}|${refreshKey}`;
     const unpaid = state.splits.filter((s) => !s.paid);
