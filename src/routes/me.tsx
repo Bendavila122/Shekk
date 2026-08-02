@@ -128,7 +128,7 @@ function Me() {
           <RowLink to="/card" Icon={CreditCard} label="Shekk Card" hint={state.card.issued ? `•••• ${state.card.last4}` : "Not issued yet"} />
           <RowLink to="/activity" Icon={Receipt} label="Order & payment history" hint={`${state.txns.length} records`} />
           <RowLink to="/explore/shops" Icon={Bookmark} label="Saved places & discounts" hint="7 saved" />
-          <RowLink to="/explore/admin" Icon={FileText} label="Program documents & visa" hint="Student visa A/2" />
+          <RowLink to="/explore/documents" Icon={FileText} label="Program documents & visa" hint="Private to your account" />
           <RowLink to="/settings" Icon={Settings} label="App settings" hint="Currency, theme, alerts" />
           <RowLink to="/welcome" Icon={Sparkles} label="Redo account setup" hint="Programme, city, currency" />
           <RowLink to="/terms" Icon={FileText} label="Full Terms & Conditions" hint="" />

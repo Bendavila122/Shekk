@@ -1,64 +1,34 @@
+/**
+ * One paperwork app — Visa, Army, Lone soldier or Uni.
+ *
+ * Each of those mini apps is the same shape: the written track, the member's
+ * own saved checklist, the documents that track keeps asking for, and links
+ * across to its sibling apps.
+ */
+
 import { useMemo, useState } from "react";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { CalendarClock, Check, ChevronLeft, Clock, Paperclip } from "lucide-react";
+import { Link, type LinkProps } from "@tanstack/react-router";
+import { CalendarClock, Check, Clock, Paperclip } from "lucide-react";
 import { AppShell, ScreenHeader } from "@/components/AppShell";
+import { DocumentVault } from "@/components/official/DocumentVault";
 import { GuideBlockView } from "@/lib/guide-blocks";
 import { useGuidePrefs } from "@/lib/guide-prefs";
-import { TRACKS, docCategory, getTrack, type OfficialTrack } from "@/lib/official-content";
+import { TRACKS, docCategory, type DocCategoryId, type OfficialTrack, type TrackId } from "@/lib/official-content";
 import { useOfficial } from "@/lib/useOfficial";
 
-export const Route = createFileRoute("/explore/admin/$track")({
-  loader: ({ params }) => {
-    const track = getTrack(params.track);
-    if (!track) throw notFound();
-    return { track };
-  },
-  head: ({ loaderData }) => {
-    const t = loaderData?.track;
-    const title = t ? `${t.name} · Shekk Official` : "Official · Shekk";
-    const description = t?.blurb ?? "Paperwork for a gap year in Israel, explained.";
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "article" },
-        { name: "twitter:card", content: "summary" },
-      ],
-    };
-  },
-  errorComponent: () => (
-    <AppShell>
-      <ScreenHeader title="Official" />
-      <div className="px-5 py-10 text-center text-sm text-muted-foreground">
-        We couldn't open that track.{" "}
-        <Link to="/explore/admin" className="font-semibold text-primary">
-          Back to Official
-        </Link>
-      </div>
-    </AppShell>
-  ),
-  notFoundComponent: () => (
-    <AppShell>
-      <ScreenHeader title="Official" />
-      <div className="px-5 py-10 text-center text-sm text-muted-foreground">
-        That track doesn't exist.{" "}
-        <Link to="/explore/admin" className="font-semibold text-primary">
-          Back to Official
-        </Link>
-      </div>
-    </AppShell>
-  ),
-  component: TrackScreen,
-});
+/** Where each track lives now that they're separate apps. */
+export const TRACK_ROUTES: Record<TrackId, LinkProps["to"]> = {
+  visa: "/explore/visa",
+  army: "/explore/army",
+  "lone-soldier": "/explore/lone-soldier",
+  university: "/explore/uni",
+};
 
 function fmtMonth(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", { month: "short", year: "numeric" });
 }
 
-function TrackScreen() {
-  const { track } = Route.useLoaderData() as { track: OfficialTrack };
+export function TrackApp({ track }: { track: OfficialTrack }) {
   const { prefs, toggleCheck } = useGuidePrefs();
   const { tasks, saveTask, clearTask } = useOfficial();
   const [openStep, setOpenStep] = useState<string | null>(null);
@@ -69,6 +39,13 @@ function TrackScreen() {
     return map;
   }, [tasks, track.id]);
 
+  const docCategories = useMemo(() => {
+    const set: DocCategoryId[] = [];
+    for (const s of track.steps) if (s.needsDoc && !set.includes(s.needsDoc)) set.push(s.needsDoc);
+    if (!set.includes("other")) set.push("other");
+    return set;
+  }, [track.steps]);
+
   const doneCount = track.steps.filter((s) => byKey.get(s.key)?.done).length;
   const others = TRACKS.filter((t) => t.id !== track.id);
 
@@ -77,7 +54,6 @@ function TrackScreen() {
       <ScreenHeader title={track.name} />
 
       <article className="px-5 pt-2">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Official</p>
         <h1 className="mt-1 font-display text-3xl font-bold leading-tight tracking-tight">
           <span className="mr-2">{track.emoji}</span>
           {track.name}
@@ -152,7 +128,11 @@ function TrackScreen() {
                       onClick={() => setOpenStep(open ? null : step.key)}
                       className="min-w-0 flex-1 text-left"
                     >
-                      <p className={`text-[13.5px] font-semibold leading-snug ${done ? "text-muted-foreground line-through" : ""}`}>
+                      <p
+                        className={`text-[13.5px] font-semibold leading-snug ${
+                          done ? "text-muted-foreground line-through" : ""
+                        }`}
+                      >
                         {step.title}
                       </p>
                       <p className="mt-0.5 text-[12px] leading-snug text-muted-foreground">{step.detail}</p>
@@ -219,29 +199,18 @@ function TrackScreen() {
                           className="mt-1 w-full rounded-xl border border-border bg-card px-3 py-2 text-[13px]"
                         />
                       </label>
-                      <div className="flex items-center gap-3">
-                        {step.needsDoc ? (
-                          <Link
-                            to="/explore/admin/documents"
-                            search={{ category: step.needsDoc }}
-                            className="tap-flat text-[12px] font-semibold text-primary"
-                          >
-                            Upload the {docCategory(step.needsDoc).label.toLowerCase()} file
-                          </Link>
-                        ) : null}
-                        {row ? (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              clearTask.mutate({ track: track.id, stepKey: step.key });
-                              setOpenStep(null);
-                            }}
-                            className="tap-flat ml-auto text-[12px] font-semibold text-destructive"
-                          >
-                            Reset step
-                          </button>
-                        ) : null}
-                      </div>
+                      {row ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            clearTask.mutate({ track: track.id, stepKey: step.key });
+                            setOpenStep(null);
+                          }}
+                          className="tap-flat text-[12px] font-semibold text-destructive"
+                        >
+                          Reset step
+                        </button>
+                      ) : null}
                     </div>
                   ) : null}
                 </li>
@@ -274,16 +243,23 @@ function TrackScreen() {
         </div>
       </article>
 
+      {/* The paperwork this track keeps asking for. */}
+      <section className="mt-9 px-4">
+        <h2 className="px-1 text-[17px] font-bold leading-tight tracking-tight">Your documents</h2>
+        <p className="mb-3 mt-1 px-1 text-[12.5px] leading-snug text-muted-foreground">
+          Private to your account. Have the file on you before you walk into an office.
+        </p>
+        <DocumentVault categories={docCategories} />
+        <Link to="/explore/documents" className="tap-flat mt-3 inline-block px-1 text-[12px] font-semibold text-primary">
+          Open the full vault
+        </Link>
+      </section>
+
       <section className="mt-9 px-5">
-        <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Other tracks</h2>
+        <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Also useful</h2>
         <div className="mt-1 divide-y divide-border">
           {others.map((t) => (
-            <Link
-              key={t.id}
-              to="/explore/admin/$track"
-              params={{ track: t.id }}
-              className="tap-flat flex items-start gap-3 py-4"
-            >
+            <Link key={t.id} to={TRACK_ROUTES[t.id]} className="tap-flat flex items-start gap-3 py-4">
               <span className="text-lg leading-none">{t.emoji}</span>
               <div className="min-w-0 flex-1">
                 <p className="text-[14px] font-semibold leading-tight">{t.name}</p>
@@ -292,9 +268,6 @@ function TrackScreen() {
             </Link>
           ))}
         </div>
-        <Link to="/explore/admin" className="tap-flat mt-4 inline-flex items-center gap-1 text-[12px] font-semibold text-primary">
-          <ChevronLeft className="size-3.5" /> All of Official
-        </Link>
       </section>
 
       <div className="pb-12" />
