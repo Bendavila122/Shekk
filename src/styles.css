@@ -646,68 +646,97 @@
   --jl-top: oklch(0.62 0.14 268);
   --jl-bottom: oklch(0.32 0.12 274);
   --jl-city: oklch(0.22 0.05 272);
+  --jl-hills: oklch(0.34 0.06 272);
   isolation: isolate;
 }
 .jl-scene .jl-wash {
   background: linear-gradient(170deg, var(--jl-top), var(--jl-bottom));
 }
 .jl-erev {
-  --jl-top: oklch(0.76 0.14 62);
-  --jl-bottom: oklch(0.34 0.11 292);
-  --jl-city: oklch(0.24 0.06 288);
+  --jl-top: oklch(0.78 0.13 68);
+  --jl-bottom: oklch(0.42 0.12 34);
+  --jl-city: oklch(0.24 0.06 42);
+  --jl-hills: oklch(0.36 0.08 46);
 }
-.jl-shabbat {
+.jl-shabbat,
+.jl-night {
   --jl-top: oklch(0.42 0.11 278);
   --jl-bottom: oklch(0.2 0.08 280);
-  --jl-city: oklch(0.15 0.05 280);
+  --jl-city: oklch(0.14 0.05 280);
+  --jl-hills: oklch(0.24 0.06 280);
 }
 .jl-chag {
-  --jl-top: oklch(0.72 0.13 96);
-  --jl-bottom: oklch(0.4 0.13 32);
-  --jl-city: oklch(0.24 0.06 40);
+  --jl-top: oklch(0.74 0.12 92);
+  --jl-bottom: oklch(0.42 0.12 40);
+  --jl-city: oklch(0.23 0.06 44);
+  --jl-hills: oklch(0.34 0.08 48);
 }
 .jl-fast {
-  --jl-top: oklch(0.5 0.03 258);
-  --jl-bottom: oklch(0.26 0.03 262);
-  --jl-city: oklch(0.17 0.02 262);
+  --jl-top: oklch(0.52 0.03 258);
+  --jl-bottom: oklch(0.28 0.03 262);
+  --jl-city: oklch(0.18 0.02 262);
+  --jl-hills: oklch(0.27 0.02 262);
 }
+/* Daytime: Jerusalem blue sky settling into warm limestone at the horizon. */
 .jl-day {
-  --jl-top: oklch(0.7 0.15 236);
-  --jl-bottom: oklch(0.72 0.13 74);
-  --jl-city: oklch(0.36 0.07 62);
+  --jl-top: oklch(0.72 0.13 232);
+  --jl-bottom: oklch(0.86 0.05 84);
+  --jl-city: oklch(0.56 0.07 72);
+  --jl-hills: oklch(0.72 0.06 82);
 }
 
 /* Warm light bleeding off the horizon. */
 .jl-scene .jl-glow {
-  background: radial-gradient(70% 46% at 24% 88%, oklch(0.95 0.14 78 / 0.55), transparent 70%);
+  background: radial-gradient(72% 44% at 26% 92%, oklch(0.95 0.14 78 / 0.5), transparent 70%);
   animation: jl-pulse 8s ease-in-out infinite;
 }
 .jl-fast .jl-glow {
-  opacity: 0.25;
+  opacity: 0.22;
 }
-
 .jl-day .jl-glow {
-  opacity: 0.5;
+  opacity: 0.4;
+}
+.jl-night .jl-glow,
+.jl-shabbat .jl-glow {
+  opacity: 0.3;
 }
 .jl-scene .jl-haze {
-  background: radial-gradient(34% 24% at 80% 16%, oklch(1 0.14 96 / 0.85), transparent 70%);
+  background: radial-gradient(30% 22% at 80% 16%, oklch(1 0.12 96 / 0.7), transparent 70%);
   animation: jl-pulse 10s ease-in-out infinite;
 }
 
 .jl-scene .jl-stars {
   background-image:
     radial-gradient(1.3px 1.3px at 14% 18%, oklch(1 0 0 / 0.85), transparent),
-    radial-gradient(1.1px 1.1px at 34% 34%, oklch(1 0 0 / 0.6), transparent),
-    radial-gradient(1.5px 1.5px at 58% 14%, oklch(1 0 0 / 0.9), transparent),
-    radial-gradient(1.2px 1.2px at 76% 30%, oklch(1 0 0 / 0.7), transparent),
-    radial-gradient(1.1px 1.1px at 90% 12%, oklch(1 0 0 / 0.75), transparent);
+    radial-gradient(1.1px 1.1px at 34% 30%, oklch(1 0 0 / 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 58% 12%, oklch(1 0 0 / 0.9), transparent),
+    radial-gradient(1.2px 1.2px at 76% 26%, oklch(1 0 0 / 0.7), transparent),
+    radial-gradient(1.1px 1.1px at 90% 10%, oklch(1 0 0 / 0.75), transparent);
   animation: jl-twinkle 5s ease-in-out infinite;
+}
+
+/* Hills sit behind the city, in a lighter tint, so the view has depth. */
+.jl-scene .jl-hillband {
+  color: var(--jl-hills);
+  height: 34%;
+  opacity: 0.9;
+}
+.jl-scene .jl-hills {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .jl-scene .jl-city {
   color: var(--jl-city);
-  height: 52%;
-  filter: drop-shadow(0 -6px 14px oklch(0.95 0.12 76 / 0.25));
+  height: 56%;
+  filter: drop-shadow(0 -5px 12px oklch(0.95 0.12 76 / 0.22));
+}
+.jl-dense .jl-city {
+  height: 48%;
+}
+.jl-dense .jl-hillband {
+  height: 30%;
 }
 .jl-scene .jl-skyline {
   display: block;
@@ -715,10 +744,10 @@
   height: 100%;
 }
 
-/* Two Shabbat candles, flames flickering out of sync. */
+/* Two Shabbat candles, standing on the wall ledge, flames out of sync. */
 .jl-scene .jl-candles {
-  right: 10%;
-  bottom: 16%;
+  right: 11%;
+  bottom: 13%;
   display: flex;
   gap: 0.42rem;
   align-items: flex-end;
@@ -727,10 +756,9 @@
   position: relative;
   display: block;
   width: 5px;
-  height: 26px;
+  height: 24px;
   border-radius: 2px;
   background: linear-gradient(180deg, oklch(0.98 0.02 92), oklch(0.86 0.04 88));
-  box-shadow: 0 0 16px oklch(0.95 0.13 84 / 0.4);
 }
 .jl-scene .jl-flame {
   position: absolute;
@@ -748,12 +776,25 @@
   animation-duration: 2.1s;
   animation-delay: -0.7s;
 }
+/* Pool of candlelight on the stone underneath. */
+.jl-scene .jl-candlelight {
+  position: absolute;
+  left: 50%;
+  bottom: -14px;
+  width: 74px;
+  height: 34px;
+  margin-left: -37px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, oklch(0.95 0.14 84 / 0.4), transparent);
+  animation: jl-pulse 3.4s ease-in-out infinite;
+}
 
 .jl-scene .jl-vignette {
   background:
     linear-gradient(to top, oklch(0.14 0.03 274 / 0.72), oklch(0.14 0.03 274 / 0.15) 62%, transparent),
     linear-gradient(to bottom, oklch(0.14 0.03 274 / 0.35), transparent 40%);
 }
+
 
 @keyframes jl-pulse {
   0%,
