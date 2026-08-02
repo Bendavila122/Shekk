@@ -15,8 +15,12 @@ import {
   CarFront,
   Compass,
   Dumbbell,
+  FolderLock,
+  GraduationCap,
   Handshake,
   House,
+  Medal,
+
   MapPin,
   Map as MapIcon,
   Newspaper,
