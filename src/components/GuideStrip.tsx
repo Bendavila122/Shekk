@@ -30,7 +30,7 @@ export function GuideStrip({
       <div className="flex items-center gap-1.5">
         <span className="text-[13px] leading-none">{guide.emoji}</span>
         <span className="truncate text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          {guide.kicker}
+          {categoryLabel(guide.category)}
         </span>
       </div>
 
