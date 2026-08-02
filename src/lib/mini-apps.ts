@@ -209,6 +209,18 @@ export const MINI_APPS: MiniApp[] = [
     onSurface: "text-ink-foreground",
   },
   {
+    path: "/explore/admin",
+    id: "official",
+    name: "Official",
+    tagline: "Visas, army, uni and paperwork",
+    emoji: "🛂",
+    Icon: Stamp,
+    iconScale: 0.44,
+    grad: "var(--grad-haze)",
+    surface: "bg-ink",
+    onSurface: "text-ink-foreground",
+  },
+  {
     path: "/guides",
     id: "guides",
     name: "Guides",
