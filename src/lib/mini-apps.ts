@@ -22,6 +22,7 @@ import {
   Newspaper,
   PartyPopper,
   ShoppingBag,
+  Stamp,
   Stethoscope,
   Ticket,
   UtensilsCrossed,
