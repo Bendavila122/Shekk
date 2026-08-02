@@ -719,8 +719,11 @@
 /* Hills sit behind the city, in a lighter tint, so the view has depth. */
 .jl-scene .jl-hillband {
   color: var(--jl-hills);
-  height: 34%;
-  opacity: 0.9;
+  height: 40%;
+  opacity: 1;
+}
+.jl-day .jl-hillband {
+  opacity: 0.88;
 }
 .jl-scene .jl-hills {
   display: block;
@@ -730,15 +733,16 @@
 
 .jl-scene .jl-city {
   color: var(--jl-city);
-  height: 56%;
+  height: 64%;
   filter: drop-shadow(0 -5px 12px oklch(0.95 0.12 76 / 0.22));
 }
 .jl-dense .jl-city {
-  height: 48%;
+  height: 56%;
 }
 .jl-dense .jl-hillband {
-  height: 30%;
+  height: 34%;
 }
+
 .jl-scene .jl-skyline {
   display: block;
   width: 100%;
