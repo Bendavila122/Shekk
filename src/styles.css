@@ -653,8 +653,8 @@
   background: linear-gradient(170deg, var(--jl-top), var(--jl-bottom));
 }
 .jl-erev {
-  --jl-top: oklch(0.72 0.15 42);
-  --jl-bottom: oklch(0.52 0.16 22);
+  --jl-top: oklch(0.76 0.14 52);
+  --jl-bottom: oklch(0.54 0.17 16);
   --jl-city: oklch(0.28 0.07 28);
   --jl-hills: oklch(0.42 0.1 30);
 }
@@ -682,8 +682,8 @@
 .jl-day {
   --jl-top: oklch(0.72 0.13 232);
   --jl-bottom: oklch(0.86 0.05 84);
-  --jl-city: oklch(0.56 0.07 72);
-  --jl-hills: oklch(0.72 0.06 82);
+  --jl-city: oklch(0.5 0.07 68);
+  --jl-hills: oklch(0.64 0.07 76);
 }
 
 /* Warm light bleeding off the horizon. */
