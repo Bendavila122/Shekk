@@ -71,7 +71,6 @@ import { Route as ExploreMapIdRouteImport } from './routes/explore/map.$id'
 import { Route as ExploreFitnessIdRouteImport } from './routes/explore/fitness.$id'
 import { Route as ExploreEventIdRouteImport } from './routes/explore/event.$id'
 import { Route as ExploreCategoryIdRouteImport } from './routes/explore/category.$id'
-import { Route as ExploreAdminTrackRouteImport } from './routes/explore/admin.$track'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -392,11 +391,6 @@ const ExploreCategoryIdRoute = ExploreCategoryIdRouteImport.update({
   path: '/explore/category/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExploreAdminTrackRoute = ExploreAdminTrackRouteImport.update({
-  id: '/explore/admin/$track',
-  path: '/explore/admin/$track',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
     id: '/.mcp/invoke-tool/$tool',
@@ -495,7 +489,6 @@ export interface FileRoutesByFullPath {
   '/social/': typeof SocialIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/explore/admin/$track': typeof ExploreAdminTrackRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
@@ -566,7 +559,6 @@ export interface FileRoutesByTo {
   '/social': typeof SocialIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/explore/admin/$track': typeof ExploreAdminTrackRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
@@ -639,7 +631,6 @@ export interface FileRoutesById {
   '/social/': typeof SocialIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/explore/admin/$track': typeof ExploreAdminTrackRoute
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
@@ -713,7 +704,6 @@ export interface FileRouteTypes {
     | '/social/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
-    | '/explore/admin/$track'
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
@@ -784,7 +774,6 @@ export interface FileRouteTypes {
     | '/social'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
-    | '/explore/admin/$track'
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
@@ -856,7 +845,6 @@ export interface FileRouteTypes {
     | '/social/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
-    | '/explore/admin/$track'
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
@@ -921,7 +909,6 @@ export interface RootRouteChildren {
   SocialIndexRoute: typeof SocialIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
-  ExploreAdminTrackRoute: typeof ExploreAdminTrackRoute
   ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
   ExploreEventIdRoute: typeof ExploreEventIdRoute
   ExploreFitnessIdRoute: typeof ExploreFitnessIdRoute
@@ -1372,13 +1359,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreCategoryIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/explore/admin/$track': {
-      id: '/explore/admin/$track'
-      path: '/explore/admin/$track'
-      fullPath: '/explore/admin/$track'
-      preLoaderRoute: typeof ExploreAdminTrackRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
       path: '/.mcp/invoke-tool/$tool'
@@ -1508,7 +1488,6 @@ const rootRouteChildren: RootRouteChildren = {
   SocialIndexRoute: SocialIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
-  ExploreAdminTrackRoute: ExploreAdminTrackRoute,
   ExploreCategoryIdRoute: ExploreCategoryIdRoute,
   ExploreEventIdRoute: ExploreEventIdRoute,
   ExploreFitnessIdRoute: ExploreFitnessIdRoute,
