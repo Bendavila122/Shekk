@@ -1,5 +1,7 @@
 /** React hooks for the live weather + Jewish-calendar widget data. */
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+
 import type { Place } from "./location";
 import { getJewishToday, getWeather } from "./live.functions";
 import type { LiveJewish, LiveWeather } from "./live-types";
