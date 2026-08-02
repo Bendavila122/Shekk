@@ -1,9 +1,11 @@
 import type { LinkProps } from "@tanstack/react-router";
 import { SERVICE_CATEGORIES, ALL_SERVICES, serviceLinkProps, type Service } from "@/lib/services";
+import { GUIDES, categoryLabel, guideKeywords } from "@/lib/guides";
+
 
 export type SearchResult = {
   id: string;
-  kind: "service" | "category" | "page";
+  kind: "service" | "category" | "page" | "guide";
   title: string;
   subtitle: string;
   emoji?: string;
@@ -64,9 +66,20 @@ const INDEX: SearchResult[] = [
       keywords: `${s.name} ${s.partner ?? ""} ${s.blurb} ${(s.detail ?? []).join(" ")}`.toLowerCase(),
     };
   }),
+  ...GUIDES.map((g) => ({
+    id: `guide:${g.id}`,
+    kind: "guide" as const,
+    title: g.title,
+    subtitle: `${categoryLabel(g.category)} guide · ${g.readMins} min`,
+    emoji: g.emoji,
+    to: "/guides/$id" as LinkProps["to"],
+    params: { id: g.id },
+    keywords: guideKeywords(g.id),
+  })),
 ];
 
-const RANK: Record<SearchResult["kind"], number> = { service: 0, page: 1, category: 2 };
+const RANK: Record<SearchResult["kind"], number> = { service: 0, page: 1, guide: 2, category: 3 };
+
 
 /** Search everything in the app: apps, categories and screens. */
 export function searchApp(query: string, limit = 12): SearchResult[] {
