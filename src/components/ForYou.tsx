@@ -101,7 +101,8 @@ function Tile({
       }`}
     >
       {sky ? <SkyScene kind={sky} dense={wide} /> : null}
-      {jl ? <JewishScene kind={jl} /> : null}
+      {jl ? <JewishScene kind={jl} dense={wide} /> : null}
+
 
       {content.image ? (
         <>
