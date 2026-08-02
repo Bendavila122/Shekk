@@ -1,5 +1,7 @@
 import type { LinkProps } from "@tanstack/react-router";
 import { SERVICE_CATEGORIES, ALL_SERVICES, serviceLinkProps, type Service } from "@/lib/services";
+import { GUIDES, categoryLabel, guideKeywords } from "@/lib/guides";
+
 
 export type SearchResult = {
   id: string;
