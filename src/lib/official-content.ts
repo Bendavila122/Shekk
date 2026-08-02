@@ -461,7 +461,7 @@ const ARMY: OfficialTrack = {
           title: "Don't take the deciding advice from a group chat",
           text: "Age limits, obligation lengths and exemption bands change. Anything that determines whether you serve, and for how long, gets confirmed by the official body in writing.",
         },
-        { kind: "link", label: "Lone soldier support", sub: "Rights, housing and who pays for what", to: "/explore/admin/$track", params: { track: "lone-soldier" } },
+        { kind: "link", label: "Lone soldier support", sub: "Rights, housing and who pays for what", to: "/explore/lone-soldier" },
       ],
     },
     {

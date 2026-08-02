@@ -2,6 +2,7 @@ import type { LinkProps } from "@tanstack/react-router";
 import { SERVICE_CATEGORIES, ALL_SERVICES, serviceLinkProps, type Service } from "@/lib/services";
 import { GUIDES, categoryLabel, guideKeywords } from "@/lib/guides";
 import { TRACKS, trackKeywords } from "@/lib/official-content";
+import { TRACK_ROUTES } from "@/components/official/TrackApp";
 
 
 export type SearchResult = {
@@ -31,8 +32,11 @@ const PAGES: { title: string; subtitle: string; emoji: string; to: LinkProps["to
   { title: "Fitness", subtitle: "Gyms, classes, pools & courts near you", emoji: "🏋️", to: "/explore/fitness", keywords: "fitness gym gyms workout exercise class classes pool swim swimming studio pilates yoga spinning crossfit weights martial arts krav maga boxing climbing bouldering basketball football court pitch sports club country club holmes place icon gymbox go active membership day pass short term contract" },
   { title: "Siddur", subtitle: "Prayers, your nusach, Hebrew & English", emoji: "📖", to: "/siddur", keywords: "siddur prayer tefilla tefillah davening daven shema shacharit mincha maariv bentching birkat hamazon brachot bracha havdalah tefilat haderech nusach ashkenaz sephard edot hamizrach" },
 
-  { title: "Official", subtitle: "Visas, army, uni and paperwork", emoji: "🛂", to: "/explore/admin", keywords: "official admin visa a2 b2 student visa misrad hapnim extension army idf mahal garin tzabar tzav rishon lone soldier chayal boded university masa mechina ulpan transcript credit transfer documents passport paperwork" },
-  { title: "Document vault", subtitle: "Passport, visa, letters and policies", emoji: "🗂️", to: "/explore/admin/documents", keywords: "documents vault upload passport visa acceptance letter insurance policy army papers transcripts storage" },
+  { title: "Visa & status", subtitle: "A/2 student visa, extensions, re-entry", emoji: "🛂", to: "/explore/visa", keywords: "visa a2 b2 student visa misrad hapnim piba extension overstay biometric entry stamp re-entry status paperwork aliyah teudat zehut" },
+  { title: "Army & service", subtitle: "Mahal, Garin Tzabar, tzav rishon", emoji: "🎖️", to: "/explore/army", keywords: "army idf service mahal garin tzabar hesder mechina nefesh b'nefesh tzav rishon gius draft medical profile enlistment" },
+  { title: "Lone soldier support", subtitle: "Chayal boded rights and help", emoji: "🪖", to: "/explore/lone-soldier", keywords: "lone soldier chayal boded lone soldier center michael levin base fidf rights payments housing laundry food chagim regila leave family visit mental health" },
+  { title: "Uni & study", subtitle: "Masa, mechina, credits and transcripts", emoji: "🎓", to: "/explore/uni", keywords: "university uni study masa mechina ulpan hebrew university tau reichman idc international school credit transfer transcript tuition student status" },
+  { title: "Documents", subtitle: "Passport, visa, letters and policies", emoji: "🗂️", to: "/explore/documents", keywords: "documents vault upload passport visa acceptance letter insurance policy army papers transcripts storage" },
   { title: "Help", subtitle: "Support and FAQs", emoji: "🛟", to: "/help", keywords: "help support faq contact problem question" },
 ];
 
@@ -73,10 +77,9 @@ const INDEX: SearchResult[] = [
     id: `official:${t.id}`,
     kind: "guide" as const,
     title: t.name,
-    subtitle: `Official · ${t.tagline}`,
+    subtitle: t.tagline,
     emoji: t.emoji,
-    to: "/explore/admin/$track" as LinkProps["to"],
-    params: { track: t.id },
+    to: TRACK_ROUTES[t.id],
     keywords: trackKeywords(t.id),
   })),
   ...GUIDES.map((g) => ({
