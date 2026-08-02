@@ -5,7 +5,7 @@ import { GUIDES, categoryLabel, guideKeywords } from "@/lib/guides";
 
 export type SearchResult = {
   id: string;
-  kind: "service" | "category" | "page";
+  kind: "service" | "category" | "page" | "guide";
   title: string;
   subtitle: string;
   emoji?: string;
