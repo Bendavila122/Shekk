@@ -25,6 +25,7 @@ import {
   Map as MapIcon,
   Newspaper,
   PartyPopper,
+  ShieldCheck,
   ShoppingBag,
   Stamp,
   Stethoscope,
