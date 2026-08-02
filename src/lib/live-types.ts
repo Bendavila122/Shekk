@@ -20,24 +20,43 @@ export type LiveWeather = {
 export type LiveZman = { key: string; label: string; time: string };
 
 export type LiveJewish = {
+  /** Transliterated Hebrew date for the *current* Jewish day (rolls over at shkia). */
   hebrewDate: string;
-  /** e.g. "Eikev" or "Matot-Masei". */
+  /** True once the sun has set, i.e. the Hebrew date above belongs to "tonight". */
+  afterSunset: boolean;
+  /** e.g. "Eikev" or "Matot-Masei" — the sedra of the Shabbat in `shabbatDate`. */
   sedra: string | null;
-  /** Special shabbat / chag label for the coming shabbat, when there is one. */
+  /** ISO date (yyyy-mm-dd) of the Shabbat the sedra / special belongs to. */
+  shabbatDate: string | null;
+  /** Special shabbat / chag label for that same Shabbat, when there is one. */
   shabbatSpecial: string | null;
   candle: string | null;
   candleDate: string | null;
+  /** What the candle lighting is for: "Shabbat", "Erev Rosh Hashana", … */
+  candleLabel: string | null;
+  /** Minutes before shkia this location lights (40 Jerusalem, 30 Haifa, else 18). */
+  candleMins: number;
   havdalah: string | null;
   havdalahDate: string | null;
   holiday: { label: string; kind: "chag" | "fast" | "minor"; blurb: string } | null;
   upcoming: { label: string; date: string } | null;
-  fast: { label: string; begins: string; ends: string } | null;
+  fast: { label: string; begins: string; ends: string; beginsAt: string | null; endsAt: string | null } | null;
   zmanim: LiveZman[];
   sunrise: string | null;
   sunset: string | null;
   tzeit: string | null;
+  /** ISO instants for the same moments, for countdowns and scene state. */
+  sunsetAt: string | null;
+  tzeitAt: string | null;
+  /** The next moment that matters, for the tile countdown. */
+  next: { label: string; at: string } | null;
   tzid: string;
+  /** Which holiday scheme these times follow. */
+  scheme: "israel" | "diaspora";
+  /** Human label for the timezone/scheme note, e.g. "Israel times". */
+  schemeNote: string;
 };
+
 
 export type LivePlaceName = {
   city: string;

@@ -127,42 +127,75 @@ export const WIDGETS: WidgetDef[] = [
           ctas: [],
         };
       }
+      /** "in 4h 12m" to the next moment that matters, for this location. */
+      const countdown = (() => {
+        if (!j.next) return null;
+        const ms = new Date(j.next.at).getTime() - c.now.getTime();
+        if (!Number.isFinite(ms) || ms <= 0) return null;
+        const mins = Math.round(ms / 60_000);
+        if (mins < 60) return `${j.next.label} in ${mins} min`;
+        const h = Math.floor(mins / 60);
+        const m = mins % 60;
+        return `${j.next.label} in ${m ? `${h}h ${m}m` : `${h}h`}`;
+      })();
+      const place = `Times for ${c.weatherCity}`;
+      const sub = [countdown, place].filter(Boolean).join(" · ");
+
       const base: WidgetRow[] = [];
+      base.push({ icon: "🗓", label: j.afterSunset ? "Tonight" : "Today", value: j.hebrewDate });
       if (j.sedra) base.push({ icon: "📜", label: "This week's sedra", value: `Parashat ${j.sedra}` });
-      base.push({ icon: "🗓", label: "Today", value: j.hebrewDate });
       if (j.shabbatSpecial) base.push({ icon: "✡️", label: "This Shabbat", value: j.shabbatSpecial });
+
+      const tail: WidgetRow[] = [
+        { icon: "🌇", label: "Shkia (sunset)", value: j.sunset ?? "—" },
+        { icon: "✨", label: "Tzeit hakochavim", value: j.tzeit ?? "—" },
+        { icon: "📍", label: "Calendar", value: j.schemeNote },
+      ];
 
       if (j.fast) {
         return {
           headline: j.fast.label,
-          sub: j.hebrewDate,
+          sub,
           rows: [
             ...base,
             { icon: "🌑", label: "Fast begins", value: j.fast.begins },
             { icon: "✨", label: "Fast ends", value: j.fast.ends },
+            { icon: "📍", label: "Calendar", value: j.schemeNote },
           ],
           ctas: [{ label: "Open Siddur", to: "/siddur" }],
         };
       }
       const times: WidgetRow[] = [];
-      if (j.candle) times.push({ icon: "🕯", label: "Candle lighting", value: j.candle });
+      if (j.candle) {
+        times.push({
+          icon: "🕯",
+          label: j.candleLabel && j.candleLabel !== "Shabbat" ? `Candles · ${j.candleLabel}` : "Candle lighting",
+          value: j.candle,
+        });
+      }
       if (j.havdalah) times.push({ icon: "🍷", label: "Havdalah", value: j.havdalah });
 
       if (j.holiday) {
         return {
           headline: j.holiday.label,
-          sub: j.hebrewDate,
-          rows: [...base, ...times],
+          sub,
+          rows: [...base, ...times, ...tail],
           ctas: [{ label: "Open Siddur", to: "/siddur" }],
         };
       }
       return {
         headline: j.sedra ? `Parashat ${j.sedra}` : j.hebrewDate,
-        sub: j.upcoming ? `Coming up · ${j.upcoming.label}` : j.hebrewDate,
-        rows: [...base, ...times],
+        sub,
+        rows: [
+          ...base,
+          ...times,
+          ...(j.upcoming ? [{ icon: "🎉", label: "Coming up", value: j.upcoming.label }] : []),
+          ...tail,
+        ],
         ctas: [{ label: "Open Siddur", to: "/siddur" }],
       };
     },
+
   },
 
   {

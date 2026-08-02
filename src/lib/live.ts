@@ -1,5 +1,7 @@
 /** React hooks for the live weather + Jewish-calendar widget data. */
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+
 import type { Place } from "./location";
 import { getJewishToday, getWeather } from "./live.functions";
 import type { LiveJewish, LiveWeather } from "./live-types";
@@ -25,7 +27,7 @@ export function useWeather(place: Place | null) {
 }
 
 export function useJewish(place: Place | null) {
-  return useQuery<LiveJewish>({
+  const q = useQuery<LiveJewish>({
     queryKey: ["jewish", place?.lat?.toFixed(2), place?.lon?.toFixed(2)],
     queryFn: () => getJewishToday({ data: { lat: place!.lat, lon: place!.lon } }),
     enabled: !!place,
@@ -34,7 +36,28 @@ export function useJewish(place: Place | null) {
     refetchOnWindowFocus: true,
     retry: 1,
   });
+
+  // Refetch the moment the day actually turns: shkia, candle lighting, havdalah,
+  // nightfall — whichever comes first — so the tile flips state on time.
+  const j = q.data;
+  const marks = [j?.sunsetAt, j?.tzeitAt, j?.candleDate, j?.havdalahDate, j?.next?.at];
+  const nextMark = marks
+    .filter((m): m is string => !!m)
+    .map((m) => new Date(m).getTime())
+    .filter((t) => Number.isFinite(t) && t > Date.now())
+    .sort((a, b) => a - b)[0];
+
+  useEffect(() => {
+    if (!nextMark) return;
+    const delay = Math.min(Math.max(nextMark - Date.now() + 30_000, 15_000), 6 * 3600_000);
+    const id = window.setTimeout(() => void q.refetch(), delay);
+    return () => window.clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nextMark]);
+
+  return q;
 }
+
 
 /** "in 3h 12m" style countdown to an ISO timestamp, or null once it has passed. */
 export function countdownTo(iso: string | null | undefined, from = new Date()): string | null {
