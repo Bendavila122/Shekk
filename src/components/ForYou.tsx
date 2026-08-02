@@ -76,8 +76,12 @@ function Tile({
           isErevShabbat: ctx.isErevShabbat,
           isShabbat: ctx.isShabbat,
           dayKind: ctx.jewishDay?.kind ?? null,
+          tzeitAt: ctx.jewish?.tzeitAt ?? null,
+          sunsetAt: ctx.jewish?.sunsetAt ?? null,
+          now: ctx.now,
         })
       : null;
+
   const scene = !!sky || !!jl;
   const paper = def.id === "news" && !content.image;
 
