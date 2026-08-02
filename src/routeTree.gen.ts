@@ -62,6 +62,7 @@ import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } fr
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ExploreMapIndexRouteImport } from './routes/explore/map.index'
 import { Route as ExploreFitnessIndexRouteImport } from './routes/explore/fitness.index'
+import { Route as ExploreAdminIndexRouteImport } from './routes/explore/admin.index'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
 import { Route as ExploreMapIdRouteImport } from './routes/explore/map.$id'
 import { Route as ExploreFitnessIdRouteImport } from './routes/explore/fitness.$id'
@@ -342,6 +343,11 @@ const ExploreFitnessIndexRoute = ExploreFitnessIndexRouteImport.update({
   path: '/explore/fitness/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreAdminIndexRoute = ExploreAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ExploreAdminRoute,
+} as any)
 const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
   id: '/explore/service/$id',
   path: '/explore/service/$id',
@@ -439,7 +445,7 @@ export interface FileRoutesByFullPath {
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
-  '/explore/admin': typeof ExploreAdminRoute
+  '/explore/admin': typeof ExploreAdminRouteWithChildren
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
@@ -466,6 +472,7 @@ export interface FileRoutesByFullPath {
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/explore/admin/': typeof ExploreAdminIndexRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -505,7 +512,6 @@ export interface FileRoutesByTo {
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
-  '/explore/admin': typeof ExploreAdminRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
@@ -532,6 +538,7 @@ export interface FileRoutesByTo {
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/explore/admin': typeof ExploreAdminIndexRoute
   '/explore/fitness': typeof ExploreFitnessIndexRoute
   '/explore/map': typeof ExploreMapIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -573,7 +580,7 @@ export interface FileRoutesById {
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/benefits/$id': typeof BenefitsIdRoute
-  '/explore/admin': typeof ExploreAdminRoute
+  '/explore/admin': typeof ExploreAdminRouteWithChildren
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
@@ -600,6 +607,7 @@ export interface FileRoutesById {
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/explore/admin/': typeof ExploreAdminIndexRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -669,6 +677,7 @@ export interface FileRouteTypes {
     | '/explore/fitness/$id'
     | '/explore/map/$id'
     | '/explore/service/$id'
+    | '/explore/admin/'
     | '/explore/fitness/'
     | '/explore/map/'
     | '/api/public/payments/webhook'
@@ -708,7 +717,6 @@ export interface FileRouteTypes {
     | '/admin/money'
     | '/admin/promotions'
     | '/benefits/$id'
-    | '/explore/admin'
     | '/explore/community'
     | '/explore/events'
     | '/explore/food'
@@ -735,6 +743,7 @@ export interface FileRouteTypes {
     | '/explore/fitness/$id'
     | '/explore/map/$id'
     | '/explore/service/$id'
+    | '/explore/admin'
     | '/explore/fitness'
     | '/explore/map'
     | '/api/public/payments/webhook'
@@ -802,6 +811,7 @@ export interface FileRouteTypes {
     | '/explore/fitness/$id'
     | '/explore/map/$id'
     | '/explore/service/$id'
+    | '/explore/admin/'
     | '/explore/fitness/'
     | '/explore/map/'
     | '/api/public/payments/webhook'
@@ -836,7 +846,7 @@ export interface RootRouteChildren {
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   BenefitsIdRoute: typeof BenefitsIdRoute
-  ExploreAdminRoute: typeof ExploreAdminRoute
+  ExploreAdminRoute: typeof ExploreAdminRouteWithChildren
   ExploreCommunityRoute: typeof ExploreCommunityRoute
   ExploreEventsRoute: typeof ExploreEventsRoute
   ExploreFoodRoute: typeof ExploreFoodRoute
@@ -1244,6 +1254,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreFitnessIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/admin/': {
+      id: '/explore/admin/'
+      path: '/'
+      fullPath: '/explore/admin/'
+      preLoaderRoute: typeof ExploreAdminIndexRouteImport
+      parentRoute: typeof ExploreAdminRoute
+    }
     '/explore/service/$id': {
       id: '/explore/service/$id'
       path: '/explore/service/$id'
@@ -1357,6 +1374,18 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
   AdminRouteRouteChildren,
 )
 
+interface ExploreAdminRouteChildren {
+  ExploreAdminIndexRoute: typeof ExploreAdminIndexRoute
+}
+
+const ExploreAdminRouteChildren: ExploreAdminRouteChildren = {
+  ExploreAdminIndexRoute: ExploreAdminIndexRoute,
+}
+
+const ExploreAdminRouteWithChildren = ExploreAdminRoute._addFileChildren(
+  ExploreAdminRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
@@ -1383,7 +1412,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   BenefitsIdRoute: BenefitsIdRoute,
-  ExploreAdminRoute: ExploreAdminRoute,
+  ExploreAdminRoute: ExploreAdminRouteWithChildren,
   ExploreCommunityRoute: ExploreCommunityRoute,
   ExploreEventsRoute: ExploreEventsRoute,
   ExploreFoodRoute: ExploreFoodRoute,
