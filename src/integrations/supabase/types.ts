@@ -837,6 +837,42 @@ export type Database = {
           },
         ]
       }
+      member_travel: {
+        Row: {
+          accommodation_area: string | null
+          arrival_date: string | null
+          created_at: string
+          departure_date: string | null
+          funding_currency: string | null
+          israel_city: string | null
+          travel_style: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          accommodation_area?: string | null
+          arrival_date?: string | null
+          created_at?: string
+          departure_date?: string | null
+          funding_currency?: string | null
+          israel_city?: string | null
+          travel_style?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          accommodation_area?: string | null
+          arrival_date?: string | null
+          created_at?: string
+          departure_date?: string | null
+          funding_currency?: string | null
+          israel_city?: string | null
+          travel_style?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           body: string
@@ -956,6 +992,385 @@ export type Database = {
           track?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      programme_announcements: {
+        Row: {
+          body: string
+          cohort_id: string
+          created_at: string
+          id: string
+          pinned: boolean
+          published_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          cohort_id: string
+          created_at?: string
+          id?: string
+          pinned?: boolean
+          published_at?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          cohort_id?: string
+          created_at?: string
+          id?: string
+          pinned?: boolean
+          published_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_announcements_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_checklist_items: {
+        Row: {
+          cohort_id: string
+          created_at: string
+          details: string | null
+          due_on: string | null
+          id: string
+          item_key: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cohort_id: string
+          created_at?: string
+          details?: string | null
+          due_on?: string | null
+          id?: string
+          item_key: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cohort_id?: string
+          created_at?: string
+          details?: string | null
+          due_on?: string | null
+          id?: string
+          item_key?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_checklist_items_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_checklist_progress: {
+        Row: {
+          created_at: string
+          done: boolean
+          done_at: string | null
+          id: string
+          item_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          done?: boolean
+          done_at?: string | null
+          id?: string
+          item_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          done?: boolean
+          done_at?: string | null
+          id?: string
+          item_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_checklist_progress_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "programme_checklist_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_cohorts: {
+        Row: {
+          created_at: string
+          ends_on: string | null
+          id: string
+          is_demo: boolean
+          join_code: string
+          name: string
+          programme_id: string
+          starts_on: string | null
+          status: string
+          updated_at: string
+          welcome_message: string | null
+        }
+        Insert: {
+          created_at?: string
+          ends_on?: string | null
+          id?: string
+          is_demo?: boolean
+          join_code: string
+          name: string
+          programme_id: string
+          starts_on?: string | null
+          status?: string
+          updated_at?: string
+          welcome_message?: string | null
+        }
+        Update: {
+          created_at?: string
+          ends_on?: string | null
+          id?: string
+          is_demo?: boolean
+          join_code?: string
+          name?: string
+          programme_id?: string
+          starts_on?: string | null
+          status?: string
+          updated_at?: string
+          welcome_message?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_cohorts_programme_id_fkey"
+            columns: ["programme_id"]
+            isOneToOne: false
+            referencedRelation: "programmes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_contacts: {
+        Row: {
+          cohort_id: string
+          created_at: string
+          email: string | null
+          id: string
+          is_emergency: boolean
+          name: string
+          phone: string | null
+          role: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          cohort_id: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_emergency?: boolean
+          name: string
+          phone?: string | null
+          role?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          cohort_id?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_emergency?: boolean
+          name?: string
+          phone?: string | null
+          role?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_contacts_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_documents: {
+        Row: {
+          category: string
+          cohort_id: string
+          created_at: string
+          description: string | null
+          id: string
+          label: string
+          link_url: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          cohort_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          label: string
+          link_url?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          cohort_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          label?: string
+          link_url?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_documents_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_memberships: {
+        Row: {
+          cohort_id: string
+          created_at: string
+          id: string
+          joined_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cohort_id: string
+          created_at?: string
+          id?: string
+          joined_at?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cohort_id?: string
+          created_at?: string
+          id?: string
+          joined_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_memberships_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_schedule_items: {
+        Row: {
+          cohort_id: string
+          created_at: string
+          details: string | null
+          ends_at: string | null
+          id: string
+          location: string | null
+          starts_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cohort_id: string
+          created_at?: string
+          details?: string | null
+          ends_at?: string | null
+          id?: string
+          location?: string | null
+          starts_at: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cohort_id?: string
+          created_at?: string
+          details?: string | null
+          ends_at?: string | null
+          id?: string
+          location?: string | null
+          starts_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_schedule_items_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programmes: {
+        Row: {
+          city: string | null
+          created_at: string
+          id: string
+          is_demo: boolean
+          name: string
+          organisation: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          id?: string
+          is_demo?: boolean
+          name: string
+          organisation?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          id?: string
+          is_demo?: boolean
+          name?: string
+          organisation?: string | null
+          status?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1302,6 +1717,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      in_cohort: {
+        Args: { _cohort_id: string; _user_id: string }
+        Returns: boolean
+      }
       in_conversation: {
         Args: { _conversation_id: string; _user_id: string }
         Returns: boolean
@@ -1342,9 +1761,41 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      my_cohort_id: { Args: { _user_id: string }; Returns: string }
       owes_on_bill: {
         Args: { _bill_id: string; _user_id: string }
         Returns: boolean
+      }
+      programme_code_preview: {
+        Args: { _code: string }
+        Returns: {
+          city: string
+          cohort_id: string
+          cohort_name: string
+          ends_on: string
+          is_demo: boolean
+          organisation: string
+          programme_name: string
+          starts_on: string
+        }[]
+      }
+      programme_join: {
+        Args: { _code: string; _user_id: string }
+        Returns: {
+          cohort_id: string
+          created_at: string
+          id: string
+          joined_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "programme_memberships"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       shares_cohort: { Args: { _a: string; _b: string }; Returns: boolean }
       ticket_purchase: {
