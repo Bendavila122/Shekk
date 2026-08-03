@@ -23,7 +23,7 @@ export const Route = createFileRoute("/explore/budget")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: BudgetPlanner;
+  component: BudgetPlanner,
 });
 
 const shekels = (n: number) => `₪${Math.round(n).toLocaleString("en-US")}`;

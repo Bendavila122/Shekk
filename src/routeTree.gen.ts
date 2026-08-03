@@ -60,6 +60,7 @@ import { Route as ExploreEventsRouteImport } from './routes/explore/events'
 import { Route as ExploreDocumentsRouteImport } from './routes/explore/documents'
 import { Route as ExploreCostOfLivingRouteImport } from './routes/explore/cost-of-living'
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
+import { Route as ExploreBudgetRouteImport } from './routes/explore/budget'
 import { Route as ExploreArmyRouteImport } from './routes/explore/army'
 import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
 import { Route as BeforeYouFlyInsuranceRouteImport } from './routes/before-you-fly/insurance'
@@ -345,6 +346,11 @@ const ExploreCommunityRoute = ExploreCommunityRouteImport.update({
   path: '/explore/community',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreBudgetRoute = ExploreBudgetRouteImport.update({
+  id: '/explore/budget',
+  path: '/explore/budget',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreArmyRoute = ExploreArmyRouteImport.update({
   id: '/explore/army',
   path: '/explore/army',
@@ -535,6 +541,7 @@ export interface FileRoutesByFullPath {
   '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
+  '/explore/budget': typeof ExploreBudgetRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/cost-of-living': typeof ExploreCostOfLivingRoute
   '/explore/documents': typeof ExploreDocumentsRoute
@@ -616,6 +623,7 @@ export interface FileRoutesByTo {
   '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
+  '/explore/budget': typeof ExploreBudgetRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/cost-of-living': typeof ExploreCostOfLivingRoute
   '/explore/documents': typeof ExploreDocumentsRoute
@@ -699,6 +707,7 @@ export interface FileRoutesById {
   '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
+  '/explore/budget': typeof ExploreBudgetRoute
   '/explore/community': typeof ExploreCommunityRoute
   '/explore/cost-of-living': typeof ExploreCostOfLivingRoute
   '/explore/documents': typeof ExploreDocumentsRoute
@@ -783,6 +792,7 @@ export interface FileRouteTypes {
     | '/before-you-fly/insurance'
     | '/benefits/$id'
     | '/explore/army'
+    | '/explore/budget'
     | '/explore/community'
     | '/explore/cost-of-living'
     | '/explore/documents'
@@ -864,6 +874,7 @@ export interface FileRouteTypes {
     | '/before-you-fly/insurance'
     | '/benefits/$id'
     | '/explore/army'
+    | '/explore/budget'
     | '/explore/community'
     | '/explore/cost-of-living'
     | '/explore/documents'
@@ -946,6 +957,7 @@ export interface FileRouteTypes {
     | '/before-you-fly/insurance'
     | '/benefits/$id'
     | '/explore/army'
+    | '/explore/budget'
     | '/explore/community'
     | '/explore/cost-of-living'
     | '/explore/documents'
@@ -1022,6 +1034,7 @@ export interface RootRouteChildren {
   BeforeYouFlyInsuranceRoute: typeof BeforeYouFlyInsuranceRoute
   BenefitsIdRoute: typeof BenefitsIdRoute
   ExploreArmyRoute: typeof ExploreArmyRoute
+  ExploreBudgetRoute: typeof ExploreBudgetRoute
   ExploreCommunityRoute: typeof ExploreCommunityRoute
   ExploreCostOfLivingRoute: typeof ExploreCostOfLivingRoute
   ExploreDocumentsRoute: typeof ExploreDocumentsRoute
@@ -1425,6 +1438,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreCommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/budget': {
+      id: '/explore/budget'
+      path: '/explore/budget'
+      fullPath: '/explore/budget'
+      preLoaderRoute: typeof ExploreBudgetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/army': {
       id: '/explore/army'
       path: '/explore/army'
@@ -1689,6 +1709,7 @@ const rootRouteChildren: RootRouteChildren = {
   BeforeYouFlyInsuranceRoute: BeforeYouFlyInsuranceRoute,
   BenefitsIdRoute: BenefitsIdRoute,
   ExploreArmyRoute: ExploreArmyRoute,
+  ExploreBudgetRoute: ExploreBudgetRoute,
   ExploreCommunityRoute: ExploreCommunityRoute,
   ExploreCostOfLivingRoute: ExploreCostOfLivingRoute,
   ExploreDocumentsRoute: ExploreDocumentsRoute,
@@ -1735,3 +1756,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
