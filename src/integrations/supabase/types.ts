@@ -843,8 +843,12 @@ export type Database = {
           arrival_date: string | null
           created_at: string
           departure_date: string | null
+          display_name: string | null
           funding_currency: string | null
+          home_country: string | null
           israel_city: string | null
+          onboarding_completed_at: string | null
+          onboarding_step: string | null
           travel_style: string
           updated_at: string
           user_id: string
@@ -854,8 +858,12 @@ export type Database = {
           arrival_date?: string | null
           created_at?: string
           departure_date?: string | null
+          display_name?: string | null
           funding_currency?: string | null
+          home_country?: string | null
           israel_city?: string | null
+          onboarding_completed_at?: string | null
+          onboarding_step?: string | null
           travel_style?: string
           updated_at?: string
           user_id: string
@@ -865,8 +873,12 @@ export type Database = {
           arrival_date?: string | null
           created_at?: string
           departure_date?: string | null
+          display_name?: string | null
           funding_currency?: string | null
+          home_country?: string | null
           israel_city?: string | null
+          onboarding_completed_at?: string | null
+          onboarding_step?: string | null
           travel_style?: string
           updated_at?: string
           user_id?: string
