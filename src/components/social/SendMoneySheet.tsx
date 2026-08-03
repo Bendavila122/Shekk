@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { X } from "lucide-react";
 import { Card, PrimaryButton } from "@/components/AppShell";
