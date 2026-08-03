@@ -16,6 +16,7 @@ import { Route as TopupRouteImport } from './routes/topup'
 import { Route as TicketsRouteImport } from './routes/tickets'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SetupRouteImport } from './routes/setup'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReverifyRouteImport } from './routes/reverify'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -43,7 +44,9 @@ import { Route as SocialConversationIdRouteImport } from './routes/social/$conve
 import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
 import { Route as GuidesIdRouteImport } from './routes/guides/$id'
 import { Route as ExploreVisaRouteImport } from './routes/explore/visa'
+import { Route as ExploreUniFinderRouteImport } from './routes/explore/uni-finder'
 import { Route as ExploreUniRouteImport } from './routes/explore/uni'
+import { Route as ExploreUlpanRouteImport } from './routes/explore/ulpan'
 import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
 import { Route as ExploreShopsRouteImport } from './routes/explore/shops'
 import { Route as ExploreRidesRouteImport } from './routes/explore/rides'
@@ -55,7 +58,9 @@ import { Route as ExploreHealthRouteImport } from './routes/explore/health'
 import { Route as ExploreFoodRouteImport } from './routes/explore/food'
 import { Route as ExploreEventsRouteImport } from './routes/explore/events'
 import { Route as ExploreDocumentsRouteImport } from './routes/explore/documents'
+import { Route as ExploreCostOfLivingRouteImport } from './routes/explore/cost-of-living'
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
+import { Route as ExploreBudgetRouteImport } from './routes/explore/budget'
 import { Route as ExploreArmyRouteImport } from './routes/explore/army'
 import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
 import { Route as BeforeYouFlyInsuranceRouteImport } from './routes/before-you-fly/insurance'
@@ -70,9 +75,11 @@ import { Route as AdminAccountsRouteImport } from './routes/admin/accounts'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ExploreMapIndexRouteImport } from './routes/explore/map.index'
+import { Route as ExploreIdfIndexRouteImport } from './routes/explore/idf.index'
 import { Route as ExploreFitnessIndexRouteImport } from './routes/explore/fitness.index'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
 import { Route as ExploreMapIdRouteImport } from './routes/explore/map.$id'
+import { Route as ExploreIdfUnitIdRouteImport } from './routes/explore/idf.$unitId'
 import { Route as ExploreFitnessIdRouteImport } from './routes/explore/fitness.$id'
 import { Route as ExploreEventIdRouteImport } from './routes/explore/event.$id'
 import { Route as ExploreCategoryIdRouteImport } from './routes/explore/category.$id'
@@ -117,6 +124,11 @@ const TermsRoute = TermsRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SetupRoute = SetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -254,9 +266,19 @@ const ExploreVisaRoute = ExploreVisaRouteImport.update({
   path: '/explore/visa',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreUniFinderRoute = ExploreUniFinderRouteImport.update({
+  id: '/explore/uni-finder',
+  path: '/explore/uni-finder',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreUniRoute = ExploreUniRouteImport.update({
   id: '/explore/uni',
   path: '/explore/uni',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreUlpanRoute = ExploreUlpanRouteImport.update({
+  id: '/explore/ulpan',
+  path: '/explore/ulpan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreTransitRoute = ExploreTransitRouteImport.update({
@@ -314,9 +336,19 @@ const ExploreDocumentsRoute = ExploreDocumentsRouteImport.update({
   path: '/explore/documents',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreCostOfLivingRoute = ExploreCostOfLivingRouteImport.update({
+  id: '/explore/cost-of-living',
+  path: '/explore/cost-of-living',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreCommunityRoute = ExploreCommunityRouteImport.update({
   id: '/explore/community',
   path: '/explore/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreBudgetRoute = ExploreBudgetRouteImport.update({
+  id: '/explore/budget',
+  path: '/explore/budget',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreArmyRoute = ExploreArmyRouteImport.update({
@@ -391,6 +423,11 @@ const ExploreMapIndexRoute = ExploreMapIndexRouteImport.update({
   path: '/explore/map/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreIdfIndexRoute = ExploreIdfIndexRouteImport.update({
+  id: '/explore/idf/',
+  path: '/explore/idf/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreFitnessIndexRoute = ExploreFitnessIndexRouteImport.update({
   id: '/explore/fitness/',
   path: '/explore/fitness/',
@@ -404,6 +441,11 @@ const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
 const ExploreMapIdRoute = ExploreMapIdRouteImport.update({
   id: '/explore/map/$id',
   path: '/explore/map/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreIdfUnitIdRoute = ExploreIdfUnitIdRouteImport.update({
+  id: '/explore/idf/$unitId',
+  path: '/explore/idf/$unitId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreFitnessIdRoute = ExploreFitnessIdRouteImport.update({
@@ -478,6 +520,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
+  '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/tickets': typeof TicketsRoute
@@ -498,7 +541,9 @@ export interface FileRoutesByFullPath {
   '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
+  '/explore/budget': typeof ExploreBudgetRoute
   '/explore/community': typeof ExploreCommunityRoute
+  '/explore/cost-of-living': typeof ExploreCostOfLivingRoute
   '/explore/documents': typeof ExploreDocumentsRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
@@ -510,7 +555,9 @@ export interface FileRoutesByFullPath {
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
+  '/explore/ulpan': typeof ExploreUlpanRoute
   '/explore/uni': typeof ExploreUniRoute
+  '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -527,9 +574,11 @@ export interface FileRoutesByFullPath {
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
+  '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
+  '/explore/idf/': typeof ExploreIdfIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
@@ -553,6 +602,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
+  '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/tickets': typeof TicketsRoute
@@ -573,7 +623,9 @@ export interface FileRoutesByTo {
   '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
+  '/explore/budget': typeof ExploreBudgetRoute
   '/explore/community': typeof ExploreCommunityRoute
+  '/explore/cost-of-living': typeof ExploreCostOfLivingRoute
   '/explore/documents': typeof ExploreDocumentsRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
@@ -585,7 +637,9 @@ export interface FileRoutesByTo {
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
+  '/explore/ulpan': typeof ExploreUlpanRoute
   '/explore/uni': typeof ExploreUniRoute
+  '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -602,9 +656,11 @@ export interface FileRoutesByTo {
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
+  '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/explore/fitness': typeof ExploreFitnessIndexRoute
+  '/explore/idf': typeof ExploreIdfIndexRoute
   '/explore/map': typeof ExploreMapIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
@@ -630,6 +686,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
+  '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/tickets': typeof TicketsRoute
@@ -650,7 +707,9 @@ export interface FileRoutesById {
   '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
+  '/explore/budget': typeof ExploreBudgetRoute
   '/explore/community': typeof ExploreCommunityRoute
+  '/explore/cost-of-living': typeof ExploreCostOfLivingRoute
   '/explore/documents': typeof ExploreDocumentsRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
@@ -662,7 +721,9 @@ export interface FileRoutesById {
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
   '/explore/transit': typeof ExploreTransitRoute
+  '/explore/ulpan': typeof ExploreUlpanRoute
   '/explore/uni': typeof ExploreUniRoute
+  '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -679,9 +740,11 @@ export interface FileRoutesById {
   '/explore/category/$id': typeof ExploreCategoryIdRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
+  '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
+  '/explore/idf/': typeof ExploreIdfIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
@@ -708,6 +771,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/reverify'
     | '/settings'
+    | '/setup'
     | '/sitemap.xml'
     | '/terms'
     | '/tickets'
@@ -728,7 +792,9 @@ export interface FileRouteTypes {
     | '/before-you-fly/insurance'
     | '/benefits/$id'
     | '/explore/army'
+    | '/explore/budget'
     | '/explore/community'
+    | '/explore/cost-of-living'
     | '/explore/documents'
     | '/explore/events'
     | '/explore/food'
@@ -740,7 +806,9 @@ export interface FileRouteTypes {
     | '/explore/rides'
     | '/explore/shops'
     | '/explore/transit'
+    | '/explore/ulpan'
     | '/explore/uni'
+    | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
     | '/siddur/$id'
@@ -757,9 +825,11 @@ export interface FileRouteTypes {
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
+    | '/explore/idf/$unitId'
     | '/explore/map/$id'
     | '/explore/service/$id'
     | '/explore/fitness/'
+    | '/explore/idf/'
     | '/explore/map/'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
@@ -783,6 +853,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/reverify'
     | '/settings'
+    | '/setup'
     | '/sitemap.xml'
     | '/terms'
     | '/tickets'
@@ -803,7 +874,9 @@ export interface FileRouteTypes {
     | '/before-you-fly/insurance'
     | '/benefits/$id'
     | '/explore/army'
+    | '/explore/budget'
     | '/explore/community'
+    | '/explore/cost-of-living'
     | '/explore/documents'
     | '/explore/events'
     | '/explore/food'
@@ -815,7 +888,9 @@ export interface FileRouteTypes {
     | '/explore/rides'
     | '/explore/shops'
     | '/explore/transit'
+    | '/explore/ulpan'
     | '/explore/uni'
+    | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
     | '/siddur/$id'
@@ -832,9 +907,11 @@ export interface FileRouteTypes {
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
+    | '/explore/idf/$unitId'
     | '/explore/map/$id'
     | '/explore/service/$id'
     | '/explore/fitness'
+    | '/explore/idf'
     | '/explore/map'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
@@ -859,6 +936,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/reverify'
     | '/settings'
+    | '/setup'
     | '/sitemap.xml'
     | '/terms'
     | '/tickets'
@@ -879,7 +957,9 @@ export interface FileRouteTypes {
     | '/before-you-fly/insurance'
     | '/benefits/$id'
     | '/explore/army'
+    | '/explore/budget'
     | '/explore/community'
+    | '/explore/cost-of-living'
     | '/explore/documents'
     | '/explore/events'
     | '/explore/food'
@@ -891,7 +971,9 @@ export interface FileRouteTypes {
     | '/explore/rides'
     | '/explore/shops'
     | '/explore/transit'
+    | '/explore/ulpan'
     | '/explore/uni'
+    | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
     | '/siddur/$id'
@@ -908,9 +990,11 @@ export interface FileRouteTypes {
     | '/explore/category/$id'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
+    | '/explore/idf/$unitId'
     | '/explore/map/$id'
     | '/explore/service/$id'
     | '/explore/fitness/'
+    | '/explore/idf/'
     | '/explore/map/'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
@@ -936,6 +1020,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   ReverifyRoute: typeof ReverifyRoute
   SettingsRoute: typeof SettingsRoute
+  SetupRoute: typeof SetupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   TicketsRoute: typeof TicketsRoute
@@ -949,7 +1034,9 @@ export interface RootRouteChildren {
   BeforeYouFlyInsuranceRoute: typeof BeforeYouFlyInsuranceRoute
   BenefitsIdRoute: typeof BenefitsIdRoute
   ExploreArmyRoute: typeof ExploreArmyRoute
+  ExploreBudgetRoute: typeof ExploreBudgetRoute
   ExploreCommunityRoute: typeof ExploreCommunityRoute
+  ExploreCostOfLivingRoute: typeof ExploreCostOfLivingRoute
   ExploreDocumentsRoute: typeof ExploreDocumentsRoute
   ExploreEventsRoute: typeof ExploreEventsRoute
   ExploreFoodRoute: typeof ExploreFoodRoute
@@ -961,7 +1048,9 @@ export interface RootRouteChildren {
   ExploreRidesRoute: typeof ExploreRidesRoute
   ExploreShopsRoute: typeof ExploreShopsRoute
   ExploreTransitRoute: typeof ExploreTransitRoute
+  ExploreUlpanRoute: typeof ExploreUlpanRoute
   ExploreUniRoute: typeof ExploreUniRoute
+  ExploreUniFinderRoute: typeof ExploreUniFinderRoute
   ExploreVisaRoute: typeof ExploreVisaRoute
   GuidesIdRoute: typeof GuidesIdRoute
   SiddurIdRoute: typeof SiddurIdRoute
@@ -977,9 +1066,11 @@ export interface RootRouteChildren {
   ExploreCategoryIdRoute: typeof ExploreCategoryIdRoute
   ExploreEventIdRoute: typeof ExploreEventIdRoute
   ExploreFitnessIdRoute: typeof ExploreFitnessIdRoute
+  ExploreIdfUnitIdRoute: typeof ExploreIdfUnitIdRoute
   ExploreMapIdRoute: typeof ExploreMapIdRoute
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
   ExploreFitnessIndexRoute: typeof ExploreFitnessIndexRoute
+  ExploreIdfIndexRoute: typeof ExploreIdfIndexRoute
   ExploreMapIndexRoute: typeof ExploreMapIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicWebhooksAirwallexRoute: typeof ApiPublicWebhooksAirwallexRoute
@@ -1037,6 +1128,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/setup': {
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -1228,11 +1326,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreVisaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/uni-finder': {
+      id: '/explore/uni-finder'
+      path: '/explore/uni-finder'
+      fullPath: '/explore/uni-finder'
+      preLoaderRoute: typeof ExploreUniFinderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/uni': {
       id: '/explore/uni'
       path: '/explore/uni'
       fullPath: '/explore/uni'
       preLoaderRoute: typeof ExploreUniRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/ulpan': {
+      id: '/explore/ulpan'
+      path: '/explore/ulpan'
+      fullPath: '/explore/ulpan'
+      preLoaderRoute: typeof ExploreUlpanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore/transit': {
@@ -1312,11 +1424,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreDocumentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/cost-of-living': {
+      id: '/explore/cost-of-living'
+      path: '/explore/cost-of-living'
+      fullPath: '/explore/cost-of-living'
+      preLoaderRoute: typeof ExploreCostOfLivingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/community': {
       id: '/explore/community'
       path: '/explore/community'
       fullPath: '/explore/community'
       preLoaderRoute: typeof ExploreCommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/budget': {
+      id: '/explore/budget'
+      path: '/explore/budget'
+      fullPath: '/explore/budget'
+      preLoaderRoute: typeof ExploreBudgetRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore/army': {
@@ -1417,6 +1543,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreMapIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/idf/': {
+      id: '/explore/idf/'
+      path: '/explore/idf'
+      fullPath: '/explore/idf/'
+      preLoaderRoute: typeof ExploreIdfIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/fitness/': {
       id: '/explore/fitness/'
       path: '/explore/fitness'
@@ -1436,6 +1569,13 @@ declare module '@tanstack/react-router' {
       path: '/explore/map/$id'
       fullPath: '/explore/map/$id'
       preLoaderRoute: typeof ExploreMapIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/idf/$unitId': {
+      id: '/explore/idf/$unitId'
+      path: '/explore/idf/$unitId'
+      fullPath: '/explore/idf/$unitId'
+      preLoaderRoute: typeof ExploreIdfUnitIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore/fitness/$id': {
@@ -1554,6 +1694,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   ReverifyRoute: ReverifyRoute,
   SettingsRoute: SettingsRoute,
+  SetupRoute: SetupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   TicketsRoute: TicketsRoute,
@@ -1568,7 +1709,9 @@ const rootRouteChildren: RootRouteChildren = {
   BeforeYouFlyInsuranceRoute: BeforeYouFlyInsuranceRoute,
   BenefitsIdRoute: BenefitsIdRoute,
   ExploreArmyRoute: ExploreArmyRoute,
+  ExploreBudgetRoute: ExploreBudgetRoute,
   ExploreCommunityRoute: ExploreCommunityRoute,
+  ExploreCostOfLivingRoute: ExploreCostOfLivingRoute,
   ExploreDocumentsRoute: ExploreDocumentsRoute,
   ExploreEventsRoute: ExploreEventsRoute,
   ExploreFoodRoute: ExploreFoodRoute,
@@ -1580,7 +1723,9 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreRidesRoute: ExploreRidesRoute,
   ExploreShopsRoute: ExploreShopsRoute,
   ExploreTransitRoute: ExploreTransitRoute,
+  ExploreUlpanRoute: ExploreUlpanRoute,
   ExploreUniRoute: ExploreUniRoute,
+  ExploreUniFinderRoute: ExploreUniFinderRoute,
   ExploreVisaRoute: ExploreVisaRoute,
   GuidesIdRoute: GuidesIdRoute,
   SiddurIdRoute: SiddurIdRoute,
@@ -1596,9 +1741,11 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreCategoryIdRoute: ExploreCategoryIdRoute,
   ExploreEventIdRoute: ExploreEventIdRoute,
   ExploreFitnessIdRoute: ExploreFitnessIdRoute,
+  ExploreIdfUnitIdRoute: ExploreIdfUnitIdRoute,
   ExploreMapIdRoute: ExploreMapIdRoute,
   ExploreServiceIdRoute: ExploreServiceIdRoute,
   ExploreFitnessIndexRoute: ExploreFitnessIndexRoute,
+  ExploreIdfIndexRoute: ExploreIdfIndexRoute,
   ExploreMapIndexRoute: ExploreMapIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicWebhooksAirwallexRoute: ApiPublicWebhooksAirwallexRoute,
