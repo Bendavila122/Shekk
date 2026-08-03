@@ -38,12 +38,36 @@ function NotFoundComponent() {
   );
 }
 
+const CHUNK_RELOAD_KEY = "shekk:chunk-reload";
+
+function isChunkLoadError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error ?? "");
+  return /Importing a module script failed|Failed to fetch dynamically imported module|error loading dynamically imported module|Loading chunk .* failed|dynamically imported module/i.test(
+    message,
+  );
+}
+
+/** Stale or failed lazy-route chunks leave a blank screen; recover with a single reload. */
+function recoverFromChunkError(error: unknown) {
+  if (typeof window === "undefined" || !isChunkLoadError(error)) return false;
+  try {
+    if (window.sessionStorage.getItem(CHUNK_RELOAD_KEY)) return false;
+    window.sessionStorage.setItem(CHUNK_RELOAD_KEY, "1");
+  } catch {
+    // sessionStorage unavailable — fall through to a single reload attempt.
+  }
+  window.location.reload();
+  return true;
+}
+
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
+    if (recoverFromChunkError(error)) return;
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -129,6 +153,28 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    try {
+      window.sessionStorage.removeItem(CHUNK_RELOAD_KEY);
+    } catch {
+      // ignore
+    }
+    const onPreloadError = (event: Event) => {
+      const detail = (event as Event & { payload?: unknown }).payload;
+      if (recoverFromChunkError(detail)) event.preventDefault();
+    };
+    const onRejection = (event: PromiseRejectionEvent) => {
+      if (recoverFromChunkError(event.reason)) event.preventDefault();
+    };
+    window.addEventListener("vite:preloadError", onPreloadError);
+    window.addEventListener("unhandledrejection", onRejection);
+    return () => {
+      window.removeEventListener("vite:preloadError", onPreloadError);
+      window.removeEventListener("unhandledrejection", onRejection);
+    };
+  }, []);
+
 
   return (
     <QueryClientProvider client={queryClient}>
