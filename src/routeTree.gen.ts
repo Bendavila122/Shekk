@@ -19,10 +19,12 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReverifyRouteImport } from './routes/reverify'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ProgrammeRouteImport } from './routes/programme'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as IsraelRouteImport } from './routes/israel'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as ExchangeRouteImport } from './routes/exchange'
 import { Route as CardRouteImport } from './routes/card'
@@ -35,6 +37,7 @@ import { Route as SiddurIndexRouteImport } from './routes/siddur/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
 import { Route as BenefitsIndexRouteImport } from './routes/benefits/index'
+import { Route as BeforeYouFlyIndexRouteImport } from './routes/before-you-fly/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as SocialConversationIdRouteImport } from './routes/social/$conversationId'
 import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
@@ -55,6 +58,8 @@ import { Route as ExploreDocumentsRouteImport } from './routes/explore/documents
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
 import { Route as ExploreArmyRouteImport } from './routes/explore/army'
 import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
+import { Route as BeforeYouFlyInsuranceRouteImport } from './routes/before-you-fly/insurance'
+import { Route as BeforeYouFlyEsimRouteImport } from './routes/before-you-fly/esim'
 import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
 import { Route as AdminMoneyRouteImport } from './routes/admin/money'
 import { Route as AdminMembershipsRouteImport } from './routes/admin/memberships'
@@ -129,6 +134,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProgrammeRoute = ProgrammeRouteImport.update({
+  id: '/programme',
+  path: '/programme',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
@@ -147,6 +157,11 @@ const MeRoute = MeRouteImport.update({
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IsraelRoute = IsraelRouteImport.update({
+  id: '/israel',
+  path: '/israel',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HelpRoute = HelpRouteImport.update({
@@ -207,6 +222,11 @@ const ExploreIndexRoute = ExploreIndexRouteImport.update({
 const BenefitsIndexRoute = BenefitsIndexRouteImport.update({
   id: '/benefits/',
   path: '/benefits/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BeforeYouFlyIndexRoute = BeforeYouFlyIndexRouteImport.update({
+  id: '/before-you-fly/',
+  path: '/before-you-fly/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -307,6 +327,16 @@ const ExploreArmyRoute = ExploreArmyRouteImport.update({
 const BenefitsIdRoute = BenefitsIdRouteImport.update({
   id: '/benefits/$id',
   path: '/benefits/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BeforeYouFlyInsuranceRoute = BeforeYouFlyInsuranceRouteImport.update({
+  id: '/before-you-fly/insurance',
+  path: '/before-you-fly/insurance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BeforeYouFlyEsimRoute = BeforeYouFlyEsimRouteImport.update({
+  id: '/before-you-fly/esim',
+  path: '/before-you-fly/esim',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminPromotionsRoute = AdminPromotionsRouteImport.update({
@@ -439,10 +469,12 @@ export interface FileRoutesByFullPath {
   '/card': typeof CardRoute
   '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
+  '/israel': typeof IsraelRoute
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
   '/news': typeof NewsRoute
+  '/programme': typeof ProgrammeRoute
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
@@ -462,6 +494,8 @@ export interface FileRoutesByFullPath {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
+  '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
+  '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -482,6 +516,7 @@ export interface FileRoutesByFullPath {
   '/siddur/$id': typeof SiddurIdRoute
   '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/before-you-fly/': typeof BeforeYouFlyIndexRoute
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
@@ -509,10 +544,12 @@ export interface FileRoutesByTo {
   '/card': typeof CardRoute
   '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
+  '/israel': typeof IsraelRoute
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
   '/news': typeof NewsRoute
+  '/programme': typeof ProgrammeRoute
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
@@ -532,6 +569,8 @@ export interface FileRoutesByTo {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
+  '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
+  '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -552,6 +591,7 @@ export interface FileRoutesByTo {
   '/siddur/$id': typeof SiddurIdRoute
   '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin': typeof AdminIndexRoute
+  '/before-you-fly': typeof BeforeYouFlyIndexRoute
   '/benefits': typeof BenefitsIndexRoute
   '/explore': typeof ExploreIndexRoute
   '/guides': typeof GuidesIndexRoute
@@ -581,10 +621,12 @@ export interface FileRoutesById {
   '/card': typeof CardRoute
   '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
+  '/israel': typeof IsraelRoute
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
   '/news': typeof NewsRoute
+  '/programme': typeof ProgrammeRoute
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
@@ -604,6 +646,8 @@ export interface FileRoutesById {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
+  '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
+  '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -624,6 +668,7 @@ export interface FileRoutesById {
   '/siddur/$id': typeof SiddurIdRoute
   '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/before-you-fly/': typeof BeforeYouFlyIndexRoute
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
@@ -654,10 +699,12 @@ export interface FileRouteTypes {
     | '/card'
     | '/exchange'
     | '/help'
+    | '/israel'
     | '/mcp'
     | '/me'
     | '/membership'
     | '/news'
+    | '/programme'
     | '/reset-password'
     | '/reverify'
     | '/settings'
@@ -677,6 +724,8 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
+    | '/before-you-fly/esim'
+    | '/before-you-fly/insurance'
     | '/benefits/$id'
     | '/explore/army'
     | '/explore/community'
@@ -697,6 +746,7 @@ export interface FileRouteTypes {
     | '/siddur/$id'
     | '/social/$conversationId'
     | '/admin/'
+    | '/before-you-fly/'
     | '/benefits/'
     | '/explore/'
     | '/guides/'
@@ -724,10 +774,12 @@ export interface FileRouteTypes {
     | '/card'
     | '/exchange'
     | '/help'
+    | '/israel'
     | '/mcp'
     | '/me'
     | '/membership'
     | '/news'
+    | '/programme'
     | '/reset-password'
     | '/reverify'
     | '/settings'
@@ -747,6 +799,8 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
+    | '/before-you-fly/esim'
+    | '/before-you-fly/insurance'
     | '/benefits/$id'
     | '/explore/army'
     | '/explore/community'
@@ -767,6 +821,7 @@ export interface FileRouteTypes {
     | '/siddur/$id'
     | '/social/$conversationId'
     | '/admin'
+    | '/before-you-fly'
     | '/benefits'
     | '/explore'
     | '/guides'
@@ -795,10 +850,12 @@ export interface FileRouteTypes {
     | '/card'
     | '/exchange'
     | '/help'
+    | '/israel'
     | '/mcp'
     | '/me'
     | '/membership'
     | '/news'
+    | '/programme'
     | '/reset-password'
     | '/reverify'
     | '/settings'
@@ -818,6 +875,8 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
+    | '/before-you-fly/esim'
+    | '/before-you-fly/insurance'
     | '/benefits/$id'
     | '/explore/army'
     | '/explore/community'
@@ -838,6 +897,7 @@ export interface FileRouteTypes {
     | '/siddur/$id'
     | '/social/$conversationId'
     | '/admin/'
+    | '/before-you-fly/'
     | '/benefits/'
     | '/explore/'
     | '/guides/'
@@ -867,10 +927,12 @@ export interface RootRouteChildren {
   CardRoute: typeof CardRoute
   ExchangeRoute: typeof ExchangeRoute
   HelpRoute: typeof HelpRoute
+  IsraelRoute: typeof IsraelRoute
   McpRoute: typeof McpRoute
   MeRoute: typeof MeRoute
   MembershipRoute: typeof MembershipRoute
   NewsRoute: typeof NewsRoute
+  ProgrammeRoute: typeof ProgrammeRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ReverifyRoute: typeof ReverifyRoute
   SettingsRoute: typeof SettingsRoute
@@ -883,6 +945,8 @@ export interface RootRouteChildren {
   WelcomeRoute: typeof WelcomeRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  BeforeYouFlyEsimRoute: typeof BeforeYouFlyEsimRoute
+  BeforeYouFlyInsuranceRoute: typeof BeforeYouFlyInsuranceRoute
   BenefitsIdRoute: typeof BenefitsIdRoute
   ExploreArmyRoute: typeof ExploreArmyRoute
   ExploreCommunityRoute: typeof ExploreCommunityRoute
@@ -902,6 +966,7 @@ export interface RootRouteChildren {
   GuidesIdRoute: typeof GuidesIdRoute
   SiddurIdRoute: typeof SiddurIdRoute
   SocialConversationIdRoute: typeof SocialConversationIdRoute
+  BeforeYouFlyIndexRoute: typeof BeforeYouFlyIndexRoute
   BenefitsIndexRoute: typeof BenefitsIndexRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
@@ -995,6 +1060,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/programme': {
+      id: '/programme'
+      path: '/programme'
+      fullPath: '/programme'
+      preLoaderRoute: typeof ProgrammeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/news': {
       id: '/news'
       path: '/news'
@@ -1021,6 +1093,13 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/israel': {
+      id: '/israel'
+      path: '/israel'
+      fullPath: '/israel'
+      preLoaderRoute: typeof IsraelRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/help': {
@@ -1105,6 +1184,13 @@ declare module '@tanstack/react-router' {
       path: '/benefits'
       fullPath: '/benefits/'
       preLoaderRoute: typeof BenefitsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/before-you-fly/': {
+      id: '/before-you-fly/'
+      path: '/before-you-fly'
+      fullPath: '/before-you-fly/'
+      preLoaderRoute: typeof BeforeYouFlyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -1245,6 +1331,20 @@ declare module '@tanstack/react-router' {
       path: '/benefits/$id'
       fullPath: '/benefits/$id'
       preLoaderRoute: typeof BenefitsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/before-you-fly/insurance': {
+      id: '/before-you-fly/insurance'
+      path: '/before-you-fly/insurance'
+      fullPath: '/before-you-fly/insurance'
+      preLoaderRoute: typeof BeforeYouFlyInsuranceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/before-you-fly/esim': {
+      id: '/before-you-fly/esim'
+      path: '/before-you-fly/esim'
+      fullPath: '/before-you-fly/esim'
+      preLoaderRoute: typeof BeforeYouFlyEsimRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/promotions': {
@@ -1445,10 +1545,12 @@ const rootRouteChildren: RootRouteChildren = {
   CardRoute: CardRoute,
   ExchangeRoute: ExchangeRoute,
   HelpRoute: HelpRoute,
+  IsraelRoute: IsraelRoute,
   McpRoute: McpRoute,
   MeRoute: MeRoute,
   MembershipRoute: MembershipRoute,
   NewsRoute: NewsRoute,
+  ProgrammeRoute: ProgrammeRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ReverifyRoute: ReverifyRoute,
   SettingsRoute: SettingsRoute,
@@ -1462,6 +1564,8 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  BeforeYouFlyEsimRoute: BeforeYouFlyEsimRoute,
+  BeforeYouFlyInsuranceRoute: BeforeYouFlyInsuranceRoute,
   BenefitsIdRoute: BenefitsIdRoute,
   ExploreArmyRoute: ExploreArmyRoute,
   ExploreCommunityRoute: ExploreCommunityRoute,
@@ -1481,6 +1585,7 @@ const rootRouteChildren: RootRouteChildren = {
   GuidesIdRoute: GuidesIdRoute,
   SiddurIdRoute: SiddurIdRoute,
   SocialConversationIdRoute: SocialConversationIdRoute,
+  BeforeYouFlyIndexRoute: BeforeYouFlyIndexRoute,
   BenefitsIndexRoute: BenefitsIndexRoute,
   ExploreIndexRoute: ExploreIndexRoute,
   GuidesIndexRoute: GuidesIndexRoute,

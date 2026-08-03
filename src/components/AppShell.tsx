@@ -1,6 +1,6 @@
 import { Link, useRouterState, useRouter, useCanGoBack, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Wallet, Compass, Tag, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy, Home, Receipt, CreditCard, Crown, ShieldCheck } from "lucide-react";
+import { Wallet, Compass, Tag, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy, Home, Receipt, CreditCard, Crown, ShieldCheck, GraduationCap, PlaneTakeoff } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
@@ -13,12 +13,13 @@ import { miniAppFor } from "@/lib/mini-apps";
 
 const TABS = [
   { to: "/", label: "Home", Icon: Home },
-  { to: "/wallet", label: "Wallet", Icon: Wallet },
-  { to: "/explore", label: "Explore", Icon: Compass },
-  { to: "/benefits", label: "Benefits", Icon: Tag },
+  { to: "/wallet", label: "Money", Icon: Wallet },
+  { to: "/israel", label: "Israel", Icon: Compass },
+  { to: "/programme", label: "Programme", Icon: GraduationCap },
   { to: "/social", label: "Social", Icon: Users },
   { to: "/me", label: "Me", Icon: User },
 ];
+
 
 
 export function PhoneFrame({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
@@ -198,9 +199,19 @@ export function QuickMenu() {
             >
               <Plus className="size-4" strokeWidth={3} /> Add money
             </Link>
+            <Link to="/before-you-fly" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <PlaneTakeoff className="size-4 text-muted-foreground" /> Before you fly
+            </Link>
+            <Link to="/explore" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <Compass className="size-4 text-muted-foreground" /> All apps
+            </Link>
+            <Link to="/benefits" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <Tag className="size-4 text-muted-foreground" /> Benefits
+            </Link>
             <Link to="/activity" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <Receipt className="size-4 text-muted-foreground" /> Activity
             </Link>
+
             <Link to="/card" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <CreditCard className="size-4 text-muted-foreground" /> Shekk Card
             </Link>
@@ -256,8 +267,9 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-/** The five tab destinations; anything deeper is a mini app or info page. */
-const TAB_ROOTS = new Set(TABS.map((t) => t.to));
+/** Screens that keep the Shekk chrome; anything deeper is a mini app or info page. */
+const TAB_ROOTS = new Set([...TABS.map((t) => t.to), "/explore", "/benefits"]);
+
 
 export function AppShell({ children }: { children: ReactNode }) {
   const isActive = useActive();

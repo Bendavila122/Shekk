@@ -3,10 +3,11 @@ import { useState } from "react";
 import { ChevronLeft, Check } from "lucide-react";
 import { FocusScreen, PrimaryButton } from "@/components/AppShell";
 import { useApp } from "@/lib/store";
-import { PROGRAMS } from "@/lib/mock";
 import { LOCATION_CITIES } from "@/lib/location";
 import { CURRENCIES } from "@/lib/currencies";
+import { useProgramme, useTravel } from "@/lib/useProgramme";
 import type { Settings } from "@/lib/store";
+
 
 const LANGUAGES: { code: Settings["appLanguage"]; label: string }[] = [
   { code: "en", label: "English" },
@@ -51,37 +52,75 @@ const STEPS = ["You", "Arrival", "Programme", "Preferences"] as const;
 
 function Welcome() {
   const navigate = useNavigate();
-  const { state, completeOnboarding } = useApp();
+  const { state, completeOnboarding, signedIn } = useApp();
+  const { join } = useProgramme();
+  const { save: saveTravel } = useTravel();
   const [step, setStep] = useState(0);
 
   const [name, setName] = useState(state.name);
   const [homeCountry, setHomeCountry] = useState(state.profile.homeCountry);
   const [arrival, setArrival] = useState(state.profile.arrivalDateISO ?? "");
   const [city, setCity] = useState(state.profile.city);
-  const [programId, setProgramId] = useState(state.programId);
-  const [cohort, setCohort] = useState(state.cohort);
+  const [travelStyle, setTravelStyle] = useState<"programme" | "independent">("programme");
+  const [code, setCode] = useState("");
+  const [codeError, setCodeError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
   const [language, setLanguage] = useState(state.settings.appLanguage);
   const [payCurrency, setPayCurrency] = useState(state.settings.payCurrency);
 
   const canContinue = step === 0 ? name.trim().length > 1 : true;
 
-  function next() {
+  async function next() {
     if (step < STEPS.length - 1) {
       setStep((s) => s + 1);
       return;
     }
+
+    setBusy(true);
     completeOnboarding({
       name: name.trim(),
-      programId,
-      cohort,
+      programId: state.programId,
+      cohort: state.cohort,
       homeCountry,
       arrivalDateISO: arrival || null,
       city,
       appLanguage: language,
       payCurrency,
     });
-    navigate({ to: "/" });
+
+    if (signedIn) {
+      try {
+        await saveTravel.mutateAsync({
+          travelStyle,
+          arrivalDate: arrival || null,
+          fundingCurrency: payCurrency,
+          israelCity: city || null,
+        });
+      } catch {
+        /* Travel context is a convenience — never block onboarding on it. */
+      }
+
+      const clean = code.trim().toUpperCase();
+      if (travelStyle === "programme" && clean.length >= 3) {
+        try {
+          await join.mutateAsync(clean);
+        } catch (e) {
+          setBusy(false);
+          setStep(2);
+          setCodeError(
+            e instanceof Error
+              ? e.message.replace(/^Error:\s*/, "")
+              : "We couldn't find that code — check it with your programme, or skip for now.",
+          );
+          return;
+        }
+      }
+    }
+
+    setBusy(false);
+    navigate({ to: "/before-you-fly" });
   }
+
 
   return (
     <FocusScreen nav={false}>
@@ -142,36 +181,61 @@ function Welcome() {
         ) : null}
 
         {step === 2 ? (
-          <Step title="Your programme" blurb="This shapes your group thread, offers and local recommendations.">
-            <Field label="Programme or institution">
+          <Step
+            title="Are you coming with a programme?"
+            blurb="If your programme uses Shekk, they gave you a code. It unlocks your timetable, contacts and checklist."
+          >
+            <Field label="How are you travelling?">
               <div className="space-y-2">
-                {PROGRAMS.map((p) => (
+                {(
+                  [
+                    { id: "programme", label: "With a programme", hint: "Gap year, seminary, yeshiva, study abroad" },
+                    { id: "independent", label: "Independently", hint: "Working, volunteering or visiting" },
+                  ] as const
+                ).map((o) => (
                   <button
-                    key={p.id}
-                    onClick={() => setProgramId(p.id)}
+                    key={o.id}
+                    onClick={() => setTravelStyle(o.id)}
                     className={`tap flex w-full items-center justify-between rounded-2xl px-4 py-3.5 text-left ${
-                      programId === p.id ? "bg-primary text-primary-foreground" : "bg-muted"
+                      travelStyle === o.id ? "bg-primary text-primary-foreground" : "bg-muted"
                     }`}
                   >
                     <span>
-                      <span className="block text-sm font-semibold">{p.name}</span>
-                      <span className="block text-xs opacity-70">{p.city}</span>
+                      <span className="block text-sm font-semibold">{o.label}</span>
+                      <span className="block text-xs opacity-70">{o.hint}</span>
                     </span>
-                    {programId === p.id ? <Check className="size-4 shrink-0" /> : null}
+                    {travelStyle === o.id ? <Check className="size-4 shrink-0" /> : null}
                   </button>
                 ))}
               </div>
             </Field>
-            <Field label="Group">
-              <input
-                value={cohort}
-                onChange={(e) => setCohort(e.target.value)}
-                placeholder="J26 · Fall–Spring"
-                className="w-full rounded-2xl bg-muted px-4 py-3.5 text-base outline-none"
-              />
-            </Field>
+
+            {travelStyle === "programme" ? (
+              <Field label="Programme code (optional — you can add it later)">
+                <input
+                  value={code}
+                  onChange={(e) => {
+                    setCode(e.target.value);
+                    setCodeError(null);
+                  }}
+                  autoCapitalize="characters"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  placeholder="e.g. SHEKKDEMO"
+                  className="w-full rounded-2xl bg-muted px-4 py-3.5 text-base font-semibold uppercase tracking-wide outline-none"
+                />
+                {codeError ? (
+                  <p className="mt-2 text-xs font-semibold text-destructive">{codeError}</p>
+                ) : (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    No code? Skip this — nothing else changes, and you can join from the Programme tab any time.
+                  </p>
+                )}
+              </Field>
+            ) : null}
           </Step>
         ) : null}
+
 
         {step === 3 ? (
           <Step title="How you like it" blurb="Change any of this later in Settings.">
@@ -209,9 +273,10 @@ function Welcome() {
       </div>
 
       <div className="px-5 pb-10 pt-8">
-        <PrimaryButton disabled={!canContinue} onClick={next}>
-          {step === STEPS.length - 1 ? "Open my Shekk account" : "Continue"}
+        <PrimaryButton disabled={!canContinue || busy} onClick={next}>
+          {step === STEPS.length - 1 ? (busy ? "Setting up…" : "Start my Shekk journey") : "Continue"}
         </PrimaryButton>
+
       </div>
     </FocusScreen>
   );
