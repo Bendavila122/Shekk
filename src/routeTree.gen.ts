@@ -58,6 +58,7 @@ import { Route as ExploreHealthRouteImport } from './routes/explore/health'
 import { Route as ExploreFoodRouteImport } from './routes/explore/food'
 import { Route as ExploreEventsRouteImport } from './routes/explore/events'
 import { Route as ExploreDocumentsRouteImport } from './routes/explore/documents'
+import { Route as ExploreCostOfLivingRouteImport } from './routes/explore/cost-of-living'
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
 import { Route as ExploreArmyRouteImport } from './routes/explore/army'
 import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
@@ -334,6 +335,11 @@ const ExploreDocumentsRoute = ExploreDocumentsRouteImport.update({
   path: '/explore/documents',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExploreCostOfLivingRoute = ExploreCostOfLivingRouteImport.update({
+  id: '/explore/cost-of-living',
+  path: '/explore/cost-of-living',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreCommunityRoute = ExploreCommunityRouteImport.update({
   id: '/explore/community',
   path: '/explore/community',
@@ -530,6 +536,7 @@ export interface FileRoutesByFullPath {
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
   '/explore/community': typeof ExploreCommunityRoute
+  '/explore/cost-of-living': typeof ExploreCostOfLivingRoute
   '/explore/documents': typeof ExploreDocumentsRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
@@ -610,6 +617,7 @@ export interface FileRoutesByTo {
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
   '/explore/community': typeof ExploreCommunityRoute
+  '/explore/cost-of-living': typeof ExploreCostOfLivingRoute
   '/explore/documents': typeof ExploreDocumentsRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
@@ -692,6 +700,7 @@ export interface FileRoutesById {
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
   '/explore/community': typeof ExploreCommunityRoute
+  '/explore/cost-of-living': typeof ExploreCostOfLivingRoute
   '/explore/documents': typeof ExploreDocumentsRoute
   '/explore/events': typeof ExploreEventsRoute
   '/explore/food': typeof ExploreFoodRoute
@@ -775,6 +784,7 @@ export interface FileRouteTypes {
     | '/benefits/$id'
     | '/explore/army'
     | '/explore/community'
+    | '/explore/cost-of-living'
     | '/explore/documents'
     | '/explore/events'
     | '/explore/food'
@@ -855,6 +865,7 @@ export interface FileRouteTypes {
     | '/benefits/$id'
     | '/explore/army'
     | '/explore/community'
+    | '/explore/cost-of-living'
     | '/explore/documents'
     | '/explore/events'
     | '/explore/food'
@@ -936,6 +947,7 @@ export interface FileRouteTypes {
     | '/benefits/$id'
     | '/explore/army'
     | '/explore/community'
+    | '/explore/cost-of-living'
     | '/explore/documents'
     | '/explore/events'
     | '/explore/food'
@@ -1011,6 +1023,7 @@ export interface RootRouteChildren {
   BenefitsIdRoute: typeof BenefitsIdRoute
   ExploreArmyRoute: typeof ExploreArmyRoute
   ExploreCommunityRoute: typeof ExploreCommunityRoute
+  ExploreCostOfLivingRoute: typeof ExploreCostOfLivingRoute
   ExploreDocumentsRoute: typeof ExploreDocumentsRoute
   ExploreEventsRoute: typeof ExploreEventsRoute
   ExploreFoodRoute: typeof ExploreFoodRoute
@@ -1398,6 +1411,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreDocumentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/explore/cost-of-living': {
+      id: '/explore/cost-of-living'
+      path: '/explore/cost-of-living'
+      fullPath: '/explore/cost-of-living'
+      preLoaderRoute: typeof ExploreCostOfLivingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/community': {
       id: '/explore/community'
       path: '/explore/community'
@@ -1670,6 +1690,7 @@ const rootRouteChildren: RootRouteChildren = {
   BenefitsIdRoute: BenefitsIdRoute,
   ExploreArmyRoute: ExploreArmyRoute,
   ExploreCommunityRoute: ExploreCommunityRoute,
+  ExploreCostOfLivingRoute: ExploreCostOfLivingRoute,
   ExploreDocumentsRoute: ExploreDocumentsRoute,
   ExploreEventsRoute: ExploreEventsRoute,
   ExploreFoodRoute: ExploreFoodRoute,
