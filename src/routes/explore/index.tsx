@@ -17,16 +17,22 @@ import { useCatalogue, useVisibleBenefits } from "@/lib/admin";
 export const Route = createFileRoute("/explore/")({
   head: () => ({
     meta: [
-      { title: "Explore · Shekk" },
+      { title: "More in Shekk · everything else" },
       {
         name: "description",
         content:
-          "Wolt, Gett, Moovit, Rav-Kav, Israel Railways, Bit, Pango and more — every gap-year service integrated inside one app.",
+          "Everything beyond the core Shekk experience: guides, events, news, the Israel map and partner services — including the things that aren't live yet.",
       },
-      { property: "og:title", content: "Explore · Shekk" },
-      { property: "og:description", content: "Every gap-year errand, booked inside one app." },
+      { property: "og:title", content: "More in Shekk · everything else" },
+      {
+        property: "og:description",
+        content: "Guides, events, news, the map and partner services, plus what's still coming.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
+
   component: Explore,
 });
 
