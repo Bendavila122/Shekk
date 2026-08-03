@@ -75,13 +75,6 @@ export const SETUP_SECTIONS: SetupSection[] = [
         href: "/explore/documents",
         cta: "Open vault",
       },
-      {
-        id: "bf-checklist",
-        title: "Walk the full pre-arrival checklist",
-        blurb: "The long version, step by step, with everything ticked off as you go.",
-        href: "/before-you-fly",
-        cta: "Open checklist",
-      },
     ],
   },
   {

@@ -108,7 +108,7 @@ function TodayPanel() {
           ? { label: "Join your programme", to: "/programme" as const, why: "Enter the code your programme gave you" }
           : journey.inIsrael
             ? { label: "Find what's on near you", to: "/israel" as const, why: "Food, transport, fitness and events" }
-            : { label: "Before you fly checklist", to: "/before-you-fly" as const, why: "Keep getting ready" };
+            : { label: "Israel Setup", to: "/setup" as const, why: "Keep getting ready" };
 
   const everythingReady =
     signedIn && setupComplete && kyc.verified && state.balance > 0 && joined;

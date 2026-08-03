@@ -140,7 +140,7 @@ function JoinPanel() {
       <Notice title="Travelling independently?">
         That's fine — Shekk works without a programme. You'll still get the money features, the arrival
         checklist and every Israel guide.{" "}
-        <Link to="/before-you-fly" className="font-semibold underline">
+        <Link to="/setup" className="font-semibold underline">
           Open Before you fly
         </Link>
         .
@@ -238,7 +238,7 @@ function ProgrammeScreen() {
                 title="Programme checklist complete"
                 body="Everything your programme asked for is done. Nice work — nothing left to chase."
                 actionLabel="See what's next"
-                actionTo="/before-you-fly"
+                actionTo="/setup"
               />
             ) : null}
 
@@ -502,7 +502,7 @@ function ProgrammeScreen() {
 
             <section className="space-y-3">
               <Link
-                to="/before-you-fly"
+                to="/setup"
                 className="tap block rounded-2xl border border-border bg-card p-4 text-sm font-semibold shadow-card"
               >
                 Open your Before you fly checklist →
