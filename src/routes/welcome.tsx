@@ -52,37 +52,75 @@ const STEPS = ["You", "Arrival", "Programme", "Preferences"] as const;
 
 function Welcome() {
   const navigate = useNavigate();
-  const { state, completeOnboarding } = useApp();
+  const { state, completeOnboarding, signedIn } = useApp();
+  const { join } = useProgramme();
+  const { save: saveTravel } = useTravel();
   const [step, setStep] = useState(0);
 
   const [name, setName] = useState(state.name);
   const [homeCountry, setHomeCountry] = useState(state.profile.homeCountry);
   const [arrival, setArrival] = useState(state.profile.arrivalDateISO ?? "");
   const [city, setCity] = useState(state.profile.city);
-  const [programId, setProgramId] = useState(state.programId);
-  const [cohort, setCohort] = useState(state.cohort);
+  const [travelStyle, setTravelStyle] = useState<"programme" | "independent">("programme");
+  const [code, setCode] = useState("");
+  const [codeError, setCodeError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
   const [language, setLanguage] = useState(state.settings.appLanguage);
   const [payCurrency, setPayCurrency] = useState(state.settings.payCurrency);
 
   const canContinue = step === 0 ? name.trim().length > 1 : true;
 
-  function next() {
+  async function next() {
     if (step < STEPS.length - 1) {
       setStep((s) => s + 1);
       return;
     }
+
+    setBusy(true);
     completeOnboarding({
       name: name.trim(),
-      programId,
-      cohort,
+      programId: state.programId,
+      cohort: state.cohort,
       homeCountry,
       arrivalDateISO: arrival || null,
       city,
       appLanguage: language,
       payCurrency,
     });
-    navigate({ to: "/" });
+
+    if (signedIn) {
+      try {
+        await saveTravel.mutateAsync({
+          travelStyle,
+          arrivalDate: arrival || null,
+          fundingCurrency: payCurrency,
+          israelCity: city || null,
+        });
+      } catch {
+        /* Travel context is a convenience — never block onboarding on it. */
+      }
+
+      const clean = code.trim().toUpperCase();
+      if (travelStyle === "programme" && clean.length >= 3) {
+        try {
+          await join.mutateAsync(clean);
+        } catch (e) {
+          setBusy(false);
+          setStep(2);
+          setCodeError(
+            e instanceof Error
+              ? e.message.replace(/^Error:\s*/, "")
+              : "We couldn't find that code — check it with your programme, or skip for now.",
+          );
+          return;
+        }
+      }
+    }
+
+    setBusy(false);
+    navigate({ to: "/before-you-fly" });
   }
+
 
   return (
     <FocusScreen nav={false}>
