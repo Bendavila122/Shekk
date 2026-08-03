@@ -9,6 +9,7 @@ import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
+import { SupportRow, WalletStatusNote } from "@/components/SupportRow";
 
 export const Route = createFileRoute("/wallet")({
   head: () => ({
