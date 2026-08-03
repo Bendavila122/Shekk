@@ -138,6 +138,9 @@ function HomeScreen() {
         </div>
       </section>
 
+      {/* The journey: what to do next, and what's next from your programme */}
+      <JourneyStrip />
+
       {/* Search into the full catalogue */}
       <div className="px-4 pt-3">
         <GlobalSearch />
