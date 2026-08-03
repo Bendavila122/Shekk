@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowDown, Check, Info, Loader2, Lock } from "lucide-react";
 import { AppShell, Card, ScreenHeader, PrimaryButton } from "@/components/AppShell";
+import { LoadingBlocks } from "@/components/Kit";
 import { AirwallexDropIn } from "@/components/AirwallexDropIn";
 
 import { useApp } from "@/lib/store";
@@ -44,7 +45,7 @@ function ExchangeScreen() {
   if (!ready) {
     return (
       <AppShell>
-        <div className="p-6 text-sm text-muted-foreground">Loading…</div>
+        <LoadingBlocks rows={3} />
       </AppShell>
     );
   }
