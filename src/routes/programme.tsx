@@ -192,7 +192,7 @@ function ProgrammeScreen() {
               </p>
               <Link
                 to="/auth"
-                search={{ next: undefined }}
+                search={{ next: "/programme" }}
                 className="tap block w-full rounded-2xl bg-primary px-5 py-3.5 text-center text-sm font-semibold text-primary-foreground"
               >
                 Sign in
