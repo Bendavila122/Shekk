@@ -141,7 +141,7 @@ function JoinPanel() {
         That's fine — Shekk works without a programme. You'll still get the money features, the arrival
         checklist and every Israel guide.{" "}
         <Link to="/setup" className="font-semibold underline">
-          Open Before you fly
+          Open Israel Setup
         </Link>
         .
       </Notice>
@@ -505,7 +505,7 @@ function ProgrammeScreen() {
                 to="/setup"
                 className="tap block rounded-2xl border border-border bg-card p-4 text-sm font-semibold shadow-card"
               >
-                Open your Before you fly checklist →
+                Open your Israel Setup checklist →
               </Link>
               <button
                 type="button"
