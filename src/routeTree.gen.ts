@@ -58,6 +58,7 @@ import { Route as ExploreDocumentsRouteImport } from './routes/explore/documents
 import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
 import { Route as ExploreArmyRouteImport } from './routes/explore/army'
 import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
+import { Route as BeforeYouFlyEsimRouteImport } from './routes/before-you-fly/esim'
 import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
 import { Route as AdminMoneyRouteImport } from './routes/admin/money'
 import { Route as AdminMembershipsRouteImport } from './routes/admin/memberships'
@@ -327,6 +328,11 @@ const BenefitsIdRoute = BenefitsIdRouteImport.update({
   path: '/benefits/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BeforeYouFlyEsimRoute = BeforeYouFlyEsimRouteImport.update({
+  id: '/before-you-fly/esim',
+  path: '/before-you-fly/esim',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminPromotionsRoute = AdminPromotionsRouteImport.update({
   id: '/promotions',
   path: '/promotions',
@@ -482,6 +488,7 @@ export interface FileRoutesByFullPath {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
+  '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -555,6 +562,7 @@ export interface FileRoutesByTo {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
+  '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -630,6 +638,7 @@ export interface FileRoutesById {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
+  '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
   '/benefits/$id': typeof BenefitsIdRoute
   '/explore/army': typeof ExploreArmyRoute
   '/explore/community': typeof ExploreCommunityRoute
@@ -706,6 +715,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
+    | '/before-you-fly/esim'
     | '/benefits/$id'
     | '/explore/army'
     | '/explore/community'
@@ -779,6 +789,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
+    | '/before-you-fly/esim'
     | '/benefits/$id'
     | '/explore/army'
     | '/explore/community'
@@ -853,6 +864,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
+    | '/before-you-fly/esim'
     | '/benefits/$id'
     | '/explore/army'
     | '/explore/community'
@@ -921,6 +933,7 @@ export interface RootRouteChildren {
   WelcomeRoute: typeof WelcomeRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  BeforeYouFlyEsimRoute: typeof BeforeYouFlyEsimRoute
   BenefitsIdRoute: typeof BenefitsIdRoute
   ExploreArmyRoute: typeof ExploreArmyRoute
   ExploreCommunityRoute: typeof ExploreCommunityRoute
@@ -1307,6 +1320,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BenefitsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/before-you-fly/esim': {
+      id: '/before-you-fly/esim'
+      path: '/before-you-fly/esim'
+      fullPath: '/before-you-fly/esim'
+      preLoaderRoute: typeof BeforeYouFlyEsimRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/promotions': {
       id: '/admin/promotions'
       path: '/promotions'
@@ -1524,6 +1544,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  BeforeYouFlyEsimRoute: BeforeYouFlyEsimRoute,
   BenefitsIdRoute: BenefitsIdRoute,
   ExploreArmyRoute: ExploreArmyRoute,
   ExploreCommunityRoute: ExploreCommunityRoute,
