@@ -20,6 +20,7 @@ import { serviceLinkProps, type Service } from "@/lib/services";
 import { recordServiceUse, useRecentServices } from "@/lib/recents";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { usePromotions } from "@/lib/admin";
+import { resolveInterests } from "@/lib/journey-interests";
 
 
 export const Route = createFileRoute("/")({
@@ -254,6 +255,9 @@ function HomeScreen() {
 
       {/* The journey: what to do next, and what's next from your programme */}
       <JourneyStrip />
+
+      {/* Straight from the journey setup */}
+      <PickedForYou />
 
       {/* Search into the full catalogue */}
       <div className="px-4 pt-3">
