@@ -1,138 +1,121 @@
-# Shekk product review — post-onboarding redesign
+# Shekk: pre-beta review and one-sprint launch plan
 
-Brutally honest read of the app as it stands. No code changed. Everything below is grounded in the current files and a mobile-width pass over `/`, `/welcome`, `/israel`, `/explore`, `/wallet`.
+Verified against the current code: 5-tab shell (Today / Money / Israel / Programme / Friends), 28 mini apps, 25 partner services (13 live, 12 "guide"), two parallel pre-arrival checklists (`/setup` and `/before-you-fly`), and simulated card + several fake commerce flows (`src/routes/explore/food.tsx` completes an order from `RESTAURANTS` in `src/lib/mock.ts` and shows "Rider: Ofir · paid from your Shekk balance").
 
-## Headline verdict
+## 1. The 20 biggest weaknesses, by impact
 
-The new onboarding is genuinely the best surface in the product: `/welcome` reads like a journey, not a form. The rest of the app has not caught up. Post-signup, Shekk becomes a directory of ~25 mini-apps with three competing hubs, a six-tab bar plus a hamburger menu that duplicates it, and money screens that still mix real ledger language with leftover "credit" and mock catalogue data. The gap between the promise on the landing screen and the first ten seconds after signup is the single biggest product problem.
+1. **Fake money flows can execute.** Food/rides/reserve/transit/shops screens debit the balance against mock catalogues. In a beta with real participants this is the single most damaging thing in the app — it looks like fraud, not a prototype.
+2. **Card is simulated but presented as a product.** `/card` renders a Mastercard face with a small "Preview" badge. A student who tops up expecting to tap will be stranded.
+3. **The core loop is unproven end-to-end.** Top-up runs against an Airwallex sandbox by default; nobody can yet complete fund → hold → spend → refund with real money. Everything else is decoration until that works.
+4. **No spend surface at all.** Money can go in and sit there. Closed-loop with no accepted merchant and no card means the balance has no exit — the value proposition is unfinished, not merely early.
+5. **Surface area vastly exceeds depth.** 28 mini apps, ~17k lines of routes, one team. Most apps have one screen and no reason to return.
+6. **Two competing onboarding checklists.** `/setup` (8 sections) and `/before-you-fly` (10 steps) overlap heavily. Users will complete one and still be told they are unprepared.
+7. **Five hubs compete for the same content.** Today, Israel, Explore, Guides and Setup all route to overlapping tiles. There is no single obvious "where do I find things".
+8. **No trust or compliance story on-screen.** A closed-loop stored-value product needs, visibly: who holds the money, what happens on programme exit, refund policy, complaints route. Terms exist; the money screens don't reference them.
+9. **Programme value is asserted, not delivered.** Programme content is admin-entered only, so at beta every cohort starts empty — the exact screen a director judges.
+10. **No support channel.** `/help` is static. No chat, no "something went wrong with my money" path. Unacceptable for money in beta.
+11. **Empty-state economy.** Friends, activity, benefits, events all ship blank by design. First session reads as broken rather than new.
+12. **Membership/Shekk+ before product-market fit.** Paywalling a prototype erodes the trust the money product needs.
+13. **Auth/verify are the heaviest screens in the app** (591 + 744 lines). Fragility here kills every funnel behind it.
+14. **KYC gate placement is unclear to the user.** Verification, top-up and spending gates are enforced in code but not explained as one journey.
+15. **Local-only assistant state.** Ulpan streaks, budgets, setup ticks live in `localStorage`; a reinstall or second device wipes visible "progress".
+16. **Mock module still imported by production screens** (`src/lib/mock.ts` powers food, transit, housing, shops, events copy). Static rates (`SHEKK_RATE`) are hardcoded.
+17. **Admin console behind a shared PIN** (`0161`) with money views. That is a real risk once real balances exist.
+18. **Notification strategy is missing.** Realtime chat notifications exist; nothing for money received, programme announcement, or arrival milestones — the actual retention drivers.
+19. **News, Siddur, Been There, Fitness, IDF Explorer are wide but unrelated to the wedge.** They cost maintenance and dilute positioning.
+20. **No analytics or funnel instrumentation** to learn anything from the beta.
 
----
+## 2. UX issues
 
-## 1. Inconsistencies
+- Home stacks greeting, search, location, next-step, widgets, rails, recents — the "one clear next action" is buried under peers.
+- "Preview" badges are the app's only honesty mechanism and are far too quiet next to a full card UI and working buttons.
+- Simulated success screens ("On the way", named rider) are indistinguishable from real ones.
+- Icon-grid density (4-col, 11px 2-line labels) pushes truncation and guesswork; folders add a second tap for little gain.
+- Balance, available and reserved are three numbers with no explanation of holds.
+- Money tab is titled "Money" but the route is `/wallet`; Explore is reachable but not in the tab bar — mental model drift.
+- Assistants each invent their own progress vocabulary (streaks, ticks, percent, verdicts).
+- No global error/empty/offline treatment tied to money operations.
 
-- **Vocabulary breaks the core rule.** `/me` still shows a card labelled "Credit balance"; `/wallet` says "Shekk balance"; the quick menu says "Balance". Memory says never "credits".
-- **Two different "who am I" surfaces.** `/me` and `/settings` overlap (currency, theme, alerts appear in both paths), and `/me` links to `/welcome` as "Redo account setup" — the journey screen re-cast as a settings row.
-- **Mock catalogues sit next to real infrastructure.** `PROGRAMS`, `RESTAURANTS`, `SHOPS`, `HOUSING`, `BUS_LINES`, `SHULS` from `src/lib/mock.ts` are still rendered in `/me`, `/verify`, `/explore/food`, `/explore/shops`, `/explore/housing`, `/explore/transit`, `/explore/community`, while ledger, KYC, programme and events are real. Users cannot tell which parts are true — and it contradicts the "no demo data" rule.
-- **`/me` shows a programme from mock `PROGRAMS`** while `/programme` reads the real cohort from the backend. Two sources of truth for the same fact.
-- **Stale intent in code that shapes UX:** `useOnboardedGate` still says "Signup is disabled for now" and only waits for hydration — so there is no real onboarding gate behind the tabs any more; gating happens ad hoc per route.
-- **Transaction list mixes sources.** `state.txns` is client state hydrated from ledger snapshots but also appended locally by several actions; `/wallet` and `/activity` present that as a statement.
+## 3. Product strategy issues
 
-## 2. Weak UX
+- **Wedge is diluted.** The defensible product is "money for programme participants, distributed by programmes". Everything else is a feature a student already has an app for.
+- **Revenue before rails.** FX margin needs volume; volume needs a spend surface. Shipping Shekk+ first inverts this.
+- **B2B2C promise isn't instrumented.** No programme-side proof: no cohort dashboard, no participant readiness report, no distribution artefact a director can hand out.
+- **Closed-loop, non-refundable credit is a hard sell to a duty-of-care buyer** unless refund and exit policy are explicit and generous-looking.
+- **Breadth is being used as evidence of ambition**; for a beta it reads as unfinished.
 
-- **Signed-out `/` shows a Shekk splash reading "Opening your wallet…" and stays there** before landing anywhere, while `/israel`, `/explore` and `/wallet` bounce to `/auth?next=…`. Three different behaviours for "not signed in".
-- **First screen after setup is dense.** `/` stacks logo → location bar → balance hero → journey strip → picked-for-you → global search → recents grid → ActiveNow → ForYou → promos → reverify banner. Ten sections, no single focal point.
-- **Recents grid renders as an unlabelled 5-column icon block** with no heading and no empty state — for a new member it is either blank or arbitrary.
-- **Duplicated action rows.** Home hero has Add/Exchange/Send/Card; wallet hero has Add/Exchange/Send/Request/Card at 9px labels in five columns. Five actions is one too many for 390px.
-- **Send and Request both link to `/social`**, not to a send or request flow — two buttons, one destination, no completion of intent.
-- **Balance visibility toggle in `/wallet` is local state** initialised from settings, so hiding does not persist or match the quick menu, which always shows the number in plain text.
-- **`/activity` exists as a separate screen** whose content is a filtered version of the wallet list.
+## 4. Information architecture issues
 
-## 3. Still feels like disconnected mini-apps
+- Two checklists, five hubs, one flat 28-app namespace with no ranking.
+- `/explore/*` mixes real integrations, mock commerce, assistants and articles under one prefix.
+- Programme content and Israel content are separate trees despite answering the same questions.
+- Mini apps are registered by hand-ordered array — no notion of relevance to journey phase, despite `journey-phase.ts` existing.
+- Search is present on multiple screens with different scopes.
 
-- **Three overlapping hubs:** `/israel` (grouped mini-apps), `/explore` (folders + featured + guides + Shekk apps) and `/before-you-fly` (arrival checklist). "Guides", "visa", "documents" appear in more than one of them, and the quick menu adds "All apps" and "Before you fly" as separate entries again.
-- **Mini-apps are deliberately sealed off** — own splash, no tab bar, floating back button. That was the right call for map/maps, but it also means genuinely core surfaces (documents, health, transit, tickets) leave the product shell and lose balance, search and navigation context.
-- **Nothing flows between apps.** Booking a ticket, ordering food or planning a ride never returns to money, and money never links back to what was spent on. There is no shared object (a trip, a day, a spend) that the apps agree on.
-- **The four strategy pillars are invisible in the IA.** Navigation is Home/Money/Israel/Programme/Social/Me — Israel Setup and Daily Life are fused into one "Israel" bucket of 20+ tiles.
+## 5. Remove or merge before beta
 
-## 4. Navigation issues
+- **Merge** `/setup` + `/before-you-fly` into one journey checklist (keep Setup's structure, BYF's copy).
+- **Merge** Explore into Israel; one hub, phase-ranked.
+- **Remove/park** Food, Rides, Transit, Reserve, Housing, Shops mock commerce — replace each with a single honest "opens the partner app" handoff or hide entirely.
+- **Remove** the simulated card UI from the tab-level surface; keep a waitlist card.
+- **Park** Shekk+ / membership, Been There, Fitness, News, IDF Explorer, Uni Finder, Siddur behind a "More" shelf; do not feature them.
+- **Merge** Cost of Living + Budget into one money-planning tool.
+- **Remove** `src/lib/mock.ts` from all production imports.
 
-- **Six bottom tabs plus a hamburger with eleven more links** (including the admin console, which memory says should be hidden from normal navigation). The hamburger is the real navigation, which means the tab bar is not.
-- **The raised centre Home button was flattened**, so the tab bar is now six equal 11px labels — "Programme" truncates visually against "Social".
-- **Admin console link is exposed in the member quick menu**, contradicting the "hidden from normal navigation, code 0161" rule.
-- **Back behaviour differs by screen class:** mini-apps get a floating chevron, info pages get a fixed header, tab roots get nothing, and `ScreenHeader` defaults `back` to `/explore` regardless of where the user came from.
-- **Desktop sidebar duplicates the tab list but not the quick menu**, so several screens are reachable on mobile only.
+## 6. Still articles wearing tool clothes
 
-## 5. Onboarding gaps
+- Visa, Army, Lone Soldier, Uni, Guides: long structured content with a tick box.
+- IDF Explorer: a browsable encyclopaedia; it helps nobody decide anything.
+- Health: a provider catalogue plus card storage — storage is the tool, the catalogue is the article.
+- Community/Shuls, Documents guidance, Terms/Help.
+- Cost of Living is a table with sliders; it produces a number but no decision or action.
 
-- The journey ends at a celebratory summary, then drops into the dense home. **No first-run guidance on the home screen itself** — no "here's your wallet, here's your programme" moment.
-- **Verification is explained then deferred**, and the only nudge afterwards is a single line in the journey strip. There is no persistent, dismissible wallet-readiness state anywhere else.
-- **Interests are collected and used only for one horizontal rail.** They do not reorder `/israel`, `/explore` or ForYou.
-- **No "add your first money" walkthrough.** The empty wallet has a button; the FX/rate explanation from onboarding is not repeated where it matters.
-- **Programme join has no second chance surface** other than the `/programme` tab, which for unjoined members is a form rather than a hub.
-- Existing-user migration card works, but it competes with verification and first-top-up for the same slot.
+## 7. World-class
 
-## 6. Copy improvements
+- **Been There** map: genuinely delightful, differentiated craft.
+- **Ulpan**: the one assistant with a real loop (daily word, flashcards, quiz, streak).
+- **Siddur** with nusach handling: unusually respectful and well-built.
+- **Design system**: `Kit.tsx` + tokens + mini-app icon family read as one premium product.
+- **Ledger design**: integer agorot, service-role-only writes, holds and settlement — the right foundation.
+- **Insurance card wallet**: private storage, big member number — solves a real moment.
+- **Ticketing with atomic capacity locking**: better than most early-stage attempts.
 
-- Kill "Credit balance" (`/me`) → "Shekk balance".
-- "Redo account setup" → "Your journey details".
-- "Opening your wallet…" on a signed-out splash is a promise the app cannot keep at that moment.
-- `/me`'s "How your Shekk account works" is a nine-bullet legal wall in a product screen; compress to three plain lines with a link to the full terms.
-- "Finish opening your account" (`/me`) reintroduces bank-account framing the onboarding deliberately avoided.
-- Mini-app blurb on `/explore` ("Apps marked 'soon' open a guide for now") admits incompleteness in the wrong place.
-- Tab label "Programme" is right; "Israel" is vague — "Living here" or "Life" describes the content better.
+## 8. What would stop a programme director recommending it
 
-## 7. Visual hierarchy problems
+1. Simulated money and card flows that debit a real balance.
+2. Non-refundable credit with no visible refund/exit/complaints policy.
+3. No support channel when a participant's money goes wrong.
+4. Empty programme surface on day one — they'd have to fill it themselves with no portal.
+5. Nothing they can show parents: no safeguarding, no spend visibility, no incident path.
+6. Breadth that raises "who maintains all this?" — perceived operational risk.
+7. Nowhere for the participant to actually spend the balance.
 
-- **Home has two gradient heroes competing** (balance card, then premium benefits card on explore) with the same visual weight as ordinary cards below.
-- **Type scale collapses at the bottom of screens:** 9px, 9.5px, 10px, 11px, 11.5px and 12px all appear as body-adjacent sizes. Below 11px is not readable on device.
-- **Every block is a rounded card with the same border, radius and shadow**, so nothing signals importance; the journey strip (the most important element) looks identical to a promo.
-- **Uppercase tracking-widest micro-labels are used everywhere**, diluting their function as section markers.
-- **Dark mode is force-white in `MiniAppIcon`** via hardcoded values rather than tokens — correct visually, fragile structurally.
+## 9. If I had one sprint before launch
 
-## 8. Opportunities for delight
+Ruthlessly narrow to a beta that can be judged. Theme: **one real money loop, one honest app.**
 
-- A real **"Today in Israel"** single card: Shabbat times for the member's city, weather, next programme item, transport disruption — one card that replaces four widgets.
-- **Countdown continuity**: the "X days until you fly" from onboarding should live on the home hero until arrival, then become "Day 12 in Israel".
-- **First top-up celebration** with the exact rate honoured, shown as a small receipt moment.
-- **Been There progress** surfaced on home as one line ("6 of 26 areas") rather than buried in a mini-app.
-- Programme **arrival day mode**: on the arrival date, home reorders itself to airport → SIM → transport → first Shabbat.
-- Haptic-style micro-feedback on QR pay and split settle.
+**A. Make the money loop real and truthful (highest priority)**
+- Remove every balance-debiting mock flow; gate them behind a build flag or delete the routes and their `mock.ts` imports.
+- One production-path top-up in a single currency, with a live/test banner that is impossible to miss.
+- Ship one real spend surface. If card issuing can't land, ship programme/partner **pay-by-QR redemption** using the existing hold/settle ledger — a handful of real merchants beats a simulated Mastercard.
+- Refund and exit policy screen linked from Money, top-up and terms; make "you can get your money back on programme exit" visible.
 
-## 9. Trust and compliance concerns
+**B. Trust and support**
+- In-app support thread routed to a real inbox, reachable from Money and every failure state.
+- Money-event notifications: received, top-up settled, hold placed/released.
+- Replace the shared admin PIN with role-based access on the money views.
 
-- **Simulated card presented close to real money.** `/wallet` shows a Mastercard face with `•••• last4`, expiry and "in Apple Pay" copy; the card programme is not live. The "Preview" labelling is not on this surface.
-- **"Your shekel account and card are provided by Airwallex"** is stated as fact in `/wallet` and `/me`; if the Airwallex account is not provisioned for a given member, that is a claim the product cannot support yet.
-- **Mock merchant/venue catalogues in a financial app** imply partnerships that do not exist (specific restaurants, shops, housing listings, bus lines).
-- **Admin console reachable from the member menu** — a single tap plus a shared 4-digit code protects real member and money data.
-- **Client-side money display** derives from `state.txns` in client state; any local append path risks showing a balance the ledger does not agree with.
-- Eligibility rules (16+, non-resident, KYC before spending) are stated in `/me` prose only, not enforced or surfaced at the point of top-up.
+**C. Collapse the IA**
+- One journey checklist (merge Setup + BYF), one Israel hub (absorb Explore), phase-ranked tiles from `journey-phase.ts`.
+- Four tabs: Today, Money, Israel, Programme. Friends moves into Today/Money as "Send & split"; a "More" shelf holds the parked apps.
+- Home shows exactly one next action plus balance plus programme next item. Nothing else above the fold.
 
-## 10. Top 20 improvements, ranked by value vs effort
+**D. Make the programme surface demo-able**
+- A cohort readiness view for admins (who is verified, funded, checklist %, no PII beyond need).
+- A one-page programme-facing summary a director can be shown in a call, generated from real cohort data.
+- Seed nothing, but give every programme an authoring-complete first-run: announcement, schedule item, document — created in the admin console during onboarding.
 
-| # | Change | Value | Effort |
-|---|---|---|---|
-| 1 | Remove the admin console link from the member quick menu | High | Trivial |
-| 2 | Fix money vocabulary everywhere ("Credit balance" → "Shekk balance", drop "opening your account") | High | Trivial |
-| 3 | Give signed-out `/` one deterministic behaviour: redirect to `/welcome` | High | Low |
-| 4 | Make Send and Request open real send/request sheets instead of both linking to `/social` | High | Low |
-| 5 | Cut the wallet hero to four actions and raise label size to 11px | High | Low |
-| 6 | Remove all mock catalogues from user-facing screens; show honest empty states | High | Low |
-| 7 | Collapse home to four blocks: balance, next step, today, one discovery rail | High | Medium |
-| 8 | Merge `/activity` into `/wallet` as a filtered full list; keep one route | Medium | Low |
-| 9 | Merge `/explore` and `/israel` into one "Life" hub; keep `/before-you-fly` as a stage inside it | High | Medium |
-| 10 | Reduce the tab bar to five: Home, Money, Life, Programme, Social; move Me into the header avatar | High | Medium |
-| 11 | Replace the hamburger with a real overflow on Me only; nothing should be menu-exclusive | High | Medium |
-| 12 | Persistent, dismissible "wallet not ready" state until KYC clears | High | Low |
-| 13 | Drop the simulated card face from `/wallet`; replace with an honest "Card coming" strip | High | Low |
-| 14 | Consolidate the nine-bullet account explainer into three lines + terms link | Medium | Trivial |
-| 15 | Make interests actually reorder the Life hub and ForYou, not just one rail | Medium | Medium |
-| 16 | One "Today in Israel" card replacing the separate Jewish Life / weather / news widgets on home | High | Medium |
-| 17 | Unify back navigation: one `ScreenHeader` contract, history-aware, no `/explore` default | Medium | Low |
-| 18 | Establish a 3-level card hierarchy (hero / primary / quiet) and apply it | Medium | Medium |
-| 19 | Carry the arrival countdown into the home hero, then switch to "Day N in Israel" | Medium | Low |
-| 20 | First top-up receipt moment with the honoured rate | Medium | Medium |
+**E. Instrument it**
+- Funnel events: signup → setup complete → verified → funded → first spend. Without this the beta teaches nothing.
 
-## Screens to remove, merge or redesign
-
-**Remove**
-- `/activity` (fold into `/wallet`).
-- Mock-data screens as they stand: `/explore/food`, `/explore/shops`, `/explore/housing`, `/explore/community`, `/explore/transit` — either back them with real data or remove them from navigation.
-- Quick-menu admin entry.
-
-**Merge**
-- `/explore` + `/israel` → one hub with stages (Before you fly / Getting around / Everyday / Going out / Longer term).
-- `/me` + `/settings` → one account screen with sections.
-- `/before-you-fly` → a stage inside the merged hub, still deep-linkable.
-
-**Redesign**
-- `/` home: four blocks, one focal point, first-run state.
-- `/wallet`: four actions, honest card strip, one activity list with filters.
-- `/programme` unjoined state: a hub that shows what joining unlocks, not a bare form.
-- `/me`: profile + status + short explainer, legal text behind a link.
-
-## What is genuinely good
-
-- `/welcome` landing and staged setup: tone, pacing, live day-count summary, chapter progress.
-- Programme model, ledger, KYC separation, events capacity locking — the backend is ahead of the UI.
-- Mini-app splash and icon system: the most distinctive visual asset in the product.
-- Israel map and Guides are both real, deep and useful.
+**Explicitly not this sprint:** Shekk+, new mini apps, Google Maps depth, affiliate marketplace, more content.
