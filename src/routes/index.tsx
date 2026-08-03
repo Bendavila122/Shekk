@@ -151,6 +151,38 @@ function JourneyStrip() {
   );
 }
 
+/** Picked from what the member said Shekk should help them with, in their order. */
+function PickedForYou() {
+  const { travel } = useTravel();
+  const picks = resolveInterests(travel.interests);
+  if (picks.length === 0) return null;
+
+  return (
+    <section className="pt-4">
+      <h2 className="px-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+        Picked for you
+      </h2>
+      <div className="scrollbar-none mt-2 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 pb-1 scroll-px-5">
+        {picks.map((p) => (
+          <Link
+            key={p.id}
+            to={p.to}
+            className="tap w-[150px] shrink-0 snap-start rounded-2xl border border-border bg-card p-3.5 shadow-card"
+          >
+            <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-primary">
+              <p.icon className="size-4" />
+            </span>
+            <span className="mt-2 block text-sm font-semibold leading-snug">{p.action}</span>
+            <span className="block text-[11px] leading-snug text-muted-foreground">{p.hint}</span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
+
 
 function HomeScreen() {
   const ready = useOnboardedGate();
