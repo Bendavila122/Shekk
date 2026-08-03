@@ -11,7 +11,7 @@ export const Route = createFileRoute("/explore/food")({
       { title: "Food delivery · Shekk" },
       { name: "description", content: "Order kosher food to your dorm — kosher filter on by default, Shabbat-aware." },
       { property: "og:title", content: "Food delivery · Shekk" },
-      { property: "og:description", content: "Kosher-first delivery paid with your credits." },
+      { property: "og:description", content: "Kosher-first delivery paid straight from your Shekk balance." },
     ],
   }),
   component: Food,
@@ -41,7 +41,7 @@ function Food() {
           </div>
           <h2 className="text-2xl font-bold">On the way</h2>
           <p className="text-sm text-muted-foreground">
-            {rest.eta} to your dorm. Rider: Ofir · pays with your credits, no cash at the door.
+            {rest.eta} to your dorm. Rider: Ofir · paid from your Shekk balance, no cash at the door.
           </p>
           <Card className="text-left text-sm">
             <p className="font-semibold">{rest.name}</p>
@@ -105,7 +105,7 @@ function Food() {
               setPlaced(true);
             }}
           >
-            {shabbat && rest.closedShabbat ? "Closed for Shabbat" : "Pay with credits"}
+            {shabbat && rest.closedShabbat ? "Closed for Shabbat" : "Pay from balance"}
           </PrimaryButton>
         </div>
       </AppShell>

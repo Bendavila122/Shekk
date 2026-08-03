@@ -1,24 +1,30 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText, Camera, Crown, CreditCard, Sparkles } from "lucide-react";
+import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText, Camera, Crown, CreditCard, Sparkles, ShieldCheck } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
-import { PROGRAMS, ils } from "@/lib/mock";
+import { SectionHead, LoadingBlocks, PreviewBadge } from "@/components/Kit";
+import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { useProfile } from "@/lib/useProfile";
+import { useProgramme, useTravel } from "@/lib/useProgramme";
+import { getJourney } from "@/lib/journey-phase";
 import { ShekkTagCard } from "@/components/social/ShekkTagCard";
 
 
 export const Route = createFileRoute("/me")({
   head: () => ({
     meta: [
-      { title: "Me · Shekk" },
+      { title: "You · Shekk" },
       {
         name: "description",
-        content: "Verification badge, program and group details, order history and plain-language account terms.",
+        content:
+          "Your Shekk account: verification status, programme, Shekk tag, payment history and how your shekel account works.",
       },
-      { property: "og:title", content: "Me · Shekk" },
+      { property: "og:title", content: "You · Shekk" },
       { property: "og:description", content: "Your Shekk account, verification status and account terms." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Me,
@@ -28,7 +34,9 @@ function Me() {
   const ready = useOnboardedGate();
   const { state, verification, daysLeft, setAvatar, isPremium } = useApp();
   const kyc = useProfile();
-  const program = PROGRAMS.find((p) => p.id === state.programId);
+  const { programme } = useProgramme();
+  const { travel } = useTravel();
+  const journey = getJourney(travel);
 
   const onPickPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -39,7 +47,12 @@ function Me() {
     e.target.value = "";
   };
 
-  if (!ready) return <AppShell><div className="p-6 text-sm text-muted-foreground">Loading…</div></AppShell>;
+  if (!ready)
+    return (
+      <AppShell>
+        <LoadingBlocks rows={3} />
+      </AppShell>
+    );
 
   const badge =
     verification === "verified"
@@ -48,17 +61,19 @@ function Me() {
         ? { label: "Expiring soon", cls: "bg-warning-soft text-warning-foreground", Icon: AlertTriangle }
         : { label: "Needs update", cls: "bg-warning-soft text-warning-foreground", Icon: AlertTriangle };
 
+  const contextLine = programme.joined
+    ? [programme.programmeName, programme.cohortName].filter(Boolean).join(" · ")
+    : journey.chip
+      ? journey.chip
+      : "Travelling independently";
+
   return (
     <AppShell>
       <header className="bg-ink px-5 pb-8 pt-7 text-ink-foreground">
         <div className="flex items-center gap-4">
           <label className="tap relative cursor-pointer">
             {state.avatar ? (
-              <img
-                src={state.avatar}
-                alt="Your profile photo"
-                className="size-16 rounded-2xl object-cover"
-              />
+              <img src={state.avatar} alt="Your profile photo" className="size-16 rounded-2xl object-cover" />
             ) : (
               <span className="flex size-16 items-center justify-center rounded-2xl bg-accent text-2xl font-bold text-accent-foreground">
                 {(state.name || "S").slice(0, 1).toUpperCase()}
@@ -69,11 +84,11 @@ function Me() {
             </span>
             <input type="file" accept="image/*" className="hidden" onChange={onPickPhoto} />
           </label>
-          <div>
-            <h1 className="text-2xl font-bold">{state.name || "Student"}</h1>
-            <p className="text-sm opacity-70">
-              {program?.name} · {state.cohort}
-            </p>
+          <div className="min-w-0">
+            <h1 className="truncate font-display text-2xl font-bold tracking-tight">
+              {travel.displayName || state.name || "Your Shekk"}
+            </h1>
+            <p className="truncate text-sm opacity-75">{contextLine}</p>
             <p className="mt-1 text-xs opacity-60">
               {state.avatar ? "Friends see this photo when you pay" : "Add a photo so friends recognise you"}
               {state.avatar && (
@@ -97,62 +112,87 @@ function Me() {
           >
             <span>
               <span className="block text-sm font-bold">
-                {kyc.pending ? "Identity checks in progress" : "Finish opening your account"}
+                {kyc.pending ? "We're checking your ID now" : "Finish setting up your money"}
               </span>
               <span className="block text-xs opacity-80">
                 {kyc.pending
-                  ? "We'll email you the moment it clears."
+                  ? "We'll let you know the moment it clears."
                   : "ID, address and a selfie — about three minutes."}
               </span>
             </span>
             <ChevronRight className="size-5 shrink-0" />
           </Link>
         )}
-
       </header>
 
-      <div className="space-y-4 px-4 py-5">
+      <div className="space-y-5 px-4 py-5">
         <ReverifyBanner />
 
         <ShekkTagCard />
 
         <Card>
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">Credit balance</p>
-          <p className="font-display text-3xl font-bold">{ils(state.balance)}</p>
-          <p className="text-xs text-muted-foreground">≈ {refIn(state.settings.payCurrency, state.balance)} reference</p>
+          <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Your shekels</p>
+          <p className="font-display text-3xl font-bold leading-none tracking-tight">{ils(state.balance)}</p>
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            ≈ {refIn(state.settings.payCurrency, state.balance)} · updated live
+          </p>
         </Card>
 
+        <div>
+          <SectionHead title="Your Shekk" />
+          <Card className="p-0">
+            <RowLink to="/membership" Icon={Crown} label="Shekk+" hint={isPremium ? "Member" : "See what's included"} />
+            <RowLink
+              to="/card"
+              Icon={CreditCard}
+              label="Shekk Card"
+              hint={state.card.issued ? `•••• ${state.card.last4}` : ""}
+              badge={state.card.issued ? undefined : <PreviewBadge />}
+            />
+            <RowLink to="/activity" Icon={Receipt} label="Payment history" hint={`${state.txns.length} records`} />
+            <RowLink to="/explore/shops" Icon={Bookmark} label="Saved places & discounts" hint="" />
+            <RowLink to="/explore/documents" Icon={FileText} label="Your documents" hint="Private to you" />
+            <RowLink to="/welcome" Icon={Sparkles} label="Your journey details" hint="Dates, city, currency" />
+            <RowLink to="/settings" Icon={Settings} label="Settings" hint="Currency, theme, alerts" />
+            <RowLink to="/terms" Icon={FileText} label="Terms & Conditions" hint="" />
+          </Card>
+        </div>
 
-        <Card className="p-0">
-          <RowLink to="/membership" Icon={Crown} label="Shekk Membership" hint={isPremium ? "Premium" : "Free — see Premium"} />
-          <RowLink to="/card" Icon={CreditCard} label="Shekk Card" hint={state.card.issued ? `•••• ${state.card.last4}` : "Not issued yet"} />
-          <RowLink to="/activity" Icon={Receipt} label="Order & payment history" hint={`${state.txns.length} records`} />
-          <RowLink to="/explore/shops" Icon={Bookmark} label="Saved places & discounts" hint="7 saved" />
-          <RowLink to="/explore/documents" Icon={FileText} label="Program documents & visa" hint="Private to your account" />
-          <RowLink to="/settings" Icon={Settings} label="App settings" hint="Currency, theme, alerts" />
-          <RowLink to="/welcome" Icon={Sparkles} label="Redo account setup" hint="Programme, city, currency" />
-          <RowLink to="/terms" Icon={FileText} label="Full Terms & Conditions" hint="" />
-        </Card>
+        <div>
+          <SectionHead title="How your money works" hint="The short version — full terms are one tap away" />
+          <Card className="space-y-2.5">
+            <ul className="space-y-2 text-[13px] leading-relaxed text-muted-foreground">
+              <li>
+                • Your shekels sit in a real, regulated ILS payment account held with Airwallex — not app credits or
+                vouchers.
+              </li>
+              <li>
+                • You add money from a card or bank account in your own name, and you see the rate and the exact
+                shekels you'll get before you confirm.
+              </li>
+              <li>
+                • Pay a partner inside Shekk and{" "}
+                <span className="font-medium text-foreground">Shekk pays them for you</span> — your card is never
+                charged at the checkout. We take it from your shekel balance.
+              </li>
+              <li>
+                • To open an account you need to be 16 or over, living outside Israel, and have valid ID. Airwallex
+                runs the identity check and makes the decision.
+              </li>
+              <li>• We re-check your ID once a year. If you close your account, unspent shekels come back to you.</li>
+            </ul>
 
-        <Card className="space-y-2">
-          <h2 className="text-base font-semibold">How your Shekk account works</h2>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>• Your shekel account is a real, regulated ILS payment account held with Airwallex — not app credits.</li>
-            <li>• You add money from a card or bank account in your own name and your balance lands in shekels, ready to spend.</li>
-            <li>• Order through a partner app inside Shekk and <span className="font-medium text-foreground">we pay them</span> — your card is never charged at checkout.</li>
-            <li>• We then deduct that order from your shekel balance.</li>
-            <li>• Every time you add money you see the rate and the exact shekels you get before you confirm.</li>
-            <li>• You must be 16 or over, living outside Israel in a country Airwallex supports, opening the account for yourself with valid ID — Airwallex runs the identity checks and makes the decision.</li>
-            <li>• We re-check your identity every 12 months; Airwallex can ask for updated documents at any time.</li>
-            <li>• If you close your account, unspent shekels go back to a card or bank account in your own name.</li>
-            <li>• The full account terms live in the <span className="font-medium text-foreground">Terms & Conditions</span>.</li>
-          </ul>
+            <p className="flex items-start gap-2 pt-1 text-[11.5px] leading-relaxed text-muted-foreground">
+              <ShieldCheck className="mt-[3px] size-3.5 shrink-0" />
+              The Shekk Card and partner marketplaces marked "Preview" aren't live yet — we'll tell you the moment
+              they are.
+            </p>
 
-          <Link to="/terms" className="inline-block pt-1 text-sm font-semibold text-primary">
-            Read the full terms →
-          </Link>
-        </Card>
-
+            <Link to="/terms" className="tap-flat inline-block pt-1 text-[13px] font-semibold text-primary">
+              Read the full terms →
+            </Link>
+          </Card>
+        </div>
       </div>
     </AppShell>
   );
@@ -163,18 +203,20 @@ function RowLink({
   Icon,
   label,
   hint,
+  badge,
 }: {
   to: string;
   Icon: typeof Receipt;
   label: string;
   hint: string;
+  badge?: React.ReactNode;
 }) {
   return (
     <Link to={to} className="tap flex items-center gap-3 border-b border-border p-4 last:border-0">
-      <Icon className="size-5 text-primary" />
-      <span className="flex-1 text-sm font-semibold">{label}</span>
-      <span className="text-xs text-muted-foreground">{hint}</span>
-      <ChevronRight className="size-4 text-muted-foreground" />
+      <Icon className="size-5 shrink-0 text-primary" />
+      <span className="min-w-0 flex-1 truncate text-sm font-semibold">{label}</span>
+      {badge ?? (hint ? <span className="shrink-0 text-xs text-muted-foreground">{hint}</span> : null)}
+      <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
     </Link>
   );
 }

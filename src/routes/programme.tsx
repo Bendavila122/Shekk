@@ -13,6 +13,7 @@ import {
   Users,
 } from "lucide-react";
 import { AppShell, Card, Notice, PrimaryButton } from "@/components/AppShell";
+import { PageHeader, SectionHead, EmptyState, LoadingBlocks, StatusPill, Milestone } from "@/components/Kit";
 import { useApp } from "@/lib/store";
 import { useProgramme } from "@/lib/useProgramme";
 import type { CodePreview } from "@/lib/programme.server";
@@ -48,15 +49,6 @@ function formatDay(iso: string) {
 
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-}
-
-function SectionHead({ title, hint }: { title: string; hint?: string }) {
-  return (
-    <div className="mb-3 px-1">
-      <h2 className="font-display text-lg font-bold leading-tight tracking-tight">{title}</h2>
-      {hint ? <p className="mt-0.5 text-[11px] text-muted-foreground">{hint}</p> : null}
-    </div>
-  );
 }
 
 function JoinPanel() {
@@ -169,23 +161,28 @@ function ProgrammeScreen() {
   if (!authChecked) {
     return (
       <AppShell>
-        <div className="flex h-[60vh] items-center justify-center text-sm text-muted-foreground">Loading…</div>
+        <LoadingBlocks rows={3} />
       </AppShell>
     );
   }
 
+  const today = new Date().toDateString();
+  const todayItems = programme.schedule.filter((i) => new Date(i.startsAt).toDateString() === today);
+  const pinned = programme.announcements.find((a) => a.pinned) ?? null;
+  const checklistComplete = checklistTotal > 0 && checklistDone === checklistTotal;
+
   return (
     <AppShell>
-      <header className="px-5 pt-7">
-        <h1 className="font-display text-4xl font-bold tracking-tight">Programme</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {programme.joined
-            ? "Your timetable, announcements, contacts and documents."
-            : "Join with your programme code to see everything in one place."}
-        </p>
-      </header>
+      <PageHeader
+        title={programme.joined ? "Your programme" : "Programme"}
+        subtitle={
+          programme.joined
+            ? "Today's plan, announcements, the people to call and your documents."
+            : "Join with your programme code and everything lands in one place."
+        }
+      />
 
-      <div className="pt-5">
+      <div className="pt-4">
         {!signedIn ? (
           <div className="px-4">
             <Card className="space-y-3">
@@ -202,10 +199,7 @@ function ProgrammeScreen() {
             </Card>
           </div>
         ) : loading ? (
-          <div className="space-y-3 px-4">
-            <div className="h-28 animate-pulse rounded-2xl bg-muted" />
-            <div className="h-20 animate-pulse rounded-2xl bg-muted" />
-          </div>
+          <LoadingBlocks rows={2} />
         ) : !programme.joined ? (
           <JoinPanel />
         ) : (
@@ -238,9 +232,61 @@ function ProgrammeScreen() {
               ) : null}
             </section>
 
+            {checklistComplete ? (
+              <Milestone
+                title="Programme checklist complete"
+                body="Everything your programme asked for is done. Nice work — nothing left to chase."
+                actionLabel="See what's next"
+                actionTo="/before-you-fly"
+              />
+            ) : null}
+
+            {/* Today */}
+            <section>
+              <SectionHead
+                title="Today"
+                hint={new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}
+                action={todayItems.length > 0 ? <StatusPill tone="pending">{todayItems.length} on</StatusPill> : undefined}
+              />
+              {todayItems.length === 0 ? (
+                <EmptyState
+                  icon={CalendarDays}
+                  title="Nothing on today"
+                  body="A free day. Anything your programme adds will show up here first."
+                />
+              ) : (
+                <div className="space-y-2">
+                  {todayItems.map((item) => (
+                    <Card key={item.id} className="flex items-start gap-3">
+                      <span className="mt-0.5 flex size-10 shrink-0 flex-col items-center justify-center rounded-xl bg-primary-soft text-[11px] font-bold leading-none text-primary">
+                        {formatTime(item.startsAt)}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold">{item.title}</p>
+                        {item.location ? (
+                          <p className="mt-0.5 text-xs text-muted-foreground">{item.location}</p>
+                        ) : null}
+                        {item.details ? (
+                          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{item.details}</p>
+                        ) : null}
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+              {pinned ? (
+                <Card className="mt-2 border-notice-border bg-notice-soft text-notice-foreground shadow-none">
+                  <p className="flex items-center gap-2 text-sm font-semibold">
+                    <Megaphone className="size-4 shrink-0" /> {pinned.title}
+                  </p>
+                  <p className="mt-1 text-xs leading-relaxed opacity-90">{pinned.body}</p>
+                </Card>
+              ) : null}
+            </section>
+
             {/* Next up */}
             <section>
-              <SectionHead title="Next up" hint="From your programme timetable" />
+              <SectionHead title="Next up" hint="The next thing on your timetable" />
               {nextItem ? (
                 <Card className="flex items-start gap-3">
                   <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
@@ -258,9 +304,11 @@ function ProgrammeScreen() {
                   </div>
                 </Card>
               ) : (
-                <Card className="text-xs text-muted-foreground">
-                  Nothing scheduled yet. Your programme will publish its timetable here.
-                </Card>
+                <EmptyState
+                  icon={CalendarDays}
+                  title="No timetable yet"
+                  body="As soon as your programme publishes sessions, they'll appear here."
+                />
               )}
             </section>
 
@@ -268,8 +316,8 @@ function ProgrammeScreen() {
             {checklistTotal > 0 ? (
               <section>
                 <SectionHead
-                  title="Programme checklist"
-                  hint={`${checklistDone} of ${checklistTotal} done`}
+                  title="Your checklist"
+                  hint={`${checklistDone} of ${checklistTotal} done — tap to tick one off`}
                 />
                 <div className="space-y-2">
                   {programme.checklist.map((item) => (
@@ -309,7 +357,11 @@ function ProgrammeScreen() {
             <section>
               <SectionHead title="Announcements" hint="Published by your programme office" />
               {programme.announcements.length === 0 ? (
-                <Card className="text-xs text-muted-foreground">No announcements yet.</Card>
+                <EmptyState
+                  icon={Megaphone}
+                  title="No announcements yet"
+                  body="Messages from your programme office will land here — and you'll see them on Today."
+                />
               ) : (
                 <div className="space-y-2">
                   {programme.announcements.map((a) => (
@@ -356,9 +408,13 @@ function ProgrammeScreen() {
 
             {/* Contacts */}
             <section>
-              <SectionHead title="Contacts" hint="Staff and emergency numbers" />
+              <SectionHead title="Who to call" hint="Staff and emergency numbers" />
               {programme.contacts.length === 0 ? (
-                <Card className="text-xs text-muted-foreground">No contacts published yet.</Card>
+                <EmptyState
+                  icon={Phone}
+                  title="No contacts yet"
+                  body="Your programme's staff and emergency numbers will appear here, ready to call."
+                />
               ) : (
                 <div className="space-y-2">
                   {programme.contacts.map((c) => (
@@ -400,11 +456,13 @@ function ProgrammeScreen() {
 
             {/* Documents */}
             <section>
-              <SectionHead title="Documents and links" />
+              <SectionHead title="Documents & links" hint="Shared by your programme office" />
               {programme.documents.length === 0 ? (
-                <Card className="text-xs text-muted-foreground">
-                  No documents published yet. Anything your programme shares will appear here.
-                </Card>
+                <EmptyState
+                  icon={FileText}
+                  title="No documents yet"
+                  body="Handbooks, forms and links your programme shares will collect here."
+                />
               ) : (
                 <div className="space-y-2">
                   {programme.documents.map((d) =>
@@ -446,7 +504,7 @@ function ProgrammeScreen() {
                 to="/before-you-fly"
                 className="tap block rounded-2xl border border-border bg-card p-4 text-sm font-semibold shadow-card"
               >
-                Before you fly checklist →
+                Open your Before you fly checklist →
               </Link>
               <button
                 type="button"

@@ -1,6 +1,6 @@
 import { Link, useRouterState, useRouter, useCanGoBack, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Wallet, Compass, Tag, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy, Home, Receipt, CreditCard, Crown, ShieldCheck, GraduationCap, PlaneTakeoff } from "lucide-react";
+import { Wallet, Compass, Tag, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy, Home, GraduationCap, PlaneTakeoff } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
@@ -11,14 +11,19 @@ import { miniAppFor } from "@/lib/mini-apps";
 
 
 
+/**
+ * Five tabs, so nothing truncates on a small iPhone. "You" lives in the quick
+ * menu and on the desktop sidebar rather than competing for a tab.
+ */
 const TABS = [
-  { to: "/", label: "Home", Icon: Home },
+  { to: "/", label: "Today", Icon: Home },
   { to: "/wallet", label: "Money", Icon: Wallet },
   { to: "/israel", label: "Israel", Icon: Compass },
   { to: "/programme", label: "Programme", Icon: GraduationCap },
-  { to: "/social", label: "Social", Icon: Users },
-  { to: "/me", label: "Me", Icon: User },
+  { to: "/social", label: "Friends", Icon: Users },
 ];
+
+const SIDEBAR_TABS = [...TABS, { to: "/me", label: "You", Icon: User }];
 
 
 
@@ -96,7 +101,7 @@ export function Notice({
 export function MobileNav() {
   const isActive = useActive();
   const unread = useUnreadChats();
-  const side = TABS.filter((t) => t.to !== "/me" && t.to !== "/");
+  const side = TABS.filter((t) => t.to !== "/");
   const left = side.slice(0, 2);
   const right = side.slice(2);
   const homeActive = isActive("/");
@@ -143,7 +148,7 @@ export function MobileNav() {
           >
             <Home className="size-6" strokeWidth={homeActive ? 2.6 : 1.8} />
           </span>
-          <span className={homeActive ? "text-primary" : "text-muted-foreground"}>Home</span>
+          <span className={homeActive ? "text-primary" : "text-muted-foreground"}>Today</span>
         </Link>
 
 
@@ -189,9 +194,9 @@ export function QuickMenu() {
           />
           <div className="fixed left-1/2 top-16 z-50 ml-[-15px] w-60 max-w-[calc(100vw-1.5rem)] translate-x-[calc(215px-100%)] overflow-hidden rounded-2xl border border-border bg-card shadow-lift">
             <div className="border-b border-border bg-ink px-4 py-3 text-ink-foreground">
-              <p className="text-[10px] uppercase tracking-widest opacity-60">Balance</p>
+              <p className="text-[10px] uppercase tracking-widest opacity-60">Your shekels</p>
               <p className="font-display text-xl font-bold leading-tight">{ils(state.balance)}</p>
-              <p className="text-[11px] opacity-60">≈ {refIn(state.settings.payCurrency, state.balance)} reference</p>
+              <p className="text-[11px] opacity-60">≈ {refIn(state.settings.payCurrency, state.balance)}</p>
             </div>
             <Link
               to="/topup"
@@ -199,41 +204,21 @@ export function QuickMenu() {
             >
               <Plus className="size-4" strokeWidth={3} /> Add money
             </Link>
+            <Link to="/me" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <User className="size-4 text-muted-foreground" /> You
+            </Link>
             <Link to="/before-you-fly" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <PlaneTakeoff className="size-4 text-muted-foreground" /> Before you fly
-            </Link>
-            <Link to="/explore" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
-              <Compass className="size-4 text-muted-foreground" /> All apps
             </Link>
             <Link to="/benefits" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <Tag className="size-4 text-muted-foreground" /> Benefits
             </Link>
-            <Link to="/activity" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
-              <Receipt className="size-4 text-muted-foreground" /> Activity
-            </Link>
-
-            <Link to="/card" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
-              <CreditCard className="size-4 text-muted-foreground" /> Shekk Card
-            </Link>
-            <Link to="/membership" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
-              <Crown className="size-4 text-muted-foreground" /> Membership
-            </Link>
-            <Link to="/me" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
-              <User className="size-4 text-muted-foreground" /> Me
-            </Link>
             <Link to="/settings" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <Settings className="size-4 text-muted-foreground" /> Settings
             </Link>
-            <Link to="/help" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+            <Link to="/help" className="tap-flat flex items-center gap-2 border-t border-border px-4 py-3 text-sm font-semibold">
               <LifeBuoy className="size-4 text-muted-foreground" /> Help
             </Link>
-            <Link
-              to="/admin"
-              className="tap-flat flex items-center gap-2 border-t border-border px-4 py-3 text-xs font-semibold text-muted-foreground"
-            >
-              <ShieldCheck className="size-4" /> Console
-            </Link>
-
           </div>
         </>
       ) : null}
@@ -252,9 +237,9 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
   const { state } = useApp();
   return (
     <div className="mt-auto rounded-2xl bg-ink px-4 py-3 text-ink-foreground">
-      <p className="text-[10px] uppercase tracking-widest opacity-60">Balance</p>
+      <p className="text-[10px] uppercase tracking-widest opacity-60">Your shekels</p>
       <p className="font-display text-2xl font-bold leading-tight">{ils(state.balance)}</p>
-      <p className="text-[11px] opacity-60">≈ {refIn(state.settings.payCurrency, state.balance)} reference</p>
+      <p className="text-[11px] opacity-60">≈ {refIn(state.settings.payCurrency, state.balance)}</p>
       <Link
         to="/topup"
         onClick={onNavigate}
@@ -268,7 +253,7 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 /** Screens that keep the Shekk chrome; anything deeper is a mini app or info page. */
-const TAB_ROOTS = new Set([...TABS.map((t) => t.to), "/explore", "/benefits"]);
+const TAB_ROOTS = new Set([...SIDEBAR_TABS.map((t) => t.to), "/explore", "/benefits"]);
 
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -290,7 +275,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <p className="font-display text-xl font-bold">Shekk</p>
         </div>
 
-        {TABS.map(({ to, label, Icon }) => {
+        {SIDEBAR_TABS.map(({ to, label, Icon }) => {
           const active = isActive(to);
           return (
             <Link
@@ -415,7 +400,7 @@ export function ReverifyBanner() {
     >
       <div>
         <p className="text-sm font-semibold">{daysLeft} days left to re-verify</p>
-        <p className="text-xs opacity-80">Annual ID check — keeps your account and card active.</p>
+        <p className="text-xs opacity-80">A quick annual ID check keeps your money available.</p>
       </div>
       <span className="rounded-full bg-notice-foreground px-3 py-1.5 text-xs font-semibold text-notice-soft">
         Re-verify

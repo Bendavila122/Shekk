@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, ArrowLeftRight, ArrowUpRight, CreditCard, PlaneTakeoff, CalendarDays } from "lucide-react";
+import { Plus, ArrowLeftRight, ArrowUpRight, CreditCard, PlaneTakeoff, CalendarDays, Compass, ShieldCheck } from "lucide-react";
 import { useProgramme, useTravel } from "@/lib/useProgramme";
 
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { AppShell, ReverifyBanner } from "@/components/AppShell";
+import { SectionHead, EmptyState, LoadingBlocks, StatusPill, Milestone } from "@/components/Kit";
 
 import { ActiveNow } from "@/components/ActiveNow";
 import { ForYou } from "@/components/ForYou";
@@ -21,19 +22,20 @@ import { recordServiceUse, useRecentServices } from "@/lib/recents";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { usePromotions } from "@/lib/admin";
 import { resolveInterests } from "@/lib/journey-interests";
+import { getJourney, greeting } from "@/lib/journey-phase";
 
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Home · Shekk" },
+      { title: "Today · Shekk" },
       {
         name: "description",
         content:
-          "Your Israeli phone, inside your phone: Wolt, Gett, Rav-Kav, Israel Railways, Go-To and more — all paid with Shekk.",
+          "Your day in Israel, in one place: your shekel balance, your programme's next session and the things worth doing today.",
       },
-      { property: "og:title", content: "Home · Shekk" },
-      { property: "og:description", content: "One home screen for every Israeli app a gap-year student needs." },
+      { property: "og:title", content: "Today · Shekk" },
+      { property: "og:description", content: "Your money, your programme and your Israel, on one home screen." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://shekel-connect.lovable.app/" },
       { name: "twitter:card", content: "summary" },
@@ -72,49 +74,73 @@ function AppIcon({ service }: { service: Service }) {
     </Link>
   );
 }
-/** The participant journey: one clear next action, plus what's next from the programme. */
-function JourneyStrip() {
+
+/** One clear next step, plus what's happening on the programme today. */
+function TodayPanel() {
   const { signedIn, state } = useApp();
   const kyc = useProfile();
   const { joined, programme, nextItem, checklistDone, checklistTotal } = useProgramme();
-  const { daysToArrival, setupComplete, fetched } = useTravel();
+  const { travel, setupComplete, fetched } = useTravel();
+  const journey = getJourney(travel);
+
+  const phaseCopy: Record<string, string> = {
+    planning: "Before you fly",
+    "final-countdown": "Almost there",
+    "first-week": "Your first week",
+    settled: "Today",
+    "final-stretch": "Final stretch",
+    unknown: "Your next step",
+  };
 
   const nextAction = !signedIn
-    ? { label: "Create your Shekk account", to: "/auth" as const, why: "Takes a minute" }
+    ? { label: "Create your Shekk account", to: "/auth" as const, why: "Takes about a minute" }
     : fetched && !setupComplete
       ? {
-          label: "Complete your Shekk setup",
+          label: "Finish setting up your journey",
           to: "/welcome" as const,
           why: "A few quick questions — picks up where you left off",
         }
       : !kyc.verified
-      ? { label: "Verify your identity", to: "/verify" as const, why: "Required before you can spend" }
+      ? { label: "Verify who you are", to: "/verify" as const, why: "One-off ID check, then your money is ready" }
       : state.balance <= 0
-        ? { label: "Add your first money", to: "/topup" as const, why: "Fund in your home currency" }
+        ? { label: "Add your first money", to: "/topup" as const, why: "Pay in your home currency, spend in shekels" }
         : !joined
-          ? { label: "Join your programme", to: "/programme" as const, why: "Enter the code they gave you" }
-          : { label: "Before you fly checklist", to: "/before-you-fly" as const, why: "Keep getting ready" };
+          ? { label: "Join your programme", to: "/programme" as const, why: "Enter the code your programme gave you" }
+          : journey.inIsrael
+            ? { label: "Find what's on near you", to: "/israel" as const, why: "Food, transport, fitness and events" }
+            : { label: "Before you fly checklist", to: "/before-you-fly" as const, why: "Keep getting ready" };
+
+  const everythingReady =
+    signedIn && setupComplete && kyc.verified && state.balance > 0 && joined;
 
   return (
     <section className="space-y-2.5 px-4 pt-4">
-      <Link
-        to={nextAction.to}
-        className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-card"
-      >
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
-          <PlaneTakeoff className="size-5" />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-            {daysToArrival !== null && daysToArrival > 0
-              ? `${daysToArrival} ${daysToArrival === 1 ? "day" : "days"} until you land`
-              : "Your next step"}
+      {everythingReady ? (
+        <Milestone
+          title="You're all set for Israel"
+          body="Money ready, identity verified and your programme linked. Everything else is just living it."
+          actionLabel="Explore Israel"
+          actionTo="/israel"
+        />
+      ) : (
+        <Link
+          to={nextAction.to}
+          className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-card"
+        >
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
+            {journey.inIsrael ? <Compass className="size-5" /> : <PlaneTakeoff className="size-5" />}
           </span>
-          <span className="mt-0.5 block text-sm font-semibold">{nextAction.label}</span>
-          <span className="block text-xs text-muted-foreground">{nextAction.why}</span>
-        </span>
-        <span className="shrink-0 text-sm font-semibold text-primary">→</span>
-      </Link>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              {phaseCopy[journey.phase] ?? "Your next step"}
+              {journey.chip ? ` · ${journey.chip}` : ""}
+            </span>
+            <span className="mt-0.5 block text-sm font-semibold">{nextAction.label}</span>
+            <span className="block text-xs text-muted-foreground">{nextAction.why}</span>
+          </span>
+          <span className="shrink-0 text-sm font-semibold text-primary">→</span>
+        </Link>
+      )}
 
       {joined ? (
         <Link
@@ -129,7 +155,7 @@ function JourneyStrip() {
               {programme.programmeName}
             </span>
             <span className="mt-0.5 block truncate text-sm font-semibold">
-              {nextItem ? nextItem.title : "No sessions scheduled yet"}
+              {nextItem ? nextItem.title : "Nothing scheduled just yet"}
             </span>
             <span className="block text-xs text-muted-foreground">
               {nextItem
@@ -141,8 +167,8 @@ function JourneyStrip() {
                     minute: "2-digit",
                   })
                 : checklistTotal > 0
-                  ? `Checklist ${checklistDone}/${checklistTotal}`
-                  : "Announcements and contacts inside"}
+                  ? `Checklist ${checklistDone} of ${checklistTotal} done`
+                  : "Announcements, contacts and documents inside"}
             </span>
           </span>
           <span className="shrink-0 text-sm font-semibold text-primary">→</span>
@@ -159,11 +185,11 @@ function PickedForYou() {
   if (picks.length === 0) return null;
 
   return (
-    <section className="pt-4">
-      <h2 className="px-5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-        Picked for you
-      </h2>
-      <div className="scrollbar-none mt-2 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 pb-1 scroll-px-5">
+    <section className="pt-6">
+      <div className="px-4">
+        <SectionHead title="Picked for you" hint="Based on what you asked Shekk to help with" />
+      </div>
+      <div className="scrollbar-none flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 pb-1 scroll-px-5">
         {picks.map((p) => (
           <Link
             key={p.id}
@@ -189,27 +215,29 @@ function HomeScreen() {
   const ready = useOnboardedGate();
   const { state, isPremium } = useApp();
   const kycProfile = useProfile();
-  
+  const { travel } = useTravel();
+
   const promos = usePromotions("home");
 
   const recents = useRecentServices();
-  
+
 
 
   if (!ready) {
     return (
       <AppShell>
-        <div className="flex h-[70vh] items-center justify-center text-sm text-muted-foreground">Loading…</div>
+        <LoadingBlocks rows={2} />
       </AppShell>
     );
   }
 
   const firstName =
     (state.name?.trim().split(" ")[0] || kycProfile.profile?.legalFirstName?.trim().split(" ")[0] || "").trim();
+  const journey = getJourney(travel);
 
   return (
     <AppShell>
-      <div className="px-5 pb-2 pt-6">
+      <div className="px-5 pb-1 pt-6">
         <div className="flex items-center gap-2">
           <img
             src="/logo.png"
@@ -219,8 +247,17 @@ function HomeScreen() {
             className="size-[30px] rounded-lg border border-border bg-white"
           />
           <span className="font-display text-xl font-bold leading-none tracking-tight text-primary">Shekk</span>
+          {journey.chip ? (
+            <StatusPill tone="pending" className="ml-auto">
+              {journey.chip}
+            </StatusPill>
+          ) : null}
         </div>
-        <p className="mt-2 text-xs uppercase tracking-widest text-muted-foreground">Shalom{firstName ? `, ${firstName}` : ""}</p>
+        <h1 className="mt-3 font-display text-[1.7rem] font-bold leading-tight tracking-tight">
+          {greeting()}
+          {firstName ? `, ${firstName}` : ""}
+        </h1>
+        <p className="mt-1 text-[13px] leading-snug text-muted-foreground">{journey.line}</p>
       </div>
 
       <LocationBar />
@@ -231,10 +268,12 @@ function HomeScreen() {
           <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
           <div className="relative">
             <Link to="/wallet" className="tap-flat block">
-              <p className="text-[10px] uppercase tracking-widest opacity-70">Shekk balance</p>
+              <p className="text-[10px] uppercase tracking-widest opacity-70">Your shekels</p>
               <p className="font-display text-4xl font-bold leading-none tracking-tight">{ils(state.balance)}</p>
-              <p className="mt-1.5 text-[11px] opacity-70">
-                ≈ {refIn(state.settings.payCurrency, state.balance)} · {isPremium ? "Premium member" : "Free plan"}
+              <p className="mt-1.5 flex items-center gap-1.5 text-[11px] opacity-75">
+                {kycProfile.verified ? <ShieldCheck className="size-3.5" /> : null}
+                ≈ {refIn(state.settings.payCurrency, state.balance)}
+                {isPremium ? " · Shekk+ member" : ""}
               </p>
             </Link>
             <div className="mt-4 grid grid-cols-4 gap-1.5">
@@ -253,42 +292,55 @@ function HomeScreen() {
         </div>
       </section>
 
-      {/* The journey: what to do next, and what's next from your programme */}
-      <JourneyStrip />
+      {/* What do I need today? */}
+      <TodayPanel />
 
       {/* Straight from the journey setup */}
       <PickedForYou />
 
       {/* Search into the full catalogue */}
-      <div className="px-4 pt-3">
+      <div className="px-4 pt-6">
         <GlobalSearch />
       </div>
 
-
-
-
       {/* Recents */}
-      <div className="space-y-6 px-4 pt-6">
-        <section>
+      <div className="px-4 pt-6">
+        <SectionHead
+          title="Jump back in"
+          hint="The apps and tools you used most recently"
+          action={
+            <Link to="/israel" className="tap-flat text-[12.5px] font-semibold text-primary">
+              All apps
+            </Link>
+          }
+        />
+        {recents.length === 0 ? (
+          <EmptyState
+            icon={Compass}
+            title="Nothing here yet"
+            body="Open something from Israel — buses, food, guides — and it'll wait for you here."
+            actionLabel="Browse Israel"
+            actionTo="/israel"
+          />
+        ) : (
           <div className="grid grid-cols-5 gap-x-2 gap-y-5">
             {recents.map((s) => (
               <AppIcon key={s.id} service={s} />
             ))}
           </div>
-        </section>
-
+        )}
       </div>
 
       <ActiveNow />
 
       <ForYou />
 
-
-
-
       {/* Promotions published from the console */}
       {promos.length > 0 ? (
         <section className="pt-6">
+          <div className="px-4">
+            <SectionHead title="Worth knowing" hint="From the Shekk team" />
+          </div>
           <div className="scrollbar-none flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 scroll-px-5 pb-1">
             {promos.map((p) => (
               <Link
@@ -306,13 +358,9 @@ function HomeScreen() {
         </section>
       ) : null}
 
-
-
-
-      <div className="mt-5">
+      <div className="mt-6">
         <ReverifyBanner />
       </div>
-
 
       <div className="pb-8" />
 

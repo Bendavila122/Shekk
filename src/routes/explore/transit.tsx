@@ -10,7 +10,7 @@ export const Route = createFileRoute("/explore/transit")({
       { title: "Transit · Shekk" },
       { name: "description", content: "Live bus and rail times, in-app ticket purchase and Rav-Kav top-up." },
       { property: "og:title", content: "Transit · Shekk" },
-      { property: "og:description", content: "Buy a bus ticket or load your Rav-Kav with credits." },
+      { property: "og:description", content: "Buy a bus ticket or load your Rav-Kav from your Shekk balance." },
     ],
   }),
   component: Transit,
@@ -92,7 +92,7 @@ function Transit() {
                   setRavkavDone(true);
                 }}
               >
-                Load {ils(ravkav)} from credits
+                Load {ils(ravkav)} from your balance
               </PrimaryButton>
             )}
           </Card>
@@ -112,7 +112,7 @@ function Transit() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Paid from</span>
-                <span className="font-semibold">Shekk credits</span>
+                <span className="font-semibold">Shekk balance</span>
               </div>
             </div>
             <div className="mt-5 space-y-2">
