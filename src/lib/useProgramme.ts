@@ -50,6 +50,7 @@ const emptyTravel: MemberTravel = {
   displayName: null,
   onboardingStep: null,
   onboardingCompletedAt: null,
+  interests: [],
 };
 
 /** Freshly minted tokens can briefly read as "issued in the future". Retry. */

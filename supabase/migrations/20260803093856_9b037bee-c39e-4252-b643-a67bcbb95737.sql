@@ -1,0 +1,1 @@
+ALTER TABLE public.member_travel ADD COLUMN IF NOT EXISTS interests text[] NOT NULL DEFAULT '{}';

@@ -846,6 +846,7 @@ export type Database = {
           display_name: string | null
           funding_currency: string | null
           home_country: string | null
+          interests: string[]
           israel_city: string | null
           onboarding_completed_at: string | null
           onboarding_step: string | null
@@ -861,6 +862,7 @@ export type Database = {
           display_name?: string | null
           funding_currency?: string | null
           home_country?: string | null
+          interests?: string[]
           israel_city?: string | null
           onboarding_completed_at?: string | null
           onboarding_step?: string | null
@@ -876,6 +878,7 @@ export type Database = {
           display_name?: string | null
           funding_currency?: string | null
           home_country?: string | null
+          interests?: string[]
           israel_city?: string | null
           onboarding_completed_at?: string | null
           onboarding_step?: string | null

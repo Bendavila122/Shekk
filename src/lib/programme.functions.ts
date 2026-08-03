@@ -35,6 +35,7 @@ const travelSchema = z
     displayName: z.string().trim().max(60).nullable(),
     onboardingStep: z.string().trim().max(40).nullable(),
     onboardingComplete: z.boolean(),
+    interests: z.array(z.string().trim().min(1).max(24)).max(12),
   })
   .partial();
 
