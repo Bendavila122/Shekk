@@ -143,36 +143,61 @@ function Welcome() {
         ) : null}
 
         {step === 2 ? (
-          <Step title="Your programme" blurb="This shapes your group thread, offers and local recommendations.">
-            <Field label="Programme or institution">
+          <Step
+            title="Are you coming with a programme?"
+            blurb="If your programme uses Shekk, they gave you a code. It unlocks your timetable, contacts and checklist."
+          >
+            <Field label="How are you travelling?">
               <div className="space-y-2">
-                {PROGRAMS.map((p) => (
+                {(
+                  [
+                    { id: "programme", label: "With a programme", hint: "Gap year, seminary, yeshiva, study abroad" },
+                    { id: "independent", label: "Independently", hint: "Working, volunteering or visiting" },
+                  ] as const
+                ).map((o) => (
                   <button
-                    key={p.id}
-                    onClick={() => setProgramId(p.id)}
+                    key={o.id}
+                    onClick={() => setTravelStyle(o.id)}
                     className={`tap flex w-full items-center justify-between rounded-2xl px-4 py-3.5 text-left ${
-                      programId === p.id ? "bg-primary text-primary-foreground" : "bg-muted"
+                      travelStyle === o.id ? "bg-primary text-primary-foreground" : "bg-muted"
                     }`}
                   >
                     <span>
-                      <span className="block text-sm font-semibold">{p.name}</span>
-                      <span className="block text-xs opacity-70">{p.city}</span>
+                      <span className="block text-sm font-semibold">{o.label}</span>
+                      <span className="block text-xs opacity-70">{o.hint}</span>
                     </span>
-                    {programId === p.id ? <Check className="size-4 shrink-0" /> : null}
+                    {travelStyle === o.id ? <Check className="size-4 shrink-0" /> : null}
                   </button>
                 ))}
               </div>
             </Field>
-            <Field label="Group">
-              <input
-                value={cohort}
-                onChange={(e) => setCohort(e.target.value)}
-                placeholder="J26 · Fall–Spring"
-                className="w-full rounded-2xl bg-muted px-4 py-3.5 text-base outline-none"
-              />
-            </Field>
+
+            {travelStyle === "programme" ? (
+              <Field label="Programme code (optional — you can add it later)">
+                <input
+                  value={code}
+                  onChange={(e) => {
+                    setCode(e.target.value);
+                    setCodeError(null);
+                  }}
+                  autoCapitalize="characters"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  placeholder="e.g. SHEKKDEMO"
+                  className="w-full rounded-2xl bg-muted px-4 py-3.5 text-base font-semibold uppercase tracking-wide outline-none"
+                />
+                {codeError ? (
+                  <p className="mt-2 text-xs font-semibold text-destructive">{codeError}</p>
+                ) : (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    No code? Skip this — nothing else changes, and you can join from the Programme tab any time.
+                  </p>
+                )}
+              </Field>
+            ) : null}
           </Step>
         ) : null}
+
 
         {step === 3 ? (
           <Step title="How you like it" blurb="Change any of this later in Settings.">
