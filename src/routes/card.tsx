@@ -76,7 +76,7 @@ function CardScreen() {
 
       <section className="px-5 pt-5">
         <div className="pointer-events-none select-none opacity-55 blur-[1.5px]" aria-hidden>
-          <ShekkCardFace name={firstName} />
+          <ShekkCardFace name={firstName} last4="••••" expiry="••/••" />
         </div>
 
         <button
