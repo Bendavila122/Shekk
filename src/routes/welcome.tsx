@@ -3,10 +3,11 @@ import { useState } from "react";
 import { ChevronLeft, Check } from "lucide-react";
 import { FocusScreen, PrimaryButton } from "@/components/AppShell";
 import { useApp } from "@/lib/store";
-import { PROGRAMS } from "@/lib/mock";
 import { LOCATION_CITIES } from "@/lib/location";
 import { CURRENCIES } from "@/lib/currencies";
+import { useProgramme, useTravel } from "@/lib/useProgramme";
 import type { Settings } from "@/lib/store";
+
 
 const LANGUAGES: { code: Settings["appLanguage"]; label: string }[] = [
   { code: "en", label: "English" },
