@@ -35,9 +35,9 @@ export const Route = createFileRoute("/auth")({
 });
 
 const PROMISES = [
-  "Shekels you can spend the day you land",
-  "A Shekk card, virtual straight away",
-  "Split Shabbaton, tiyul and taxi bills in a tap",
+  "Money in shekels, funded from your home currency",
+  "Your programme timetable, contacts and checklist",
+  "The arrival admin and daily life, in one place",
 ];
 
 const OAUTH_MESSAGE_TYPE = "authorization_response";
@@ -59,8 +59,9 @@ type OAuthMessage = {
   };
 };
 
+/** New sessions land in the staged setup; it resumes or exits instantly if done. */
 function afterAuthPath(next: string) {
-  return next === "/" ? "/verify" : next;
+  return next === "/" ? "/welcome" : next;
 }
 
 function isTrustedOAuthOrigin(origin: string) {
@@ -391,11 +392,17 @@ function Auth() {
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">Shekk</p>
           <h1 className="mt-2 text-3xl font-extrabold leading-tight tracking-tight">
             {mode === "signup"
-              ? "Your year in Israel, one wallet."
+              ? "Create your Shekk account."
               : mode === "signin"
                 ? "Welcome back."
                 : "Reset your password."}
           </h1>
+          {mode === "signup" && (
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Finance, programme and Israel in one app — then a few quick questions so it fits your
+              trip.
+            </p>
+          )}
           {mode === "signup" && (
             <ul className="mt-4 space-y-1.5">
               {PROMISES.map((p) => (

@@ -76,11 +76,17 @@ function JourneyStrip() {
   const { signedIn, state } = useApp();
   const kyc = useProfile();
   const { joined, programme, nextItem, checklistDone, checklistTotal } = useProgramme();
-  const { daysToArrival } = useTravel();
+  const { daysToArrival, setupComplete, fetched } = useTravel();
 
   const nextAction = !signedIn
     ? { label: "Create your Shekk account", to: "/auth" as const, why: "Takes a minute" }
-    : !kyc.verified
+    : fetched && !setupComplete
+      ? {
+          label: "Complete your Shekk setup",
+          to: "/welcome" as const,
+          why: "A few quick questions — picks up where you left off",
+        }
+      : !kyc.verified
       ? { label: "Verify your identity", to: "/verify" as const, why: "Required before you can spend" }
       : state.balance <= 0
         ? { label: "Add your first money", to: "/topup" as const, why: "Fund in your home currency" }

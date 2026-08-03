@@ -31,6 +31,10 @@ const travelSchema = z
     fundingCurrency: z.enum(["USD", "GBP", "EUR", "CAD", "AUD", "ZAR", "ILS"]).nullable(),
     israelCity: z.string().trim().max(60).nullable(),
     accommodationArea: z.string().trim().max(80).nullable(),
+    homeCountry: z.string().trim().max(60).nullable(),
+    displayName: z.string().trim().max(60).nullable(),
+    onboardingStep: z.string().trim().max(40).nullable(),
+    onboardingComplete: z.boolean(),
   })
   .partial();
 
