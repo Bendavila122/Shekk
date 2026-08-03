@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, ArrowLeftRight, ArrowUpRight, CreditCard, PlaneTakeoff, CalendarDays, Compass, ShieldCheck } from "lucide-react";
+import { Plus, ArrowLeftRight, ArrowUpRight, LifeBuoy, PlaneTakeoff, CalendarDays, Compass, ShieldCheck } from "lucide-react";
 import { useProgramme, useTravel } from "@/lib/useProgramme";
 
 import { GlobalSearch } from "@/components/GlobalSearch";
