@@ -108,7 +108,7 @@ function IsraelSetup() {
               {!next.item.auto ? (
                 <button
                   type="button"
-                  onClick={() => update((p) => ({ done: toggleId(p.done, next.item.id) }))}
+                  onClick={() => toggle(next.item.id)}
                   className="tap-flat inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-[12.5px] font-semibold"
                 >
                   <Check className="size-3.5" /> Mark done
@@ -194,7 +194,7 @@ function IsraelSetup() {
                             <button
                               type="button"
                               aria-label={done_ ? `Mark ${item.title} not done` : `Mark ${item.title} done`}
-                              onClick={() => update((p) => ({ done: toggleId(p.done, item.id) }))}
+                              onClick={() => toggle(item.id)}
                               className={`tap-flat mt-0.5 grid size-[22px] shrink-0 place-items-center rounded-[7px] border transition-colors ${
                                 done_ ? "border-success bg-success text-success-foreground" : "border-border bg-card"
                               }`}
