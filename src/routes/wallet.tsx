@@ -100,39 +100,28 @@ function WalletScreen() {
         </div>
       </section>
 
-      {/* Card strip */}
+      {/* Card strip — a preview only, never dressed up as a usable card */}
       <section className="px-4 pt-3">
         <Link to="/card" className="tap block">
           <Card className="flex items-center gap-3.5 p-3.5">
-            <div className="w-[84px] shrink-0">
-              <ShekkCardFace
-                name={firstName}
-                last4={state.card.last4}
-                expiry={state.card.expiry}
-                frozen={state.card.frozen}
-                compact
-              />
+            <div className="w-[84px] shrink-0 opacity-55 blur-[1px]" aria-hidden>
+              <ShekkCardFace name={firstName} last4="••••" expiry="••/••" compact />
             </div>
 
             <div className="min-w-0 flex-1">
               <p className="flex items-center gap-2 text-sm font-semibold">
                 <span className="truncate">Shekk Card</span>
-                <PreviewBadge />
+                <PreviewBadge label="Coming soon" />
               </p>
               <p className="mt-0.5 line-clamp-2 text-[11.5px] leading-snug text-muted-foreground">
-                {state.card.issued
-                  ? state.card.frozen
-                    ? "Frozen · tap to unfreeze"
-                    : `Mastercard •••• ${state.card.last4} · in Apple Pay`
-                  : isPremium
-                    ? "A preview of the card while we finish issuing"
-                    : "Coming with Shekk+ — have a look inside"}
+                Not issued yet — see what it will do and get told when it's ready
               </p>
             </div>
             <ChevronRight className="size-5 shrink-0 text-muted-foreground" />
           </Card>
         </Link>
       </section>
+
 
       {/* Spend summary */}
       <section className="grid grid-cols-2 gap-3 px-4 pt-3">
