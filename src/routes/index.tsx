@@ -69,6 +69,80 @@ function AppIcon({ service }: { service: Service }) {
     </Link>
   );
 }
+/** The participant journey: one clear next action, plus what's next from the programme. */
+function JourneyStrip() {
+  const { signedIn, state } = useApp();
+  const kyc = useProfile();
+  const { joined, programme, nextItem, checklistDone, checklistTotal } = useProgramme();
+  const { daysToArrival } = useTravel();
+
+  const nextAction = !signedIn
+    ? { label: "Create your Shekk account", to: "/auth" as const, why: "Takes a minute" }
+    : !kyc.verified
+      ? { label: "Verify your identity", to: "/verify" as const, why: "Required before you can spend" }
+      : state.balance <= 0
+        ? { label: "Add your first money", to: "/topup" as const, why: "Fund in your home currency" }
+        : !joined
+          ? { label: "Join your programme", to: "/programme" as const, why: "Enter the code they gave you" }
+          : { label: "Before you fly checklist", to: "/before-you-fly" as const, why: "Keep getting ready" };
+
+  return (
+    <section className="space-y-2.5 px-4 pt-4">
+      <Link
+        to={nextAction.to}
+        className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-card"
+      >
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
+          <PlaneTakeoff className="size-5" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            {daysToArrival !== null && daysToArrival > 0
+              ? `${daysToArrival} ${daysToArrival === 1 ? "day" : "days"} until you land`
+              : "Your next step"}
+          </span>
+          <span className="mt-0.5 block text-sm font-semibold">{nextAction.label}</span>
+          <span className="block text-xs text-muted-foreground">{nextAction.why}</span>
+        </span>
+        <span className="shrink-0 text-sm font-semibold text-primary">→</span>
+      </Link>
+
+      {joined ? (
+        <Link
+          to="/programme"
+          className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-card"
+        >
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
+            <CalendarDays className="size-5 text-foreground/70" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              {programme.programmeName}
+            </span>
+            <span className="mt-0.5 block truncate text-sm font-semibold">
+              {nextItem ? nextItem.title : "No sessions scheduled yet"}
+            </span>
+            <span className="block text-xs text-muted-foreground">
+              {nextItem
+                ? new Date(nextItem.startsAt).toLocaleString("en-GB", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : checklistTotal > 0
+                  ? `Checklist ${checklistDone}/${checklistTotal}`
+                  : "Announcements and contacts inside"}
+            </span>
+          </span>
+          <span className="shrink-0 text-sm font-semibold text-primary">→</span>
+        </Link>
+      ) : null}
+    </section>
+  );
+}
+
 
 function HomeScreen() {
   const ready = useOnboardedGate();
