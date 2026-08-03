@@ -164,8 +164,11 @@ function WalletScreen() {
               balance if a payment doesn't complete.
             </p>
           ) : null}
+          <WalletStatusNote />
+          <SupportRow />
         </Card>
       </section>
+
 
       {/* Recent activity */}
       <section className="px-4 pb-8 pt-6">
