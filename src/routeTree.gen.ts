@@ -24,6 +24,7 @@ import { Route as NewsRouteImport } from './routes/news'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as IsraelRouteImport } from './routes/israel'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as ExchangeRouteImport } from './routes/exchange'
 import { Route as CardRouteImport } from './routes/card'
@@ -153,6 +154,11 @@ const MeRoute = MeRouteImport.update({
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IsraelRoute = IsraelRouteImport.update({
+  id: '/israel',
+  path: '/israel',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HelpRoute = HelpRouteImport.update({
@@ -445,6 +451,7 @@ export interface FileRoutesByFullPath {
   '/card': typeof CardRoute
   '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
+  '/israel': typeof IsraelRoute
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
@@ -516,6 +523,7 @@ export interface FileRoutesByTo {
   '/card': typeof CardRoute
   '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
+  '/israel': typeof IsraelRoute
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
@@ -589,6 +597,7 @@ export interface FileRoutesById {
   '/card': typeof CardRoute
   '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
+  '/israel': typeof IsraelRoute
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
@@ -663,6 +672,7 @@ export interface FileRouteTypes {
     | '/card'
     | '/exchange'
     | '/help'
+    | '/israel'
     | '/mcp'
     | '/me'
     | '/membership'
@@ -734,6 +744,7 @@ export interface FileRouteTypes {
     | '/card'
     | '/exchange'
     | '/help'
+    | '/israel'
     | '/mcp'
     | '/me'
     | '/membership'
@@ -806,6 +817,7 @@ export interface FileRouteTypes {
     | '/card'
     | '/exchange'
     | '/help'
+    | '/israel'
     | '/mcp'
     | '/me'
     | '/membership'
@@ -879,6 +891,7 @@ export interface RootRouteChildren {
   CardRoute: typeof CardRoute
   ExchangeRoute: typeof ExchangeRoute
   HelpRoute: typeof HelpRoute
+  IsraelRoute: typeof IsraelRoute
   McpRoute: typeof McpRoute
   MeRoute: typeof MeRoute
   MembershipRoute: typeof MembershipRoute
@@ -1041,6 +1054,13 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/israel': {
+      id: '/israel'
+      path: '/israel'
+      fullPath: '/israel'
+      preLoaderRoute: typeof IsraelRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/help': {
@@ -1465,6 +1485,7 @@ const rootRouteChildren: RootRouteChildren = {
   CardRoute: CardRoute,
   ExchangeRoute: ExchangeRoute,
   HelpRoute: HelpRoute,
+  IsraelRoute: IsraelRoute,
   McpRoute: McpRoute,
   MeRoute: MeRoute,
   MembershipRoute: MembershipRoute,
