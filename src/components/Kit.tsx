@@ -189,3 +189,91 @@ export function Milestone({
     </div>
   );
 }
+
+/** The one progress bar. Used by every assistant that tracks completion. */
+export function ProgressBar({
+  value,
+  tone = "primary",
+  className = "",
+}: {
+  /** 0–1 */
+  value: number;
+  tone?: "primary" | "onDark" | "success";
+  className?: string;
+}) {
+  const pct = Math.round(Math.min(1, Math.max(0, value)) * 100);
+  const track = tone === "onDark" ? "bg-ink-foreground/20" : "bg-muted";
+  const fill = tone === "onDark" ? "bg-ink-foreground/85" : tone === "success" ? "bg-success" : "bg-primary";
+  return (
+    <div
+      className={`h-1.5 overflow-hidden rounded-full ${track} ${className}`}
+      role="progressbar"
+      aria-valuenow={pct}
+      aria-valuemin={0}
+      aria-valuemax={100}
+    >
+      <div className={`h-full rounded-full ${fill} transition-[width] duration-500`} style={{ width: `${pct}%` }} />
+    </div>
+  );
+}
+
+/** Selectable chip — questionnaires, category filters, answer options. */
+export function Chip({
+  children,
+  selected = false,
+  onClick,
+  className = "",
+}: {
+  children: ReactNode;
+  selected?: boolean;
+  onClick?: () => void;
+  className?: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={selected}
+      className={`tap-flat rounded-full border px-3.5 py-2 text-[12.5px] font-semibold transition-colors ${
+        selected
+          ? "border-primary bg-primary text-primary-foreground"
+          : "border-border bg-card text-foreground hover:bg-muted"
+      } ${className}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** Launcher row for one interactive tool inside a hub. */
+export function ToolRow({
+  to,
+  title,
+  body,
+  icon: Icon,
+  meta,
+}: {
+  to: string;
+  title: string;
+  body: string;
+  icon?: LucideIcon;
+  meta?: ReactNode;
+}) {
+  return (
+    <Link
+      to={to}
+      className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-3.5 text-left shadow-card"
+    >
+      {Icon ? (
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
+          <Icon className="size-5" />
+        </span>
+      ) : null}
+      <span className="min-w-0 flex-1">
+        <span className="block text-[13.5px] font-semibold leading-snug">{title}</span>
+        <span className="mt-0.5 block text-[12px] leading-snug text-muted-foreground">{body}</span>
+      </span>
+      {meta ?? <span className="shrink-0 text-sm font-semibold text-primary">→</span>}
+    </Link>
+  );
+}
