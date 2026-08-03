@@ -1,137 +1,62 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { AppShell, Card, PrimaryButton, ScreenHeader } from "@/components/AppShell";
-import { BUS_LINES, ils } from "@/lib/mock";
-import { useApp } from "@/lib/store";
+import { PartnerHandoff } from "@/components/PartnerHandoff";
 
 export const Route = createFileRoute("/explore/transit")({
   head: () => ({
     meta: [
-      { title: "Transit · Shekk" },
-      { name: "description", content: "Live bus and rail times, in-app ticket purchase and Rav-Kav top-up." },
-      { property: "og:title", content: "Transit · Shekk" },
-      { property: "og:description", content: "Buy a bus ticket or load your Rav-Kav from your Shekk balance." },
+      { title: "Buses, trains and Rav-Kav · Shekk" },
+      {
+        name: "description",
+        content:
+          "How public transport works in Israel: Rav-Kav, student discounts, intercity trains and the apps that sell tickets. Ticketing is not part of Shekk yet.",
+      },
+      { property: "og:title", content: "Buses, trains and Rav-Kav · Shekk" },
+      {
+        property: "og:description",
+        content: "Rav-Kav, student fares and the transport apps to install before you land.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: Transit,
+  component: TransitScreen,
 });
 
-function Transit() {
-  const { spend, state } = useApp();
-  const [selected, setSelected] = useState<(typeof BUS_LINES)[number] | null>(null);
-  const [ticket, setTicket] = useState<string | null>(null);
-  const [ravkav, setRavkav] = useState(50);
-  const [ravkavDone, setRavkavDone] = useState(false);
-
+function TransitScreen() {
   return (
-    <AppShell>
-      <ScreenHeader title="Transit" subtitle="Jerusalem · live times" />
-      <div className="space-y-4 px-4 py-4">
-        <Card className="bg-primary-soft text-sm">
-          Shekk: <strong>{ils(state.balance)}</strong> · we pay the operator, then deduct the Shekk.
-        </Card>
-
-        {ticket ? (
-          <Card className="space-y-2 text-center">
-            <p className="text-4xl">🎫</p>
-            <p className="text-lg font-bold">Ticket active</p>
-            <p className="text-sm text-muted-foreground">{ticket}</p>
-            <p className="text-xs text-muted-foreground">Valid 90 minutes · show the animated code to the driver</p>
-            <div className="mx-auto h-2 w-40 animate-pulse rounded-full bg-success" />
-            <button onClick={() => setTicket(null)} className="tap pt-2 text-sm font-semibold text-primary">
-              Done
-            </button>
-          </Card>
-        ) : (
-          <section>
-            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Arriving now</h2>
-            <Card className="divide-y divide-border p-0">
-              {BUS_LINES.map((b) => (
-                <button
-                  key={b.line}
-                  onClick={() => setSelected(b)}
-                  className="tap flex w-full items-center gap-3 p-4 text-left"
-                >
-                  <span className="flex size-11 items-center justify-center rounded-xl bg-ink text-xs font-bold text-ink-foreground">
-                    {b.line}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold">{b.dest}</p>
-                    <p className="text-xs text-muted-foreground">{ils(b.price)} single ride</p>
-                  </div>
-                  <span className="text-sm font-bold text-success">{b.mins} min</span>
-                </button>
-              ))}
-            </Card>
-          </section>
-        )}
-
-        <section>
-          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Rav-Kav top-up</h2>
-          <Card className="space-y-3">
-            <p className="text-sm">Card •••• 8821 · balance ₪12.80</p>
-            <div className="grid grid-cols-4 gap-2">
-              {[30, 50, 100, 200].map((v) => (
-                <button
-                  key={v}
-                  onClick={() => setRavkav(v)}
-                  className={`tap rounded-xl py-2 text-sm font-semibold ${
-                    ravkav === v ? "bg-primary text-primary-foreground" : "bg-muted"
-                  }`}
-                >
-                  ₪{v}
-                </button>
-              ))}
-            </div>
-            {ravkavDone ? (
-              <p className="text-sm font-semibold text-success">Loaded ✓ tap your card at any validator</p>
-            ) : (
-              <PrimaryButton
-                onClick={() => {
-                  spend("Rav-Kav top-up", "Transit", ravkav, "🚌");
-                  setRavkavDone(true);
-                }}
-              >
-                Load {ils(ravkav)} from your balance
-              </PrimaryButton>
-            )}
-          </Card>
-        </section>
-      </div>
-
-      {selected && (
-        <div className="absolute inset-0 z-30 flex flex-col justify-end bg-ink/60">
-          <div className="rounded-t-3xl bg-card p-6 pb-8">
-            <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-border" />
-            <p className="text-lg font-semibold">Line {selected.line}</p>
-            <p className="text-sm text-muted-foreground">{selected.dest}</p>
-            <div className="mt-4 space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Single ride</span>
-                <span className="font-semibold">{ils(selected.price)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Paid from</span>
-                <span className="font-semibold">Shekk balance</span>
-              </div>
-            </div>
-            <div className="mt-5 space-y-2">
-              <PrimaryButton
-                onClick={() => {
-                  spend(`Egged ${selected.line} — ${selected.dest}`, "Transit", selected.price, "🚌");
-                  setTicket(`Line ${selected.line} · ${selected.dest}`);
-                  setSelected(null);
-                }}
-              >
-                Buy ticket · {ils(selected.price)}
-              </PrimaryButton>
-              <button onClick={() => setSelected(null)} className="tap w-full rounded-2xl bg-muted py-3.5 text-sm font-semibold">
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </AppShell>
+    <PartnerHandoff
+      title="Buses & trains"
+      headline="Shekk doesn't sell transport tickets yet"
+      blurb="Israeli fares are tied to your Rav-Kav account, which we can't top up on your behalf today. Here is exactly how to set it up and pay, plus the student discount most people miss."
+      partners={[
+        {
+          name: "Rav-Kav Online",
+          emoji: "💳",
+          blurb: "Official app: load your Rav-Kav, buy monthly passes and check your balance.",
+          cost: "Free app",
+          url: "https://ravkavonline.co.il/en/",
+        },
+        {
+          name: "Moovit",
+          emoji: "🧭",
+          blurb: "Best live bus and light rail times. What locals actually plan journeys with.",
+          cost: "Free",
+          url: "https://moovitapp.com/",
+        },
+        {
+          name: "Israel Railways",
+          emoji: "🚆",
+          blurb: "Intercity trains — Jerusalem to Tel Aviv in about 30 minutes.",
+          cost: "From ₪16",
+          url: "https://www.rail.co.il/en",
+        },
+      ]}
+      tips={[
+        "Get a personalised Rav-Kav with your photo. Anonymous cards can't hold student or monthly discounts.",
+        "A single fare is usually ₪5.50–₪12 and includes 90 minutes of transfers on the same journey.",
+        "Students on a recognised programme can often register for a 50% discount — ask your madrich for the paperwork.",
+        "Nothing runs from Friday afternoon to Saturday night except sherut taxis in some cities.",
+      ]}
+    />
   );
 }
