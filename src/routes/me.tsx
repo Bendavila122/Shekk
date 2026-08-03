@@ -88,7 +88,7 @@ function Me() {
             <h1 className="truncate font-display text-2xl font-bold tracking-tight">
               {travel.displayName || state.name || "Your Shekk"}
             </h1>
-            <p className="truncate text-sm opacity-75">{contextLine}</p>
+            <p className="line-clamp-2 text-[13px] leading-snug opacity-75">{contextLine}</p>
             <p className="mt-1 text-xs opacity-60">
               {state.avatar ? "Friends see this photo when you pay" : "Add a photo so friends recognise you"}
               {state.avatar && (
@@ -152,7 +152,7 @@ function Me() {
             <RowLink to="/activity" Icon={Receipt} label="Payment history" hint={`${state.txns.length} records`} />
             <RowLink to="/explore/shops" Icon={Bookmark} label="Saved places & discounts" hint="" />
             <RowLink to="/explore/documents" Icon={FileText} label="Your documents" hint="Private to you" />
-            <RowLink to="/welcome" Icon={Sparkles} label="Your journey details" hint="Dates, city, currency" />
+            <RowLink to="/welcome" Icon={Sparkles} label="Journey details" hint="Dates & city" />
             <RowLink to="/settings" Icon={Settings} label="Settings" hint="Currency, theme, alerts" />
             <RowLink to="/terms" Icon={FileText} label="Terms & Conditions" hint="" />
           </Card>

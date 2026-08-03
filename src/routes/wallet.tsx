@@ -189,15 +189,15 @@ function WalletScreen() {
             </Link>
           }
         />
-        <Card className="divide-y divide-border p-0">
-          {state.txns.length === 0 ? (
-            <EmptyState
-              title="Nothing here yet"
-              body="Add money in your home currency and every top-up and payment will appear here."
-              actionLabel="Add money"
-              actionTo="/topup"
-            />
-          ) : null}
+        {state.txns.length === 0 ? (
+          <EmptyState
+            title="Nothing here yet"
+            body="Add money in your home currency and every top-up and payment will appear here."
+            actionLabel="Add money"
+            actionTo="/topup"
+          />
+        ) : null}
+        <Card className={`divide-y divide-border p-0 ${state.txns.length === 0 ? "hidden" : ""}`}>
           {state.txns.slice(0, 7).map((t) => (
             <div key={t.id} className="flex items-center gap-3 p-3.5">
               <span className="flex size-10 items-center justify-center rounded-xl bg-muted text-lg">{t.icon}</span>
