@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, ArrowLeftRight, ArrowUpRight, CreditCard, PlaneTakeoff, CalendarDays, Compass, ShieldCheck } from "lucide-react";
+import { Plus, ArrowLeftRight, ArrowUpRight, LifeBuoy, PlaneTakeoff, CalendarDays, Compass, ShieldCheck } from "lucide-react";
 import { useProgramme, useTravel } from "@/lib/useProgramme";
 
 import { GlobalSearch } from "@/components/GlobalSearch";
@@ -49,7 +49,7 @@ const HERO_ACTIONS = [
   { to: "/topup", label: "Add money", Icon: Plus },
   { to: "/exchange", label: "Exchange", Icon: ArrowLeftRight },
   { to: "/social", label: "Send", Icon: ArrowUpRight },
-  { to: "/card", label: "Card", Icon: CreditCard },
+  { to: "/help", label: "Get help", Icon: LifeBuoy },
 ] as const;
 
 function AppIcon({ service }: { service: Service }) {
@@ -108,7 +108,7 @@ function TodayPanel() {
           ? { label: "Join your programme", to: "/programme" as const, why: "Enter the code your programme gave you" }
           : journey.inIsrael
             ? { label: "Find what's on near you", to: "/israel" as const, why: "Food, transport, fitness and events" }
-            : { label: "Before you fly checklist", to: "/before-you-fly" as const, why: "Keep getting ready" };
+            : { label: "Israel Setup", to: "/setup" as const, why: "Keep getting ready" };
 
   const everythingReady =
     signedIn && setupComplete && kyc.verified && state.balance > 0 && joined;

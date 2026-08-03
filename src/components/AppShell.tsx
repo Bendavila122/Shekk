@@ -207,8 +207,8 @@ export function QuickMenu() {
             <Link to="/me" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <User className="size-4 text-muted-foreground" /> You
             </Link>
-            <Link to="/before-you-fly" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
-              <PlaneTakeoff className="size-4 text-muted-foreground" /> Before you fly
+            <Link to="/setup" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <PlaneTakeoff className="size-4 text-muted-foreground" /> Israel Setup
             </Link>
             <Link to="/benefits" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <Tag className="size-4 text-muted-foreground" /> Benefits

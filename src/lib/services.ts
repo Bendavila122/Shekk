@@ -44,9 +44,9 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     id: "transit",
     label: "Getting around",
     emoji: "🚌",
-    tagline: "Book a ride and pay from your Shekk balance.",
+    tagline: "How taxis, sherut and fares actually work here.",
     services: [
-      { id: "gett", name: "Gett", partner: "Gett", emoji: "🚕", domain: "gett.com", blurb: "Order a taxi, pay with Shekk", status: "live", featured: true, to: "/explore/rides", detail: ["The real Gett booking flow, running inside Shekk", "Fare settles straight from your Shekk balance"] },
+      { id: "gett", name: "Taxis & rides", partner: "Gett", emoji: "🚕", domain: "gett.com", blurb: "Fares, sherut and how to book", status: "guide", featured: true, to: "/explore/rides", detail: ["What a ride should cost, and the meter rules", "Booking and paying in Shekk is not live yet"] },
     ],
   },
   {

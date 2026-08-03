@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { X } from "lucide-react";
 import { Card, PrimaryButton } from "@/components/AppShell";
@@ -84,6 +85,13 @@ export function SendMoneySheet({
             >
               {send.isPending ? "Sending…" : `Send ${value > 0 ? ils(value) : "shekels"}`}
             </PrimaryButton>
+            <p className="text-center text-[11px] text-muted-foreground">
+              Payments between members are instant and can't be reversed.{" "}
+              <Link to="/help" className="font-semibold underline">
+                Get help
+              </Link>
+            </p>
+
           </>
         )}
       </Card>

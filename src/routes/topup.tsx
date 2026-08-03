@@ -8,6 +8,7 @@ import { CURRENCIES, currency, money } from "@/lib/currencies";
 import { quoteFx } from "@/lib/banking";
 import { useApp } from "@/lib/store";
 import { useFunding } from "@/lib/useFunding";
+import { SupportRow } from "@/components/SupportRow";
 
 
 export const Route = createFileRoute("/topup")({
@@ -195,6 +196,9 @@ function AddMoney() {
             Terms
           </Link>
         </p>
+
+        <SupportRow className="mt-3" />
+
 
         <div className="mt-auto space-y-2 pt-6">
           <PrimaryButton
