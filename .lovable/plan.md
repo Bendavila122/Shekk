@@ -1,37 +1,37 @@
-## What's there now
+## Goal
 
-`/explore/admin` is a placeholder: three hardcoded visa steps and four fake PDF names, no backend, no uploads. It isn't even registered in the mini-app catalogue (`src/lib/mini-apps.ts`), so it has no icon, no splash, and shows the normal Shekk header instead of running as its own app.
+Store Shekk Strategy v1.0 as persistent project memory so every future decision follows it. No app code changes.
 
-## What I'll build
+## What gets saved
 
-### 1. Official — the mini-app shell
+A new memory file, `mem://strategy/shekk-strategy`, holding the full document: mission, vision, target users (gap-year, MASA, yeshiva/seminary, study abroad, interns, volunteers, researchers, summer programmes, long-term visitors, plus parents and programme organisers), the core problem, the four pillars, business model, distribution, product principles, the five-stage user journey, current priorities and success metrics.
 
-Rebuild `/explore/admin` as **Official** (tagline "Visas, army, uni and paperwork"), registered in `src/lib/mini-apps.ts` with its own icon gradient and launch splash so it behaves like the other mini-apps. Home screen is four tracks plus a "Your documents" tile and a "What's next" strip pulled from the member's own status.
+The four pillars, recorded as the home for every future feature:
 
-### 2. Four guide-quality content tracks
+```text
+1 Finance          wallet, Airwallex card, FX, top-ups, history, KYC, membership
+2 Israel Setup     programme onboarding, arrival checklist, eSIM, insurance,
+                   airport guidance, emergency info, packing
+3 Daily Life       guides, maps, events, siddur, news, discounts
+4 Programme        welcome, timetable, staff + emergency contacts,
+                   announcements, documents, links, arrival info
+```
 
-Authored in code (same model as Guides, so it loads instantly and stays searchable):
+## What gets added to the always-on core rules
 
-- **Visas & status** — A/2 student visa, B/2 tourist entry, extensions at Misrad HaPnim, what to bring, fees, biometrics, overstaying, leaving and re-entering, teudat zehut vs passport stamp, Aliyah basics and when it changes your visa.
-- **Army & service** — the honest map: Mahal, Garin Tzabar, Hesder/Mechina interaction, Nefesh B'Nefesh service track, tzav rishon, gius dates, medical profile, what a gap year does and doesn't commit you to, who to actually call.
-- **Lone soldier support** — Lone Soldier Center, FIDF, Michael Levin Base, rights and payments, housing, laundry/food, chagim, leave (regila), mental-health lines, family visits.
-- **University & study** — Masa, mechina, one-year programs, Hebrew U/TAU/IDC international schools, credit transfer to US schools, transcripts, ulpan levels, student status paperwork, tuition timing and Shekk payments.
+Short rules applied to every action from now on:
 
-Each guide keeps the existing block types: TL;DR, numbered how-tos, tickable checklists, fact tables (fees, hours, phone numbers), Hebrew phrase rows, tip/warning/money callouts, and jump-links into Health, Maps, Transit, Exchange, Social. All indexed in global search (`src/lib/search.ts`).
+- Mission: the app every international programme in Israel recommends before participants fly.
+- Every feature belongs to one of the four pillars.
+- Every feature must save time or save money, remove the need for another app, and tell the user the next action rather than just showing information.
+- Finance first; reliable core beats many unfinished features.
+- Programme-first test: would this make a programme more likely to recommend Shekk?
+- Priority order: finish the financial platform, then programme onboarding, then the eSIM/insurance affiliate marketplace, then daily engagement.
+- Revenue focus: FX margin is the primary line, then affiliate, Shekk+, card programme.
+- Programme content is entered in the Shekk admin console only — no programme-staff portal or staff login.
 
-### 3. Your status — a real tracker
+Existing memories (tone and vocabulary, money ledger, eligibility) stay as they are; the index gains a reference to the new strategy file.
 
-A per-member checklist backed by the database, not hardcoded: pick your track (student visa / tourist / Mahal / Garin Tzabar / university), and get the real ordered steps with dates, due dates, "done" ticks, and notes. It surfaces the next thing due on the Official home tile.
+## Not in this change
 
-### 4. Document vault — real private uploads
-
-Members upload passport pages, visa stickers, acceptance letters, insurance policies, army paperwork. Same security model as the insurance-card wallet: a private bucket keyed by user id, rows readable/writable only by their owner, short-lived signed links to view, and a category per document so the checklist can say "passport photo page — uploaded ✓".
-
-## Technical notes
-
-- New tables: `official_tasks` (per-member track step state) and `official_documents` (category, label, storage path, mime, size, expiry). Both RLS-scoped to `auth.uid()` with explicit GRANTs to `authenticated` and `service_role`.
-- New private storage bucket `member-documents` with `storage.objects` policies restricting each member to their own `{user_id}/…` prefix.
-- Server layer: `src/lib/official.server.ts` (shaping, signed URLs, upload paths) with `src/lib/official.functions.ts` exposing authenticated server functions via `requireSupabaseAuth`; hooks in `src/lib/useOfficial.ts`.
-- Content: `src/lib/official-content.ts` reusing the `GuideBlock` model so the reader components are shared rather than duplicated.
-- Routes: `src/routes/explore/admin.tsx` (home), `official.$track.tsx` (track reader), `official.documents.tsx` (vault). Each gets its own `head()` metadata.
-- No seeded or demo rows — the vault and tracker start empty for every member.
+No routes, components, navigation, database or content changes. The strategy becomes the standing brief for the next build.
