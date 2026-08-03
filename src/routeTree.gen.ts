@@ -37,6 +37,7 @@ import { Route as SiddurIndexRouteImport } from './routes/siddur/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
 import { Route as BenefitsIndexRouteImport } from './routes/benefits/index'
+import { Route as BeforeYouFlyIndexRouteImport } from './routes/before-you-fly/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as SocialConversationIdRouteImport } from './routes/social/$conversationId'
 import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
@@ -219,6 +220,11 @@ const ExploreIndexRoute = ExploreIndexRouteImport.update({
 const BenefitsIndexRoute = BenefitsIndexRouteImport.update({
   id: '/benefits/',
   path: '/benefits/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BeforeYouFlyIndexRoute = BeforeYouFlyIndexRouteImport.update({
+  id: '/before-you-fly/',
+  path: '/before-you-fly/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -496,6 +502,7 @@ export interface FileRoutesByFullPath {
   '/siddur/$id': typeof SiddurIdRoute
   '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/before-you-fly/': typeof BeforeYouFlyIndexRoute
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
@@ -568,6 +575,7 @@ export interface FileRoutesByTo {
   '/siddur/$id': typeof SiddurIdRoute
   '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin': typeof AdminIndexRoute
+  '/before-you-fly': typeof BeforeYouFlyIndexRoute
   '/benefits': typeof BenefitsIndexRoute
   '/explore': typeof ExploreIndexRoute
   '/guides': typeof GuidesIndexRoute
@@ -642,6 +650,7 @@ export interface FileRoutesById {
   '/siddur/$id': typeof SiddurIdRoute
   '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/before-you-fly/': typeof BeforeYouFlyIndexRoute
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
@@ -717,6 +726,7 @@ export interface FileRouteTypes {
     | '/siddur/$id'
     | '/social/$conversationId'
     | '/admin/'
+    | '/before-you-fly/'
     | '/benefits/'
     | '/explore/'
     | '/guides/'
@@ -789,6 +799,7 @@ export interface FileRouteTypes {
     | '/siddur/$id'
     | '/social/$conversationId'
     | '/admin'
+    | '/before-you-fly'
     | '/benefits'
     | '/explore'
     | '/guides'
@@ -862,6 +873,7 @@ export interface FileRouteTypes {
     | '/siddur/$id'
     | '/social/$conversationId'
     | '/admin/'
+    | '/before-you-fly/'
     | '/benefits/'
     | '/explore/'
     | '/guides/'
@@ -928,6 +940,7 @@ export interface RootRouteChildren {
   GuidesIdRoute: typeof GuidesIdRoute
   SiddurIdRoute: typeof SiddurIdRoute
   SocialConversationIdRoute: typeof SocialConversationIdRoute
+  BeforeYouFlyIndexRoute: typeof BeforeYouFlyIndexRoute
   BenefitsIndexRoute: typeof BenefitsIndexRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
@@ -1145,6 +1158,13 @@ declare module '@tanstack/react-router' {
       path: '/benefits'
       fullPath: '/benefits/'
       preLoaderRoute: typeof BenefitsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/before-you-fly/': {
+      id: '/before-you-fly/'
+      path: '/before-you-fly'
+      fullPath: '/before-you-fly/'
+      preLoaderRoute: typeof BeforeYouFlyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -1523,6 +1543,7 @@ const rootRouteChildren: RootRouteChildren = {
   GuidesIdRoute: GuidesIdRoute,
   SiddurIdRoute: SiddurIdRoute,
   SocialConversationIdRoute: SocialConversationIdRoute,
+  BeforeYouFlyIndexRoute: BeforeYouFlyIndexRoute,
   BenefitsIndexRoute: BenefitsIndexRoute,
   ExploreIndexRoute: ExploreIndexRoute,
   GuidesIndexRoute: GuidesIndexRoute,
