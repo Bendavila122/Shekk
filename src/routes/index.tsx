@@ -49,7 +49,7 @@ const HERO_ACTIONS = [
   { to: "/topup", label: "Add money", Icon: Plus },
   { to: "/exchange", label: "Exchange", Icon: ArrowLeftRight },
   { to: "/social", label: "Send", Icon: ArrowUpRight },
-  { to: "/card", label: "Card", Icon: CreditCard },
+  { to: "/help", label: "Get help", Icon: LifeBuoy },
 ] as const;
 
 function AppIcon({ service }: { service: Service }) {
