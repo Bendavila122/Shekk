@@ -27,6 +27,8 @@ export type MemberTravel = {
   displayName: string | null;
   onboardingStep: string | null;
   onboardingCompletedAt: string | null;
+  /** What the member told us Shekk should help with — orders their home screen. */
+  interests: string[];
 };
 
 export const emptyTravel: MemberTravel = {
@@ -40,6 +42,7 @@ export const emptyTravel: MemberTravel = {
   displayName: null,
   onboardingStep: null,
   onboardingCompletedAt: null,
+  interests: [],
 };
 
 export type ProgrammeAnnouncement = {
@@ -144,6 +147,7 @@ export async function readTravel(db: Db, userId: string): Promise<MemberTravel> 
     displayName: s(row, "display_name"),
     onboardingStep: s(row, "onboarding_step"),
     onboardingCompletedAt: s(row, "onboarding_completed_at"),
+    interests: Array.isArray(row["interests"]) ? (row["interests"] as string[]).map(String) : [],
   };
 }
 
@@ -158,6 +162,7 @@ export type TravelPatch = Partial<{
   displayName: string | null;
   onboardingStep: string | null;
   onboardingComplete: boolean;
+  interests: string[];
 }>;
 
 export async function saveTravel(db: Db, userId: string, patch: TravelPatch): Promise<MemberTravel> {
@@ -171,6 +176,7 @@ export async function saveTravel(db: Db, userId: string, patch: TravelPatch): Pr
   if (patch.homeCountry !== undefined) payload["home_country"] = patch.homeCountry || null;
   if (patch.displayName !== undefined) payload["display_name"] = patch.displayName || null;
   if (patch.onboardingStep !== undefined) payload["onboarding_step"] = patch.onboardingStep || null;
+  if (patch.interests !== undefined) payload["interests"] = patch.interests;
   if (patch.onboardingComplete !== undefined) {
     payload["onboarding_completed_at"] = patch.onboardingComplete ? new Date().toISOString() : null;
   }
