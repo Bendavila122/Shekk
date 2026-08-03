@@ -154,6 +154,28 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    try {
+      window.sessionStorage.removeItem(CHUNK_RELOAD_KEY);
+    } catch {
+      // ignore
+    }
+    const onPreloadError = (event: Event) => {
+      const detail = (event as Event & { payload?: unknown }).payload;
+      if (recoverFromChunkError(detail)) event.preventDefault();
+    };
+    const onRejection = (event: PromiseRejectionEvent) => {
+      if (recoverFromChunkError(event.reason)) event.preventDefault();
+    };
+    window.addEventListener("vite:preloadError", onPreloadError);
+    window.addEventListener("unhandledrejection", onRejection);
+    return () => {
+      window.removeEventListener("vite:preloadError", onPreloadError);
+      window.removeEventListener("unhandledrejection", onRejection);
+    };
+  }, []);
+
+
   return (
     <QueryClientProvider client={queryClient}>
       <AppProvider>
