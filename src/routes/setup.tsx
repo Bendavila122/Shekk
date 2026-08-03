@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -12,10 +12,7 @@ import {
 import { AppShell, Card, Notice, ScreenHeader } from "@/components/AppShell";
 import { MicroLabel, Milestone, PreviewBadge, ProgressBar, SectionHead } from "@/components/Kit";
 import { useApp } from "@/lib/store";
-import { useProfile } from "@/lib/useProfile";
-import { useProgramme, useTravel } from "@/lib/useProgramme";
-import { useLocalState, toggleId } from "@/lib/local-state";
-import { SETUP_SECTIONS, type AutoKey, type SetupItem } from "@/lib/setup-content";
+import { useJourney } from "@/lib/useJourney";
 
 export const Route = createFileRoute("/setup")({
   head: () => ({
@@ -24,7 +21,7 @@ export const Route = createFileRoute("/setup")({
       {
         name: "description",
         content:
-          "An adaptive preparation hub for your move to Israel: money, programme, phone, insurance, packing, arrival and your first week — with the next step always chosen for you.",
+          "One adaptive preparation journey for your move to Israel: before you fly, money, programme, phone, insurance, packing, arrival and your first week — with the next step always chosen for you.",
       },
       { property: "og:title", content: "Israel Setup · Shekk" },
       {
@@ -39,49 +36,21 @@ export const Route = createFileRoute("/setup")({
 });
 
 function IsraelSetup() {
-  const { state, signedIn } = useApp();
-  const profile = useProfile();
-  const { joined } = useProgramme();
-  const { travel, daysToArrival } = useTravel();
-  const { value: local, update } = useLocalState("shekk.setup.v1", { done: [] as string[] });
+  const { signedIn } = useApp();
   const [open, setOpen] = useState<string | null>(null);
 
-  const auto: Record<AutoKey, boolean> = {
-    programme: joined,
-    profile: Boolean(
-      (state.name?.trim() || profile.profile?.legalFirstName) &&
-        (travel.arrivalDate || state.profile.arrivalDateISO),
-    ),
-    kyc: profile.verified,
-    money: state.balance > 0,
-  };
-
-  const isDone = (item: SetupItem) => (item.auto ? auto[item.auto] : local.done.includes(item.id));
-
-  const sections = useMemo(
-    () =>
-      SETUP_SECTIONS.map((section) => {
-        const done = section.items.filter(isDone).length;
-        return { section, done, total: section.items.length, pct: done / section.items.length };
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [local.done, auto.programme, auto.profile, auto.kyc, auto.money],
-  );
-
-  const total = sections.reduce((s, x) => s + x.total, 0);
-  const doneTotal = sections.reduce((s, x) => s + x.done, 0);
-  const complete = doneTotal === total;
-
-  /* The contextual next step: first unfinished item in the earliest section
-     that isn't finished. This is what makes the hub adaptive. */
-  const next = useMemo(() => {
-    for (const { section } of sections) {
-      const item = section.items.find((i) => !isDone(i));
-      if (item) return { section, item };
-    }
-    return null;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sections]);
+  /* One journey model for the whole app — see src/lib/useJourney.ts. */
+  const {
+    sections,
+    total,
+    done: doneTotal,
+    pct,
+    complete,
+    next,
+    isDone,
+    toggle,
+    daysToArrival,
+  } = useJourney();
 
   const headline = complete
     ? "You are ready"
@@ -90,6 +59,7 @@ function IsraelSetup() {
       : daysToArrival > 0
         ? `${daysToArrival} ${daysToArrival === 1 ? "day" : "days"} to go`
         : "You're in Israel";
+
 
   return (
     <AppShell>
