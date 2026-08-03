@@ -74,7 +74,7 @@ function IsraelSetup() {
             <p className="mt-1 text-[12.5px] opacity-80">
               {doneTotal} of {total} things sorted across {sections.length} areas
             </p>
-            <ProgressBar value={total ? doneTotal / total : 0} tone="onDark" className="mt-3.5" />
+            <ProgressBar value={pct} tone="onDark" className="mt-3.5" />
           </div>
         </div>
       </header>
