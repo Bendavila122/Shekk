@@ -23,6 +23,10 @@ export type MemberTravel = {
   fundingCurrency: string | null;
   israelCity: string | null;
   accommodationArea: string | null;
+  homeCountry: string | null;
+  displayName: string | null;
+  onboardingStep: string | null;
+  onboardingCompletedAt: string | null;
 };
 
 export const emptyTravel: MemberTravel = {
@@ -32,6 +36,10 @@ export const emptyTravel: MemberTravel = {
   fundingCurrency: null,
   israelCity: null,
   accommodationArea: null,
+  homeCountry: null,
+  displayName: null,
+  onboardingStep: null,
+  onboardingCompletedAt: null,
 };
 
 export type ProgrammeAnnouncement = {
@@ -132,6 +140,10 @@ export async function readTravel(db: Db, userId: string): Promise<MemberTravel> 
     fundingCurrency: s(row, "funding_currency"),
     israelCity: s(row, "israel_city"),
     accommodationArea: s(row, "accommodation_area"),
+    homeCountry: s(row, "home_country"),
+    displayName: s(row, "display_name"),
+    onboardingStep: s(row, "onboarding_step"),
+    onboardingCompletedAt: s(row, "onboarding_completed_at"),
   };
 }
 
@@ -142,6 +154,10 @@ export type TravelPatch = Partial<{
   fundingCurrency: string | null;
   israelCity: string | null;
   accommodationArea: string | null;
+  homeCountry: string | null;
+  displayName: string | null;
+  onboardingStep: string | null;
+  onboardingComplete: boolean;
 }>;
 
 export async function saveTravel(db: Db, userId: string, patch: TravelPatch): Promise<MemberTravel> {
@@ -152,6 +168,12 @@ export async function saveTravel(db: Db, userId: string, patch: TravelPatch): Pr
   if (patch.fundingCurrency !== undefined) payload["funding_currency"] = patch.fundingCurrency || null;
   if (patch.israelCity !== undefined) payload["israel_city"] = patch.israelCity || null;
   if (patch.accommodationArea !== undefined) payload["accommodation_area"] = patch.accommodationArea || null;
+  if (patch.homeCountry !== undefined) payload["home_country"] = patch.homeCountry || null;
+  if (patch.displayName !== undefined) payload["display_name"] = patch.displayName || null;
+  if (patch.onboardingStep !== undefined) payload["onboarding_step"] = patch.onboardingStep || null;
+  if (patch.onboardingComplete !== undefined) {
+    payload["onboarding_completed_at"] = patch.onboardingComplete ? new Date().toISOString() : null;
+  }
 
   const { error } = await db.from("member_travel").upsert(payload as never, { onConflict: "user_id" });
   if (error) throw error;

@@ -46,6 +46,10 @@ const emptyTravel: MemberTravel = {
   fundingCurrency: null,
   israelCity: null,
   accommodationArea: null,
+  homeCountry: null,
+  displayName: null,
+  onboardingStep: null,
+  onboardingCompletedAt: null,
 };
 
 /** Freshly minted tokens can briefly read as "issued in the future". Retry. */
@@ -142,5 +146,14 @@ export function useTravel() {
     return Math.round((then - today.getTime()) / 86_400_000);
   })();
 
-  return { travel, daysToArrival, loading: query.isLoading, save, refetch: query.refetch };
+  return {
+    travel,
+    daysToArrival,
+    /** Setup is only "done" once the member reached the finish screen. */
+    setupComplete: Boolean(travel.onboardingCompletedAt),
+    loading: query.isLoading,
+    fetched: query.isSuccess,
+    save,
+    refetch: query.refetch,
+  };
 }
