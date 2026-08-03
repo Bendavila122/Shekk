@@ -13,6 +13,7 @@ import {
   MonitorSmartphone,
 } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
+import { LoadingBlocks } from "@/components/Kit";
 import { CURRENCIES, currency, money, refIn, shekkRate } from "@/lib/currencies";
 import { useApp } from "@/lib/store";
 import type { Settings as SettingsShape, ThemePref } from "@/lib/store";
@@ -45,7 +46,7 @@ function SettingsPage() {
   if (!ready)
     return (
       <AppShell>
-        <div className="p-6 text-sm text-muted-foreground">Loading…</div>
+        <LoadingBlocks rows={3} />
       </AppShell>
     );
 

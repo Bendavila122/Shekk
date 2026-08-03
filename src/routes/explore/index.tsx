@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Search, X, Tag, ChevronRight, Newspaper } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
+import { LoadingBlocks } from "@/components/Kit";
 
 import { serviceLinkProps, type Service, type ServiceCategory } from "@/lib/services";
 import { ServiceLogo } from "@/components/ServiceLogo";
@@ -118,7 +119,7 @@ function Explore() {
   if (!ready)
     return (
       <AppShell>
-        <div className="p-6 text-sm text-muted-foreground">Loading…</div>
+        <LoadingBlocks rows={3} />
       </AppShell>
     );
 

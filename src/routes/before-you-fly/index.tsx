@@ -95,7 +95,8 @@ function BeforeYouFly() {
         <div className="px-4 pt-4">
           <Notice title="Sign in to track your progress">
             You can read every step now.{" "}
-            <Link to="/auth" className="font-semibold underline">
+            <Link to="/auth"
+                search={{ next: "/before-you-fly" }} className="font-semibold underline">
               Sign in
             </Link>{" "}
             to have Shekk tick them off as you go.

@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Plus, ArrowLeftRight, ArrowUpRight, ArrowDownLeft, CreditCard, ChevronRight, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { Plus, ArrowLeftRight, ArrowUpRight, CreditCard, ChevronRight, Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
+import { PageHeader, SectionHead, EmptyState, LoadingBlocks, StatusPill, PreviewBadge } from "@/components/Kit";
+import { useProfile } from "@/lib/useProfile";
 import { ShekkCardFace } from "@/components/ShekkCard";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
@@ -27,17 +29,16 @@ export const Route = createFileRoute("/wallet")({
 });
 
 const ACTIONS = [
-  { to: "/topup", label: "Add", Icon: Plus },
+  { to: "/topup", label: "Add money", Icon: Plus },
   { to: "/exchange", label: "Exchange", Icon: ArrowLeftRight },
   { to: "/social", label: "Send", Icon: ArrowUpRight },
-  { to: "/social", label: "Request", Icon: ArrowDownLeft },
   { to: "/card", label: "Card", Icon: CreditCard },
-
 ] as const;
 
 function WalletScreen() {
   const ready = useOnboardedGate();
   const { state, isPremium, held, available } = useApp();
+  const kyc = useProfile();
   const [hidden, setHidden] = useState(state.settings.hideBalance);
 
   const thisMonth = useMemo(
@@ -48,7 +49,7 @@ function WalletScreen() {
   if (!ready) {
     return (
       <AppShell>
-        <div className="p-6 text-sm text-muted-foreground">Loading…</div>
+        <LoadingBlocks rows={3} />
       </AppShell>
     );
   }
@@ -57,13 +58,15 @@ function WalletScreen() {
 
   return (
     <AppShell>
+      <PageHeader title="Money" subtitle="Your shekels, where they came from and where they went." />
+
       {/* Balance header */}
-      <section className="px-4 pt-6">
+      <section className="px-4 pt-3">
         <div className="grad-balance relative overflow-hidden rounded-[1.75rem] px-5 pb-4 pt-5 text-ink-foreground shadow-lift">
           <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
           <div className="relative">
             <div className="flex items-center justify-between gap-3">
-              <p className="truncate text-[10px] uppercase tracking-[0.16em] opacity-70">Shekk balance</p>
+              <p className="truncate text-[10px] uppercase tracking-[0.16em] opacity-70">Your shekels</p>
               <button
                 onClick={() => setHidden((v) => !v)}
                 aria-label={hidden ? "Show balance" : "Hide balance"}
@@ -81,7 +84,7 @@ function WalletScreen() {
                 : `Available now · ≈ ${hidden ? "••••" : refIn(state.settings.payCurrency, state.balance)}`}
             </p>
 
-            <div className="mt-4 grid grid-cols-5 gap-1.5">
+            <div className="mt-4 grid grid-cols-4 gap-1.5">
               {ACTIONS.map(({ to, label, Icon }) => (
                 <Link
                   key={label}
@@ -89,7 +92,7 @@ function WalletScreen() {
                   className="tap-icon flex min-w-0 flex-col items-center gap-1.5 rounded-2xl bg-ink-foreground/10 px-1 py-2.5"
                 >
                   <Icon className="size-[17px] shrink-0" strokeWidth={2.4} />
-                  <span className="w-full truncate text-center text-[9px] font-semibold leading-none">{label}</span>
+                  <span className="w-full truncate text-center text-[9.5px] font-semibold leading-none">{label}</span>
                 </Link>
               ))}
             </div>
@@ -112,15 +115,18 @@ function WalletScreen() {
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold">Shekk Card</p>
+              <p className="flex items-center gap-2 text-sm font-semibold">
+                <span className="truncate">Shekk Card</span>
+                <PreviewBadge />
+              </p>
               <p className="mt-0.5 line-clamp-2 text-[11.5px] leading-snug text-muted-foreground">
                 {state.card.issued
                   ? state.card.frozen
                     ? "Frozen · tap to unfreeze"
                     : `Mastercard •••• ${state.card.last4} · in Apple Pay`
                   : isPremium
-                    ? "Ready to issue"
-                    : "Included with Shekk+"}
+                    ? "A preview of the card while we finish issuing"
+                    : "Coming with Shekk+ — have a look inside"}
               </p>
             </div>
             <ChevronRight className="size-5 shrink-0 text-muted-foreground" />
@@ -136,7 +142,7 @@ function WalletScreen() {
         </Card>
         <Card className="min-w-0 p-4">
           <p className="truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Membership</p>
-          <p className="mt-1 truncate font-display text-xl font-bold leading-none">{isPremium ? "Premium" : "Free"}</p>
+          <p className="mt-1 truncate font-display text-xl font-bold leading-none">{isPremium ? "Shekk+" : "Free"}</p>
           <Link to="/membership" className="mt-1.5 inline-block text-[11px] font-semibold text-primary">
             {isPremium ? "See benefits" : "Upgrade"}
           </Link>
@@ -144,29 +150,54 @@ function WalletScreen() {
       </section>
 
 
-      {/* Recent activity */}
-      <section className="px-4 pb-8 pt-5">
-        <div className="mb-3 flex items-baseline justify-between px-1">
-          <h2 className="font-display text-lg font-bold tracking-tight">Recent activity</h2>
-          <Link to="/activity" className="tap-flat text-[12px] font-semibold text-primary">
-            See all
-          </Link>
-        </div>
-        <Card className="divide-y divide-border p-0">
-          {state.txns.length === 0 ? (
-            <div className="px-4 py-8 text-center">
-              <p className="text-sm font-semibold">No activity yet</p>
-              <p className="mx-auto mt-1 max-w-[16rem] text-xs leading-relaxed text-muted-foreground">
-                Add money to your shekel account and every payment will show up here.
-              </p>
-              <Link
-                to="/topup"
-                className="tap mt-4 inline-flex rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
-              >
-                Add money
+      {/* Where your money stands */}
+      <section className="px-4 pt-5">
+        <SectionHead title="Where your money stands" hint="Plain English, no small print" />
+        <Card className="space-y-3 p-4">
+          <div className="flex items-center justify-between gap-3">
+            <p className="min-w-0 text-[13px] font-semibold">Identity check</p>
+            {kyc.verified ? (
+              <StatusPill tone="live" icon={ShieldCheck}>Verified</StatusPill>
+            ) : (
+              <Link to="/verify" className="tap-flat">
+                <StatusPill tone="attention">Needed</StatusPill>
               </Link>
-            </div>
+            )}
+          </div>
+          <p className="text-[12px] leading-relaxed text-muted-foreground">
+            {kyc.verified
+              ? "You're verified, so adding money and spending work normally."
+              : "A one-off ID check is required before you can spend. It usually takes a few minutes."}
+          </p>
+          {held > 0 ? (
+            <p className="text-[12px] leading-relaxed text-muted-foreground">
+              {ils(held)} is reserved for payments that haven't finished settling. It returns to your available
+              balance if a payment doesn't complete.
+            </p>
           ) : null}
+        </Card>
+      </section>
+
+      {/* Recent activity */}
+      <section className="px-4 pb-8 pt-6">
+        <SectionHead
+          title="Recent activity"
+          hint="Every top-up and payment, newest first"
+          action={
+            <Link to="/activity" className="tap-flat text-[12.5px] font-semibold text-primary">
+              See all
+            </Link>
+          }
+        />
+        {state.txns.length === 0 ? (
+          <EmptyState
+            title="Nothing here yet"
+            body="Add money in your home currency and every top-up and payment will appear here."
+            actionLabel="Add money"
+            actionTo="/topup"
+          />
+        ) : null}
+        <Card className={`divide-y divide-border p-0 ${state.txns.length === 0 ? "hidden" : ""}`}>
           {state.txns.slice(0, 7).map((t) => (
             <div key={t.id} className="flex items-center gap-3 p-3.5">
               <span className="flex size-10 items-center justify-center rounded-xl bg-muted text-lg">{t.icon}</span>
@@ -191,8 +222,8 @@ function WalletScreen() {
 
         <p className="mt-4 flex items-start gap-2 px-1 text-[11px] leading-relaxed text-muted-foreground">
           <ShieldCheck className="mt-[3px] size-3.5 shrink-0" />
-          Your shekel account and card are provided by Airwallex, Shekk's regulated payment and issuing partner. Shekk builds the
-          app.{" "}
+          Your shekel account is held with Airwallex, Shekk's regulated payment partner. The Shekk Card is still in
+          preview and isn't issued yet.{" "}
           <Link to="/terms" className="font-semibold underline">
             Terms
           </Link>

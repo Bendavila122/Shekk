@@ -287,7 +287,7 @@ function FriendsTab() {
         ))}
       </Card>
 
-      {loading && <p className="py-6 text-center text-sm text-muted-foreground">Loading…</p>}
+      {loading && <div className="mx-1 my-4 h-16 animate-pulse rounded-2xl bg-muted" />}
 
       {data && data.incoming.length > 0 && (
         <section>
@@ -459,7 +459,7 @@ function SplitTab() {
       <section>
         <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Requests for you</h2>
         <Card className="divide-y divide-border p-0">
-          {loading && <p className="p-4 text-sm text-muted-foreground">Loading…</p>}
+          {loading && <div className="m-3 h-16 animate-pulse rounded-2xl bg-muted" />}
           {!loading && owed.length === 0 && (
             <p className="p-4 text-sm text-muted-foreground">No one is waiting on you.</p>
           )}

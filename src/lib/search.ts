@@ -20,13 +20,13 @@ export type SearchResult = {
 /** Every screen in Shekk, searchable by name and by what students call it. */
 const PAGES: { title: string; subtitle: string; emoji: string; to: LinkProps["to"]; keywords: string }[] = [
   { title: "Home", subtitle: "Your app springboard and pay code", emoji: "🏠", to: "/", keywords: "home springboard qr pay code" },
-  { title: "Top up", subtitle: "Buy credits with Apple Pay", emoji: "➕", to: "/topup", keywords: "top up topup add credits money buy apple pay balance exchange rate" },
+  { title: "Top up", subtitle: "Add money with Apple Pay", emoji: "➕", to: "/topup", keywords: "top up topup add money buy apple pay balance exchange rate" },
   { title: "Activity", subtitle: "Every top-up, order and transfer", emoji: "🧾", to: "/activity", keywords: "activity history statement transactions spends receipts" },
   { title: "Explore", subtitle: "All apps, folders and guides", emoji: "🧭", to: "/explore", keywords: "explore apps catalogue services folders" },
   { title: "Social", subtitle: "Split a bill, cohort threads, feed", emoji: "👥", to: "/social", keywords: "social split bill friends cohort group chat feed pay friend" },
   { title: "Me", subtitle: "Profile, program, verification, settings", emoji: "🙋", to: "/me", keywords: "me profile settings account program cohort verification badge saved places photo" },
   { title: "Re-verify", subtitle: "Annual ID re-verification", emoji: "🪪", to: "/reverify", keywords: "reverify re-verify verification id passport annual kyc deadline" },
-  { title: "Terms & Conditions", subtitle: "Credit terms in full", emoji: "📄", to: "/terms", keywords: "terms conditions t&c legal credits policy" },
+  { title: "Terms & Conditions", subtitle: "The full legal terms", emoji: "📄", to: "/terms", keywords: "terms conditions t&c legal policy money" },
   { title: "Health cover", subtitle: "Insurance card, member number, hotlines", emoji: "🩺", to: "/explore/health", keywords: "health cover insurance card maccabi clalit meuhedet leumit harel yedidim passportcard cigna geoblue kupah kupat holim doctor clinic terem hospital member number policy emergency 101 ambulance dentist" },
   { title: "Been There", subtitle: "Interactive scratch map of Israel", emoji: "🗺️", to: "/explore/map", keywords: "been there map israel scratch scratch-off skratch visited travel places pins city cities kotel western wall masada dead sea ein gedi tzfat safed kinneret galilee golan haifa akko caesarea tel aviv jaffa eilat negev mitzpe ramon beer sheva chevron hebron ashkelon beit shemesh history things to do sightseeing" },
   { title: "Fitness", subtitle: "Gyms, classes, pools & courts near you", emoji: "🏋️", to: "/explore/fitness", keywords: "fitness gym gyms workout exercise class classes pool swim swimming studio pilates yoga spinning crossfit weights martial arts krav maga boxing climbing bouldering basketball football court pitch sports club country club holmes place icon gymbox go active membership day pass short term contract" },

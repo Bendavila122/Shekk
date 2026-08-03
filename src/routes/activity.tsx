@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { IdCard, Plus } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
+import { LoadingBlocks } from "@/components/Kit";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { ils } from "@/lib/mock";
@@ -54,7 +55,7 @@ function ActivityScreen() {
   if (!ready) {
     return (
       <AppShell>
-        <div className="p-6 text-sm text-muted-foreground">Loading…</div>
+        <LoadingBlocks rows={3} />
       </AppShell>
     );
   }

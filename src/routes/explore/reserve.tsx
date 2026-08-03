@@ -97,7 +97,7 @@ function Reserve() {
             </div>
             {isGroup && (
               <p className="rounded-2xl bg-warning-soft p-3 text-xs text-warning-foreground">
-                Group Shabbaton holds require a {ils(deposit)} deposit from credits ({size} × ₪45), split-able with your
+                Group Shabbaton holds hold {ils(deposit)} from your balance ({size} × ₪45), split-able with your
                 group afterwards.
               </p>
             )}

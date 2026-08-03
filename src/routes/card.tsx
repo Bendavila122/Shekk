@@ -15,6 +15,8 @@ import {
   Bell,
 } from "lucide-react";
 import { AppShell, Card, ScreenHeader, PrimaryButton } from "@/components/AppShell";
+import { PreviewBadge } from "@/components/Kit";
+import { LoadingBlocks } from "@/components/Kit";
 import { ShekkCardFace } from "@/components/ShekkCard";
 import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
@@ -41,7 +43,7 @@ export const Route = createFileRoute("/card")({
 });
 
 const FEATURES = [
-  { Icon: Globe, title: "Spend anywhere in Israel", detail: "Accepted wherever Mastercard is — shuk stalls included." },
+  { Icon: Globe, title: "Spend anywhere in Israel", detail: "Planned: accepted wherever Mastercard is — shuk stalls included." },
   { Icon: Apple, title: "Apple Pay & Google Wallet", detail: "Tap to pay from the moment the card is issued." },
   { Icon: Bell, title: "Instant notifications", detail: "Every authorisation lands on your phone in a second." },
   { Icon: Banknote, title: "Low-cost conversion", detail: "Convert at a rate close to interbank, not airport rates." },
@@ -59,7 +61,7 @@ function CardScreen() {
   if (!ready) {
     return (
       <AppShell>
-        <div className="p-6 text-sm text-muted-foreground">Loading…</div>
+        <LoadingBlocks rows={3} />
       </AppShell>
     );
   }
@@ -83,9 +85,16 @@ function CardScreen() {
 
   return (
     <AppShell>
-      <ScreenHeader title="Shekk Card" subtitle="Mastercard, issued through Airwallex" back="/wallet" />
+      <ScreenHeader title="Shekk Card" subtitle="A preview of the card we're building" back="/wallet" />
 
       <section className="px-5 pt-5">
+        <div className="mb-4 flex items-start gap-3 rounded-2xl border border-notice-border bg-notice-soft px-4 py-3 text-notice-foreground">
+          <PreviewBadge className="mt-0.5" />
+          <p className="text-[12px] leading-relaxed">
+            The Shekk Card isn't issued yet. Everything on this screen is a preview so you can see how it'll work —
+            we'll tell you the moment real cards go live.
+          </p>
+        </div>
         <ShekkCardFace
           name={firstName}
           last4={card.last4}
@@ -228,7 +237,7 @@ function CardScreen() {
 
       {/* What the card does */}
       <section className="px-4 pt-5">
-        <h2 className="mb-2 px-1 font-display text-lg font-bold tracking-tight">What it does</h2>
+        <h2 className="mb-2 px-1 font-display text-lg font-bold tracking-tight">What it will do</h2>
         <Card className="divide-y divide-border p-0">
           {FEATURES.map(({ Icon, title, detail }) => (
             <div key={title} className="flex items-start gap-3 p-4">

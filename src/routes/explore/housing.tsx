@@ -30,7 +30,7 @@ function Housing() {
           </Card>
         ))}
         <Card className="text-xs text-muted-foreground">
-          Rent isn't paid through credits — listings connect you with the student or landlord directly. Deposits and
+          Rent isn't paid through Shekk — listings connect you with the student or landlord directly. Deposits and
           leases stay off-platform.
         </Card>
       </div>
