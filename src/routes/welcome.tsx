@@ -273,9 +273,10 @@ function Welcome() {
       </div>
 
       <div className="px-5 pb-10 pt-8">
-        <PrimaryButton disabled={!canContinue} onClick={next}>
-          {step === STEPS.length - 1 ? "Open my Shekk account" : "Continue"}
+        <PrimaryButton disabled={!canContinue || busy} onClick={next}>
+          {step === STEPS.length - 1 ? (busy ? "Setting up…" : "Start my Shekk journey") : "Continue"}
         </PrimaryButton>
+
       </div>
     </FocusScreen>
   );
