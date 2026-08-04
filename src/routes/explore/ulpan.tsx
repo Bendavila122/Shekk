@@ -142,18 +142,24 @@ function Ulpan() {
           <div className="relative">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <MicroLabel className="opacity-70">Your Hebrew</MicroLabel>
-                <p className="mt-2 font-display text-[2rem] font-bold leading-tight tracking-tight">
-                  {prefs.learned.length}
-                  <span className="text-base font-semibold opacity-70"> / {total} learned</span>
+                <MicroLabel className="opacity-70">Level {lvl.index + 1}</MicroLabel>
+                <p className="mt-2 font-display text-[1.85rem] font-bold leading-tight tracking-tight">
+                  {lvl.level.name}
                 </p>
+                <p className="mt-1 text-[12px] opacity-80">{lvl.level.blurb}</p>
               </div>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-ink-foreground/15 px-3 py-1.5 text-[12px] font-bold">
                 <Flame className="size-3.5" /> {prefs.streak} day{prefs.streak === 1 ? "" : "s"}
               </span>
             </div>
-            <ProgressBar value={learnedPct} tone="onDark" className="mt-3.5" />
-            <p className="mt-2 text-[12px] opacity-80">
+            <ProgressBar value={lvl.progress} tone="onDark" className="mt-3.5" />
+            <div className="mt-2 flex items-center justify-between gap-3 text-[12px] opacity-80">
+              <span className="font-bold">{prefs.xp} XP</span>
+              <span>
+                {lvl.next ? `${lvl.toNext} XP to ${lvl.next.name}` : `${prefs.learned.length}/${total} learned`}
+              </span>
+            </div>
+            <p className="mt-1.5 text-[12px] opacity-80">
               {prefs.streak === 0
                 ? "Learn one thing today to start a streak."
                 : prefs.lastDay === todayISO()
@@ -164,21 +170,24 @@ function Ulpan() {
         </div>
       </header>
 
-      <nav className="flex gap-2 px-4 pt-4" aria-label="Ulpan mode">
+      <nav className="flex gap-2 overflow-x-auto px-4 pt-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Ulpan mode">
         {(
           [
+            ["path", "Paths"],
             ["today", "Today"],
             ["cards", "Flashcards"],
             ["quiz", "Quiz"],
           ] as [Mode, string][]
         ).map(([id, label]) => (
-          <Chip key={id} selected={mode === id} onClick={() => setMode(id)}>
+          <Chip key={id} selected={mode === id} onClick={() => setMode(id)} className="shrink-0">
             {label}
           </Chip>
         ))}
       </nav>
 
-      {mode === "today" ? (
+      {mode === "path" ? (
+        <PathsView learned={prefs.learned} onLearn={markLearned} />
+      ) : mode === "today" ? (
         <TodayView
           word={word}
           phrase={phrase}
@@ -199,6 +208,7 @@ function Ulpan() {
           onFav={toggleFav}
         />
       ) : (
+
         <QuizView
           deckId={deckId}
           setDeckId={setDeckId}
