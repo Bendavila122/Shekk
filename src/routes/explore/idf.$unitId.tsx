@@ -1,8 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { Compass, Target, Wrench } from "lucide-react";
+import { Bookmark, Compass, Target, Wrench } from "lucide-react";
 import { AppShell, Card, Notice, ScreenHeader } from "@/components/AppShell";
+import { useSavedUnits } from "@/components/army/IdfExplorer";
 import { MicroLabel, SectionHead } from "@/components/Kit";
 import { BRANCHES, UNITS, unitOf, type Unit } from "@/lib/idf-content";
+
 
 export const Route = createFileRoute("/explore/idf/$unitId")({
   loader: ({ params }) => {
