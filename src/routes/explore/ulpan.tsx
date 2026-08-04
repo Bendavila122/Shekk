@@ -83,7 +83,7 @@ function speak(phrase: Phrase) {
 
 function Ulpan() {
   const { value: prefs, update } = useLocalState("shekk.ulpan.v1", DEFAULTS);
-  const [mode, setMode] = useState<Mode>("today");
+  const [mode, setMode] = useState<Mode>("path");
   const [deckId, setDeckId] = useState<string>("everyday");
 
   const day = dayIndex();
@@ -101,12 +101,28 @@ function Ulpan() {
     });
 
   const markLearned = (id: string) => {
-    update((p) => ({ ...p, learned: toggleId(p.learned, id) }));
+    update((p) => {
+      const learning = !p.learned.includes(id);
+      const learned = toggleId(p.learned, id);
+      /* XP is only ever earned, never clawed back for a mistaken tap. */
+      const gained = learning ? XP.learn : 0;
+      const beforeStages = PATHS.flatMap((path) => path.stages).filter((s) =>
+        s.phraseIds.every((pid) => p.learned.includes(pid)),
+      ).length;
+      const afterStages = PATHS.flatMap((path) => path.stages).filter((s) =>
+        s.phraseIds.every((pid) => learned.includes(pid)),
+      ).length;
+      const stageBonus = Math.max(0, afterStages - beforeStages) * XP.stage;
+      return { ...p, learned, xp: p.xp + gained + stageBonus };
+    });
     recordDay();
   };
   const toggleFav = (id: string) => update((p) => ({ ...p, favourites: toggleId(p.favourites, id) }));
 
   const learnedPct = total ? prefs.learned.length / total : 0;
+  const lvl = levelFor(prefs.xp);
+
+
 
   return (
     <AppShell>
