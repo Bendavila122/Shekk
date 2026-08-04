@@ -33,12 +33,12 @@ export const Route = createFileRoute("/explore/idf/$unitId")({
 function UnitNotFound() {
   return (
     <AppShell>
-      <ScreenHeader title="IDF Explorer" back="/explore/idf" />
+      <ScreenHeader title="IDF Explorer" back="/explore/army" />
       <div className="px-4 pt-6">
         <Card className="text-center">
           <Compass className="mx-auto size-6 text-muted-foreground" />
           <p className="mt-2 text-sm font-semibold">That unit isn't in the explorer</p>
-          <Link to="/explore/idf" className="mt-3 inline-block text-[12.5px] font-bold text-primary">
+          <Link to="/explore/army" className="mt-3 inline-block text-[12.5px] font-bold text-primary">
             Browse every branch →
           </Link>
         </Card>
@@ -74,7 +74,7 @@ function UnitProfile() {
 
   return (
     <AppShell>
-      <ScreenHeader title={unit.name} back="/explore/idf" />
+      <ScreenHeader title={unit.name} back="/explore/army" />
 
       <header className="px-4 pt-2">
         <div
