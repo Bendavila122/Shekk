@@ -208,17 +208,21 @@ function Ulpan() {
           onFav={toggleFav}
         />
       ) : (
-
         <QuizView
           deckId={deckId}
           setDeckId={setDeckId}
           onFinish={(score, count) => {
-            update((p) => ({ ...p, quizBest: Math.max(p.quizBest, score), quizRounds: p.quizRounds + 1 }));
+            update((p) => ({
+              ...p,
+              quizBest: Math.max(p.quizBest, score),
+              quizRounds: p.quizRounds + 1,
+              xp: p.xp + score * XP.quizCorrect + (count > 0 ? XP.quizRound : 0),
+            }));
             recordDay();
-            void count;
           }}
           best={prefs.quizBest}
         />
+
       )}
     </AppShell>
   );
