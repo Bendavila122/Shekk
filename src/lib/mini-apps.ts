@@ -233,15 +233,16 @@ export const MINI_APPS: MiniApp[] = [
   {
     path: "/explore/army",
     id: "army",
-    name: "Army",
-    tagline: "Service tracks, explained straight",
+    name: "Explore the IDF",
+    tagline: "Branches, units and pathways",
     emoji: "🎖️",
-    Icon: Medal,
+    Icon: Radar,
     iconScale: 0.45,
     grad: "var(--grad-alert)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
   },
+
   {
     path: "/explore/lone-soldier",
     id: "lone-soldier",
