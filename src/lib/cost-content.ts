@@ -127,45 +127,141 @@ export function totalCost(inputs: CostInputs) {
   return COST_LINES.reduce((sum, line) => sum + (inputs[line.key] || 0), 0);
 }
 
-/* ────────────────────────── Budget planner ────────────────────────── */
+/* ──────────────────────── Money Planner (merged) ────────────────────────
+ * One plan covers the three money questions a student actually has:
+ * what does a month cost, what does landing cost, and how much should sit
+ * untouched in case something goes wrong.
+ * ------------------------------------------------------------------------ */
 
 export type BudgetLine = { id: string; label: string; amount: number };
 
-export type BudgetPlan = {
+export type ArrivalKey =
+  | "deposit"
+  | "firstRent"
+  | "bedding"
+  | "kitchen"
+  | "sim"
+  | "ravkav"
+  | "insurance"
+  | "visa";
+
+export const ARRIVAL_LINES: {
+  key: ArrivalKey;
+  label: string;
+  emoji: string;
+  max: number;
+  step: number;
+  hint: string;
+}[] = [
+  { key: "deposit", label: "Flat deposit", emoji: "🔑", max: 12000, step: 100, hint: "Usually one to two months, sometimes a cheque" },
+  { key: "firstRent", label: "First month's rent", emoji: "🏠", max: 7000, step: 100, hint: "Paid up front, on top of the deposit" },
+  { key: "bedding", label: "Bedding & towels", emoji: "🛏️", max: 1500, step: 25, hint: "Nobody arrives with a duvet" },
+  { key: "kitchen", label: "Kitchen basics", emoji: "🍳", max: 1500, step: 25, hint: "Pan, kettle, plates, the first big shop" },
+  { key: "sim", label: "Israeli SIM", emoji: "📱", max: 400, step: 10, hint: "First month plus the SIM itself" },
+  { key: "ravkav", label: "Rav-Kav & first travel", emoji: "🚌", max: 800, step: 20, hint: "Card, first load, airport transfer" },
+  { key: "insurance", label: "Insurance up front", emoji: "🩺", max: 4000, step: 50, hint: "Often billed for the whole stay at once" },
+  { key: "visa", label: "Visa & paperwork", emoji: "📄", max: 1500, step: 25, hint: "Fees, photos, apostilles, translations" },
+];
+
+export type MoneyPlan = {
+  city: CityId;
+  /** Recurring monthly outgoings. */
+  monthly: CostInputs;
+  /** What arrives each month. */
   income: BudgetLine[];
-  expenses: BudgetLine[];
   savingsTarget: number;
+  /** One-off costs in the first fortnight. */
+  arrival: Record<ArrivalKey, number>;
+  /** How many months of outgoings you want untouched. */
+  bufferMonths: number;
 };
 
-export const STARTER_PLAN: BudgetPlan = {
-  income: [
-    { id: "i-home", label: "Money from home", amount: 3000 },
-    { id: "i-work", label: "Work or stipend", amount: 1500 },
-  ],
-  expenses: [
-    { id: "e-rent", label: "Rent & bills", amount: 2600 },
-    { id: "e-food", label: "Food", amount: 1400 },
-    { id: "e-transport", label: "Transport", amount: 220 },
-    { id: "e-fun", label: "Going out", amount: 600 },
-  ],
-  savingsTarget: 400,
-};
-
-export function planTotals(plan: BudgetPlan) {
-  const income = plan.income.reduce((s, l) => s + (l.amount || 0), 0);
-  const expenses = plan.expenses.reduce((s, l) => s + (l.amount || 0), 0);
-  const remaining = income - expenses - (plan.savingsTarget || 0);
-  return { income, expenses, remaining };
+export function arrivalDefaults(city: CityId): Record<ArrivalKey, number> {
+  const c = cityOf(city);
+  return {
+    deposit: Math.round(c.rent * 1.5),
+    firstRent: c.rent,
+    bedding: 450,
+    kitchen: 400,
+    sim: 120,
+    ravkav: 200,
+    insurance: 1200,
+    visa: 350,
+  };
 }
 
-/** One honest sentence about the plan, so the tool takes a view. */
-export function planVerdict(plan: BudgetPlan) {
-  const { income, expenses, remaining } = planTotals(plan);
-  if (income === 0) return "Add what's coming in and Shekk will tell you whether this works.";
-  if (remaining < 0)
-    return `You're ₪${Math.abs(remaining).toLocaleString()} short each month. Cut the biggest line or raise what's coming in.`;
-  if (remaining < income * 0.05)
-    return "This balances, but with nothing spare. One broken phone and the month is gone.";
-  if (expenses > income * 0.85) return "It works, though most of what arrives goes straight back out.";
-  return `Comfortable — ₪${remaining.toLocaleString()} spare on top of your savings target.`;
+export function starterMoneyPlan(city: CityId = "jerusalem"): MoneyPlan {
+  return {
+    city,
+    monthly: baselineInputs(city),
+    income: [
+      { id: "i-home", label: "Money from home", amount: 3000 },
+      { id: "i-work", label: "Work or stipend", amount: 1500 },
+    ],
+    savingsTarget: 300,
+    arrival: arrivalDefaults(city),
+    bufferMonths: 2,
+  };
 }
+
+/** Re-baseline the plan for a new city, keeping what the user typed themselves. */
+export function retargetCity(plan: MoneyPlan, city: CityId): MoneyPlan {
+  return { ...plan, city, monthly: baselineInputs(city), arrival: arrivalDefaults(city) };
+}
+
+export function monthlyOut(plan: MoneyPlan) {
+  return totalCost(plan.monthly);
+}
+
+export function monthlyIn(plan: MoneyPlan) {
+  return plan.income.reduce((s, l) => s + (l.amount || 0), 0);
+}
+
+export function monthlyLeft(plan: MoneyPlan) {
+  return monthlyIn(plan) - monthlyOut(plan) - (plan.savingsTarget || 0);
+}
+
+export function arrivalTotal(plan: MoneyPlan) {
+  return ARRIVAL_LINES.reduce((s, l) => s + (plan.arrival[l.key] || 0), 0);
+}
+
+export function bufferTarget(plan: MoneyPlan) {
+  return Math.round(monthlyOut(plan) * plan.bufferMonths);
+}
+
+/** What you need in hand before you fly: landing costs plus the buffer. */
+export function beforeYouFlyTotal(plan: MoneyPlan) {
+  return arrivalTotal(plan) + bufferTarget(plan);
+}
+
+export type PlanTone = "good" | "tight" | "short";
+
+export function monthlyVerdict(plan: MoneyPlan): { tone: PlanTone; line: string } {
+  const inc = monthlyIn(plan);
+  const out = monthlyOut(plan);
+  const left = monthlyLeft(plan);
+  if (inc === 0)
+    return { tone: "tight", line: "Add what's coming in and Shekk will tell you whether this month works." };
+  if (left < 0)
+    return {
+      tone: "short",
+      line: `You're ₪${Math.abs(left).toLocaleString()} short each month. Cut your biggest line or raise what arrives.`,
+    };
+  if (left < inc * 0.05)
+    return { tone: "tight", line: "It balances, but with nothing spare. One broken phone and the month is gone." };
+  if (out > inc * 0.85)
+    return { tone: "tight", line: "This works, though most of what arrives goes straight back out." };
+  return { tone: "good", line: `Comfortable — ₪${left.toLocaleString()} spare on top of what you're keeping.` };
+}
+
+export function bufferVerdict(plan: MoneyPlan): string {
+  const target = bufferTarget(plan);
+  if (plan.bufferMonths < 1)
+    return "No buffer at all. A flight home or a lost phone becomes a phone call to your parents.";
+  if (plan.bufferMonths < 2)
+    return `₪${target.toLocaleString()} covers one bad month — enough for a deposit dispute, not a flight home.`;
+  if (plan.bufferMonths <= 3)
+    return `₪${target.toLocaleString()} is the sensible range: a flight home, a medical bill, or a month between flats.`;
+  return `₪${target.toLocaleString()} is generous. Money sitting still is money you could be using — three months is plenty.`;
+}
+
