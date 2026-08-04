@@ -1,8 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { Compass, Target, Wrench } from "lucide-react";
+import { Bookmark, Compass, Target, Wrench } from "lucide-react";
 import { AppShell, Card, Notice, ScreenHeader } from "@/components/AppShell";
+import { useSavedUnits } from "@/components/army/IdfExplorer";
 import { MicroLabel, SectionHead } from "@/components/Kit";
 import { BRANCHES, UNITS, unitOf, type Unit } from "@/lib/idf-content";
+
 
 export const Route = createFileRoute("/explore/idf/$unitId")({
   loader: ({ params }) => {
@@ -33,12 +35,12 @@ export const Route = createFileRoute("/explore/idf/$unitId")({
 function UnitNotFound() {
   return (
     <AppShell>
-      <ScreenHeader title="IDF Explorer" back="/explore/idf" />
+      <ScreenHeader title="IDF Explorer" back="/explore/army" />
       <div className="px-4 pt-6">
         <Card className="text-center">
           <Compass className="mx-auto size-6 text-muted-foreground" />
           <p className="mt-2 text-sm font-semibold">That unit isn't in the explorer</p>
-          <Link to="/explore/idf" className="mt-3 inline-block text-[12.5px] font-bold text-primary">
+          <Link to="/explore/army" className="mt-3 inline-block text-[12.5px] font-bold text-primary">
             Browse every branch →
           </Link>
         </Card>
@@ -71,10 +73,14 @@ function UnitProfile() {
   const branch = BRANCHES.find((b) => b.id === unit.branch)!;
   const related = unit.related.map(unitOf).filter(Boolean) as Unit[];
   const siblings = UNITS.filter((u) => u.branch === unit.branch && u.id !== unit.id);
+  const { saved, toggle } = useSavedUnits();
+  const isSaved = saved.includes(unit.id);
 
   return (
     <AppShell>
-      <ScreenHeader title={unit.name} back="/explore/idf" />
+      <ScreenHeader title={unit.name} back="/explore/army" />
+
+
 
       <header className="px-4 pt-2">
         <div
@@ -98,6 +104,17 @@ function UnitProfile() {
               </p>
             ) : null}
             <p className="mt-2 text-[12.5px] leading-relaxed opacity-85">{unit.tagline}</p>
+            <button
+              type="button"
+              onClick={() => toggle(unit.id)}
+              className={`tap mt-3.5 inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12px] font-bold ${
+                isSaved ? "bg-card text-foreground" : "bg-ink-foreground/15 text-ink-foreground"
+              }`}
+            >
+              <Bookmark className={`size-3.5 ${isSaved ? "fill-current" : ""}`} />
+              {isSaved ? "Saved to compare" : "Save to compare"}
+            </button>
+
           </div>
         </div>
       </header>

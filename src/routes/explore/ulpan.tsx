@@ -14,17 +14,22 @@ import {
 } from "lucide-react";
 import { AppShell, Card, ScreenHeader } from "@/components/AppShell";
 import { Chip, MicroLabel, MicroLabel as Label, ProgressBar, SectionHead } from "@/components/Kit";
+import { PathsView } from "@/components/ulpan/PathsView";
 import { dayIndex, todayISO, toggleId, useLocalState } from "@/lib/local-state";
 import {
   DAILY_WORDS,
+  PATHS,
   ULPAN_CATEGORIES,
+  XP,
   allPhrases,
   buildQuiz,
   categoryOf,
+  levelFor,
   pickForDay,
   type Phrase,
   type QuizQuestion,
 } from "@/lib/ulpan-content";
+
 
 export const Route = createFileRoute("/explore/ulpan")({
   head: () => ({
@@ -54,11 +59,21 @@ type Prefs = {
   lastDay: string | null;
   quizBest: number;
   quizRounds: number;
+  xp: number;
 };
 
-const DEFAULTS: Prefs = { learned: [], favourites: [], streak: 0, lastDay: null, quizBest: 0, quizRounds: 0 };
+const DEFAULTS: Prefs = {
+  learned: [],
+  favourites: [],
+  streak: 0,
+  lastDay: null,
+  quizBest: 0,
+  quizRounds: 0,
+  xp: 0,
+};
 
-type Mode = "today" | "cards" | "quiz";
+type Mode = "path" | "today" | "cards" | "quiz";
+
 
 function speak(phrase: Phrase) {
   try {
@@ -73,7 +88,7 @@ function speak(phrase: Phrase) {
 
 function Ulpan() {
   const { value: prefs, update } = useLocalState("shekk.ulpan.v1", DEFAULTS);
-  const [mode, setMode] = useState<Mode>("today");
+  const [mode, setMode] = useState<Mode>("path");
   const [deckId, setDeckId] = useState<string>("everyday");
 
   const day = dayIndex();
@@ -91,12 +106,28 @@ function Ulpan() {
     });
 
   const markLearned = (id: string) => {
-    update((p) => ({ ...p, learned: toggleId(p.learned, id) }));
+    update((p) => {
+      const learning = !p.learned.includes(id);
+      const learned = toggleId(p.learned, id);
+      /* XP is only ever earned, never clawed back for a mistaken tap. */
+      const gained = learning ? XP.learn : 0;
+      const beforeStages = PATHS.flatMap((path) => path.stages).filter((s) =>
+        s.phraseIds.every((pid) => p.learned.includes(pid)),
+      ).length;
+      const afterStages = PATHS.flatMap((path) => path.stages).filter((s) =>
+        s.phraseIds.every((pid) => learned.includes(pid)),
+      ).length;
+      const stageBonus = Math.max(0, afterStages - beforeStages) * XP.stage;
+      return { ...p, learned, xp: p.xp + gained + stageBonus };
+    });
     recordDay();
   };
   const toggleFav = (id: string) => update((p) => ({ ...p, favourites: toggleId(p.favourites, id) }));
 
   const learnedPct = total ? prefs.learned.length / total : 0;
+  const lvl = levelFor(prefs.xp);
+
+
 
   return (
     <AppShell>
@@ -111,18 +142,24 @@ function Ulpan() {
           <div className="relative">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <MicroLabel className="opacity-70">Your Hebrew</MicroLabel>
-                <p className="mt-2 font-display text-[2rem] font-bold leading-tight tracking-tight">
-                  {prefs.learned.length}
-                  <span className="text-base font-semibold opacity-70"> / {total} learned</span>
+                <MicroLabel className="opacity-70">Level {lvl.index + 1}</MicroLabel>
+                <p className="mt-2 font-display text-[1.85rem] font-bold leading-tight tracking-tight">
+                  {lvl.level.name}
                 </p>
+                <p className="mt-1 text-[12px] opacity-80">{lvl.level.blurb}</p>
               </div>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-ink-foreground/15 px-3 py-1.5 text-[12px] font-bold">
                 <Flame className="size-3.5" /> {prefs.streak} day{prefs.streak === 1 ? "" : "s"}
               </span>
             </div>
-            <ProgressBar value={learnedPct} tone="onDark" className="mt-3.5" />
-            <p className="mt-2 text-[12px] opacity-80">
+            <ProgressBar value={lvl.progress} tone="onDark" className="mt-3.5" />
+            <div className="mt-2 flex items-center justify-between gap-3 text-[12px] opacity-80">
+              <span className="font-bold">{prefs.xp} XP</span>
+              <span>
+                {lvl.next ? `${lvl.toNext} XP to ${lvl.next.name}` : `${prefs.learned.length}/${total} learned`}
+              </span>
+            </div>
+            <p className="mt-1.5 text-[12px] opacity-80">
               {prefs.streak === 0
                 ? "Learn one thing today to start a streak."
                 : prefs.lastDay === todayISO()
@@ -133,21 +170,24 @@ function Ulpan() {
         </div>
       </header>
 
-      <nav className="flex gap-2 px-4 pt-4" aria-label="Ulpan mode">
+      <nav className="flex gap-2 overflow-x-auto px-4 pt-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Ulpan mode">
         {(
           [
+            ["path", "Paths"],
             ["today", "Today"],
             ["cards", "Flashcards"],
             ["quiz", "Quiz"],
           ] as [Mode, string][]
         ).map(([id, label]) => (
-          <Chip key={id} selected={mode === id} onClick={() => setMode(id)}>
+          <Chip key={id} selected={mode === id} onClick={() => setMode(id)} className="shrink-0">
             {label}
           </Chip>
         ))}
       </nav>
 
-      {mode === "today" ? (
+      {mode === "path" ? (
+        <PathsView learned={prefs.learned} onLearn={markLearned} />
+      ) : mode === "today" ? (
         <TodayView
           word={word}
           phrase={phrase}
@@ -172,12 +212,17 @@ function Ulpan() {
           deckId={deckId}
           setDeckId={setDeckId}
           onFinish={(score, count) => {
-            update((p) => ({ ...p, quizBest: Math.max(p.quizBest, score), quizRounds: p.quizRounds + 1 }));
+            update((p) => ({
+              ...p,
+              quizBest: Math.max(p.quizBest, score),
+              quizRounds: p.quizRounds + 1,
+              xp: p.xp + score * XP.quizCorrect + (count > 0 ? XP.quizRound : 0),
+            }));
             recordDay();
-            void count;
           }}
           best={prefs.quizBest}
         />
+
       )}
     </AppShell>
   );

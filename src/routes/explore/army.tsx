@@ -1,22 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { TrackApp } from "@/components/official/TrackApp";
+import { AppShell, ScreenHeader } from "@/components/AppShell";
+import { IdfExplorer } from "@/components/army/IdfExplorer";
+import { TrackGuidance } from "@/components/official/TrackGuidance";
 import { getTrack, type OfficialTrack } from "@/lib/official-content";
 
 export const Route = createFileRoute("/explore/army")({
   head: () => ({
     meta: [
-      { title: "Army & service · Shekk" },
+      { title: "Explore the IDF · Shekk" },
       {
         name: "description",
         content:
-          "Mahal, Garin Tzabar, Hesder and mechina, tzav rishon, gius dates and what a gap year does and doesn't commit you to.",
+          "Browse IDF branches and units, save the ones you want to compare, then read the service-track guidance underneath — Mahal, Garin Tzabar, Hesder, tzav rishon and gius.",
       },
-      { property: "og:title", content: "Army & service · Shekk" },
+      { property: "og:title", content: "Explore the IDF · Shekk" },
       {
         property: "og:description",
-        content: "The honest map of IDF service tracks for students on a gap year in Israel.",
+        content: "Branches, units and pathways you can actually explore — with the paperwork underneath.",
       },
-      { property: "og:type", content: "article" },
+      { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
   }),
@@ -24,5 +26,14 @@ export const Route = createFileRoute("/explore/army")({
 });
 
 function ArmyApp() {
-  return <TrackApp track={getTrack("army") as OfficialTrack} />;
+  const track = getTrack("army") as OfficialTrack;
+  return (
+    <AppShell>
+      <ScreenHeader title="Army" back="/israel" />
+      <IdfExplorer />
+      <div className="pt-8">
+        <TrackGuidance track={track} />
+      </div>
+    </AppShell>
+  );
 }

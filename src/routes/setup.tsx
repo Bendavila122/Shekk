@@ -267,11 +267,12 @@ function IsraelSetup() {
           <SectionHead title="Tools that do the work" hint="Assistants, not articles." />
           <Card className="grid grid-cols-2 gap-2.5">
             {[
-              { to: "/explore/budget", label: "Budget planner", emoji: "🧮" },
-              { to: "/explore/cost-of-living", label: "Cost calculator", emoji: "🏠" },
+              { to: "/explore/money-planner", label: "Money planner", emoji: "🧮" },
               { to: "/explore/ulpan", label: "Ulpan", emoji: "🗣️" },
-              { to: "/explore/uni-finder", label: "Uni finder", emoji: "🎓" },
+              { to: "/explore/uni", label: "Find a uni", emoji: "🎓" },
+              { to: "/explore/army", label: "Explore the IDF", emoji: "🎖️" },
             ].map((t) => (
+
               <Link
                 key={t.to}
                 to={t.to}
