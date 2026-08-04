@@ -212,3 +212,149 @@ export function buildQuiz(deck: Phrase[], count = 8, seed = Date.now()): QuizQue
     return { phrase, options };
   });
 }
+
+/* ─────────────────────────── XP and levels ─────────────────────────── */
+
+export const XP = {
+  /** Marking something learned for the first time. */
+  learn: 10,
+  /** Each correct quiz answer. */
+  quizCorrect: 5,
+  /** Finishing a quiz round. */
+  quizRound: 15,
+  /** Completing a stage of a learning path. */
+  stage: 40,
+} as const;
+
+export type Level = { name: string; at: number; blurb: string };
+
+export const LEVELS: Level[] = [
+  { name: "First week", at: 0, blurb: "Reading transliteration, pointing a lot." },
+  { name: "Getting by", at: 120, blurb: "You can get a taxi and buy bread." },
+  { name: "Ordering confidently", at: 350, blurb: "Restaurants and the shuk don't scare you." },
+  { name: "Holding your own", at: 700, blurb: "You can handle a problem in Hebrew." },
+  { name: "Sounding local", at: 1200, blurb: "Slang, small talk and the right tone." },
+];
+
+export function levelFor(xp: number) {
+  let index = 0;
+  for (let i = 0; i < LEVELS.length; i++) if (xp >= LEVELS[i].at) index = i;
+  const level = LEVELS[index];
+  const next = LEVELS[index + 1] ?? null;
+  const span = next ? next.at - level.at : 1;
+  return {
+    index,
+    level,
+    next,
+    /** 0–1 progress towards the next level (1 when maxed). */
+    progress: next ? Math.min(1, (xp - level.at) / span) : 1,
+    toNext: next ? Math.max(0, next.at - xp) : 0,
+  };
+}
+
+/* ───────────────────────── Learning paths ───────────────────────── */
+
+export type PathStage = {
+  id: string;
+  title: string;
+  blurb: string;
+  phraseIds: string[];
+};
+
+export type LearningPath = {
+  id: string;
+  name: string;
+  emoji: string;
+  /** What you'll be able to do at the end — not what you'll "cover". */
+  promise: string;
+  grad: string;
+  stages: PathStage[];
+};
+
+export const PATHS: LearningPath[] = [
+  {
+    id: "landing",
+    name: "Landing day",
+    emoji: "🛬",
+    promise: "Get out of the airport, into a taxi and through your front door without English.",
+    grad: "var(--grad-sky)",
+    stages: [
+      {
+        id: "landing-1",
+        title: "Say hello properly",
+        blurb: "The four things you'll say to everyone on day one.",
+        phraseIds: ["d1", "d3", "d4", "d5"],
+      },
+      {
+        id: "landing-2",
+        title: "Get the taxi right",
+        blurb: "Meter on, price agreed, receipt in hand.",
+        phraseIds: ["t2", "t3", "t4", "t7", "t9"],
+      },
+      {
+        id: "landing-3",
+        title: "Ask for what you need",
+        blurb: "When you don't understand and need it slower.",
+        phraseIds: ["d6", "d7", "d8", "e9"],
+      },
+    ],
+  },
+  {
+    id: "feeding",
+    name: "Feeding yourself",
+    emoji: "🥙",
+    promise: "Order, ask what's in it, shop in the makolet and split the bill.",
+    grad: "var(--grad-deals)",
+    stages: [
+      {
+        id: "feeding-1",
+        title: "Order and pay",
+        blurb: "Table, recommendation, bill, tip.",
+        phraseIds: ["r1", "r2", "r7", "r8"],
+      },
+      {
+        id: "feeding-2",
+        title: "Say what you can't eat",
+        blurb: "Dairy, spice, vegetarian — before it arrives.",
+        phraseIds: ["r3", "r4", "r5", "e5"],
+      },
+      {
+        id: "feeding-3",
+        title: "Shop like you live here",
+        blurb: "Prices, quantities, student discount.",
+        phraseIds: ["s1", "s2", "s6", "s7", "s8"],
+      },
+    ],
+  },
+  {
+    id: "trouble",
+    name: "When it goes wrong",
+    emoji: "🚨",
+    promise: "Ask for help, describe what hurts and get to the right place.",
+    grad: "var(--grad-alert)",
+    stages: [
+      {
+        id: "trouble-1",
+        title: "Get help fast",
+        blurb: "The three sentences you say first.",
+        phraseIds: ["e1", "e2", "e3"],
+      },
+      {
+        id: "trouble-2",
+        title: "Describe the problem",
+        blurb: "Where it hurts, how you feel, what you're allergic to.",
+        phraseIds: ["e4", "e5", "e7"],
+      },
+      {
+        id: "trouble-3",
+        title: "Lost documents and directions",
+        blurb: "Passport gone, hospital needed.",
+        phraseIds: ["e6", "e8", "d4"],
+      },
+    ],
+  },
+];
+
+export function pathStagePhrases(stage: PathStage): Phrase[] {
+  return stage.phraseIds.map((id) => findPhrase(id)).filter(Boolean) as Phrase[];
+}
