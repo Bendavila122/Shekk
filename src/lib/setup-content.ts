@@ -112,14 +112,14 @@ export const SETUP_SECTIONS: SetupSection[] = [
         id: "m-budget",
         title: "Plan your monthly budget",
         blurb: "What's coming in, what's going out, what's actually left.",
-        href: "/explore/budget",
+        href: "/explore/money-planner",
         cta: "Open planner",
       },
       {
         id: "m-cost",
         title: "Price up your city",
         blurb: "Rent, food, transport and going out, adjusted to your plans.",
-        href: "/explore/cost-of-living",
+        href: "/explore/money-planner",
         cta: "Open calculator",
       },
       {

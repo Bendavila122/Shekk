@@ -12,7 +12,6 @@ import {
   BookOpenText,
   Calculator,
   Languages,
-  PiggyBank,
   Radar,
   School,
   BusFront,
@@ -21,10 +20,8 @@ import {
   Compass,
   Dumbbell,
   FolderLock,
-  GraduationCap,
   Handshake,
   House,
-  Medal,
 
   MapPin,
   Map as MapIcon,
