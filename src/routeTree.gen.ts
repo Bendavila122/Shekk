@@ -51,6 +51,7 @@ import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
 import { Route as ExploreShopsRouteImport } from './routes/explore/shops'
 import { Route as ExploreRidesRouteImport } from './routes/explore/rides'
 import { Route as ExploreReserveRouteImport } from './routes/explore/reserve'
+import { Route as ExploreMoneyPlannerRouteImport } from './routes/explore/money-planner'
 import { Route as ExploreMapsRouteImport } from './routes/explore/maps'
 import { Route as ExploreLoneSoldierRouteImport } from './routes/explore/lone-soldier'
 import { Route as ExploreHousingRouteImport } from './routes/explore/housing'
@@ -299,6 +300,11 @@ const ExploreRidesRoute = ExploreRidesRouteImport.update({
 const ExploreReserveRoute = ExploreReserveRouteImport.update({
   id: '/explore/reserve',
   path: '/explore/reserve',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreMoneyPlannerRoute = ExploreMoneyPlannerRouteImport.update({
+  id: '/explore/money-planner',
+  path: '/explore/money-planner',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreMapsRoute = ExploreMapsRouteImport.update({
@@ -551,6 +557,7 @@ export interface FileRoutesByFullPath {
   '/explore/housing': typeof ExploreHousingRoute
   '/explore/lone-soldier': typeof ExploreLoneSoldierRoute
   '/explore/maps': typeof ExploreMapsRoute
+  '/explore/money-planner': typeof ExploreMoneyPlannerRoute
   '/explore/reserve': typeof ExploreReserveRoute
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
@@ -633,6 +640,7 @@ export interface FileRoutesByTo {
   '/explore/housing': typeof ExploreHousingRoute
   '/explore/lone-soldier': typeof ExploreLoneSoldierRoute
   '/explore/maps': typeof ExploreMapsRoute
+  '/explore/money-planner': typeof ExploreMoneyPlannerRoute
   '/explore/reserve': typeof ExploreReserveRoute
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
@@ -717,6 +725,7 @@ export interface FileRoutesById {
   '/explore/housing': typeof ExploreHousingRoute
   '/explore/lone-soldier': typeof ExploreLoneSoldierRoute
   '/explore/maps': typeof ExploreMapsRoute
+  '/explore/money-planner': typeof ExploreMoneyPlannerRoute
   '/explore/reserve': typeof ExploreReserveRoute
   '/explore/rides': typeof ExploreRidesRoute
   '/explore/shops': typeof ExploreShopsRoute
@@ -802,6 +811,7 @@ export interface FileRouteTypes {
     | '/explore/housing'
     | '/explore/lone-soldier'
     | '/explore/maps'
+    | '/explore/money-planner'
     | '/explore/reserve'
     | '/explore/rides'
     | '/explore/shops'
@@ -884,6 +894,7 @@ export interface FileRouteTypes {
     | '/explore/housing'
     | '/explore/lone-soldier'
     | '/explore/maps'
+    | '/explore/money-planner'
     | '/explore/reserve'
     | '/explore/rides'
     | '/explore/shops'
@@ -967,6 +978,7 @@ export interface FileRouteTypes {
     | '/explore/housing'
     | '/explore/lone-soldier'
     | '/explore/maps'
+    | '/explore/money-planner'
     | '/explore/reserve'
     | '/explore/rides'
     | '/explore/shops'
@@ -1044,6 +1056,7 @@ export interface RootRouteChildren {
   ExploreHousingRoute: typeof ExploreHousingRoute
   ExploreLoneSoldierRoute: typeof ExploreLoneSoldierRoute
   ExploreMapsRoute: typeof ExploreMapsRoute
+  ExploreMoneyPlannerRoute: typeof ExploreMoneyPlannerRoute
   ExploreReserveRoute: typeof ExploreReserveRoute
   ExploreRidesRoute: typeof ExploreRidesRoute
   ExploreShopsRoute: typeof ExploreShopsRoute
@@ -1373,6 +1386,13 @@ declare module '@tanstack/react-router' {
       path: '/explore/reserve'
       fullPath: '/explore/reserve'
       preLoaderRoute: typeof ExploreReserveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/money-planner': {
+      id: '/explore/money-planner'
+      path: '/explore/money-planner'
+      fullPath: '/explore/money-planner'
+      preLoaderRoute: typeof ExploreMoneyPlannerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore/maps': {
@@ -1719,6 +1739,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreHousingRoute: ExploreHousingRoute,
   ExploreLoneSoldierRoute: ExploreLoneSoldierRoute,
   ExploreMapsRoute: ExploreMapsRoute,
+  ExploreMoneyPlannerRoute: ExploreMoneyPlannerRoute,
   ExploreReserveRoute: ExploreReserveRoute,
   ExploreRidesRoute: ExploreRidesRoute,
   ExploreShopsRoute: ExploreShopsRoute,
