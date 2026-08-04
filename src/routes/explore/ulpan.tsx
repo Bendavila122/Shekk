@@ -14,17 +14,22 @@ import {
 } from "lucide-react";
 import { AppShell, Card, ScreenHeader } from "@/components/AppShell";
 import { Chip, MicroLabel, MicroLabel as Label, ProgressBar, SectionHead } from "@/components/Kit";
+import { PathsView } from "@/components/ulpan/PathsView";
 import { dayIndex, todayISO, toggleId, useLocalState } from "@/lib/local-state";
 import {
   DAILY_WORDS,
+  PATHS,
   ULPAN_CATEGORIES,
+  XP,
   allPhrases,
   buildQuiz,
   categoryOf,
+  levelFor,
   pickForDay,
   type Phrase,
   type QuizQuestion,
 } from "@/lib/ulpan-content";
+
 
 export const Route = createFileRoute("/explore/ulpan")({
   head: () => ({
