@@ -23,7 +23,7 @@ export const Route = createFileRoute("/before-you-fly/esim")({
 function EsimPage() {
   return (
     <AppShell>
-      <ScreenHeader title="Israeli eSIM" subtitle="What to expect" back="/setup" />
+      <ScreenHeader title="Israeli eSIM" subtitle="What to expect" back="/before-you-fly" />
 
       <header className="px-5 pt-5">
         <h1 className="font-display text-3xl font-bold leading-tight tracking-tight">Land with data</h1>

@@ -23,7 +23,7 @@ export const Route = createFileRoute("/before-you-fly/insurance")({
 function InsurancePage() {
   return (
     <AppShell>
-      <ScreenHeader title="Travel insurance" subtitle="What to expect" back="/setup" />
+      <ScreenHeader title="Travel insurance" subtitle="What to expect" back="/before-you-fly" />
 
       <header className="px-5 pt-5">
         <h1 className="font-display text-3xl font-bold leading-tight tracking-tight">Cover for your stay</h1>

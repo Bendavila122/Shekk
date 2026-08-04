@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -12,7 +12,10 @@ import {
 import { AppShell, Card, Notice, ScreenHeader } from "@/components/AppShell";
 import { MicroLabel, Milestone, PreviewBadge, ProgressBar, SectionHead } from "@/components/Kit";
 import { useApp } from "@/lib/store";
-import { useJourney } from "@/lib/useJourney";
+import { useProfile } from "@/lib/useProfile";
+import { useProgramme, useTravel } from "@/lib/useProgramme";
+import { useLocalState, toggleId } from "@/lib/local-state";
+import { SETUP_SECTIONS, type AutoKey, type SetupItem } from "@/lib/setup-content";
 
 export const Route = createFileRoute("/setup")({
   head: () => ({
@@ -21,7 +24,7 @@ export const Route = createFileRoute("/setup")({
       {
         name: "description",
         content:
-          "One adaptive preparation journey for your move to Israel: before you fly, money, programme, phone, insurance, packing, arrival and your first week — with the next step always chosen for you.",
+          "An adaptive preparation hub for your move to Israel: money, programme, phone, insurance, packing, arrival and your first week — with the next step always chosen for you.",
       },
       { property: "og:title", content: "Israel Setup · Shekk" },
       {
@@ -36,21 +39,49 @@ export const Route = createFileRoute("/setup")({
 });
 
 function IsraelSetup() {
-  const { signedIn } = useApp();
+  const { state, signedIn } = useApp();
+  const profile = useProfile();
+  const { joined } = useProgramme();
+  const { travel, daysToArrival } = useTravel();
+  const { value: local, update } = useLocalState("shekk.setup.v1", { done: [] as string[] });
   const [open, setOpen] = useState<string | null>(null);
 
-  /* One journey model for the whole app — see src/lib/useJourney.ts. */
-  const {
-    sections,
-    total,
-    done: doneTotal,
-    pct,
-    complete,
-    next,
-    isDone,
-    toggle,
-    daysToArrival,
-  } = useJourney();
+  const auto: Record<AutoKey, boolean> = {
+    programme: joined,
+    profile: Boolean(
+      (state.name?.trim() || profile.profile?.legalFirstName) &&
+        (travel.arrivalDate || state.profile.arrivalDateISO),
+    ),
+    kyc: profile.verified,
+    money: state.balance > 0,
+  };
+
+  const isDone = (item: SetupItem) => (item.auto ? auto[item.auto] : local.done.includes(item.id));
+
+  const sections = useMemo(
+    () =>
+      SETUP_SECTIONS.map((section) => {
+        const done = section.items.filter(isDone).length;
+        return { section, done, total: section.items.length, pct: done / section.items.length };
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [local.done, auto.programme, auto.profile, auto.kyc, auto.money],
+  );
+
+  const total = sections.reduce((s, x) => s + x.total, 0);
+  const doneTotal = sections.reduce((s, x) => s + x.done, 0);
+  const complete = doneTotal === total;
+
+  /* The contextual next step: first unfinished item in the earliest section
+     that isn't finished. This is what makes the hub adaptive. */
+  const next = useMemo(() => {
+    for (const { section } of sections) {
+      const item = section.items.find((i) => !isDone(i));
+      if (item) return { section, item };
+    }
+    return null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sections]);
 
   const headline = complete
     ? "You are ready"
@@ -59,7 +90,6 @@ function IsraelSetup() {
       : daysToArrival > 0
         ? `${daysToArrival} ${daysToArrival === 1 ? "day" : "days"} to go`
         : "You're in Israel";
-
 
   return (
     <AppShell>
@@ -74,7 +104,7 @@ function IsraelSetup() {
             <p className="mt-1 text-[12.5px] opacity-80">
               {doneTotal} of {total} things sorted across {sections.length} areas
             </p>
-            <ProgressBar value={pct} tone="onDark" className="mt-3.5" />
+            <ProgressBar value={total ? doneTotal / total : 0} tone="onDark" className="mt-3.5" />
           </div>
         </div>
       </header>
@@ -108,7 +138,7 @@ function IsraelSetup() {
               {!next.item.auto ? (
                 <button
                   type="button"
-                  onClick={() => toggle(next.item.id)}
+                  onClick={() => update((p) => ({ done: toggleId(p.done, next.item.id) }))}
                   className="tap-flat inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-[12.5px] font-semibold"
                 >
                   <Check className="size-3.5" /> Mark done
@@ -194,7 +224,7 @@ function IsraelSetup() {
                             <button
                               type="button"
                               aria-label={done_ ? `Mark ${item.title} not done` : `Mark ${item.title} done`}
-                              onClick={() => toggle(item.id)}
+                              onClick={() => update((p) => ({ done: toggleId(p.done, item.id) }))}
                               className={`tap-flat mt-0.5 grid size-[22px] shrink-0 place-items-center rounded-[7px] border transition-colors ${
                                 done_ ? "border-success bg-success text-success-foreground" : "border-border bg-card"
                               }`}

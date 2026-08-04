@@ -9,7 +9,6 @@ import { useApp } from "@/lib/store";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
-import { SupportRow, WalletStatusNote } from "@/components/SupportRow";
 
 export const Route = createFileRoute("/wallet")({
   head: () => ({
@@ -101,28 +100,39 @@ function WalletScreen() {
         </div>
       </section>
 
-      {/* Card strip — a preview only, never dressed up as a usable card */}
+      {/* Card strip */}
       <section className="px-4 pt-3">
         <Link to="/card" className="tap block">
           <Card className="flex items-center gap-3.5 p-3.5">
-            <div className="w-[84px] shrink-0 opacity-55 blur-[1px]" aria-hidden>
-              <ShekkCardFace name={firstName} last4="••••" expiry="••/••" compact />
+            <div className="w-[84px] shrink-0">
+              <ShekkCardFace
+                name={firstName}
+                last4={state.card.last4}
+                expiry={state.card.expiry}
+                frozen={state.card.frozen}
+                compact
+              />
             </div>
 
             <div className="min-w-0 flex-1">
               <p className="flex items-center gap-2 text-sm font-semibold">
                 <span className="truncate">Shekk Card</span>
-                <PreviewBadge label="Coming soon" />
+                <PreviewBadge />
               </p>
               <p className="mt-0.5 line-clamp-2 text-[11.5px] leading-snug text-muted-foreground">
-                Not issued yet — see what it will do and get told when it's ready
+                {state.card.issued
+                  ? state.card.frozen
+                    ? "Frozen · tap to unfreeze"
+                    : `Mastercard •••• ${state.card.last4} · in Apple Pay`
+                  : isPremium
+                    ? "A preview of the card while we finish issuing"
+                    : "Coming with Shekk+ — have a look inside"}
               </p>
             </div>
             <ChevronRight className="size-5 shrink-0 text-muted-foreground" />
           </Card>
         </Link>
       </section>
-
 
       {/* Spend summary */}
       <section className="grid grid-cols-2 gap-3 px-4 pt-3">
@@ -165,11 +175,8 @@ function WalletScreen() {
               balance if a payment doesn't complete.
             </p>
           ) : null}
-          <WalletStatusNote />
-          <SupportRow />
         </Card>
       </section>
-
 
       {/* Recent activity */}
       <section className="px-4 pb-8 pt-6">

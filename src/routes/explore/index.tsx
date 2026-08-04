@@ -17,22 +17,16 @@ import { useCatalogue, useVisibleBenefits } from "@/lib/admin";
 export const Route = createFileRoute("/explore/")({
   head: () => ({
     meta: [
-      { title: "More in Shekk · everything else" },
+      { title: "Explore · Shekk" },
       {
         name: "description",
         content:
-          "Everything beyond the core Shekk experience: guides, events, news, the Israel map and partner services — including the things that aren't live yet.",
+          "Wolt, Gett, Moovit, Rav-Kav, Israel Railways, Bit, Pango and more — every gap-year service integrated inside one app.",
       },
-      { property: "og:title", content: "More in Shekk · everything else" },
-      {
-        property: "og:description",
-        content: "Guides, events, news, the map and partner services, plus what's still coming.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { property: "og:title", content: "Explore · Shekk" },
+      { property: "og:description", content: "Every gap-year errand, booked inside one app." },
     ],
   }),
-
   component: Explore,
 });
 
@@ -132,12 +126,11 @@ function Explore() {
   return (
     <AppShell>
       <header className="px-5 pt-7">
-        <h1 className="font-display text-4xl font-bold tracking-tight">More</h1>
+        <h1 className="font-display text-4xl font-bold tracking-tight">Explore</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Everything beyond your money, programme and Israel Setup — including what isn't live yet.
+          Every Israeli app you need, sorted into folders. Tap one and it opens inside Shekk.
         </p>
       </header>
-
 
       {/* search sticks to the top so it's always a thumb away */}
       <div className="sticky top-0 z-30 -mt-1 bg-background/85 px-5 pb-3 pt-4 backdrop-blur-xl">
@@ -268,10 +261,9 @@ function Explore() {
           </div>
 
           <p className="px-1 text-center text-[11px] leading-relaxed text-muted-foreground">
-            Partner apps open in the partner's own app or website — Shekk doesn't take payment for them. Anything
-            marked “soon” is a guide to what's coming, not a working purchase.
+            We integrate platforms, not individual venues — restaurants, bars and shops arrive through Wolt, Ontopo and
+            friends. Apps marked “soon” open a guide for now.
           </p>
-
         </section>
       )}
     </AppShell>

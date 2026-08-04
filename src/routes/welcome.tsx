@@ -780,7 +780,7 @@ function Ready({
     style === "programme" && !programmeName
       ? { to: "/programme" as const, label: "Add your programme code", hint: "Brings your timetable and contacts in" }
       : untilFlight !== null && untilFlight > 0
-        ? { to: "/setup" as const, label: "Start your Israel Setup", hint: "The arrival admin, in order" }
+        ? { to: "/before-you-fly" as const, label: "Start before you fly", hint: "The arrival admin, in order" }
         : { to: "/topup" as const, label: "Add your first money", hint: "Fund in your home currency" };
 
   return (

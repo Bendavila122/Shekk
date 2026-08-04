@@ -1,60 +1,48 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PartnerHandoff } from "@/components/PartnerHandoff";
+import { useState } from "react";
+import { AppShell, Card, ScreenHeader } from "@/components/AppShell";
+import { SHOPS } from "@/lib/mock";
 
 export const Route = createFileRoute("/explore/shops")({
   head: () => ({
     meta: [
-      { title: "Student discounts in Israel · Shekk" },
-      {
-        name: "description",
-        content:
-          "Where student discounts actually exist in Israel and how to claim them. Shekk does not apply discounts to purchases yet.",
-      },
-      { property: "og:title", content: "Student discounts in Israel · Shekk" },
-      {
-        property: "og:description",
-        content: "The student discounts worth asking for in Israel, and how to prove you qualify.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { title: "Shops & discounts · Shekk" },
+      { name: "description", content: "Student promo codes applied automatically when you order through partner apps inside Shekk." },
+      { property: "og:title", content: "Shops & discounts · Shekk" },
+      { property: "og:description", content: "Student discounts around Jerusalem, no coupon app required." },
     ],
   }),
   component: Shops,
 });
 
 function Shops() {
+  const [saved, setSaved] = useState<string[]>(["s1"]);
+
   return (
-    <PartnerHandoff
-      title="Student discounts"
-      headline="Shekk doesn't apply discounts at checkout yet"
-      blurb="A partner discount programme is on the roadmap. Until it exists we won't show codes we can't honour — but these are the discounts genuinely available to programme participants in Israel."
-      partners={[
-        {
-          name: "ISIC Israel",
-          emoji: "🎫",
-          blurb: "International student card, accepted at museums, some transport and chains.",
-          cost: "~₪90/year",
-          url: "https://www.isic.org/",
-        },
-        {
-          name: "Rav-Kav student fare",
-          emoji: "🚌",
-          blurb: "Up to 50% off buses and trains once your programme status is registered.",
-          url: "https://ravkavonline.co.il/en/",
-        },
-        {
-          name: "Israel Nature & Parks",
-          emoji: "🏞️",
-          blurb: "Annual pass pays for itself in about three tiyulim.",
-          cost: "From ₪150",
-          url: "https://www.parks.org.il/en/",
-        },
-      ]}
-      tips={[
-        "Always ask: \"Yesh hanacha le'studentim?\" — many places have a discount that is never advertised.",
-        "Your programme's own letter is often accepted where a foreign student card is not. Keep a photo of it in Documents.",
-        "Museums in Jerusalem are frequently free or half price on specific weekdays — check before you pay full price.",
-      ]}
-    />
+    <AppShell>
+      <ScreenHeader title="Shops" subtitle="Student discounts near you" />
+      <div className="space-y-3 px-4 py-4">
+        {SHOPS.map((s) => (
+          <Card key={s.id} className="flex items-center gap-3">
+            <span className="flex size-12 items-center justify-center rounded-xl bg-muted text-2xl">{s.emoji}</span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold">{s.name}</p>
+              <p className="truncate text-xs text-success">{s.promo}</p>
+            </div>
+            <button
+              onClick={() => setSaved((p) => (p.includes(s.id) ? p.filter((x) => x !== s.id) : [...p, s.id]))}
+              className={`tap rounded-full px-3 py-2 text-xs font-semibold ${
+                saved.includes(s.id) ? "bg-primary text-primary-foreground" : "bg-muted"
+              }`}
+            >
+              {saved.includes(s.id) ? "Saved" : "Save"}
+            </button>
+          </Card>
+        ))}
+        <Card className="text-xs text-muted-foreground">
+          Discounts apply automatically when you order through a partner app inside Shekk — we pay them and deduct the discounted amount in Shekk.
+        </Card>
+      </div>
+    </AppShell>
   );
 }
