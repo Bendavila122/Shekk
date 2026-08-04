@@ -54,11 +54,21 @@ type Prefs = {
   lastDay: string | null;
   quizBest: number;
   quizRounds: number;
+  xp: number;
 };
 
-const DEFAULTS: Prefs = { learned: [], favourites: [], streak: 0, lastDay: null, quizBest: 0, quizRounds: 0 };
+const DEFAULTS: Prefs = {
+  learned: [],
+  favourites: [],
+  streak: 0,
+  lastDay: null,
+  quizBest: 0,
+  quizRounds: 0,
+  xp: 0,
+};
 
-type Mode = "today" | "cards" | "quiz";
+type Mode = "path" | "today" | "cards" | "quiz";
+
 
 function speak(phrase: Phrase) {
   try {
