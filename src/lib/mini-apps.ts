@@ -258,15 +258,16 @@ export const MINI_APPS: MiniApp[] = [
   {
     path: "/explore/uni",
     id: "uni",
-    name: "Uni",
-    tagline: "Study here, credit back home",
+    name: "Universities",
+    tagline: "Find your university in Israel",
     emoji: "🎓",
-    Icon: GraduationCap,
+    Icon: School,
     iconScale: 0.46,
     grad: "var(--grad-discover)",
     surface: "bg-primary",
     onSurface: "text-primary-foreground",
   },
+
   {
     path: "/explore/documents",
     id: "documents",
