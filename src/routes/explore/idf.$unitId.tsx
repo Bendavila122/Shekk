@@ -71,10 +71,14 @@ function UnitProfile() {
   const branch = BRANCHES.find((b) => b.id === unit.branch)!;
   const related = unit.related.map(unitOf).filter(Boolean) as Unit[];
   const siblings = UNITS.filter((u) => u.branch === unit.branch && u.id !== unit.id);
+  const { saved, toggle } = useSavedUnits();
+  const isSaved = saved.includes(unit.id);
 
   return (
     <AppShell>
       <ScreenHeader title={unit.name} back="/explore/army" />
+
+
 
       <header className="px-4 pt-2">
         <div
