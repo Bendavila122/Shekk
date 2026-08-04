@@ -104,6 +104,17 @@ function UnitProfile() {
               </p>
             ) : null}
             <p className="mt-2 text-[12.5px] leading-relaxed opacity-85">{unit.tagline}</p>
+            <button
+              type="button"
+              onClick={() => toggle(unit.id)}
+              className={`tap mt-3.5 inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12px] font-bold ${
+                isSaved ? "bg-card text-foreground" : "bg-ink-foreground/15 text-ink-foreground"
+              }`}
+            >
+              <Bookmark className={`size-3.5 ${isSaved ? "fill-current" : ""}`} />
+              {isSaved ? "Saved to compare" : "Save to compare"}
+            </button>
+
           </div>
         </div>
       </header>
