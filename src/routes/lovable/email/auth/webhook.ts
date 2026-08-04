@@ -77,10 +77,18 @@ const createHandler = () => createAuthEmailHandler({
   },
 })
 
+let handler: ReturnType<typeof createHandler> | undefined
+
 export const Route = createFileRoute("/lovable/email/auth/webhook")({
   server: {
     handlers: {
-      POST: ({ request }) => handler(request),
+      POST: ({ request }) => {
+        if (!process.env.LOVABLE_API_KEY) {
+          return new Response("Email sending is not configured", { status: 503 })
+        }
+        handler ??= createHandler()
+        return handler(request)
+      },
     },
   },
 })
