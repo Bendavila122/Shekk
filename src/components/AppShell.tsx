@@ -1,5 +1,5 @@
 import { Link, useRouterState, useRouter, useCanGoBack, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { Wallet, Compass, Tag, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy, Home, GraduationCap, PlaneTakeoff } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { ils } from "@/lib/mock";
