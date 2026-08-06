@@ -1,5 +1,5 @@
 import { Link, useRouterState, useRouter, useCanGoBack, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { Wallet, Compass, Tag, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy, Home, GraduationCap, PlaneTakeoff } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { ils } from "@/lib/mock";
@@ -255,6 +255,25 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
 /** Screens that keep the Shekk chrome; anything deeper is a mini app or info page. */
 const TAB_ROOTS = new Set([...SIDEBAR_TABS.map((t) => t.to), "/explore", "/benefits"]);
 
+/** Lets a ScreenHeader tell its AppShell that a back control already exists. */
+const HeaderRegistry = createContext<((v: boolean) => void) | null>(null);
+
+/** Floating back control for standalone screens that render no header of their own. */
+function FloatingBack() {
+  const router = useRouter();
+  const canGoBack = useCanGoBack();
+  const navigate = useNavigate();
+  return (
+    <button
+      type="button"
+      aria-label="Back to Shekk"
+      onClick={() => (canGoBack ? router.history.back() : navigate({ to: "/" }))}
+      className="tap fixed left-4 top-3 z-40 rounded-full bg-card/85 p-2 text-foreground shadow-card ring-1 ring-border backdrop-blur lg:absolute"
+    >
+      <ChevronLeft className="size-5" />
+    </button>
+  );
+}
 
 export function AppShell({ children }: { children: ReactNode }) {
   const isActive = useActive();
@@ -265,6 +284,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isTabRoot = TAB_ROOTS.has(pathname === "/" ? "/" : pathname.replace(/\/$/, ""));
   const mini = miniAppFor(pathname);
   const standalone = !isTabRoot;
+  const [hasHeader, setHasHeader] = useState(false);
+
+  useEffect(() => {
+    setHasHeader(false);
+  }, [pathname]);
+
 
   return (
     <div className="lg:flex lg:min-h-screen lg:bg-ink/[0.03]">
@@ -311,8 +336,15 @@ export function AppShell({ children }: { children: ReactNode }) {
 
             <div className={`flex-1 lg:pb-6 ${standalone ? "pb-[max(1rem,env(safe-area-inset-bottom))]" : "pb-28"}`}>
               {standalone ? null : <MembershipDunningBanner />}
-              {children}
+              {standalone && !hasHeader ? (
+                <>
+                  <div className="h-11 lg:h-4" aria-hidden />
+                  <FloatingBack />
+                </>
+              ) : null}
+              <HeaderRegistry.Provider value={setHasHeader}>{children}</HeaderRegistry.Provider>
             </div>
+
 
             {mini ? <MiniAppSplash key={mini.id} app={mini} /> : null}
           </PhoneFrame>
@@ -343,6 +375,14 @@ export function ScreenHeader({
   /* Inside a mini app there is no Shekk banner at all — the app owns its whole
      screen and gets one small floating back button, like a real app. */
   const inMiniApp = miniAppFor(pathname) !== null;
+  const register = useContext(HeaderRegistry);
+
+  useEffect(() => {
+    register?.(true);
+    return () => register?.(false);
+  }, [register]);
+
+
 
   const goBack = () => {
     if (onBack) { onBack(); return; }
