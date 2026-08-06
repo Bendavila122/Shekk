@@ -375,6 +375,14 @@ export function ScreenHeader({
   /* Inside a mini app there is no Shekk banner at all — the app owns its whole
      screen and gets one small floating back button, like a real app. */
   const inMiniApp = miniAppFor(pathname) !== null;
+  const register = useContext(HeaderRegistry);
+
+  useEffect(() => {
+    register?.(true);
+    return () => register?.(false);
+  }, [register]);
+
+
 
   const goBack = () => {
     if (onBack) { onBack(); return; }
