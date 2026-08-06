@@ -255,6 +255,25 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
 /** Screens that keep the Shekk chrome; anything deeper is a mini app or info page. */
 const TAB_ROOTS = new Set([...SIDEBAR_TABS.map((t) => t.to), "/explore", "/benefits"]);
 
+/** Lets a ScreenHeader tell its AppShell that a back control already exists. */
+const HeaderRegistry = createContext<((v: boolean) => void) | null>(null);
+
+/** Floating back control for standalone screens that render no header of their own. */
+function FloatingBack() {
+  const router = useRouter();
+  const canGoBack = useCanGoBack();
+  const navigate = useNavigate();
+  return (
+    <button
+      type="button"
+      aria-label="Back to Shekk"
+      onClick={() => (canGoBack ? router.history.back() : navigate({ to: "/" }))}
+      className="tap fixed left-4 top-3 z-40 rounded-full bg-card/85 p-2 text-foreground shadow-card ring-1 ring-border backdrop-blur lg:absolute"
+    >
+      <ChevronLeft className="size-5" />
+    </button>
+  );
+}
 
 export function AppShell({ children }: { children: ReactNode }) {
   const isActive = useActive();
@@ -265,6 +284,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isTabRoot = TAB_ROOTS.has(pathname === "/" ? "/" : pathname.replace(/\/$/, ""));
   const mini = miniAppFor(pathname);
   const standalone = !isTabRoot;
+  const [hasHeader, setHasHeader] = useState(false);
+
+  useEffect(() => {
+    setHasHeader(false);
+  }, [pathname]);
+
 
   return (
     <div className="lg:flex lg:min-h-screen lg:bg-ink/[0.03]">
