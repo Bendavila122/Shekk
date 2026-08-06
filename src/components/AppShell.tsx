@@ -336,8 +336,15 @@ export function AppShell({ children }: { children: ReactNode }) {
 
             <div className={`flex-1 lg:pb-6 ${standalone ? "pb-[max(1rem,env(safe-area-inset-bottom))]" : "pb-28"}`}>
               {standalone ? null : <MembershipDunningBanner />}
-              {children}
+              {standalone && !hasHeader ? (
+                <>
+                  <div className="h-11 lg:h-4" aria-hidden />
+                  <FloatingBack />
+                </>
+              ) : null}
+              <HeaderRegistry.Provider value={setHasHeader}>{children}</HeaderRegistry.Provider>
             </div>
+
 
             {mini ? <MiniAppSplash key={mini.id} app={mini} /> : null}
           </PhoneFrame>
