@@ -138,6 +138,7 @@ function ExploreHub() {
       .flatMap((c) => c.services)
       .filter((s) => {
         if (s.status !== "live") return false;
+        if (HIDDEN_SERVICE_IDS.has(s.id)) return false;
         if (s.to && [...miniPaths].some((p) => s.to === p || s.to!.startsWith(`${p}/`))) return false;
         if (seen.has(s.id)) return false;
         seen.add(s.id);
@@ -305,7 +306,7 @@ function ExploreHub() {
           {/* Partner apps — one flat grid, only live integrations */}
           {partnerApps.length ? (
             <div>
-              <SectionHead title="Partner apps" hint="Israeli apps, opened inside Shekk" />
+              <SectionHead title="Israeli apps" hint="The local apps everyone uses, opened inside Shekk" />
               <div className="grid grid-cols-4 gap-x-3 gap-y-6 sm:grid-cols-6 lg:grid-cols-8">
                 {partnerApps.map((s) => (
                   <AppTile key={s.id} service={s} />
