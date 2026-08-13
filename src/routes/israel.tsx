@@ -183,14 +183,20 @@ function ExploreHub() {
       {results ? (
         <section className="px-4 py-6">
           <p className="mb-4 px-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            {results.length} result{results.length === 1 ? "" : "s"}
+            {miniResults.length + results.length} result{miniResults.length + results.length === 1 ? "" : "s"}
           </p>
-          {results.length === 0 ? (
+          {miniResults.length + results.length === 0 ? (
             <Card className="text-sm text-muted-foreground">
               Not integrated yet. Tell us what you're missing and we'll chase the partner.
             </Card>
           ) : (
             <div className="grid grid-cols-4 gap-x-3 gap-y-6 sm:grid-cols-5 lg:grid-cols-8">
+              {miniResults.map((app) => (
+                <Link key={app.id} to={app.path} className="tap-icon flex flex-col items-center gap-2">
+                  <MiniAppIcon app={app} size={58} />
+                  <span className="line-clamp-2 text-center text-[11px] font-medium leading-tight">{app.name}</span>
+                </Link>
+              ))}
               {results.map((s) => (
                 <AppTile key={s.id} service={s} />
               ))}
