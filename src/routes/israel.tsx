@@ -6,7 +6,7 @@ import { LoadingBlocks } from "@/components/Kit";
 import { serviceLinkProps, type Service } from "@/lib/services";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { MiniAppIcon } from "@/components/MiniAppIcon";
-import { miniApps } from "@/lib/mini-apps";
+import { miniApps, type MiniApp } from "@/lib/mini-apps";
 import { recordServiceUse } from "@/lib/recents";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { GUIDES } from "@/lib/guides";
@@ -73,6 +73,23 @@ function AppTile({ service, size = 60 }: { service: Service; size?: number }) {
         ) : null}
       </span>
       <span className="line-clamp-2 text-center text-[11px] font-medium leading-tight">{service.name}</span>
+    </Link>
+  );
+}
+
+/** One Shekk mini app tile, with a Soon badge when it isn't integrated yet. */
+function MiniTile({ app }: { app: MiniApp }) {
+  return (
+    <Link to={app.path} className="tap-icon flex flex-col items-center gap-2">
+      <span className="relative">
+        <MiniAppIcon app={app} size={58} />
+        {app.status === "planned" ? (
+          <span className="absolute -right-1 -top-1 rounded-full bg-ink px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide text-ink-foreground">
+            soon
+          </span>
+        ) : null}
+      </span>
+      <span className="line-clamp-2 text-center text-[11px] font-medium leading-tight">{app.name}</span>
     </Link>
   );
 }
@@ -207,10 +224,7 @@ function ExploreHub() {
           ) : (
             <div className="grid grid-cols-4 gap-x-3 gap-y-6 sm:grid-cols-5 lg:grid-cols-8">
               {miniResults.map((app) => (
-                <Link key={app.id} to={app.path} className="tap-icon flex flex-col items-center gap-2">
-                  <MiniAppIcon app={app} size={58} />
-                  <span className="line-clamp-2 text-center text-[11px] font-medium leading-tight">{app.name}</span>
-                </Link>
+                <MiniTile key={app.id} app={app} />
               ))}
               {results.map((s) => (
                 <AppTile key={s.id} service={s} />
@@ -250,10 +264,7 @@ function ExploreHub() {
                 </div>
                 <div className="grid grid-cols-4 gap-x-3 gap-y-5 sm:grid-cols-6 lg:grid-cols-9">
                   {g.apps.map((app) => (
-                    <Link key={app.id} to={app.path} className="tap-icon flex flex-col items-center gap-2">
-                      <MiniAppIcon app={app} size={58} />
-                      <span className="line-clamp-2 text-center text-[11px] font-medium leading-tight">{app.name}</span>
-                    </Link>
+                    <MiniTile key={app.id} app={app} />
                   ))}
                 </div>
               </section>
