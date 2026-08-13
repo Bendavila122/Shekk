@@ -55,6 +55,8 @@ export type MiniApp = {
   surface: string;
   /** Text colour that sits on that surface. */
   onSurface: string;
+  /** "planned" means designed but not integrated yet — the route explains how it will work. */
+  status?: "live" | "planned";
 };
 
 
@@ -122,6 +124,7 @@ export const MINI_APPS: MiniApp[] = [
   {
     path: "/explore/food",
     id: "food",
+    status: "planned",
     name: "Food",
     tagline: "Eat well, pay with Shekk",
     emoji: "🥙",
@@ -134,6 +137,7 @@ export const MINI_APPS: MiniApp[] = [
   {
     path: "/explore/rides",
     id: "rides",
+    status: "planned",
     name: "Rides",
     tagline: "Get across town",
     emoji: "🚕",
@@ -146,6 +150,7 @@ export const MINI_APPS: MiniApp[] = [
   {
     path: "/explore/transit",
     id: "transit",
+    status: "planned",
     name: "Transit",
     tagline: "Buses, trains and Rav-Kav",
     emoji: "🚌",
@@ -158,6 +163,7 @@ export const MINI_APPS: MiniApp[] = [
   {
     path: "/explore/housing",
     id: "housing",
+    status: "planned",
     name: "Housing",
     tagline: "Rooms, dira hunting and deposits",
     emoji: "🏠",
@@ -170,6 +176,7 @@ export const MINI_APPS: MiniApp[] = [
   {
     path: "/explore/shops",
     id: "shops",
+    status: "planned",
     name: "Shops",
     tagline: "Where your shekels go furthest",
     emoji: "🛍️",
@@ -182,6 +189,7 @@ export const MINI_APPS: MiniApp[] = [
   {
     path: "/explore/community",
     id: "community",
+    status: "planned",
     name: "Community",
     tagline: "Your program, your people",
     emoji: "🤝",
@@ -194,6 +202,7 @@ export const MINI_APPS: MiniApp[] = [
   {
     path: "/explore/reserve",
     id: "reserve",
+    status: "planned",
     name: "Reserve",
     tagline: "Book a table, a court or a slot",
     emoji: "📅",
