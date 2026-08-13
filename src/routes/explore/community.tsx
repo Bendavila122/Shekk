@@ -7,6 +7,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
  */
 export const Route = createFileRoute("/explore/community")({
   beforeLoad: () => {
-    throw redirect({ to: "/explore/service/$id", params: { id: "community" }, replace: true });
+    throw redirect({ to: "/israel", replace: true });
   },
 });
