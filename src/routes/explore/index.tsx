@@ -4,7 +4,7 @@ import { Search, X, Tag, ChevronRight, Newspaper } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { LoadingBlocks } from "@/components/Kit";
 
-import { serviceLinkProps, type Service, type ServiceCategory } from "@/lib/services";
+import { serviceLinkProps, type Service } from "@/lib/services";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { MiniAppIcon } from "@/components/MiniAppIcon";
 import { miniApps } from "@/lib/mini-apps";
@@ -72,34 +72,16 @@ function AppTile({ service, size = 60 }: { service: Service; size?: number }) {
   );
 }
 
-/** iOS-style folder: a translucent tile with a 2x2 peek of what's inside. */
-function CategoryFolder({ category }: { category: ServiceCategory }) {
-  const peek = category.services.slice(0, 4);
-  return (
-    <Link
-      to="/explore/category/$id"
-      params={{ id: category.id }}
-      className="tap-icon flex flex-col items-center gap-2"
-    >
-      <span className="grid size-[74px] grid-cols-2 grid-rows-2 place-items-center gap-1.5 rounded-[1.5rem] border border-border/60 bg-muted/70 p-2.5 shadow-card backdrop-blur">
-        {peek.map((s) => (
-          <ServiceLogo key={s.id} service={s} size={26} className="rounded-[0.5rem]" />
-        ))}
-        {peek.length < 4
-          ? Array.from({ length: 4 - peek.length }).map((_, i) => (
-              <span key={i} className="size-[26px] rounded-[0.5rem] bg-card/60" />
-            ))
-          : null}
-      </span>
-      <span className="flex min-h-[2.1rem] flex-col items-center justify-start text-center leading-tight">
-        <span className="line-clamp-2 text-[11px] font-semibold">{category.label}</span>
-      </span>
-      <span className="-mt-1.5 text-[10px] text-muted-foreground">
-        {category.services.length} {category.services.length === 1 ? "app" : "apps"}
-      </span>
-    </Link>
-  );
-}
+/** Shekk mini apps, grouped the way the Israel hub groups them. */
+const MINI_GROUPS: { title: string; hint: string; ids: string[] }[] = [
+  { title: "Arrival and paperwork", hint: "Sort this before and just after you land", ids: ["guides", "visa", "documents"] },
+  { title: "Getting around", hint: "Buses, trains, taxis and maps", ids: ["transit", "rides", "maps", "been-there"] },
+  { title: "Everyday life", hint: "Food, shopping, health and where you live", ids: ["food", "shops", "health", "housing", "fitness"] },
+  { title: "Going out", hint: "Events, tickets and places to book", ids: ["events", "tickets", "reserve", "community"] },
+  { title: "Jewish life and news", hint: "Tefillah, times and what's happening", ids: ["siddur", "news"] },
+  { title: "Staying longer", hint: "Army, university and lone soldier tracks", ids: ["army", "uni", "lone-soldier"] },
+  { title: "Money and planning", hint: "Budgeting, exchange and learning Hebrew", ids: ["money-planner", "exchange", "ulpan"] },
+];
 
 function Explore() {
   const ready = useOnboardedGate();
@@ -107,6 +89,20 @@ function Explore() {
   const catalogue = useCatalogue();
   const benefits = useVisibleBenefits();
   const apps = miniApps();
+
+  /** Grouped mini apps, with anything ungrouped appended so nothing disappears. */
+  const miniGroups = useMemo(() => {
+    const byId = new Map(apps.map((a) => [a.id, a]));
+    const groups = MINI_GROUPS.map((g) => ({
+      title: g.title,
+      hint: g.hint,
+      apps: g.ids.map((id) => byId.get(id)).filter((a): a is NonNullable<typeof a> => Boolean(a)),
+    })).filter((g) => g.apps.length > 0);
+    const placed = new Set(MINI_GROUPS.flatMap((g) => g.ids));
+    const rest = apps.filter((a) => !placed.has(a.id));
+    if (rest.length) groups.push({ title: "More from Shekk", hint: "Everything else we build in-house", apps: rest });
+    return groups;
+  }, [apps]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -217,30 +213,50 @@ function Explore() {
             </div>
           </div>
 
-          {/* Shekk's own mini apps, straight on the home screen */}
-          <div>
+          {/* Shekk's own mini apps, grouped so nothing is hidden behind a tap */}
+          <div className="space-y-7">
             <SectionHead title="Shekk apps" hint="Built by us, open instantly" />
-            <div className="grid grid-cols-4 gap-x-3 gap-y-5 sm:grid-cols-6 lg:grid-cols-9">
-              {apps.map((app) => (
-                <Link key={app.id} to={app.path} className="tap-icon flex flex-col items-center gap-2">
-                  <MiniAppIcon app={app} size={58} />
-                  <span className="line-clamp-2 text-center text-[11px] font-medium leading-tight">
-                    {app.name}
-                  </span>
-                </Link>
-              ))}
-            </div>
+            {miniGroups.map((g) => (
+              <section key={g.title}>
+                <div className="mb-3 px-1">
+                  <h2 className="font-display text-base font-bold leading-tight tracking-tight">{g.title}</h2>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">{g.hint}</p>
+                </div>
+                <div className="grid grid-cols-4 gap-x-3 gap-y-5 sm:grid-cols-6 lg:grid-cols-9">
+                  {g.apps.map((app) => (
+                    <Link key={app.id} to={app.path} className="tap-icon flex flex-col items-center gap-2">
+                      <MiniAppIcon app={app} size={58} />
+                      <span className="line-clamp-2 text-center text-[11px] font-medium leading-tight">
+                        {app.name}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            ))}
           </div>
 
-          {/* Category folders */}
-          <div>
-            <SectionHead title="Folders" hint="Partner apps, grouped the way you use them" />
-            <div className="grid grid-cols-4 gap-x-3 gap-y-6 sm:grid-cols-6 lg:grid-cols-8">
-              {catalogue.map((cat) => (
-                <CategoryFolder key={cat.id} category={cat} />
-              ))}
-            </div>
+          {/* Partner apps, laid out in full under each category */}
+          <div className="space-y-7">
+            <SectionHead title="Partner apps" hint="Israeli apps, opened inside Shekk" />
+            {catalogue.map((cat) => (
+              <section key={cat.id}>
+                <div className="mb-3 px-1">
+                  <h2 className="font-display text-base font-bold leading-tight tracking-tight">
+                    {cat.emoji ? <span className="mr-1.5">{cat.emoji}</span> : null}
+                    {cat.label}
+                  </h2>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">{cat.tagline}</p>
+                </div>
+                <div className="grid grid-cols-4 gap-x-3 gap-y-5 sm:grid-cols-6 lg:grid-cols-8">
+                  {cat.services.map((s) => (
+                    <AppTile key={s.id} service={s} />
+                  ))}
+                </div>
+              </section>
+            ))}
           </div>
+
 
           {/* Guides & tips */}
           <div>

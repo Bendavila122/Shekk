@@ -64,7 +64,7 @@ export function GlobalSearch({ placeholder = "Search apps, guides and services" 
                   <span className="block truncate text-[11px] text-muted-foreground">{r.subtitle}</span>
                 </span>
                 <span className="shrink-0 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
-                  {r.kind === "page" ? "screen" : r.kind === "category" ? "folder" : "app"}
+                  {r.kind === "page" ? "screen" : r.kind === "category" ? "section" : "app"}
                 </span>
               </Link>
             ))
