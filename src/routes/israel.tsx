@@ -77,15 +77,21 @@ function AppTile({ service, size = 60 }: { service: Service; size?: number }) {
   );
 }
 
-/** Shekk mini apps, grouped the way people actually need them. */
+/** Shekk mini apps, in five plain groups — no near-duplicate sections. */
 const MINI_GROUPS: { title: string; hint: string; ids: string[] }[] = [
-  { title: "Arrival and paperwork", hint: "Sort this before and just after you land", ids: ["guides", "visa", "documents"] },
   { title: "Getting around", hint: "Buses, trains, taxis and maps", ids: ["transit", "rides", "maps", "been-there"] },
-  { title: "Everyday life", hint: "Food, shopping, health and where you live", ids: ["food", "shops", "health", "housing", "fitness"] },
-  { title: "Going out", hint: "Events, tickets and places to book", ids: ["events", "tickets", "reserve", "community"] },
+  {
+    title: "Everyday life",
+    hint: "Food, shopping, health and where you live",
+    ids: ["food", "shops", "health", "housing", "fitness", "reserve"],
+  },
+  { title: "Going out", hint: "Events, tickets and your cohort", ids: ["events", "tickets", "community"] },
   { title: "Jewish life and news", hint: "Tefillah, times and what's happening", ids: ["siddur", "news"] },
-  { title: "Staying longer", hint: "Army, university and lone soldier tracks", ids: ["army", "uni", "lone-soldier"] },
-  { title: "Money and planning", hint: "Budgeting, exchange and learning Hebrew", ids: ["money-planner", "exchange", "ulpan"] },
+  {
+    title: "Plan and paperwork",
+    hint: "Guides, visas, budgeting, Hebrew and staying longer",
+    ids: ["guides", "visa", "documents", "money-planner", "exchange", "ulpan", "uni", "army", "lone-soldier"],
+  },
 ];
 
 function ExploreHub() {
@@ -111,13 +117,38 @@ function ExploreHub() {
     return groups;
   }, [apps]);
 
+  /**
+   * Partner apps worth a tile: live integrations only, and never one that just
+   * re-opens a Shekk mini app (Gett, Maps, Health…) or an information page the
+   * Guides app already covers.
+   */
+  const partnerApps = useMemo(() => {
+    const miniPaths = new Set(apps.map((a) => a.path));
+    const seen = new Set<string>();
+    return catalogue
+      .flatMap((c) => c.services)
+      .filter((s) => {
+        if (s.status !== "live") return false;
+        if (s.to && [...miniPaths].some((p) => s.to === p || s.to!.startsWith(`${p}/`))) return false;
+        if (seen.has(s.id)) return false;
+        seen.add(s.id);
+        return true;
+      });
+  }, [catalogue, apps]);
+
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return null;
-    return catalogue.flatMap((c) => c.services).filter((s) =>
+    return partnerApps.filter((s) =>
       [s.name, s.blurb, s.partner ?? ""].join(" ").toLowerCase().includes(q),
     );
-  }, [query, catalogue]);
+  }, [query, partnerApps]);
+
+  const miniResults = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return apps.filter((a) => [a.name, a.tagline].join(" ").toLowerCase().includes(q));
+  }, [query, apps]);
 
   if (!ready)
     return (
@@ -158,14 +189,20 @@ function ExploreHub() {
       {results ? (
         <section className="px-4 py-6">
           <p className="mb-4 px-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            {results.length} result{results.length === 1 ? "" : "s"}
+            {miniResults.length + results.length} result{miniResults.length + results.length === 1 ? "" : "s"}
           </p>
-          {results.length === 0 ? (
+          {miniResults.length + results.length === 0 ? (
             <Card className="text-sm text-muted-foreground">
               Not integrated yet. Tell us what you're missing and we'll chase the partner.
             </Card>
           ) : (
             <div className="grid grid-cols-4 gap-x-3 gap-y-6 sm:grid-cols-5 lg:grid-cols-8">
+              {miniResults.map((app) => (
+                <Link key={app.id} to={app.path} className="tap-icon flex flex-col items-center gap-2">
+                  <MiniAppIcon app={app} size={58} />
+                  <span className="line-clamp-2 text-center text-[11px] font-medium leading-tight">{app.name}</span>
+                </Link>
+              ))}
               {results.map((s) => (
                 <AppTile key={s.id} service={s} />
               ))}
@@ -256,26 +293,17 @@ function ExploreHub() {
             ))}
           </div>
 
-          {/* Partner apps, laid out in full under each category */}
-          <div className="space-y-7">
-            <SectionHead title="Partner apps" hint="Israeli apps, opened inside Shekk" />
-            {catalogue.map((cat) => (
-              <section key={cat.id}>
-                <div className="mb-3 px-1">
-                  <h2 className="font-display text-base font-bold leading-tight tracking-tight">
-                    {cat.emoji ? <span className="mr-1.5">{cat.emoji}</span> : null}
-                    {cat.label}
-                  </h2>
-                  <p className="mt-0.5 text-[11px] text-muted-foreground">{cat.tagline}</p>
-                </div>
-                <div className="grid grid-cols-4 gap-x-3 gap-y-5 sm:grid-cols-6 lg:grid-cols-8">
-                  {cat.services.map((s) => (
-                    <AppTile key={s.id} service={s} />
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
+          {/* Partner apps — one flat grid, only live integrations */}
+          {partnerApps.length ? (
+            <div>
+              <SectionHead title="Partner apps" hint="Israeli apps, opened inside Shekk" />
+              <div className="grid grid-cols-4 gap-x-3 gap-y-6 sm:grid-cols-6 lg:grid-cols-8">
+                {partnerApps.map((s) => (
+                  <AppTile key={s.id} service={s} />
+                ))}
+              </div>
+            </div>
+          ) : null}
 
           {/* Guides & tips */}
           <div>
