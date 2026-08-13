@@ -82,7 +82,7 @@ function SiddurHome() {
 
   return (
     <AppShell>
-      <ScreenHeader title="Siddur" subtitle="Tefillah, your nusach" back="/explore" />
+      <ScreenHeader title="Siddur" subtitle="Tefillah, your nusach" back="/israel" />
 
       <div className="space-y-8 px-5 py-5">
         {/* Search */}

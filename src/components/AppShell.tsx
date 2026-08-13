@@ -253,7 +253,7 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 /** Screens that keep the Shekk chrome; anything deeper is a mini app or info page. */
-const TAB_ROOTS = new Set([...SIDEBAR_TABS.map((t) => t.to), "/explore", "/benefits"]);
+const TAB_ROOTS = new Set([...SIDEBAR_TABS.map((t) => t.to), "/israel", "/benefits"]);
 
 /** Lets a ScreenHeader tell its AppShell that a back control already exists. */
 const HeaderRegistry = createContext<((v: boolean) => void) | null>(null);
@@ -360,7 +360,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 export function ScreenHeader({
   title,
   subtitle,
-  back = "/explore",
+  back = "/israel",
   onBack,
 }: {
   title: string;

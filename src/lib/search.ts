@@ -22,7 +22,7 @@ const PAGES: { title: string; subtitle: string; emoji: string; to: LinkProps["to
   { title: "Home", subtitle: "Your app springboard and pay code", emoji: "🏠", to: "/", keywords: "home springboard qr pay code" },
   { title: "Top up", subtitle: "Add money with Apple Pay", emoji: "➕", to: "/topup", keywords: "top up topup add money buy apple pay balance exchange rate" },
   { title: "Activity", subtitle: "Every top-up, order and transfer", emoji: "🧾", to: "/activity", keywords: "activity history statement transactions spends receipts" },
-  { title: "Explore", subtitle: "All apps, folders and guides", emoji: "🧭", to: "/explore", keywords: "explore apps catalogue services folders" },
+  { title: "Explore", subtitle: "Every Shekk and partner app", emoji: "🧭", to: "/israel", keywords: "explore apps catalogue services folders" },
   { title: "Social", subtitle: "Split a bill, cohort threads, feed", emoji: "👥", to: "/social", keywords: "social split bill friends cohort group chat feed pay friend" },
   { title: "Me", subtitle: "Profile, program, verification, settings", emoji: "🙋", to: "/me", keywords: "me profile settings account program cohort verification badge saved places photo" },
   { title: "Re-verify", subtitle: "Annual ID re-verification", emoji: "🪪", to: "/reverify", keywords: "reverify re-verify verification id passport annual kyc deadline" },
@@ -56,7 +56,7 @@ const INDEX: SearchResult[] = [
     title: c.label,
     subtitle: c.tagline,
     emoji: c.emoji,
-    to: "/explore" as LinkProps["to"],
+    to: "/israel" as LinkProps["to"],
     keywords: `${c.label} ${c.tagline} ${c.services.map((s) => s.name).join(" ")}`.toLowerCase(),
   })),
   ...ALL_SERVICES.map((s) => {

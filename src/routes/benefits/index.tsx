@@ -35,7 +35,7 @@ function BenefitsScreen() {
 
   return (
     <AppShell>
-      <ScreenHeader title="Benefits" subtitle="Partner offers, redeemed inside Shekk" back="/explore" />
+      <ScreenHeader title="Benefits" subtitle="Partner offers, redeemed inside Shekk" back="/israel" />
 
       {!isPremium ? (
         <section className="px-4 pt-4">
