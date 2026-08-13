@@ -79,7 +79,7 @@ function AddMoney() {
             >
               Back to wallet
             </PrimaryButton>
-            <Link to="/explore" className="tap block rounded-2xl bg-muted py-4 text-center text-sm font-semibold">
+            <Link to="/israel" className="tap block rounded-2xl bg-muted py-4 text-center text-sm font-semibold">
               Explore Israel
             </Link>
           </div>
