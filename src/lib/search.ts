@@ -56,8 +56,7 @@ const INDEX: SearchResult[] = [
     title: c.label,
     subtitle: c.tagline,
     emoji: c.emoji,
-    to: "/explore/category/$id" as LinkProps["to"],
-    params: { id: c.id },
+    to: "/explore" as LinkProps["to"],
     keywords: `${c.label} ${c.tagline} ${c.services.map((s) => s.name).join(" ")}`.toLowerCase(),
   })),
   ...ALL_SERVICES.map((s) => {
