@@ -46,7 +46,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     emoji: "🚌",
     tagline: "Book a ride and pay from your Shekk balance.",
     services: [
-      { id: "gett", name: "Gett", partner: "Gett", emoji: "🚕", domain: "gett.com", blurb: "Order a taxi, pay with Shekk", status: "live", featured: true, to: "/explore/rides", detail: ["The real Gett booking flow, running inside Shekk", "Fare settles straight from your Shekk balance"] },
+      { id: "gett", name: "Gett", partner: "Gett", emoji: "🚕", domain: "gett.com", blurb: "Order a taxi, pay with Shekk", status: "integrating", to: "/explore/rides", detail: ["Booking flow already built against Gett\u2019s API", "Waiting on live partner credentials"] },
     ],
   },
   {
