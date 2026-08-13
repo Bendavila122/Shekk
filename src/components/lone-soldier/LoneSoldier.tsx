@@ -389,7 +389,6 @@ export function SupportDirectory() {
               {o.maps ? (
                 <Link
                   to="/explore/maps"
-                  search={{ q: o.maps } as never}
                   className="tap-flat inline-flex items-center gap-1.5 text-[12px] font-bold text-primary"
                 >
                   <MapPin className="size-3.5" /> Find it
