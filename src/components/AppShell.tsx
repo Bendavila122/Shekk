@@ -18,7 +18,7 @@ import { miniAppFor } from "@/lib/mini-apps";
 const TABS = [
   { to: "/", label: "Today", Icon: Home },
   { to: "/wallet", label: "Money", Icon: Wallet },
-  { to: "/israel", label: "Israel", Icon: Compass },
+  { to: "/israel", label: "Explore", Icon: Compass },
   { to: "/programme", label: "Programme", Icon: GraduationCap },
   { to: "/social", label: "Friends", Icon: Users },
 ];
