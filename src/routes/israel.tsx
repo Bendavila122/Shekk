@@ -144,6 +144,12 @@ function ExploreHub() {
     );
   }, [query, partnerApps]);
 
+  const miniResults = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return apps.filter((a) => [a.name, a.tagline].join(" ").toLowerCase().includes(q));
+  }, [query, apps]);
+
   if (!ready)
     return (
       <AppShell>
