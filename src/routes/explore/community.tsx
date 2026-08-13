@@ -38,7 +38,7 @@ function Zmanim() {
     <section>
       <div className="mb-2 flex items-baseline justify-between px-1">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">This week</h2>
-        <span className="text-[11px] text-muted-foreground">{place?.label ?? "Set your city"}</span>
+        <span className="text-[11px] text-muted-foreground">{place?.city ?? "Set your city"}</span>
       </div>
       <div className="grid grid-cols-3 gap-2">
         {cells.map((z) => (
