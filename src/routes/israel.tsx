@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Search, X, Tag, ChevronRight, Newspaper, PlaneTakeoff } from "lucide-react";
+import { Search, X, PlaneTakeoff } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { LoadingBlocks } from "@/components/Kit";
 import { serviceLinkProps, type Service } from "@/lib/services";
@@ -11,7 +11,7 @@ import { recordServiceUse } from "@/lib/recents";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { GUIDES } from "@/lib/guides";
 import { GuideStrip } from "@/components/GuideStrip";
-import { useCatalogue, useVisibleBenefits } from "@/lib/admin";
+import { useCatalogue } from "@/lib/admin";
 import { useTravel } from "@/lib/useProgramme";
 
 export const Route = createFileRoute("/israel")({
@@ -107,7 +107,6 @@ function ExploreHub() {
   const ready = useOnboardedGate();
   const [query, setQuery] = useState("");
   const catalogue = useCatalogue();
-  const benefits = useVisibleBenefits();
   const apps = miniApps();
   const { daysToArrival } = useTravel();
   const preArrival = daysToArrival !== null && daysToArrival > 0;
@@ -237,50 +236,8 @@ function ExploreHub() {
             <span className="text-sm font-semibold text-primary">→</span>
           </Link>
 
-          {/* Featured rail */}
-          <div>
-            <SectionHead title="Featured" hint="Handpicked for gap-year life right now" />
-            <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <Link to="/benefits" className="tap block w-[78%] shrink-0 snap-start sm:w-[19rem]">
-                <div className="grad-premium relative h-full overflow-hidden rounded-[1.5rem] p-4 text-ink-foreground shadow-lift">
-                  <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
-                  <div className="relative flex h-full flex-col gap-3">
-                    <span className="flex size-11 items-center justify-center rounded-xl bg-ink-foreground/15">
-                      <Tag className="size-5" />
-                    </span>
-                    <div>
-                      <p className="text-sm font-semibold">Benefits marketplace</p>
-                      <p className="mt-0.5 text-xs opacity-85">
-                        {benefits.length} member offers on food, transport, gyms, trips and courses.
-                      </p>
-                    </div>
-                    <span className="mt-auto flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide opacity-90">
-                      Browse offers <ChevronRight className="size-3.5" />
-                    </span>
-                  </div>
-                </div>
-              </Link>
 
-              <Link to="/news" className="tap block w-[78%] shrink-0 snap-start sm:w-[19rem]">
-                <div className="relative h-full overflow-hidden rounded-[1.5rem] border border-border bg-card p-4 shadow-card">
-                  <div className="relative flex h-full flex-col gap-3">
-                    <span className="flex size-11 items-center justify-center rounded-xl bg-muted">
-                      <Newspaper className="size-5 text-foreground/70" />
-                    </span>
-                    <div>
-                      <p className="text-sm font-semibold">Israel news</p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        Live English headlines from Times of Israel, JPost, Ynet and Arutz Sheva.
-                      </p>
-                    </div>
-                    <span className="mt-auto flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
-                      Read now <ChevronRight className="size-3.5" />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            </div>
-          </div>
+
 
           {/* Shekk's own mini apps, grouped so nothing is hidden behind a tap */}
           <div className="space-y-7">
