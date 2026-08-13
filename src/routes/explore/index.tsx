@@ -199,30 +199,50 @@ function Explore() {
             </div>
           </div>
 
-          {/* Shekk's own mini apps, straight on the home screen */}
-          <div>
+          {/* Shekk's own mini apps, grouped so nothing is hidden behind a tap */}
+          <div className="space-y-7">
             <SectionHead title="Shekk apps" hint="Built by us, open instantly" />
-            <div className="grid grid-cols-4 gap-x-3 gap-y-5 sm:grid-cols-6 lg:grid-cols-9">
-              {apps.map((app) => (
-                <Link key={app.id} to={app.path} className="tap-icon flex flex-col items-center gap-2">
-                  <MiniAppIcon app={app} size={58} />
-                  <span className="line-clamp-2 text-center text-[11px] font-medium leading-tight">
-                    {app.name}
-                  </span>
-                </Link>
-              ))}
-            </div>
+            {miniGroups.map((g) => (
+              <section key={g.title}>
+                <div className="mb-3 px-1">
+                  <h2 className="font-display text-base font-bold leading-tight tracking-tight">{g.title}</h2>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">{g.hint}</p>
+                </div>
+                <div className="grid grid-cols-4 gap-x-3 gap-y-5 sm:grid-cols-6 lg:grid-cols-9">
+                  {g.apps.map((app) => (
+                    <Link key={app.id} to={app.path} className="tap-icon flex flex-col items-center gap-2">
+                      <MiniAppIcon app={app} size={58} />
+                      <span className="line-clamp-2 text-center text-[11px] font-medium leading-tight">
+                        {app.name}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            ))}
           </div>
 
-          {/* Category folders */}
-          <div>
-            <SectionHead title="Folders" hint="Partner apps, grouped the way you use them" />
-            <div className="grid grid-cols-4 gap-x-3 gap-y-6 sm:grid-cols-6 lg:grid-cols-8">
-              {catalogue.map((cat) => (
-                <CategoryFolder key={cat.id} category={cat} />
-              ))}
-            </div>
+          {/* Partner apps, laid out in full under each category */}
+          <div className="space-y-7">
+            <SectionHead title="Partner apps" hint="Israeli apps, opened inside Shekk" />
+            {catalogue.map((cat) => (
+              <section key={cat.id}>
+                <div className="mb-3 px-1">
+                  <h2 className="font-display text-base font-bold leading-tight tracking-tight">
+                    {cat.emoji ? <span className="mr-1.5">{cat.emoji}</span> : null}
+                    {cat.label}
+                  </h2>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">{cat.tagline}</p>
+                </div>
+                <div className="grid grid-cols-4 gap-x-3 gap-y-5 sm:grid-cols-6 lg:grid-cols-8">
+                  {cat.services.map((s) => (
+                    <AppTile key={s.id} service={s} />
+                  ))}
+                </div>
+              </section>
+            ))}
           </div>
+
 
           {/* Guides & tips */}
           <div>
