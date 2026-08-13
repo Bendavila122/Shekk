@@ -55,7 +55,7 @@ function Fold({
   );
 }
 
-export function TrackGuidance({ track }: { track: OfficialTrack }) {
+export function TrackGuidance({ track, showSteps = true }: { track: OfficialTrack; showSteps?: boolean }) {
   const { prefs, toggleCheck } = useGuidePrefs();
   const { tasks, saveTask } = useOfficial();
 
@@ -72,6 +72,7 @@ export function TrackGuidance({ track }: { track: OfficialTrack }) {
       <SectionHead title="Supporting guidance" hint="Open a section when the tool above raises a question." />
 
       <div className="space-y-2.5">
+        {showSteps ? (
         <Fold
           title="Your steps"
           hint="Ticks save to your account, not this phone."
@@ -117,6 +118,7 @@ export function TrackGuidance({ track }: { track: OfficialTrack }) {
             })}
           </ul>
         </Fold>
+        ) : null}
 
         {track.sections.map((s, si) => (
           <Fold key={s.heading} title={s.heading}>

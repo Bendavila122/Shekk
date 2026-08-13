@@ -96,6 +96,15 @@ function Motif({ id }: { id: string }) {
           <line x1="26" y1="30" x2="74" y2="70" {...common} />
         </>
       );
+    case "lone-soldier":
+      return (
+        <>
+          <path d="M50 -6 V 26" {...common} />
+          <rect x="30" y="26" width="40" height="56" rx="18" {...common} />
+          <path d="M8 96 L 32 74 L 56 96" {...common} strokeLinejoin="round" />
+          <path d="M92 96 L 68 74 L 44 96" {...common} strokeLinejoin="round" />
+        </>
+      );
     case "news":
       return (
         <>
