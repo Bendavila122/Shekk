@@ -114,7 +114,7 @@ function LoneSoldierApp() {
             setAnswers={(next) => update({ ...saved, answers: next })}
             step={step}
             setStep={setStep}
-            onFinish={() => update({ ...saved, done: true })}
+            onFinish={(next) => update({ answers: next, done: true })}
           />
           {answered === 0 ? null : (
             <div className="px-4 pb-2">

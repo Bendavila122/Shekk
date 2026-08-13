@@ -38,7 +38,7 @@ export function RightsCheck({
   setAnswers: (next: Answers) => void;
   step: number;
   setStep: (n: number) => void;
-  onFinish: () => void;
+  onFinish: (answers: Answers) => void;
 }) {
   const q = QUESTIONS[Math.min(step, QUESTIONS.length - 1)];
   const current = answers[q.key];
@@ -65,9 +65,12 @@ export function RightsCheck({
                 type="button"
                 aria-pressed={selected}
                 onClick={() => {
-                  setAnswers({ ...answers, [q.key]: o.value } as Answers);
-                  if (step + 1 >= QUESTIONS.length) onFinish();
-                  else setStep(step + 1);
+                  const next = { ...answers, [q.key]: o.value } as Answers;
+                  if (step + 1 >= QUESTIONS.length) onFinish(next);
+                  else {
+                    setAnswers(next);
+                    setStep(step + 1);
+                  }
                 }}
                 className={`tap-flat flex w-full items-center gap-3 rounded-2xl border p-3.5 text-left transition-colors ${
                   selected ? "border-primary bg-primary-soft" : "border-border bg-card hover:bg-muted"
