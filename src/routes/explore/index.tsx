@@ -4,7 +4,7 @@ import { Search, X, Tag, ChevronRight, Newspaper } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { LoadingBlocks } from "@/components/Kit";
 
-import { serviceLinkProps, type Service, type ServiceCategory } from "@/lib/services";
+import { serviceLinkProps, type Service } from "@/lib/services";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { MiniAppIcon } from "@/components/MiniAppIcon";
 import { miniApps } from "@/lib/mini-apps";
