@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Search, X, Tag, ChevronRight, Newspaper, PlaneTakeoff } from "lucide-react";
+import { Search, X, PlaneTakeoff } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { LoadingBlocks } from "@/components/Kit";
 import { serviceLinkProps, type Service } from "@/lib/services";
@@ -11,7 +11,7 @@ import { recordServiceUse } from "@/lib/recents";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { GUIDES } from "@/lib/guides";
 import { GuideStrip } from "@/components/GuideStrip";
-import { useCatalogue, useVisibleBenefits } from "@/lib/admin";
+import { useCatalogue } from "@/lib/admin";
 import { useTravel } from "@/lib/useProgramme";
 
 export const Route = createFileRoute("/israel")({
@@ -107,7 +107,6 @@ function ExploreHub() {
   const ready = useOnboardedGate();
   const [query, setQuery] = useState("");
   const catalogue = useCatalogue();
-  const benefits = useVisibleBenefits();
   const apps = miniApps();
   const { daysToArrival } = useTravel();
   const preArrival = daysToArrival !== null && daysToArrival > 0;
