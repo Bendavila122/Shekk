@@ -111,10 +111,14 @@ function LoneSoldierApp() {
         <>
           <RightsCheck
             answers={answers}
-            setAnswers={(next) => update({ ...saved, answers: next })}
+            onAnswer={(key, value, finish) =>
+              update((prev) => ({
+                answers: { ...prev.answers, [key]: value } as Answers,
+                done: finish ? true : prev.done,
+              }))
+            }
             step={step}
             setStep={setStep}
-            onFinish={(next) => update({ answers: next, done: true })}
           />
           {answered === 0 ? null : (
             <div className="px-4 pb-2">

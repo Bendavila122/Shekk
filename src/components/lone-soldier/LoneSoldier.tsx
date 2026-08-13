@@ -29,16 +29,15 @@ import { useOfficial } from "@/lib/useOfficial";
 
 export function RightsCheck({
   answers,
-  setAnswers,
+  onAnswer,
   step,
   setStep,
-  onFinish,
 }: {
   answers: Answers;
-  setAnswers: (next: Answers) => void;
+  /** Patches one answer; `finish` closes the questionnaire on the last one. */
+  onAnswer: (key: keyof Answers, value: string, finish?: boolean) => void;
   step: number;
   setStep: (n: number) => void;
-  onFinish: (answers: Answers) => void;
 }) {
   const q = QUESTIONS[Math.min(step, QUESTIONS.length - 1)];
   const current = answers[q.key];
@@ -65,12 +64,9 @@ export function RightsCheck({
                 type="button"
                 aria-pressed={selected}
                 onClick={() => {
-                  const next = { ...answers, [q.key]: o.value } as Answers;
-                  if (step + 1 >= QUESTIONS.length) onFinish(next);
-                  else {
-                    setAnswers(next);
-                    setStep(step + 1);
-                  }
+                  const last = step + 1 >= QUESTIONS.length;
+                  onAnswer(q.key, o.value, last);
+                  if (!last) setStep(step + 1);
                 }}
                 className={`tap-flat flex w-full items-center gap-3 rounded-2xl border p-3.5 text-left transition-colors ${
                   selected ? "border-primary bg-primary-soft" : "border-border bg-card hover:bg-muted"
