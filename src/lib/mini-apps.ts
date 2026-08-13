@@ -20,7 +20,6 @@ import {
   Compass,
   Dumbbell,
   FolderLock,
-  Handshake,
   House,
 
   MapPin,
