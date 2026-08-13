@@ -90,6 +90,20 @@ function Explore() {
   const benefits = useVisibleBenefits();
   const apps = miniApps();
 
+  /** Grouped mini apps, with anything ungrouped appended so nothing disappears. */
+  const miniGroups = useMemo(() => {
+    const byId = new Map(apps.map((a) => [a.id, a]));
+    const groups = MINI_GROUPS.map((g) => ({
+      title: g.title,
+      hint: g.hint,
+      apps: g.ids.map((id) => byId.get(id)).filter((a): a is NonNullable<typeof a> => Boolean(a)),
+    })).filter((g) => g.apps.length > 0);
+    const placed = new Set(MINI_GROUPS.flatMap((g) => g.ids));
+    const rest = apps.filter((a) => !placed.has(a.id));
+    if (rest.length) groups.push({ title: "More from Shekk", hint: "Everything else we build in-house", apps: rest });
+    return groups;
+  }, [apps]);
+
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return null;
