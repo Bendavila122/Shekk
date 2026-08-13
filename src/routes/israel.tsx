@@ -77,22 +77,31 @@ function AppTile({ service, size = 60 }: { service: Service; size?: number }) {
   );
 }
 
-/** Shekk mini apps, in five plain groups — no near-duplicate sections. */
+/** Shekk mini apps, in plain groups — no near-duplicate sections. */
 const MINI_GROUPS: { title: string; hint: string; ids: string[] }[] = [
   { title: "Getting around", hint: "Buses, trains, taxis and maps", ids: ["transit", "rides", "maps", "been-there"] },
   {
     title: "Everyday life",
-    hint: "Food, shopping, health and where you live",
-    ids: ["food", "shops", "health", "housing", "fitness", "reserve"],
+    hint: "Food, shopping, health, Hebrew and where you live",
+    ids: ["food", "shops", "health", "housing", "fitness", "reserve", "ulpan"],
   },
   { title: "Going out", hint: "Events, tickets and your cohort", ids: ["events", "tickets", "community"] },
   { title: "Jewish life and news", hint: "Tefillah, times and what's happening", ids: ["siddur", "news"] },
   {
     title: "Plan and paperwork",
-    hint: "Guides, visas, budgeting, Hebrew and staying longer",
-    ids: ["guides", "visa", "documents", "money-planner", "exchange", "ulpan", "uni", "army", "lone-soldier"],
+    hint: "Guides, visas, documents and budgeting",
+    ids: ["guides", "visa", "documents", "money-planner", "exchange"],
+  },
+  {
+    title: "Staying longer",
+    hint: "University, the IDF and lone soldier life",
+    ids: ["uni", "army", "lone-soldier"],
   },
 ];
+
+/** Money features that live in the Money tab, not as Explore tiles. */
+const HIDDEN_SERVICE_IDS = new Set(["topup", "split"]);
+
 
 function ExploreHub() {
   const ready = useOnboardedGate();
