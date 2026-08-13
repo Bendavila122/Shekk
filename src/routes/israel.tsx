@@ -293,26 +293,17 @@ function ExploreHub() {
             ))}
           </div>
 
-          {/* Partner apps, laid out in full under each category */}
-          <div className="space-y-7">
-            <SectionHead title="Partner apps" hint="Israeli apps, opened inside Shekk" />
-            {catalogue.map((cat) => (
-              <section key={cat.id}>
-                <div className="mb-3 px-1">
-                  <h2 className="font-display text-base font-bold leading-tight tracking-tight">
-                    {cat.emoji ? <span className="mr-1.5">{cat.emoji}</span> : null}
-                    {cat.label}
-                  </h2>
-                  <p className="mt-0.5 text-[11px] text-muted-foreground">{cat.tagline}</p>
-                </div>
-                <div className="grid grid-cols-4 gap-x-3 gap-y-5 sm:grid-cols-6 lg:grid-cols-8">
-                  {cat.services.map((s) => (
-                    <AppTile key={s.id} service={s} />
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
+          {/* Partner apps — one flat grid, only live integrations */}
+          {partnerApps.length ? (
+            <div>
+              <SectionHead title="Partner apps" hint="Israeli apps, opened inside Shekk" />
+              <div className="grid grid-cols-4 gap-x-3 gap-y-6 sm:grid-cols-6 lg:grid-cols-8">
+                {partnerApps.map((s) => (
+                  <AppTile key={s.id} service={s} />
+                ))}
+              </div>
+            </div>
+          ) : null}
 
           {/* Guides & tips */}
           <div>
