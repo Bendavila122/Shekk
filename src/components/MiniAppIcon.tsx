@@ -112,17 +112,6 @@ function Motif({ id }: { id: string }) {
           <path d="M82 10 Q 50 40, 82 70" {...common} />
         </>
       );
-    case "community":
-      return (
-        <>
-          <circle cx="24" cy="24" r="14" {...common} />
-          <circle cx="76" cy="24" r="14" {...common} />
-          <circle cx="24" cy="76" r="14" {...common} />
-          <circle cx="76" cy="76" r="14" {...common} />
-          <line x1="24" y1="24" x2="76" y2="76" {...common} />
-          <line x1="76" y1="24" x2="24" y2="76" {...common} />
-        </>
-      );
     default:
       return (
         <>

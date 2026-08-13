@@ -49,7 +49,6 @@ export const MINI_PROGRAMS = [
   { id: "housing", label: "Housing", emoji: "🏠", blurb: "Dorms & roommates", to: "/explore/housing" },
   { id: "health", label: "Health", emoji: "🩺", blurb: "Insurance & clinics", to: "/explore/health" },
   { id: "admin", label: "Visa", emoji: "🛂", blurb: "Status & paperwork", to: "/explore/visa" },
-  { id: "community", label: "Community", emoji: "🕍", blurb: "Shuls & zmanim", to: "/explore/community" },
   { id: "shops", label: "Shops", emoji: "🏷️", blurb: "Student discounts", to: "/explore/shops" },
 ];
 
