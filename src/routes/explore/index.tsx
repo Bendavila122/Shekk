@@ -72,34 +72,16 @@ function AppTile({ service, size = 60 }: { service: Service; size?: number }) {
   );
 }
 
-/** iOS-style folder: a translucent tile with a 2x2 peek of what's inside. */
-function CategoryFolder({ category }: { category: ServiceCategory }) {
-  const peek = category.services.slice(0, 4);
-  return (
-    <Link
-      to="/explore/category/$id"
-      params={{ id: category.id }}
-      className="tap-icon flex flex-col items-center gap-2"
-    >
-      <span className="grid size-[74px] grid-cols-2 grid-rows-2 place-items-center gap-1.5 rounded-[1.5rem] border border-border/60 bg-muted/70 p-2.5 shadow-card backdrop-blur">
-        {peek.map((s) => (
-          <ServiceLogo key={s.id} service={s} size={26} className="rounded-[0.5rem]" />
-        ))}
-        {peek.length < 4
-          ? Array.from({ length: 4 - peek.length }).map((_, i) => (
-              <span key={i} className="size-[26px] rounded-[0.5rem] bg-card/60" />
-            ))
-          : null}
-      </span>
-      <span className="flex min-h-[2.1rem] flex-col items-center justify-start text-center leading-tight">
-        <span className="line-clamp-2 text-[11px] font-semibold">{category.label}</span>
-      </span>
-      <span className="-mt-1.5 text-[10px] text-muted-foreground">
-        {category.services.length} {category.services.length === 1 ? "app" : "apps"}
-      </span>
-    </Link>
-  );
-}
+/** Shekk mini apps, grouped the way the Israel hub groups them. */
+const MINI_GROUPS: { title: string; hint: string; ids: string[] }[] = [
+  { title: "Arrival and paperwork", hint: "Sort this before and just after you land", ids: ["guides", "visa", "documents"] },
+  { title: "Getting around", hint: "Buses, trains, taxis and maps", ids: ["transit", "rides", "maps", "been-there"] },
+  { title: "Everyday life", hint: "Food, shopping, health and where you live", ids: ["food", "shops", "health", "housing", "fitness"] },
+  { title: "Going out", hint: "Events, tickets and places to book", ids: ["events", "tickets", "reserve", "community"] },
+  { title: "Jewish life and news", hint: "Tefillah, times and what's happening", ids: ["siddur", "news"] },
+  { title: "Staying longer", hint: "Army, university and lone soldier tracks", ids: ["army", "uni", "lone-soldier"] },
+  { title: "Money and planning", hint: "Budgeting, exchange and learning Hebrew", ids: ["money-planner", "exchange", "ulpan"] },
+];
 
 function Explore() {
   const ready = useOnboardedGate();
