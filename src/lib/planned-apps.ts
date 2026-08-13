@@ -155,28 +155,6 @@ export const PLANNED_APPS: PlannedApp[] = [
     sequencing:
       "Ready to switch on. The moment Gett issues production credentials, this becomes a working app without new development.",
   },
-  {
-    id: "community",
-    title: "Community",
-    promise: "Zmanim wherever you are, and the shuls worth walking to",
-    capabilities: [
-      "Candle lighting, Shabbat end and the week's parasha for your exact location",
-      "A shul directory with nusach, minyan times and how welcoming they are to students",
-      "Shiurim and community events open to visitors",
-      "Your programme's own minyan and Shabbat schedule alongside it",
-    ],
-    dependencies: [
-      { name: "Hebcal", role: "Zmanim, parasha and chagim — already live in Shekk, powering the times above" },
-      { name: "Shul directory", role: "Minyan times entered and maintained by us; no reliable open dataset exists in Israel" },
-      { name: "Programme schedules", role: "Minyanim and Shabbat plans from the programme's own Shekk console" },
-    ],
-    blockers: [
-      "Minyan times change constantly and no open feed exists, so the directory has to be built and maintained by hand",
-      "We would rather show nothing than a minyan time that makes you miss davening",
-    ],
-    sequencing:
-      "Zmanim are live now. The shul directory starts with Jerusalem, once there are enough members in one neighbourhood to keep it honest.",
-  },
 ];
 
 export const plannedApp = (id: string) => PLANNED_APPS.find((a) => a.id === id) ?? null;

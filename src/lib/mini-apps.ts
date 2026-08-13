@@ -20,7 +20,6 @@ import {
   Compass,
   Dumbbell,
   FolderLock,
-  Handshake,
   House,
 
   MapPin,
@@ -185,19 +184,6 @@ export const MINI_APPS: MiniApp[] = [
     grad: "var(--grad-chag)",
     surface: "bg-ink",
     onSurface: "text-ink-foreground",
-  },
-  {
-    path: "/explore/community",
-    id: "community",
-    status: "planned",
-    name: "Community",
-    tagline: "Your program, your people",
-    emoji: "🤝",
-    Icon: Handshake,
-    iconScale: 0.47,
-    grad: "var(--grad-sky)",
-    surface: "bg-primary",
-    onSurface: "text-primary-foreground",
   },
   {
     path: "/explore/reserve",
