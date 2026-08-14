@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CheckCircle2, Circle, Clock, PlaneTakeoff } from "lucide-react";
+import { ArrowRight, CheckCircle2, Circle, Clock, GraduationCap, PlaneTakeoff, Sparkles } from "lucide-react";
 import { AppShell, Card, Notice, ScreenHeader } from "@/components/AppShell";
+import { Milestone } from "@/components/Kit";
 import { useApp } from "@/lib/store";
 import { useProfile } from "@/lib/useProfile";
 import { useProgramme, useTravel } from "@/lib/useProgramme";
+import { useHealth } from "@/lib/useHealth";
+import { useOfficial } from "@/lib/useOfficial";
 import { BEFORE_YOU_FLY_STEPS, type StepDef, type StepId } from "@/lib/before-you-fly";
 
 export const Route = createFileRoute("/before-you-fly/")({
@@ -40,6 +43,8 @@ function BeforeYouFly() {
   const profile = useProfile();
   const { joined } = useProgramme();
   const { travel, daysToArrival } = useTravel();
+  const { cards } = useHealth();
+  const { documents } = useOfficial();
 
   const hasTravelBasics = Boolean(
     (state.name?.trim() || profile.profile?.legalFirstName) &&
@@ -54,18 +59,24 @@ function BeforeYouFly() {
     card: "preview",
     esim: "preview",
     insurance: "preview",
+    health: cards.length > 0 ? "done" : "todo",
+    documents: documents.length > 0 ? "done" : "todo",
     arrival: "todo",
     packing: "todo",
-    emergency: joined ? "todo" : "todo",
+    emergency: "todo",
   };
 
   const trackable = BEFORE_YOU_FLY_STEPS.filter((s) => status[s.id] !== "preview");
   const done = trackable.filter((s) => status[s.id] === "done").length;
   const pct = trackable.length ? Math.round((done / trackable.length) * 100) : 0;
+  /* The one thing worth doing now: the earliest step Shekk can still see is open. */
+  const next = BEFORE_YOU_FLY_STEPS.find((s) => status[s.id] === "todo") ?? null;
+  const complete = trackable.length > 0 && done === trackable.length;
 
   return (
     <AppShell>
       <ScreenHeader title="Before you fly" subtitle="Your pre-arrival checklist" back="/israel" />
+
 
       <header className="px-5 pt-5">
         <div className="grad-balance relative overflow-hidden rounded-[1.5rem] px-5 py-5 text-ink-foreground shadow-lift">
@@ -90,6 +101,33 @@ function BeforeYouFly() {
           </div>
         </div>
       </header>
+
+      {complete ? (
+        <div className="px-4 pt-4">
+          <Milestone
+            title="You're ready to fly"
+            body="Every step Shekk can see is sorted. Nothing left to prepare — go and have the year."
+            actionLabel="Open Explore"
+            actionTo="/israel"
+          />
+        </div>
+      ) : next ? (
+        <section className="px-4 pt-4">
+          <div className="rounded-[1.5rem] border border-primary/25 bg-primary-soft p-4">
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
+              <Sparkles className="size-3.5" /> Do this next
+            </span>
+            <p className="mt-2 text-[15px] font-semibold leading-snug">{next.title}</p>
+            <p className="mt-1 text-[12.5px] leading-relaxed text-muted-foreground">{next.blurb}</p>
+            <Link
+              to={next.href}
+              className="tap mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[12.5px] font-bold text-primary-foreground"
+            >
+              {next.cta} <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+        </section>
+      ) : null}
 
       {!signedIn ? (
         <div className="px-4 pt-4">
@@ -146,6 +184,21 @@ function BeforeYouFly() {
             </Link>
           );
         })}
+
+        <Link to="/programme" className="tap block">
+          <Card className="flex items-center gap-3">
+            <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-muted">
+              <GraduationCap className="size-5 text-muted-foreground" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-semibold">Your programme</span>
+              <span className="block text-xs text-muted-foreground">
+                Timetable, announcements, documents and on-call contacts
+              </span>
+            </span>
+            <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
+          </Card>
+        </Link>
 
         <Notice title="Why some steps say Preview">
           Card issuing, eSIM and insurance checkout are not live yet. Those screens show what's coming and what

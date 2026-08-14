@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Plus, ArrowLeftRight, ArrowUpRight, CreditCard, ChevronRight, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { Plus, ArrowLeftRight, ArrowUpRight, CreditCard, ChevronRight, Eye, EyeOff, PieChart, ShieldCheck } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
-import { PageHeader, SectionHead, EmptyState, LoadingBlocks, StatusPill, PreviewBadge } from "@/components/Kit";
+import { PageHeader, SectionHead, EmptyState, LoadingBlocks, StatusPill, PreviewBadge, ToolRow } from "@/components/Kit";
 import { useProfile } from "@/lib/useProfile";
 import { ShekkCardFace } from "@/components/ShekkCard";
 import { useApp } from "@/lib/store";
@@ -176,6 +176,26 @@ function WalletScreen() {
             </p>
           ) : null}
         </Card>
+      </section>
+
+      {/* Planning tools. These are money features; they were only reachable from
+          Explore, which meant the Money tab never answered "can I afford this?" */}
+      <section className="px-4 pt-6">
+        <SectionHead title="Plan your money" hint="Work out what a month here actually costs" />
+        <div className="space-y-2.5">
+          <ToolRow
+            to="/explore/money-planner"
+            icon={PieChart}
+            title="Money planner"
+            body="Build a monthly budget on real Israeli prices, then track it against what you spend."
+          />
+          <ToolRow
+            to="/exchange"
+            icon={ArrowLeftRight}
+            title="Exchange money"
+            body="Convert your home currency to shekels and see the rate before you commit."
+          />
+        </div>
       </section>
 
       {/* Recent activity */}

@@ -13,6 +13,8 @@ export type StepId =
   | "card"
   | "esim"
   | "insurance"
+  | "health"
+  | "documents"
   | "arrival"
   | "packing"
   | "emergency";
@@ -85,6 +87,22 @@ export const BEFORE_YOU_FLY_STEPS: StepDef[] = [
     tone: "setup",
     href: "/before-you-fly/insurance",
     cta: "Compare cover",
+  },
+  {
+    id: "health",
+    title: "Store your health cover",
+    blurb: "Save your kupah or insurance card in Shekk so a clinic can read your member number in seconds.",
+    tone: "life",
+    href: "/explore/health",
+    cta: "Open health cover",
+  },
+  {
+    id: "documents",
+    title: "Upload your key documents",
+    blurb: "Passport, visa, acceptance letter and insurance policy, private to you and available offline.",
+    tone: "setup",
+    href: "/explore/documents",
+    cta: "Open documents",
   },
   {
     id: "arrival",

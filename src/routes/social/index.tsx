@@ -24,13 +24,13 @@ import { FriendCodes } from "@/components/social/FriendCodes";
 export const Route = createFileRoute("/social/")({
   head: () => ({
     meta: [
-      { title: "Social · Shekk" },
+      { title: "Friends · Shekk" },
       {
         name: "description",
         content:
-          "Chat with your group, split a bill in seconds and send shekels to friends on your program — all inside Shekk.",
+          "Chat with your group, split a bill in seconds and send shekels to friends on your programme — all inside Shekk.",
       },
-      { property: "og:title", content: "Social · Shekk" },
+      { property: "og:title", content: "Friends · Shekk" },
       { property: "og:description", content: "Chat, split the bill and send shekels to your group." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -68,7 +68,7 @@ function Social() {
   return (
     <AppShell>
       <header className="px-5 pt-7">
-        <h1 className="text-3xl font-bold">Social</h1>
+        <h1 className="font-display text-3xl font-bold tracking-tight">Friends</h1>
         <p className="text-sm text-muted-foreground">Your group, your crew, your split of the bill.</p>
       </header>
 

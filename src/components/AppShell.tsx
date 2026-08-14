@@ -162,7 +162,6 @@ export function MobileNav() {
 /** Top-right quick menu (mobile): balance, top up, Me, Settings, Help. */
 export function QuickMenu() {
   const [open, setOpen] = useState(false);
-  const { state } = useApp();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
@@ -194,9 +193,7 @@ export function QuickMenu() {
           />
           <div className="fixed left-1/2 top-16 z-50 ml-[-15px] w-60 max-w-[calc(100vw-1.5rem)] translate-x-[calc(215px-100%)] overflow-hidden rounded-2xl border border-border bg-card shadow-lift">
             <div className="border-b border-border bg-ink px-4 py-3 text-ink-foreground">
-              <p className="text-[10px] uppercase tracking-widest opacity-60">Your shekels</p>
-              <p className="font-display text-xl font-bold leading-tight">{ils(state.balance)}</p>
-              <p className="text-[11px] opacity-60">≈ {refIn(state.settings.payCurrency, state.balance)}</p>
+              <BalanceMini />
             </div>
             <Link
               to="/topup"
@@ -232,14 +229,29 @@ function useActive() {
 }
 
 
-/** Balance + top up, shown inside the navigation. */
-function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
+/**
+ * The one balance figure in the navigation, shared by the mobile quick menu and
+ * the desktop sidebar so the two breakpoints can never drift apart. One rule:
+ * the figure is "Your shekels", the action is "Add money".
+ */
+export function BalanceMini({ size = "sm" }: { size?: "sm" | "lg" }) {
   const { state } = useApp();
   return (
-    <div className="mt-auto rounded-2xl bg-ink px-4 py-3 text-ink-foreground">
+    <>
       <p className="text-[10px] uppercase tracking-widest opacity-60">Your shekels</p>
-      <p className="font-display text-2xl font-bold leading-tight">{ils(state.balance)}</p>
+      <p className={`font-display font-bold leading-tight ${size === "lg" ? "text-2xl" : "text-xl"}`}>
+        {ils(state.balance)}
+      </p>
       <p className="text-[11px] opacity-60">≈ {refIn(state.settings.payCurrency, state.balance)}</p>
+    </>
+  );
+}
+
+/** Balance + top up, shown inside the navigation. */
+function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
+  return (
+    <div className="mt-auto rounded-2xl bg-ink px-4 py-3 text-ink-foreground">
+      <BalanceMini size="lg" />
       <Link
         to="/topup"
         onClick={onNavigate}
@@ -252,8 +264,25 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-/** Screens that keep the Shekk chrome; anything deeper is a mini app or info page. */
-const TAB_ROOTS = new Set([...SIDEBAR_TABS.map((t) => t.to), "/israel", "/benefits"]);
+/**
+ * The Explore tab's home. The path is /israel for published-URL reasons; every
+ * user-facing string for it says "Explore", so referring to it by name here
+ * keeps the intent readable wherever we fall back to it.
+ */
+export const EXPLORE_HOME = "/israel";
+
+/**
+ * Screens that keep the Shekk chrome. Full-bleed means "a tool you are inside";
+ * browsing destinations like Guides and News keep the tab bar so the rule reads
+ * consistently instead of the tab bar vanishing one tap from Explore.
+ */
+const TAB_ROOTS = new Set([
+  ...SIDEBAR_TABS.map((t) => t.to),
+  EXPLORE_HOME,
+  "/benefits",
+  "/guides",
+  "/news",
+]);
 
 /** Lets a ScreenHeader tell its AppShell that a back control already exists. */
 const HeaderRegistry = createContext<((v: boolean) => void) | null>(null);
@@ -360,7 +389,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 export function ScreenHeader({
   title,
   subtitle,
-  back = "/israel",
+  back = EXPLORE_HOME,
   onBack,
 }: {
   title: string;
