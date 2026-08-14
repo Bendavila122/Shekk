@@ -190,10 +190,10 @@ function WalletScreen() {
             body="Build a monthly budget on real Israeli prices, then track it against what you spend."
           />
           <ToolRow
-            to="/explore/fx"
+            to="/exchange"
             icon={ArrowLeftRight}
-            title="Currency converter"
-            body="Live rates, and what Shekk's rate means next to a bank or a change shop."
+            title="Exchange money"
+            body="Convert your home currency to shekels and see the rate before you commit."
           />
         </div>
       </section>
