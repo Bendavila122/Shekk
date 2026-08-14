@@ -194,9 +194,7 @@ export function QuickMenu() {
           />
           <div className="fixed left-1/2 top-16 z-50 ml-[-15px] w-60 max-w-[calc(100vw-1.5rem)] translate-x-[calc(215px-100%)] overflow-hidden rounded-2xl border border-border bg-card shadow-lift">
             <div className="border-b border-border bg-ink px-4 py-3 text-ink-foreground">
-              <p className="text-[10px] uppercase tracking-widest opacity-60">Your shekels</p>
-              <p className="font-display text-xl font-bold leading-tight">{ils(state.balance)}</p>
-              <p className="text-[11px] opacity-60">≈ {refIn(state.settings.payCurrency, state.balance)}</p>
+              <BalanceMini />
             </div>
             <Link
               to="/topup"
