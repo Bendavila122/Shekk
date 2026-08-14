@@ -178,6 +178,26 @@ function WalletScreen() {
         </Card>
       </section>
 
+      {/* Planning tools. These are money features; they were only reachable from
+          Explore, which meant the Money tab never answered "can I afford this?" */}
+      <section className="px-4 pt-6">
+        <SectionHead title="Plan your money" hint="Work out what a month here actually costs" />
+        <div className="space-y-2.5">
+          <ToolRow
+            to="/explore/money-planner"
+            icon={PieChart}
+            title="Money planner"
+            body="Build a monthly budget on real Israeli prices, then track it against what you spend."
+          />
+          <ToolRow
+            to="/explore/fx"
+            icon={ArrowLeftRight}
+            title="Currency converter"
+            body="Live rates, and what Shekk's rate means next to a bank or a change shop."
+          />
+        </div>
+      </section>
+
       {/* Recent activity */}
       <section className="px-4 pb-8 pt-6">
         <SectionHead
