@@ -13,6 +13,8 @@ export type StepId =
   | "card"
   | "esim"
   | "insurance"
+  | "health"
+  | "documents"
   | "arrival"
   | "packing"
   | "emergency";
