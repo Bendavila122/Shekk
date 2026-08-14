@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Search, X, PlaneTakeoff } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
-import { LoadingBlocks } from "@/components/Kit";
+import { LoadingBlocks, SectionHead } from "@/components/Kit";
 import { serviceLinkProps, type Service } from "@/lib/services";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { MiniAppIcon } from "@/components/MiniAppIcon";
