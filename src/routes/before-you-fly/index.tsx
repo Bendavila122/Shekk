@@ -43,6 +43,8 @@ function BeforeYouFly() {
   const profile = useProfile();
   const { joined } = useProgramme();
   const { travel, daysToArrival } = useTravel();
+  const { cards } = useHealth();
+  const { documents } = useOfficial();
 
   const hasTravelBasics = Boolean(
     (state.name?.trim() || profile.profile?.legalFirstName) &&
