@@ -252,8 +252,25 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-/** Screens that keep the Shekk chrome; anything deeper is a mini app or info page. */
-const TAB_ROOTS = new Set([...SIDEBAR_TABS.map((t) => t.to), "/israel", "/benefits"]);
+/**
+ * The Explore tab's home. The path is /israel for published-URL reasons; every
+ * user-facing string for it says "Explore", so referring to it by name here
+ * keeps the intent readable wherever we fall back to it.
+ */
+export const EXPLORE_HOME = "/israel";
+
+/**
+ * Screens that keep the Shekk chrome. Full-bleed means "a tool you are inside";
+ * browsing destinations like Guides and News keep the tab bar so the rule reads
+ * consistently instead of the tab bar vanishing one tap from Explore.
+ */
+const TAB_ROOTS = new Set([
+  ...SIDEBAR_TABS.map((t) => t.to),
+  EXPLORE_HOME,
+  "/benefits",
+  "/guides",
+  "/news",
+]);
 
 /** Lets a ScreenHeader tell its AppShell that a back control already exists. */
 const HeaderRegistry = createContext<((v: boolean) => void) | null>(null);
