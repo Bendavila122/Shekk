@@ -5,6 +5,8 @@ import { Milestone } from "@/components/Kit";
 import { useApp } from "@/lib/store";
 import { useProfile } from "@/lib/useProfile";
 import { useProgramme, useTravel } from "@/lib/useProgramme";
+import { useHealth } from "@/lib/useHealth";
+import { useOfficial } from "@/lib/useOfficial";
 import { BEFORE_YOU_FLY_STEPS, type StepDef, type StepId } from "@/lib/before-you-fly";
 
 export const Route = createFileRoute("/before-you-fly/")({
