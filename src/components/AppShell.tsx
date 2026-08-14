@@ -360,7 +360,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 export function ScreenHeader({
   title,
   subtitle,
-  back = "/israel",
+  back = EXPLORE_HOME,
   onBack,
 }: {
   title: string;
