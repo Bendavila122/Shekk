@@ -35,26 +35,6 @@ export const Route = createFileRoute("/israel")({
   component: ExploreHub,
 });
 
-/** Section label with an optional link on the right, used to set the rhythm. */
-function SectionHead({
-  title,
-  hint,
-  action,
-}: {
-  title: string;
-  hint?: string;
-  action?: React.ReactNode;
-}) {
-  return (
-    <div className="mb-4 flex items-end justify-between gap-3 px-1">
-      <div className="min-w-0">
-        <h2 className="font-display text-lg font-bold leading-tight tracking-tight">{title}</h2>
-        {hint ? <p className="mt-0.5 text-[11px] text-muted-foreground">{hint}</p> : null}
-      </div>
-      {action}
-    </div>
-  );
-}
 
 /** One partner app icon, iPhone-home-screen scale. */
 function AppTile({ service, size = 60 }: { service: Service; size?: number }) {
