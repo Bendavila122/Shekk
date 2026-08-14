@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Plus, ArrowLeftRight, ArrowUpRight, CreditCard, ChevronRight, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { Plus, ArrowLeftRight, ArrowUpRight, CreditCard, ChevronRight, Eye, EyeOff, PieChart, ShieldCheck } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
-import { PageHeader, SectionHead, EmptyState, LoadingBlocks, StatusPill, PreviewBadge } from "@/components/Kit";
+import { PageHeader, SectionHead, EmptyState, LoadingBlocks, StatusPill, PreviewBadge, ToolRow } from "@/components/Kit";
 import { useProfile } from "@/lib/useProfile";
 import { ShekkCardFace } from "@/components/ShekkCard";
 import { useApp } from "@/lib/store";
