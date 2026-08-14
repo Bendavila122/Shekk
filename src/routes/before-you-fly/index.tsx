@@ -55,18 +55,24 @@ function BeforeYouFly() {
     card: "preview",
     esim: "preview",
     insurance: "preview",
+    health: cards.length > 0 ? "done" : "todo",
+    documents: documents.length > 0 ? "done" : "todo",
     arrival: "todo",
     packing: "todo",
-    emergency: joined ? "todo" : "todo",
+    emergency: "todo",
   };
 
   const trackable = BEFORE_YOU_FLY_STEPS.filter((s) => status[s.id] !== "preview");
   const done = trackable.filter((s) => status[s.id] === "done").length;
   const pct = trackable.length ? Math.round((done / trackable.length) * 100) : 0;
+  /* The one thing worth doing now: the earliest step Shekk can still see is open. */
+  const next = BEFORE_YOU_FLY_STEPS.find((s) => status[s.id] === "todo") ?? null;
+  const complete = trackable.length > 0 && done === trackable.length;
 
   return (
     <AppShell>
       <ScreenHeader title="Before you fly" subtitle="Your pre-arrival checklist" back="/israel" />
+
 
       <header className="px-5 pt-5">
         <div className="grad-balance relative overflow-hidden rounded-[1.5rem] px-5 py-5 text-ink-foreground shadow-lift">
