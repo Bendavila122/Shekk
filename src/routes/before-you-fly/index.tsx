@@ -102,6 +102,33 @@ function BeforeYouFly() {
         </div>
       </header>
 
+      {complete ? (
+        <div className="px-4 pt-4">
+          <Milestone
+            title="You're ready to fly"
+            body="Every step Shekk can see is sorted. Nothing left to prepare — go and have the year."
+            actionLabel="Open Explore"
+            actionTo="/israel"
+          />
+        </div>
+      ) : next ? (
+        <section className="px-4 pt-4">
+          <div className="rounded-[1.5rem] border border-primary/25 bg-primary-soft p-4">
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
+              <Sparkles className="size-3.5" /> Do this next
+            </span>
+            <p className="mt-2 text-[15px] font-semibold leading-snug">{next.title}</p>
+            <p className="mt-1 text-[12.5px] leading-relaxed text-muted-foreground">{next.blurb}</p>
+            <Link
+              to={next.href}
+              className="tap mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[12.5px] font-bold text-primary-foreground"
+            >
+              {next.cta} <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+        </section>
+      ) : null}
+
       {!signedIn ? (
         <div className="px-4 pt-4">
           <Notice title="Sign in to track your progress">
