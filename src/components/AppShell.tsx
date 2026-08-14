@@ -162,7 +162,6 @@ export function MobileNav() {
 /** Top-right quick menu (mobile): balance, top up, Me, Settings, Help. */
 export function QuickMenu() {
   const [open, setOpen] = useState(false);
-  const { state } = useApp();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
