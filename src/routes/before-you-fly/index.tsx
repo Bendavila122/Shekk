@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CheckCircle2, Circle, Clock, PlaneTakeoff } from "lucide-react";
+import { ArrowRight, CheckCircle2, Circle, Clock, GraduationCap, PlaneTakeoff, Sparkles } from "lucide-react";
 import { AppShell, Card, Notice, ScreenHeader } from "@/components/AppShell";
+import { Milestone } from "@/components/Kit";
 import { useApp } from "@/lib/store";
 import { useProfile } from "@/lib/useProfile";
 import { useProgramme, useTravel } from "@/lib/useProgramme";
