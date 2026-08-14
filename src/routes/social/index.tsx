@@ -68,7 +68,7 @@ function Social() {
   return (
     <AppShell>
       <header className="px-5 pt-7">
-        <h1 className="text-3xl font-bold">Social</h1>
+        <h1 className="font-display text-3xl font-bold tracking-tight">Friends</h1>
         <p className="text-sm text-muted-foreground">Your group, your crew, your split of the bill.</p>
       </header>
 
