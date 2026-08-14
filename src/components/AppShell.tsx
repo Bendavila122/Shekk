@@ -232,14 +232,29 @@ function useActive() {
 }
 
 
-/** Balance + top up, shown inside the navigation. */
-function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
+/**
+ * The one balance figure in the navigation, shared by the mobile quick menu and
+ * the desktop sidebar so the two breakpoints can never drift apart. One rule:
+ * the figure is "Your shekels", the action is "Add money".
+ */
+export function BalanceMini({ size = "sm" }: { size?: "sm" | "lg" }) {
   const { state } = useApp();
   return (
-    <div className="mt-auto rounded-2xl bg-ink px-4 py-3 text-ink-foreground">
+    <>
       <p className="text-[10px] uppercase tracking-widest opacity-60">Your shekels</p>
-      <p className="font-display text-2xl font-bold leading-tight">{ils(state.balance)}</p>
+      <p className={`font-display font-bold leading-tight ${size === "lg" ? "text-2xl" : "text-xl"}`}>
+        {ils(state.balance)}
+      </p>
       <p className="text-[11px] opacity-60">≈ {refIn(state.settings.payCurrency, state.balance)}</p>
+    </>
+  );
+}
+
+/** Balance + top up, shown inside the navigation. */
+function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
+  return (
+    <div className="mt-auto rounded-2xl bg-ink px-4 py-3 text-ink-foreground">
+      <BalanceMini size="lg" />
       <Link
         to="/topup"
         onClick={onNavigate}
