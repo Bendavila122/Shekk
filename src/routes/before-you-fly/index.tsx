@@ -185,6 +185,21 @@ function BeforeYouFly() {
           );
         })}
 
+        <Link to="/programme" className="tap block">
+          <Card className="flex items-center gap-3">
+            <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-muted">
+              <GraduationCap className="size-5 text-muted-foreground" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-semibold">Your programme</span>
+              <span className="block text-xs text-muted-foreground">
+                Timetable, announcements, documents and on-call contacts
+              </span>
+            </span>
+            <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
+          </Card>
+        </Link>
+
         <Notice title="Why some steps say Preview">
           Card issuing, eSIM and insurance checkout are not live yet. Those screens show what's coming and what
           the options usually cost, so nothing pretends to be a finished purchase.
