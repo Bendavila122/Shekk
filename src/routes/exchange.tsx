@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowDown, Check, Info, Loader2, Lock } from "lucide-react";
 import { AppShell, Card, ScreenHeader, PrimaryButton } from "@/components/AppShell";
+import { MembershipUpsell } from "@/components/MembershipUpsell";
 import { LoadingBlocks } from "@/components/Kit";
 import { AirwallexDropIn } from "@/components/AirwallexDropIn";
 

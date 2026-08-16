@@ -15,6 +15,7 @@ import {
   Bell,
 } from "lucide-react";
 import { AppShell, Card, ScreenHeader, PrimaryButton } from "@/components/AppShell";
+import { MembershipUpsell } from "@/components/MembershipUpsell";
 import { PreviewBadge } from "@/components/Kit";
 import { LoadingBlocks } from "@/components/Kit";
 import { ShekkCardFace } from "@/components/ShekkCard";

@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { MapPin, Check, Lock, Ticket, ShieldCheck } from "lucide-react";
 import { AppShell, Card, ScreenHeader, PrimaryButton } from "@/components/AppShell";
+import { MembershipUpsell } from "@/components/MembershipUpsell";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { useApp } from "@/lib/store";
 import { benefit } from "@/lib/benefits";
