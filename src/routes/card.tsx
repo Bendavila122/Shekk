@@ -169,12 +169,11 @@ function CardScreen() {
                 {issuing ? "Issuing your card…" : "Issue my Shekk Card"}
               </PrimaryButton>
             ) : (
-              <Link
-                to="/membership"
-                className="tap block rounded-2xl bg-primary px-5 py-4 text-center text-base font-semibold text-primary-foreground"
-              >
-                Unlock with Shekk+
-              </Link>
+              <MembershipUpsell
+                title="The Shekk Card is a Shekk+ feature"
+                body="Membership covers the card, the benefits marketplace and lower conversion margins."
+                cta="Unlock with Shekk+"
+              />
             )}
           </div>
         )}
