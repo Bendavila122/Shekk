@@ -9,7 +9,8 @@
  * date. Nothing here is legal advice — every track says who to actually call.
  */
 
-import type { GuideBlock, GuideSection } from "@/lib/guides";
+import { GUIDES } from "@/lib/guides";
+import type { Guide, GuideBlock, GuideCategoryId, GuideSection } from "@/lib/guides";
 
 export type TrackId = "visa" | "army" | "lone-soldier" | "university";
 
