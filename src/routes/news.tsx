@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { ExternalLink, RefreshCw } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { ErrorState } from "@/components/Kit";
 import { useNews } from "@/lib/news";
 import { NEWS_SOURCES, relativeTime, type NewsItem, type NewsSourceId } from "@/lib/news-types";
 
