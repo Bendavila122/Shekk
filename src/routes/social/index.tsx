@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { AppShell, Card, PrimaryButton } from "@/components/AppShell";
+import { EmptyState, PageHeader } from "@/components/Kit";
 import { Avatar } from "@/components/Avatar";
 import { ils } from "@/lib/mock";
 import { useApp } from "@/lib/store";
