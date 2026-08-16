@@ -72,12 +72,14 @@ export function EmptyState({
   body,
   actionLabel,
   actionTo,
+  actionSearch,
 }: {
   icon?: LucideIcon;
   title: string;
   body: string;
   actionLabel?: string;
   actionTo?: string;
+  actionSearch?: Record<string, string>;
 }) {
   return (
     <div className="rounded-2xl border border-border bg-card px-5 py-8 text-center shadow-card">
@@ -91,11 +93,15 @@ export function EmptyState({
       {actionLabel && actionTo ? (
         <Link
           to={actionTo}
+          search={actionSearch as never}
           className="tap mt-4 inline-flex rounded-full bg-primary px-4 py-2 text-[12.5px] font-semibold text-primary-foreground"
         >
           {actionLabel}
         </Link>
       ) : null}
+    </div>
+  );
+}
     </div>
   );
 }
