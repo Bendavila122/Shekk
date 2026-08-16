@@ -9,7 +9,7 @@
 
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { Sparkles } from "lucide-react";
+import { AlertTriangle, RotateCcw, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 /** Big screen title used at the top of a tab root. */
