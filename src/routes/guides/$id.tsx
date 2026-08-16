@@ -5,6 +5,9 @@ import { AppShell, ScreenHeader } from "@/components/AppShell";
 import { GuideBlockView } from "@/lib/guide-blocks";
 import { GUIDES, categoryLabel, getGuide, type Guide } from "@/lib/guides";
 import { useGuidePrefs } from "@/lib/guide-prefs";
+import { trackForGuide } from "@/lib/official-content";
+import { TRACK_ROUTES } from "@/components/official/TrackApp";
+import { ToolRow } from "@/components/Kit";
 
 export const Route = createFileRoute("/guides/$id")({
   loader: ({ params }) => {
@@ -37,6 +40,7 @@ function fmt(iso: string) {
 function GuideDetail() {
   const { guide } = Route.useLoaderData() as { guide: Guide };
   const { prefs, toggleSaved, setProgress, toggleCheck, rate } = useGuidePrefs();
+  const track = trackForGuide(guide);
   const [pct, setPct] = useState(0);
   const bodyRef = useRef<HTMLDivElement>(null);
 
@@ -159,6 +163,19 @@ function GuideDetail() {
           </button>
         </div>
       </article>
+
+      {track ? (
+        <section className="mt-9 px-4">
+          <h2 className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+            Do the paperwork
+          </h2>
+          <ToolRow
+            to={TRACK_ROUTES[track.id]}
+            title={`${track.emoji} ${track.name}`}
+            body={`${track.tagline} — your own checklist, saved to your account.`}
+          />
+        </section>
+      ) : null}
 
       <section className="mt-9 px-5">
         <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
