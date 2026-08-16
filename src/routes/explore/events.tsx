@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Ticket } from "lucide-react";
 import { AppShell, Card, ScreenHeader } from "@/components/AppShell";
+import { ErrorState } from "@/components/Kit";
 import { EVENT_KIND_LABEL, dayLabel, eventWhen, useEvents } from "@/lib/useEvents";
 import { ils } from "@/lib/mock";
 
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/explore/events")({
 const KIND_FILTERS = ["shabbaton", "tiyul", "club", "shiur", "chesed"] as const;
 
 function Events() {
-  const { data, isLoading, error } = useEvents();
+  const { data, isLoading, error, refetch } = useEvents();
   const [kind, setKind] = useState<string | null>(null);
   const [city, setCity] = useState<string | null>(null);
 
