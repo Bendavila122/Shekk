@@ -93,10 +93,12 @@ function Events() {
         )}
 
         {error && (
-          <Card className="text-sm text-muted-foreground">
-            Events couldn&apos;t load just now. Pull back in a moment.
-          </Card>
+          <ErrorState
+            body="Events couldn't load just now. Check your connection and try again."
+            onRetry={() => void refetch()}
+          />
         )}
+
 
         {!isLoading && !error && events.length === 0 && (
           <Card className="space-y-1.5 text-center">
