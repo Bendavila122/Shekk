@@ -102,9 +102,6 @@ export function EmptyState({
     </div>
   );
 }
-    </div>
-  );
-}
 
 /**
  * Every "we couldn't load this" state on every screen looks like this.
