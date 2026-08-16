@@ -856,7 +856,10 @@ const CATEGORY_TRACK: Partial<Record<GuideCategoryId, TrackId>> = {
 };
 
 /** The track a guide should link across to, if any. */
-export function trackForGuide(guide: { id: string; category: GuideCategoryId }): OfficialTrack | undefined {
+export function trackForGuide(guide: {
+  id: string;
+  category: GuideCategoryId;
+}): OfficialTrack | undefined {
   const id = GUIDE_TRACK[guide.id] ?? CATEGORY_TRACK[guide.category];
   return id ? getTrack(id) : undefined;
 }
