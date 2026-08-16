@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowDown, Check, Info, Loader2, Lock } from "lucide-react";
 import { AppShell, Card, ScreenHeader, PrimaryButton } from "@/components/AppShell";
+import { MembershipUpsell } from "@/components/MembershipUpsell";
 import { LoadingBlocks } from "@/components/Kit";
 import { AirwallexDropIn } from "@/components/AirwallexDropIn";
 
@@ -140,16 +141,12 @@ function ExchangeScreen() {
             </Card>
 
             {!isPremium ? (
-              <Link
-                to="/membership"
-                className="tap mt-3 flex items-start gap-2 rounded-2xl border border-notice-border bg-notice-soft px-4 py-3 text-xs text-notice-foreground"
-              >
-                <Info className="mt-0.5 size-4 shrink-0" />
-                <span>
-                  Shekk+ converts at a 1.2% margin instead of {marginLabel}. On this exchange that's{" "}
-                  {money(cur.code, +(q.fee * 0.6).toFixed(2))} back.
-                </span>
-              </Link>
+              <div className="mt-3">
+                <MembershipUpsell
+                  title="Convert at a lower margin"
+                  body={`Shekk+ converts at 1.2% instead of ${marginLabel}. On this exchange that's ${money(cur.code, +(q.fee * 0.6).toFixed(2))} back.`}
+                />
+              </div>
             ) : null}
 
             <p className="mt-3 px-1 text-[11px] text-muted-foreground">

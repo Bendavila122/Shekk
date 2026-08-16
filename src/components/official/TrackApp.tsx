@@ -13,7 +13,7 @@ import { AppShell, ScreenHeader } from "@/components/AppShell";
 import { DocumentVault } from "@/components/official/DocumentVault";
 import { GuideBlockView } from "@/lib/guide-blocks";
 import { useGuidePrefs } from "@/lib/guide-prefs";
-import { TRACKS, docCategory, type DocCategoryId, type OfficialTrack, type TrackId } from "@/lib/official-content";
+import { TRACKS, docCategory, guidesForTrack, type DocCategoryId, type OfficialTrack, type TrackId } from "@/lib/official-content";
 import { useOfficial } from "@/lib/useOfficial";
 
 /** Where each track lives now that they're separate apps. */
@@ -48,6 +48,7 @@ export function TrackApp({ track }: { track: OfficialTrack }) {
 
   const doneCount = track.steps.filter((s) => byKey.get(s.key)?.done).length;
   const others = TRACKS.filter((t) => t.id !== track.id);
+  const guides = guidesForTrack(track.id);
 
   return (
     <AppShell>
@@ -254,6 +255,25 @@ export function TrackApp({ track }: { track: OfficialTrack }) {
           Open the full vault
         </Link>
       </section>
+
+      {guides.length ? (
+        <section className="mt-9 px-5">
+          <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+            Read alongside this
+          </h2>
+          <div className="mt-1 divide-y divide-border">
+            {guides.map((g) => (
+              <Link key={g.id} to="/guides/$id" params={{ id: g.id }} className="tap-flat flex items-start gap-3 py-4">
+                <span className="text-lg leading-none">{g.emoji}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[14px] font-semibold leading-tight">{g.title}</p>
+                  <p className="mt-0.5 line-clamp-1 text-[12px] text-muted-foreground">{g.blurb}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="mt-9 px-5">
         <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Also useful</h2>

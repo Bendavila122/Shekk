@@ -9,7 +9,8 @@
  * date. Nothing here is legal advice — every track says who to actually call.
  */
 
-import type { GuideBlock, GuideSection } from "@/lib/guides";
+import { GUIDES } from "@/lib/guides";
+import type { Guide, GuideBlock, GuideCategoryId, GuideSection } from "@/lib/guides";
 
 export type TrackId = "visa" | "army" | "lone-soldier" | "university";
 
@@ -836,6 +837,38 @@ export const TRACKS: OfficialTrack[] = [VISA, ARMY, LONE, UNIVERSITY];
 export function getTrack(id: string): OfficialTrack | undefined {
   return TRACKS.find((t) => t.id === id);
 }
+
+/**
+ * Guides and tracks are two halves of the same story — a guide explains a
+ * thing, a track walks you through the paperwork for it. These maps keep them
+ * cross-linked so neither reads like a separate product.
+ */
+
+/** A specific guide belongs to a specific track. */
+const GUIDE_TRACK: Record<string, TrackId> = {
+  "visa-extension": "visa",
+  "student-discounts": "university",
+};
+
+/** Fallback: a whole guide category leans on one track. */
+const CATEGORY_TRACK: Partial<Record<GuideCategoryId, TrackId>> = {
+  official: "visa",
+};
+
+/** The track a guide should link across to, if any. */
+export function trackForGuide(guide: {
+  id: string;
+  category: GuideCategoryId;
+}): OfficialTrack | undefined {
+  const id = GUIDE_TRACK[guide.id] ?? CATEGORY_TRACK[guide.category];
+  return id ? getTrack(id) : undefined;
+}
+
+/** The guides worth reading alongside a track. */
+export function guidesForTrack(trackId: TrackId): Guide[] {
+  return GUIDES.filter((g) => trackForGuide(g)?.id === trackId);
+}
+
 
 /** Everything searchable about a track, flattened once. */
 export function trackKeywords(id: string): string {

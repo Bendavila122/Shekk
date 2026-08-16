@@ -9,7 +9,7 @@
 
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { Sparkles } from "lucide-react";
+import { AlertTriangle, RotateCcw, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 /** Big screen title used at the top of a tab root. */
@@ -72,12 +72,14 @@ export function EmptyState({
   body,
   actionLabel,
   actionTo,
+  actionSearch,
 }: {
   icon?: LucideIcon;
   title: string;
   body: string;
   actionLabel?: string;
   actionTo?: string;
+  actionSearch?: Record<string, string>;
 }) {
   return (
     <div className="rounded-2xl border border-border bg-card px-5 py-8 text-center shadow-card">
@@ -91,6 +93,7 @@ export function EmptyState({
       {actionLabel && actionTo ? (
         <Link
           to={actionTo}
+          search={actionSearch as never}
           className="tap mt-4 inline-flex rounded-full bg-primary px-4 py-2 text-[12.5px] font-semibold text-primary-foreground"
         >
           {actionLabel}
@@ -99,6 +102,48 @@ export function EmptyState({
     </div>
   );
 }
+
+/**
+ * Every "we couldn't load this" state on every screen looks like this.
+ * Pass onRetry when the caller can genuinely try again.
+ */
+export function ErrorState({
+  icon: Icon = AlertTriangle,
+  title = "Something went wrong",
+  body,
+  onRetry,
+  retryLabel = "Try again",
+}: {
+  icon?: LucideIcon;
+  title?: string;
+  body: string;
+  onRetry?: () => void;
+  retryLabel?: string;
+}) {
+  return (
+    <div
+      role="alert"
+      className="rounded-2xl border border-warning/30 bg-card px-5 py-7 text-center shadow-card"
+    >
+      <span className="mx-auto mb-3 flex size-11 items-center justify-center rounded-2xl bg-warning-soft text-warning-foreground">
+        <Icon className="size-5" />
+      </span>
+      <p className="text-sm font-semibold">{title}</p>
+      <p className="mx-auto mt-1 max-w-[17rem] text-[12.5px] leading-relaxed text-muted-foreground">{body}</p>
+      {onRetry ? (
+        <button
+          type="button"
+          onClick={onRetry}
+          className="tap mt-4 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[12.5px] font-semibold text-primary-foreground"
+        >
+          <RotateCcw className="size-3.5" /> {retryLabel}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+
 
 /** Skeleton rows — used instead of the old bare "Loading…" text. */
 export function LoadingBlocks({ rows = 3 }: { rows?: number }) {

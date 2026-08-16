@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { ExternalLink, RefreshCw } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { ErrorState } from "@/components/Kit";
 import { useNews } from "@/lib/news";
 import { NEWS_SOURCES, relativeTime, type NewsItem, type NewsSourceId } from "@/lib/news-types";
 
@@ -145,8 +146,11 @@ function NewsPage() {
           ))}
         </div>
       ) : news.isError ? (
-        <div className="px-5 pt-8 text-sm text-muted-foreground">
-          Couldn't reach the news feeds. Pull the refresh button above to try again.
+        <div className="px-5 pt-6">
+          <ErrorState
+            body="We couldn't reach the news feeds just now."
+            onRetry={() => void news.refetch()}
+          />
         </div>
       ) : filtered.length === 0 ? (
         <div className="px-5 pt-8 text-sm text-muted-foreground">Nothing from this source right now.</div>

@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { AppShell, Card, PrimaryButton } from "@/components/AppShell";
+import { EmptyState, PageHeader } from "@/components/Kit";
 import { Avatar } from "@/components/Avatar";
 import { ils } from "@/lib/mock";
 import { useApp } from "@/lib/store";
@@ -48,22 +49,21 @@ function Social() {
   if (!signedIn) {
     return (
       <AppShell>
-        <div className="px-5 py-20 text-center">
-          <h1 className="text-2xl font-bold">Social</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Sign in to chat with your group, split bills and send shekels to friends.
-          </p>
-          <Link
-            to="/auth"
-            search={{ next: "/social" }}
-            className="tap mt-5 inline-block rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
-          >
-            Sign in
-          </Link>
+        <PageHeader title="Friends" subtitle="Chat, split the bill and send shekels" />
+        <div className="px-4 pt-4">
+          <EmptyState
+            icon={MessageCircle}
+            title="Sign in to use Friends"
+            body="Chat with your group, split bills in seconds and send shekels to friends on your programme."
+            actionLabel="Sign in"
+            actionTo="/auth"
+            actionSearch={{ next: "/social" }}
+          />
         </div>
       </AppShell>
     );
   }
+
 
   return (
     <AppShell>

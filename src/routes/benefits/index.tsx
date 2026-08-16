@@ -4,6 +4,7 @@ import { Lock, Sparkles, MapPin, Check } from "lucide-react";
 import { useVisibleBenefits } from "@/lib/admin";
 import { AppShell, Card, ScreenHeader } from "@/components/AppShell";
 import { ServiceLogo } from "@/components/ServiceLogo";
+import { MembershipUpsell } from "@/components/MembershipUpsell";
 import { useApp } from "@/lib/store";
 import { BENEFIT_CATEGORIES, type Benefit, type BenefitCategoryId } from "@/lib/benefits";
 
@@ -39,15 +40,10 @@ function BenefitsScreen() {
 
       {!isPremium ? (
         <section className="px-4 pt-4">
-          <Link to="/membership" className="tap block">
-            <div className="grad-premium relative overflow-hidden rounded-2xl p-4 text-ink-foreground">
-              <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
-              <p className="relative text-sm font-semibold">Unlock every offer with Shekk+</p>
-              <p className="relative text-xs opacity-85">
-                {BENEFITS.filter((b) => b.premium).length} members-only deals are locked on your plan.
-              </p>
-            </div>
-          </Link>
+          <MembershipUpsell
+            title="Unlock every offer with Shekk+"
+            body={`${BENEFITS.filter((b) => b.premium).length} members-only deals are locked on your plan.`}
+          />
         </section>
       ) : null}
 

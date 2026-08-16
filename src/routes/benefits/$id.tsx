@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { MapPin, Check, Lock, Ticket, ShieldCheck } from "lucide-react";
 import { AppShell, Card, ScreenHeader, PrimaryButton } from "@/components/AppShell";
+import { MembershipUpsell } from "@/components/MembershipUpsell";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { useApp } from "@/lib/store";
 import { benefit } from "@/lib/benefits";
@@ -69,12 +70,11 @@ function BenefitDetail() {
 
       <section className="px-4 pb-10 pt-5">
         {locked ? (
-          <Link
-            to="/membership"
-            className="tap flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-4 text-base font-semibold text-primary-foreground"
-          >
-            <Lock className="size-4" /> Unlock with Premium
-          </Link>
+          <MembershipUpsell
+            title="This offer is members-only"
+            body="Shekk+ unlocks every partner offer in the marketplace, plus the card and lower margins."
+            cta="Unlock with Shekk+"
+          />
         ) : redeemed ? (
           <Card className="p-5 text-center">
             <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-success-soft">
