@@ -170,7 +170,7 @@ function GuideDetail() {
             Do the paperwork
           </h2>
           <ToolRow
-            to={TRACK_ROUTES[track.id]}
+            to={TRACK_ROUTES[track.id] as string}
             title={`${track.emoji} ${track.name}`}
             body={`${track.tagline} — your own checklist, saved to your account.`}
           />
