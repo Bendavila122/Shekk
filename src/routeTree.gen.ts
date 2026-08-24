@@ -46,7 +46,6 @@ import { Route as SocialConversationIdRouteImport } from './routes/social/$conve
 import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
 import { Route as ServicesOffersRouteImport } from './routes/services/offers'
 import { Route as ServicesInsuranceRouteImport } from './routes/services/insurance'
-import { Route as ServicesEsimRouteImport } from './routes/services/esim'
 import { Route as GuidesIdRouteImport } from './routes/guides/$id'
 import { Route as ExploreVisaRouteImport } from './routes/explore/visa'
 import { Route as ExploreUniFinderRouteImport } from './routes/explore/uni-finder'
@@ -279,11 +278,6 @@ const ServicesOffersRoute = ServicesOffersRouteImport.update({
 const ServicesInsuranceRoute = ServicesInsuranceRouteImport.update({
   id: '/services/insurance',
   path: '/services/insurance',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ServicesEsimRoute = ServicesEsimRouteImport.update({
-  id: '/services/esim',
-  path: '/services/esim',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuidesIdRoute = GuidesIdRouteImport.update({
@@ -592,7 +586,6 @@ export interface FileRoutesByFullPath {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
-  '/services/esim': typeof ServicesEsimRoute
   '/services/insurance': typeof ServicesInsuranceRoute
   '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -679,7 +672,6 @@ export interface FileRoutesByTo {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
-  '/services/esim': typeof ServicesEsimRoute
   '/services/insurance': typeof ServicesInsuranceRoute
   '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -768,7 +760,6 @@ export interface FileRoutesById {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
-  '/services/esim': typeof ServicesEsimRoute
   '/services/insurance': typeof ServicesInsuranceRoute
   '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -858,7 +849,6 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
-    | '/services/esim'
     | '/services/insurance'
     | '/services/offers'
     | '/siddur/$id'
@@ -945,7 +935,6 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
-    | '/services/esim'
     | '/services/insurance'
     | '/services/offers'
     | '/siddur/$id'
@@ -1033,7 +1022,6 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
-    | '/services/esim'
     | '/services/insurance'
     | '/services/offers'
     | '/siddur/$id'
@@ -1115,7 +1103,6 @@ export interface RootRouteChildren {
   ExploreUniFinderRoute: typeof ExploreUniFinderRoute
   ExploreVisaRoute: typeof ExploreVisaRoute
   GuidesIdRoute: typeof GuidesIdRoute
-  ServicesEsimRoute: typeof ServicesEsimRoute
   ServicesInsuranceRoute: typeof ServicesInsuranceRoute
   ServicesOffersRoute: typeof ServicesOffersRoute
   SiddurIdRoute: typeof SiddurIdRoute
@@ -1403,13 +1390,6 @@ declare module '@tanstack/react-router' {
       path: '/services/insurance'
       fullPath: '/services/insurance'
       preLoaderRoute: typeof ServicesInsuranceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/services/esim': {
-      id: '/services/esim'
-      path: '/services/esim'
-      fullPath: '/services/esim'
-      preLoaderRoute: typeof ServicesEsimRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guides/$id': {
@@ -1830,7 +1810,6 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreUniFinderRoute: ExploreUniFinderRoute,
   ExploreVisaRoute: ExploreVisaRoute,
   GuidesIdRoute: GuidesIdRoute,
-  ServicesEsimRoute: ServicesEsimRoute,
   ServicesInsuranceRoute: ServicesInsuranceRoute,
   ServicesOffersRoute: ServicesOffersRoute,
   SiddurIdRoute: SiddurIdRoute,

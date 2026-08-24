@@ -1503,6 +1503,420 @@ export type Database = {
         }
         Relationships: []
       }
+      sim_clicks: {
+        Row: {
+          affiliate: boolean
+          converted_at: string | null
+          created_at: string
+          id: string
+          plan_id: string | null
+          provider_id: string | null
+          recommendation_id: string | null
+          reported_amount_minor: number | null
+          reported_currency: string | null
+          target_url: string
+          user_id: string | null
+        }
+        Insert: {
+          affiliate?: boolean
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          plan_id?: string | null
+          provider_id?: string | null
+          recommendation_id?: string | null
+          reported_amount_minor?: number | null
+          reported_currency?: string | null
+          target_url: string
+          user_id?: string | null
+        }
+        Update: {
+          affiliate?: boolean
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          plan_id?: string | null
+          provider_id?: string | null
+          recommendation_id?: string | null
+          reported_amount_minor?: number | null
+          reported_currency?: string | null
+          target_url?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sim_clicks_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "sim_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sim_clicks_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "sim_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sim_clicks_recommendation_id_fkey"
+            columns: ["recommendation_id"]
+            isOneToOne: false
+            referencedRelation: "sim_recommendations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sim_esims: {
+        Row: {
+          activation_code: string | null
+          created_at: string
+          expires_at: string | null
+          iccid: string | null
+          id: string
+          installed_at: string | null
+          lpa_string: string | null
+          matching_id: string | null
+          order_id: string | null
+          plan_id: string | null
+          provider_id: string
+          qr_url: string | null
+          raw: Json
+          smdp_address: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activation_code?: string | null
+          created_at?: string
+          expires_at?: string | null
+          iccid?: string | null
+          id?: string
+          installed_at?: string | null
+          lpa_string?: string | null
+          matching_id?: string | null
+          order_id?: string | null
+          plan_id?: string | null
+          provider_id: string
+          qr_url?: string | null
+          raw?: Json
+          smdp_address?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activation_code?: string | null
+          created_at?: string
+          expires_at?: string | null
+          iccid?: string | null
+          id?: string
+          installed_at?: string | null
+          lpa_string?: string | null
+          matching_id?: string | null
+          order_id?: string | null
+          plan_id?: string | null
+          provider_id?: string
+          qr_url?: string | null
+          raw?: Json
+          smdp_address?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sim_esims_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "sim_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sim_esims_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "sim_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sim_esims_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "sim_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sim_orders: {
+        Row: {
+          amount_minor: number
+          created_at: string
+          currency: string
+          failure_reason: string | null
+          id: string
+          idempotency_key: string
+          mode: string
+          plan_id: string | null
+          provider_id: string
+          provider_order_ref: string | null
+          status: string
+          stripe_payment_intent: string | null
+          stripe_session_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_minor?: number
+          created_at?: string
+          currency?: string
+          failure_reason?: string | null
+          id?: string
+          idempotency_key: string
+          mode: string
+          plan_id?: string | null
+          provider_id: string
+          provider_order_ref?: string | null
+          status?: string
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_minor?: number
+          created_at?: string
+          currency?: string
+          failure_reason?: string | null
+          id?: string
+          idempotency_key?: string
+          mode?: string
+          plan_id?: string | null
+          provider_id?: string
+          provider_order_ref?: string | null
+          status?: string
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sim_orders_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "sim_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sim_orders_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "sim_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sim_plans: {
+        Row: {
+          activation_policy: string | null
+          active: boolean
+          calls_included: boolean
+          country_code: string
+          created_at: string
+          currency: string
+          data_mb: number | null
+          display_period_label: string | null
+          display_price_label: string | null
+          display_price_minor: number
+          external_id: string | null
+          fair_use_note: string | null
+          featured: boolean
+          headline: string | null
+          id: string
+          in_stock: boolean
+          name: string
+          net_cost_minor: number | null
+          networks: string[] | null
+          operator: string | null
+          phone_number_included: boolean
+          plan_type: string
+          points: string[]
+          provider_id: string
+          rank_boost: number
+          raw: Json
+          rechargeable: boolean
+          source: string
+          synced_at: string | null
+          texts_included: boolean
+          unlimited: boolean
+          updated_at: string
+          validity_days: number | null
+        }
+        Insert: {
+          activation_policy?: string | null
+          active?: boolean
+          calls_included?: boolean
+          country_code?: string
+          created_at?: string
+          currency?: string
+          data_mb?: number | null
+          display_period_label?: string | null
+          display_price_label?: string | null
+          display_price_minor?: number
+          external_id?: string | null
+          fair_use_note?: string | null
+          featured?: boolean
+          headline?: string | null
+          id?: string
+          in_stock?: boolean
+          name: string
+          net_cost_minor?: number | null
+          networks?: string[] | null
+          operator?: string | null
+          phone_number_included?: boolean
+          plan_type?: string
+          points?: string[]
+          provider_id: string
+          rank_boost?: number
+          raw?: Json
+          rechargeable?: boolean
+          source?: string
+          synced_at?: string | null
+          texts_included?: boolean
+          unlimited?: boolean
+          updated_at?: string
+          validity_days?: number | null
+        }
+        Update: {
+          activation_policy?: string | null
+          active?: boolean
+          calls_included?: boolean
+          country_code?: string
+          created_at?: string
+          currency?: string
+          data_mb?: number | null
+          display_period_label?: string | null
+          display_price_label?: string | null
+          display_price_minor?: number
+          external_id?: string | null
+          fair_use_note?: string | null
+          featured?: boolean
+          headline?: string | null
+          id?: string
+          in_stock?: boolean
+          name?: string
+          net_cost_minor?: number | null
+          networks?: string[] | null
+          operator?: string | null
+          phone_number_included?: boolean
+          plan_type?: string
+          points?: string[]
+          provider_id?: string
+          rank_boost?: number
+          raw?: Json
+          rechargeable?: boolean
+          source?: string
+          synced_at?: string | null
+          texts_included?: boolean
+          unlimited?: boolean
+          updated_at?: string
+          validity_days?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sim_plans_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "sim_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sim_providers: {
+        Row: {
+          active: boolean
+          affiliate_network: string | null
+          affiliate_tracking_id: string | null
+          affiliate_url_template: string | null
+          blurb: string | null
+          created_at: string
+          id: string
+          metadata: Json
+          mode: string
+          name: string
+          site_url: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          affiliate_network?: string | null
+          affiliate_tracking_id?: string | null
+          affiliate_url_template?: string | null
+          blurb?: string | null
+          created_at?: string
+          id: string
+          metadata?: Json
+          mode?: string
+          name: string
+          site_url?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          affiliate_network?: string | null
+          affiliate_tracking_id?: string | null
+          affiliate_url_template?: string | null
+          blurb?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          mode?: string
+          name?: string
+          site_url?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sim_recommendations: {
+        Row: {
+          answers: Json
+          created_at: string
+          id: string
+          ranked: Json
+          top_plan_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          ranked?: Json
+          top_plan_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          ranked?: Json
+          top_plan_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sim_recommendations_top_plan_id_fkey"
+            columns: ["top_plan_id"]
+            isOneToOne: false
+            referencedRelation: "sim_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       split_bills: {
         Row: {
           conversation_id: string | null
