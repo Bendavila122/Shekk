@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -12,6 +12,7 @@ import {
   USAGE_OPTIONS,
   answersComplete,
   dataLabel,
+  INDICATIVE_PRICE_NOTE,
   isIndicative,
   periodLabel,
   priceLabel,
@@ -41,11 +42,22 @@ export const Route = createFileRoute("/services/esim/")({
   component: EsimFinder,
 });
 
-function PlanCard({ plan, best, reasons }: { plan: SimPlan; best?: boolean; reasons: string[] }) {
+function PlanCard({
+  plan,
+  best,
+  reasons,
+  recommendationId,
+}: {
+  plan: SimPlan;
+  best?: boolean;
+  reasons: string[];
+  recommendationId?: string | null;
+}) {
   return (
     <Link
       to="/services/esim/$planId"
       params={{ planId: plan.id }}
+      search={{ rec: recommendationId ?? undefined }}
       onClick={() => track("sim_provider_selected", { plan: plan.id, provider: plan.providerId, best: Boolean(best) })}
       className={`tap block rounded-2xl border bg-card p-4 text-left shadow-card ${
         best ? "border-primary/40 ring-1 ring-primary/20" : "border-border"
@@ -100,6 +112,12 @@ function EsimFinder() {
   const fetchPlans = useServerFn(listSimPlans);
   const saveAnswers = useServerFn(submitSimAnswers);
   const [answers, setAnswers] = useState<SimAnswers>(EMPTY_ANSWERS);
+  // The saved recommendation row, carried into the plan detail so an outbound
+  // click can be attributed back to this run.
+  const [recommendationId, setRecommendationId] = useState<string | null>(null);
+  // One insert per distinct completed answer set — effects and rerenders must
+  // not pile up identical recommendation rows during a single finder run.
+  const savedKey = useRef<string | null>(null);
 
   const plansQuery = useQuery({
     queryKey: ["sim", "plans"],
@@ -118,14 +136,20 @@ function EsimFinder() {
   // Persist the run once it's complete, so a later handoff can be attributed.
   useEffect(() => {
     if (!complete || plans.length === 0) return;
+    const key = JSON.stringify(answers);
+    if (savedKey.current === key) return;
+    savedKey.current = key;
+    setRecommendationId(null);
     track("sim_recommendation_completed", {
       days: answers.days,
       usage: answers.usage,
       needsCalls: answers.needsCalls,
     });
-    void saveAnswers({ data: { answers } }).catch(() => {
-      /* the recommendation is a record, never a blocker */
-    });
+    void saveAnswers({ data: { answers } })
+      .then((r) => setRecommendationId(r?.recommendationId ?? null))
+      .catch(() => {
+        /* the recommendation is a record, never a blocker */
+      });
   }, [complete, plans.length, answers, saveAnswers]);
 
   const set = <K extends keyof SimAnswers>(key: K, value: SimAnswers[K]) =>
@@ -241,11 +265,15 @@ function EsimFinder() {
           <section className="space-y-3">
             <SectionHead
               title="Your recommendation"
-              hint="Prices are indicative until a partner feed is live"
+              hint="Placeholder prices until a verified partner feed is live"
               action={
                 <button
                   type="button"
-                  onClick={() => setAnswers(EMPTY_ANSWERS)}
+                  onClick={() => {
+                    savedKey.current = null;
+                    setRecommendationId(null);
+                    setAnswers(EMPTY_ANSWERS);
+                  }}
                   className="tap-flat inline-flex items-center gap-1.5 text-[12px] font-semibold text-primary"
                 >
                   <RotateCcw className="size-3.5" /> Start again
@@ -253,11 +281,18 @@ function EsimFinder() {
               }
             />
             {ranked.slice(0, 4).map((r, i) => (
-              <PlanCard key={r.plan.id} plan={r.plan} best={i === 0} reasons={r.reasons} />
+              <PlanCard
+                key={r.plan.id}
+                plan={r.plan}
+                best={i === 0}
+                reasons={r.reasons}
+                recommendationId={recommendationId}
+              />
             ))}
             {ranked.some((r) => isIndicative(r.plan)) ? (
               <p className="px-1 text-[11.5px] leading-relaxed text-muted-foreground">
-                These plan shapes and prices are curated by hand from what providers publish. You can't buy a SIM inside
+                {INDICATIVE_PRICE_NOTE} These plan shapes and allowances are curated by hand from what providers
+                publish, so treat them as a guide and confirm on the provider's own site. You can't buy a SIM inside
                 Shekk yet — we'll tell you exactly where to go instead.
               </p>
             ) : null}

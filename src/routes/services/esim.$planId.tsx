@@ -6,10 +6,17 @@ import { ArrowUpRight, Info, Lock } from "lucide-react";
 import { AppShell, ScreenHeader, Notice } from "@/components/AppShell";
 import { ErrorState, LoadingBlocks, MicroLabel, SectionHead, StatusPill } from "@/components/Kit";
 import { getSimPlan, startSimHandoff } from "@/lib/sim.functions";
-import { capabilityLines, isIndicative, periodLabel, planAction, priceLabel } from "@/lib/sim";
+import { capabilityLines, INDICATIVE_PRICE_NOTE, isIndicative, periodLabel, planAction, priceLabel } from "@/lib/sim";
 import { track } from "@/lib/analytics";
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export const Route = createFileRoute("/services/esim/$planId")({
+  /** `rec` carries the finder's saved recommendation id so a click can be attributed. */
+  validateSearch: (search: Record<string, unknown>) => {
+    const rec = typeof search.rec === "string" && UUID.test(search.rec) ? search.rec : undefined;
+    return { rec } as { rec?: string };
+  },
   head: () => ({
     meta: [
       { title: "SIM plan detail · Shekk" },
@@ -29,6 +36,7 @@ export const Route = createFileRoute("/services/esim/$planId")({
 
 function PlanDetail() {
   const { planId } = Route.useParams();
+  const { rec } = Route.useSearch();
   const fetchPlan = useServerFn(getSimPlan);
   const handoff = useServerFn(startSimHandoff);
   const [busy, setBusy] = useState(false);
@@ -51,7 +59,7 @@ function PlanDetail() {
     setProblem(null);
     setBusy(true);
     try {
-      const result = await handoff({ data: { planId: plan.id } });
+      const result = await handoff({ data: { planId: plan.id, recommendationId: rec ?? null } });
       track("sim_affiliate_clicked", {
         plan: plan.id,
         provider: plan.providerId,
@@ -112,8 +120,8 @@ function PlanDetail() {
         </div>
         {isIndicative(plan) ? (
           <p className="mt-1.5 text-[11.5px] text-muted-foreground">
-            Indicative price, curated by hand from what {plan.provider?.name ?? "the provider"} publishes. Check the
-            final price on their site.
+            {INDICATIVE_PRICE_NOTE} Curated by hand from what {plan.provider?.name ?? "the provider"} publishes — check
+            the current price and allowance on their site.
           </p>
         ) : null}
       </header>

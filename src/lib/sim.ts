@@ -179,3 +179,15 @@ export function planAction(plan: SimPlan): PlanAction {
 export function isIndicative(plan: SimPlan) {
   return plan.source === "manual";
 }
+
+/** One sentence, used everywhere a hand-curated price is shown. */
+export const INDICATIVE_PRICE_NOTE =
+  "Placeholder price — Shekk has not verified this with the provider. We'll show verified prices once a partner feed is live.";
+
+/**
+ * Only plans whose provider resolved (i.e. is active and readable) are ever
+ * public. Keeps a disabled provider's catalogue from lingering with no provider.
+ */
+export function withActiveProvider(plans: SimPlan[]): SimPlan[] {
+  return plans.filter((p) => p.provider !== null);
+}

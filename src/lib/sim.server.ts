@@ -8,6 +8,7 @@
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { FulfilmentMode, PlanSource, PlanType, SimAnswers, SimPlan, SimProvider } from "./sim";
+import { withActiveProvider } from "./sim";
 import { rankPlans } from "./sim-ranking";
 
 /* ───────────────────────────── clients ───────────────────────────── */
@@ -88,17 +89,24 @@ export async function listPlans(): Promise<SimPlan[]> {
     db.from("sim_plans").select("*").eq("active", true).eq("in_stock", true),
   ]);
   const providers = new Map((providerRows ?? []).map((p) => [p.id as string, mapProvider(p)]));
-  return (planRows ?? []).map((r) => mapPlan(r, providers));
+  // A plan is only ever public while its provider is active/readable, so
+  // deactivating one provider removes its whole catalogue at once.
+  return withActiveProvider((planRows ?? []).map((r) => mapPlan(r, providers)));
 }
 
 export async function getPlan(id: string): Promise<SimPlan | null> {
   const db = publicClient();
   const { data: row } = await db.from("sim_plans").select("*").eq("id", id).eq("active", true).maybeSingle();
   if (!row) return null;
-  const { data: p } = await db.from("sim_providers").select("*").eq("id", row.provider_id).maybeSingle();
-  const providers = new Map<string, SimProvider>();
-  if (p) providers.set(p.id as string, mapProvider(p));
-  return mapPlan(row, providers);
+  const { data: p } = await db
+    .from("sim_providers")
+    .select("*")
+    .eq("id", row.provider_id)
+    .eq("active", true)
+    .maybeSingle();
+  if (!p) return null;
+  const providers = new Map<string, SimProvider>([[p.id as string, mapProvider(p)]]);
+  return withActiveProvider([mapPlan(row, providers)])[0] ?? null;
 }
 
 /* ───────────────────────────── recommendation ───────────────────────────── */
