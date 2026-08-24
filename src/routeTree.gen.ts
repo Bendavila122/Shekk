@@ -79,6 +79,7 @@ import { Route as AdminAppsRouteImport } from './routes/admin/apps'
 import { Route as AdminAccountsRouteImport } from './routes/admin/accounts'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as ServicesEsimIndexRouteImport } from './routes/services/esim.index'
 import { Route as ExploreMapIndexRouteImport } from './routes/explore/map.index'
 import { Route as ExploreIdfIndexRouteImport } from './routes/explore/idf.index'
 import { Route as ExploreFitnessIndexRouteImport } from './routes/explore/fitness.index'
@@ -447,6 +448,11 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ServicesEsimIndexRoute = ServicesEsimIndexRouteImport.update({
+  id: '/services/esim/',
+  path: '/services/esim/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreMapIndexRoute = ExploreMapIndexRouteImport.update({
   id: '/explore/map/',
   path: '/explore/map/',
@@ -608,6 +614,7 @@ export interface FileRoutesByFullPath {
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/explore/idf/': typeof ExploreIdfIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
+  '/services/esim/': typeof ServicesEsimIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -694,6 +701,7 @@ export interface FileRoutesByTo {
   '/explore/fitness': typeof ExploreFitnessIndexRoute
   '/explore/idf': typeof ExploreIdfIndexRoute
   '/explore/map': typeof ExploreMapIndexRoute
+  '/services/esim': typeof ServicesEsimIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -782,6 +790,7 @@ export interface FileRoutesById {
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/explore/idf/': typeof ExploreIdfIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
+  '/services/esim/': typeof ServicesEsimIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -871,6 +880,7 @@ export interface FileRouteTypes {
     | '/explore/fitness/'
     | '/explore/idf/'
     | '/explore/map/'
+    | '/services/esim/'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
     | '/lovable/email/auth/preview'
@@ -957,6 +967,7 @@ export interface FileRouteTypes {
     | '/explore/fitness'
     | '/explore/idf'
     | '/explore/map'
+    | '/services/esim'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
     | '/lovable/email/auth/preview'
@@ -1044,6 +1055,7 @@ export interface FileRouteTypes {
     | '/explore/fitness/'
     | '/explore/idf/'
     | '/explore/map/'
+    | '/services/esim/'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
     | '/lovable/email/auth/preview'
@@ -1124,6 +1136,7 @@ export interface RootRouteChildren {
   ExploreFitnessIndexRoute: typeof ExploreFitnessIndexRoute
   ExploreIdfIndexRoute: typeof ExploreIdfIndexRoute
   ExploreMapIndexRoute: typeof ExploreMapIndexRoute
+  ServicesEsimIndexRoute: typeof ServicesEsimIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicWebhooksAirwallexRoute: typeof ApiPublicWebhooksAirwallexRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -1623,6 +1636,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/esim/': {
+      id: '/services/esim/'
+      path: '/services/esim'
+      fullPath: '/services/esim/'
+      preLoaderRoute: typeof ServicesEsimIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/map/': {
       id: '/explore/map/'
       path: '/explore/map'
@@ -1831,6 +1851,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreFitnessIndexRoute: ExploreFitnessIndexRoute,
   ExploreIdfIndexRoute: ExploreIdfIndexRoute,
   ExploreMapIndexRoute: ExploreMapIndexRoute,
+  ServicesEsimIndexRoute: ServicesEsimIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicWebhooksAirwallexRoute: ApiPublicWebhooksAirwallexRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
