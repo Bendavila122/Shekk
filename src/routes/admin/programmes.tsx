@@ -882,10 +882,18 @@ function ContentTab({
 
   return (
     <div className="space-y-4">
-      <p className="rounded-2xl border border-border bg-card p-3 text-[11px] font-semibold text-muted-foreground">
-        Read-only oversight. Day-to-day editing stays with programme staff in the programme staff hub, so their
-        permissions and change history remain intact.
-      </p>
+      <div className="rounded-2xl border border-border bg-card p-3">
+        <p className="text-[11px] font-semibold text-muted-foreground">
+          Read-only oversight. Day-to-day editing stays with programme staff in the staff hub, so their permissions and
+          change history remain intact.
+        </p>
+        <Link
+          to="/programme/staff"
+          className="mt-2 inline-flex items-center gap-1.5 rounded-xl bg-muted px-3 py-2 text-xs font-bold"
+        >
+          Open staff hub <ChevronRight className="size-3.5" />
+        </Link>
+      </div>
       {sections.map((s) => (
         <div key={s.label}>
           <div className="mb-2 flex items-center justify-between">
