@@ -80,7 +80,7 @@ function StaffScreen() {
   const invite = useCohortInvite(hub.cohortId, isStaff && tab === "People");
 
   const people = useMemo(
-    () => (participants.data ?? []).map((p) => ({ userId: p.userId, name: p.name || p.email || "Participant" })),
+    () => (participants.data ?? []).map((p) => ({ userId: p.userId, name: p.name || p.handle || "Participant" })),
     [participants.data],
   );
 
@@ -96,11 +96,11 @@ function StaffScreen() {
     );
   }
 
-  const canEvents = staffCan(hub.staff, "manage_events");
-  const canAnnounce = staffCan(hub.staff, "manage_announcements");
-  const canVotes = staffCan(hub.staff, "manage_votes");
-  const canContent = staffCan(hub.staff, "manage_content");
-  const canPeople = staffCan(hub.staff, "manage_people");
+  const canEvents = staffCan(hub.staff, "events");
+  const canAnnounce = staffCan(hub.staff, "announcements");
+  const canVotes = staffCan(hub.staff, "votes");
+  const canContent = staffCan(hub.staff, "documents");
+  const canPeople = staffCan(hub.staff, "participants");
 
   const upcoming = [...hub.events]
     .filter((e) => new Date(e.startsAt).getTime() > Date.now() - 6 * 60 * 60 * 1000)
@@ -264,10 +264,10 @@ function StaffScreen() {
                 <p className="text-[12px] text-muted-foreground">Loading…</p>
               ) : invite.data ? (
                 <div className="flex items-center gap-3">
-                  <p className="font-display text-2xl font-bold tracking-widest">{invite.data.joinCode}</p>
+                  <p className="font-display text-2xl font-bold tracking-widest">{invite.data.code}</p>
                   <button
                     type="button"
-                    onClick={() => void navigator.clipboard?.writeText(invite.data!.joinCode)}
+                    onClick={() => void navigator.clipboard?.writeText(invite.data!.code)}
                     className="tap-flat flex items-center gap-1.5 rounded-xl bg-muted px-3 py-2 text-[12px] font-bold"
                   >
                     <Copy className="size-3.5" /> Copy
@@ -318,7 +318,10 @@ function StaffScreen() {
                   <Card key={p.userId} className="flex items-center justify-between">
                     <div className="min-w-0">
                       <p className="truncate text-[13.5px] font-semibold">{p.name || "Participant"}</p>
-                      {p.email ? <p className="truncate text-[11px] text-muted-foreground">{p.email}</p> : null}
+                      <p className="truncate text-[11px] text-muted-foreground">
+                        {p.handle ? `@${p.handle} · ` : ""}
+                        {p.checklistDone} checklist done
+                      </p>
                     </div>
                   </Card>
                 ))}
