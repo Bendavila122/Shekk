@@ -35,13 +35,14 @@ function SimConsole() {
   const invalidate = () => void qc.invalidateQueries({ queryKey: ["admin", "sim"] });
 
   const providerMutation = useMutation({
-    mutationFn: (v: Parameters<typeof saveProvider>[0]["data"]) => saveProvider({ data: v }),
+    mutationFn: (v: { id: string; mode?: FulfilmentMode; affiliateUrlTemplate?: string | null; active?: boolean }) =>
+      saveProvider({ data: v }),
     onSuccess: invalidate,
     onError: (e) => setNotice((e as Error).message),
   });
 
   const planMutation = useMutation({
-    mutationFn: (v: Parameters<typeof savePlan>[0]["data"]) => savePlan({ data: v }),
+    mutationFn: (v: { id: string; rankBoost?: number; featured?: boolean; active?: boolean }) => savePlan({ data: v }),
     onSuccess: invalidate,
     onError: (e) => setNotice((e as Error).message),
   });
