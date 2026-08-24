@@ -57,7 +57,7 @@ function PlanCard({
     <Link
       to="/services/esim/$planId"
       params={{ planId: plan.id }}
-      search={recommendationId ? { rec: recommendationId } : {}}
+      search={{ rec: recommendationId ?? undefined }}
       onClick={() => track("sim_provider_selected", { plan: plan.id, provider: plan.providerId, best: Boolean(best) })}
       className={`tap block rounded-2xl border bg-card p-4 text-left shadow-card ${
         best ? "border-primary/40 ring-1 ring-primary/20" : "border-border"

@@ -15,7 +15,7 @@ export const Route = createFileRoute("/services/esim/$planId")({
   /** `rec` carries the finder's saved recommendation id so a click can be attributed. */
   validateSearch: (search: Record<string, unknown>) => {
     const rec = typeof search.rec === "string" && UUID.test(search.rec) ? search.rec : undefined;
-    return rec ? { rec } : {};
+    return { rec } as { rec?: string };
   },
   head: () => ({
     meta: [
