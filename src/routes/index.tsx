@@ -4,7 +4,7 @@ import { useProgramme, useTravel } from "@/lib/useProgramme";
 
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { AppShell } from "@/components/AppShell";
-import { SectionHead, EmptyState, LoadingBlocks, StatusPill, Milestone, MicroLabel, ProgressBar } from "@/components/Kit";
+import { SectionHead, EmptyState, LoadingBlocks, StatusPill, MicroLabel, ProgressBar } from "@/components/Kit";
 
 import { ActiveNow } from "@/components/ActiveNow";
 import { ForYou } from "@/components/ForYou";
@@ -88,6 +88,7 @@ function SetupPanel() {
           </p>
           <Link
             to="/auth"
+            search={{ next: "/" }}
             className="tap mt-3 inline-flex rounded-full bg-primary px-4 py-2 text-[12.5px] font-bold text-primary-foreground"
           >
             Create account
@@ -134,7 +135,7 @@ function SetupPanel() {
         <p className="mt-2 text-[12px] text-muted-foreground">
           {setup.done} of {setup.total} things sorted
         </p>
-        <ProgressBar value={setup.percent} className="mt-2" />
+        <ProgressBar value={setup.percent / 100} className="mt-2" />
 
         {setup.complete ? (
           <p className="mt-3 flex items-center gap-2 text-[13px] font-semibold text-success">
