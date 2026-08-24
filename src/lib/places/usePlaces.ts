@@ -1,9 +1,16 @@
 /**
  * Shekk Location Platform — the client hooks.
  *
- * TanStack Query owns caching on the client, the server cache owns Google
- * spend. Query keys use rounded coordinates so a drifting GPS fix re-uses the
- * same entry instead of firing a fresh Google request every tick.
+ * Google's Places terms do not allow caching or storing Places content, so
+ * every Google-derived query is always stale (`staleTime: 0`) and is garbage
+ * collected almost immediately once nothing is rendering it. The response lives
+ * in React state only for as long as the screen showing it does.
+ *
+ * Query keys still use rounded coordinates so a drifting GPS fix does not fire
+ * a fresh Google request on every tick while a screen is mounted.
+ *
+ * Shekk-owned data (saved places, the connection status flag) may be cached
+ * normally — it is ours.
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -26,8 +33,11 @@ import {
   unsavePlaceForMember,
 } from "./places.functions";
 
-const LIST_STALE = 3 * 60_000;
-const DETAIL_STALE = 5 * 60_000;
+/**
+ * Google-derived results are never treated as a reusable cache: always refetch
+ * on use, and drop the response seconds after the last consumer unmounts.
+ */
+const GOOGLE_QUERY = { staleTime: 0, gcTime: 5_000, refetchOnMount: "always" } as const;
 
 /** Is the Google Maps connection wired up for this project? */
 export function usePlacesReady() {
@@ -86,7 +96,7 @@ export function usePlacesFeed(options: NearbyOptions) {
       at ? coordKey(at) : "anywhere",
     ],
     enabled: (options.enabled ?? true) && ready === true && (textSearch || Boolean(at)),
-    staleTime: LIST_STALE,
+    ...GOOGLE_QUERY,
     retry: 1,
     queryFn: async () => {
       const rows = textSearch
@@ -122,7 +132,7 @@ export function usePlaceDetail(id: string) {
   const query = useQuery<Place>({
     queryKey: ["places", "detail", id],
     enabled: ready === true && Boolean(id),
-    staleTime: DETAIL_STALE,
+    ...GOOGLE_QUERY,
     queryFn: () => detail({ data: { id } }),
   });
 
@@ -152,7 +162,7 @@ export function useTravelTo(to: LatLon | null, modes?: ("WALK" | "TRANSIT" | "DR
       (modes ?? ["WALK", "TRANSIT", "DRIVE"]).join("|"),
     ],
     enabled: Boolean(from && to),
-    staleTime: 2 * 60_000,
+    ...GOOGLE_QUERY,
     queryFn: () =>
       travel({
         data: {
@@ -176,8 +186,9 @@ export function usePlacePhoto(photoName: string | undefined, maxWidthPx = 800) {
   const resolve = useServerFn(placePhotoUrl);
   const query = useQuery({
     queryKey: ["places", "photo", photoName ?? "none", maxWidthPx],
+    // Photo resource names and resolved URLs expire, so nothing is kept.
     enabled: Boolean(photoName),
-    staleTime: 30 * 60_000,
+    ...GOOGLE_QUERY,
     retry: false,
     queryFn: () => resolve({ data: { photoName: photoName!, maxWidthPx } }),
   });
@@ -246,7 +257,7 @@ export function usePlacesByIds(ids: string[]) {
   const query = useQuery<Place[]>({
     queryKey: ["places", "by-ids", key, at ? coordKey(at) : "anywhere"],
     enabled: ready === true && ids.length > 0,
-    staleTime: DETAIL_STALE,
+    ...GOOGLE_QUERY,
     queryFn: async () => {
       const rows = await Promise.all(ids.map((id) => detail({ data: { id } }).catch(() => null)));
       return withDistance(rows.filter((r): r is Place => Boolean(r)), at);

@@ -74,17 +74,25 @@ export const STAY_OPTIONS: { id: StayLength; label: string; hint: string; months
 export const stayOption = (id: StayLength) => STAY_OPTIONS.find((s) => s.id === id)!;
 
 /**
- * Cheapest sensible monthly cost for someone staying `months` months. Returns
- * null when Shekk holds no monthly price — never a guess.
+ * The monthly price Shekk actually holds for this venue, or null.
+ *
+ * There is deliberately no arithmetic here. A number shown to a member as a
+ * Shekk price must be exactly what a human recorded in `venue_meta` — we never
+ * manufacture a short-stay premium or any other derived figure.
  */
-export function effectiveMonthly(meta: PlaceMeta, months: number): number | null {
-  if (meta.monthlyIls === undefined) return null;
-  if (!months || months >= 6) return meta.monthlyIls;
-  // Short stays usually pay a premium when they dodge the long contract.
-  return Math.round(meta.monthlyIls * (meta.shortStay ? 1.1 : 1.25));
+export function storedMonthly(meta: PlaceMeta): number | null {
+  return meta.monthlyIls ?? null;
 }
 
-/** Does this venue realistically work for a stay of this length? */
+/** The day-pass price Shekk holds, or null. Again, stored values only. */
+export function storedDayPass(meta: PlaceMeta): number | null {
+  return meta.dayPassIls ?? null;
+}
+
+/**
+ * Does this venue realistically work for a stay of this length? Uses contract
+ * facts only — minimum contract, a short-stay option, or a day pass existing.
+ */
 export function fitsStay(meta: PlaceMeta, stay: StayLength): boolean {
   if (stay === "unsure" || stay === "year") return true;
   const min = meta.minContractMonths;
@@ -122,12 +130,14 @@ export const DEFAULT_FILTERS: FitnessFilters = {
 export function filterVenues(places: Place[], f: FitnessFilters): Place[] {
   const filtered = places.filter((p) => {
     const meta = p.meta;
-    if (f.openNow && p.hours.openNow === false) return false;
+    // "Open now" means Google explicitly said open. Unknown never passes.
+    if (f.openNow && p.hours.openNow !== true) return false;
     if (f.partnerOnly && !meta.partner) return false;
     if (f.minRating !== null && (p.rating ?? 0) < f.minRating) return false;
     if (f.maxDistanceKm !== null && p.distanceKm !== undefined && p.distanceKm > f.maxDistanceKm) return false;
     if (f.maxPriceIls !== null) {
-      const monthly = effectiveMonthly(meta, stayOption(f.stay).months);
+      // Only a stored price can rule a venue out; an unknown price never does.
+      const monthly = storedMonthly(meta);
       if (monthly !== null && monthly > f.maxPriceIls) return false;
     }
     if (f.facilities.length) {
@@ -138,17 +148,17 @@ export function filterVenues(places: Place[], f: FitnessFilters): Place[] {
     return true;
   });
 
-  return sortVenues(filtered, f.sort, stayOption(f.stay).months);
+  return sortVenues(filtered, f.sort);
 }
 
-export function sortVenues(places: Place[], sort: SortMode, months: number): Place[] {
+export function sortVenues(places: Place[], sort: SortMode): Place[] {
   const list = [...places];
   if (sort === "rating") return list.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
   if (sort === "price")
     return list.sort((a, b) => {
       // Venues with no known price sink to the bottom rather than pretending to be free.
-      const pa = effectiveMonthly(a.meta, months) ?? Number.POSITIVE_INFINITY;
-      const pb = effectiveMonthly(b.meta, months) ?? Number.POSITIVE_INFINITY;
+      const pa = storedMonthly(a.meta) ?? Number.POSITIVE_INFINITY;
+      const pb = storedMonthly(b.meta) ?? Number.POSITIVE_INFINITY;
       return pa - pb;
     });
   return list.sort((a, b) => (a.distanceKm ?? 99) - (b.distanceKm ?? 99));

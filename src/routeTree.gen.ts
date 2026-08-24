@@ -72,6 +72,7 @@ import { Route as BeforeYouFlyInsuranceRouteImport } from './routes/before-you-f
 import { Route as BeforeYouFlyEsimRouteImport } from './routes/before-you-fly/esim'
 import { Route as AdminSimRouteImport } from './routes/admin/sim'
 import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
+import { Route as AdminPlacesRouteImport } from './routes/admin/places'
 import { Route as AdminMoneyRouteImport } from './routes/admin/money'
 import { Route as AdminMembershipsRouteImport } from './routes/admin/memberships'
 import { Route as AdminEventsRouteImport } from './routes/admin/events'
@@ -414,6 +415,11 @@ const AdminPromotionsRoute = AdminPromotionsRouteImport.update({
   path: '/promotions',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminPlacesRoute = AdminPlacesRouteImport.update({
+  id: '/places',
+  path: '/places',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminMoneyRoute = AdminMoneyRouteImport.update({
   id: '/money',
   path: '/money',
@@ -585,6 +591,7 @@ export interface FileRoutesByFullPath {
   '/admin/events': typeof AdminEventsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
+  '/admin/places': typeof AdminPlacesRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/admin/sim': typeof AdminSimRoute
   '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
@@ -675,6 +682,7 @@ export interface FileRoutesByTo {
   '/admin/events': typeof AdminEventsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
+  '/admin/places': typeof AdminPlacesRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/admin/sim': typeof AdminSimRoute
   '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
@@ -767,6 +775,7 @@ export interface FileRoutesById {
   '/admin/events': typeof AdminEventsRoute
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
+  '/admin/places': typeof AdminPlacesRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/admin/sim': typeof AdminSimRoute
   '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
@@ -860,6 +869,7 @@ export interface FileRouteTypes {
     | '/admin/events'
     | '/admin/memberships'
     | '/admin/money'
+    | '/admin/places'
     | '/admin/promotions'
     | '/admin/sim'
     | '/before-you-fly/esim'
@@ -950,6 +960,7 @@ export interface FileRouteTypes {
     | '/admin/events'
     | '/admin/memberships'
     | '/admin/money'
+    | '/admin/places'
     | '/admin/promotions'
     | '/admin/sim'
     | '/before-you-fly/esim'
@@ -1041,6 +1052,7 @@ export interface FileRouteTypes {
     | '/admin/events'
     | '/admin/memberships'
     | '/admin/money'
+    | '/admin/places'
     | '/admin/promotions'
     | '/admin/sim'
     | '/before-you-fly/esim'
@@ -1625,6 +1637,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPromotionsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/places': {
+      id: '/admin/places'
+      path: '/places'
+      fullPath: '/admin/places'
+      preLoaderRoute: typeof AdminPlacesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/money': {
       id: '/admin/money'
       path: '/money'
@@ -1817,6 +1836,7 @@ interface AdminRouteRouteChildren {
   AdminEventsRoute: typeof AdminEventsRoute
   AdminMembershipsRoute: typeof AdminMembershipsRoute
   AdminMoneyRoute: typeof AdminMoneyRoute
+  AdminPlacesRoute: typeof AdminPlacesRoute
   AdminPromotionsRoute: typeof AdminPromotionsRoute
   AdminSimRoute: typeof AdminSimRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -1829,6 +1849,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminEventsRoute: AdminEventsRoute,
   AdminMembershipsRoute: AdminMembershipsRoute,
   AdminMoneyRoute: AdminMoneyRoute,
+  AdminPlacesRoute: AdminPlacesRoute,
   AdminPromotionsRoute: AdminPromotionsRoute,
   AdminSimRoute: AdminSimRoute,
   AdminIndexRoute: AdminIndexRoute,

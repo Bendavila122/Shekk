@@ -38,11 +38,12 @@ export function PlaceCard({
       <div className="flex items-start gap-3">
         {photo && (
           <PlacePhoto
-            photoName={place.photoNames[0]}
+            {...(place.photos[0] ? { photo: place.photos[0] } : {})}
             alt={place.name}
             emoji={emojiFor(place.types)}
             className="size-16 shrink-0 rounded-xl"
             maxWidthPx={240}
+            variant="thumb"
           />
         )}
 

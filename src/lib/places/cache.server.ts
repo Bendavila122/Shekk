@@ -1,32 +1,29 @@
 /**
- * Shekk Location Platform — request cache and in-flight dedupe. Server only.
+ * Shekk Location Platform — in-flight dedupe, and a cache for Shekk's own data.
+ * Server only.
  *
- * Google Places is metered per request, so two things matter: never ask twice
- * for the same thing at the same moment, and hold an answer just long enough to
- * absorb a screen's worth of re-renders.
+ * Google's Places terms do not allow pre-fetching, caching or storing Places
+ * content, so Google-derived responses are NEVER retained here. All we do for
+ * Google is collapse identical *concurrent* requests into one round trip, and
+ * the shared promise is dropped the moment it settles.
  *
- * This is a short-TTL IN-MEMORY cache and nothing else. Google's terms do not
- * allow building a durable copy of Places content, so nothing here is ever
- * written to the database.
+ * `venue_meta` is Shekk-owned content, so it gets a real short-TTL cache.
  */
 
 type Entry = { value: unknown; expires: number };
 
+/** Shekk-owned values only. Nothing Google-derived is ever put in here. */
 const cache = new Map<string, Entry>();
+
+/** Identical concurrent requests, Google-derived or not. Cleared on settle. */
 const inflight = new Map<string, Promise<unknown>>();
 
 /** Ceiling on entries so a busy worker cannot grow without bound. */
-const MAX_ENTRIES = 500;
+const MAX_ENTRIES = 300;
 
-/** Cache lifetimes, deliberately short. Places content stays transient. */
+/** Cache lifetimes. Only Shekk-owned content is eligible. */
 export const TTL = {
-  /** Nearby/text results: a list can be a few minutes old without harm. */
-  list: 3 * 60_000,
-  /** Place details: hours and rating move slowly. */
-  detail: 5 * 60_000,
-  /** Travel legs: traffic moves, so keep these tight. */
-  travel: 2 * 60_000,
-  /** Shekk's own venue metadata: ours, so it can live longer. */
+  /** Shekk's own venue metadata: ours, so it can be cached. */
   meta: 10 * 60_000,
 } as const;
 
@@ -44,28 +41,35 @@ function sweep() {
 }
 
 /**
- * Run `load` unless a fresh answer is cached or an identical call is already in
- * flight. Failures are never cached — a transient Google error must not stick.
+ * Collapse identical concurrent calls into one. The result is handed to every
+ * waiter and then forgotten — nothing is retained once the promise settles, so
+ * this is safe for Google-derived content.
  */
-export async function cached<T>(key: string, ttlMs: number, load: () => Promise<T>): Promise<T> {
-  const hit = cache.get(key);
-  if (hit && hit.expires > Date.now()) return hit.value as T;
-
+export function dedupe<T>(key: string, load: () => Promise<T>): Promise<T> {
   const running = inflight.get(key);
   if (running) return running as Promise<T>;
 
-  const promise = load()
-    .then((value) => {
-      cache.set(key, { value, expires: Date.now() + ttlMs });
-      sweep();
-      return value;
-    })
-    .finally(() => {
-      inflight.delete(key);
-    });
-
+  const promise = load().finally(() => {
+    inflight.delete(key);
+  });
   inflight.set(key, promise);
   return promise;
+}
+
+/**
+ * Short-TTL cache for SHEKK-OWNED data only. Never call this with a Google
+ * response. Failures are never cached.
+ */
+export async function cachedOwn<T>(key: string, ttlMs: number, load: () => Promise<T>): Promise<T> {
+  const hit = cache.get(key);
+  if (hit && hit.expires > Date.now()) return hit.value as T;
+
+  return dedupe(key, async () => {
+    const value = await load();
+    cache.set(key, { value, expires: Date.now() + ttlMs });
+    sweep();
+    return value;
+  });
 }
 
 /** Test seam. */
@@ -75,3 +79,4 @@ export function resetPlacesCache() {
 }
 
 export const placesCacheSize = () => cache.size;
+export const placesInflightSize = () => inflight.size;

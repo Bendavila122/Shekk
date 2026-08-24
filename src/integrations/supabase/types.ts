@@ -2118,6 +2118,7 @@ export type Database = {
           facilities: string[]
           google_place_id: string
           id: string
+          internal_notes: string | null
           label: string | null
           min_contract_months: number | null
           monthly_ils: number | null
@@ -2139,6 +2140,7 @@ export type Database = {
           facilities?: string[]
           google_place_id: string
           id?: string
+          internal_notes?: string | null
           label?: string | null
           min_contract_months?: number | null
           monthly_ils?: number | null
@@ -2160,6 +2162,7 @@ export type Database = {
           facilities?: string[]
           google_place_id?: string
           id?: string
+          internal_notes?: string | null
           label?: string | null
           min_contract_months?: number | null
           monthly_ils?: number | null
