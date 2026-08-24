@@ -76,7 +76,12 @@ function VenueDetail() {
 
         {place && (
           <>
-            <PlacePhoto place={place} className="h-44 w-full rounded-3xl" />
+            <PlacePhoto
+              {...(place.photoNames[0] ? { photoName: place.photoNames[0] } : {})}
+              alt={place.name}
+              emoji="🏋️"
+              className="h-44 w-full rounded-3xl"
+            />
 
             <div className="space-y-1">
               <h1 className="font-display text-2xl font-bold leading-tight">{place.name}</h1>
