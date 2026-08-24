@@ -83,6 +83,7 @@ import { Route as ServicesEsimIndexRouteImport } from './routes/services/esim.in
 import { Route as ExploreMapIndexRouteImport } from './routes/explore/map.index'
 import { Route as ExploreIdfIndexRouteImport } from './routes/explore/idf.index'
 import { Route as ExploreFitnessIndexRouteImport } from './routes/explore/fitness.index'
+import { Route as ServicesEsimPlanIdRouteImport } from './routes/services/esim.$planId'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
 import { Route as ExploreMapIdRouteImport } from './routes/explore/map.$id'
 import { Route as ExploreIdfUnitIdRouteImport } from './routes/explore/idf.$unitId'
@@ -468,6 +469,11 @@ const ExploreFitnessIndexRoute = ExploreFitnessIndexRouteImport.update({
   path: '/explore/fitness/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesEsimPlanIdRoute = ServicesEsimPlanIdRouteImport.update({
+  id: '/services/esim/$planId',
+  path: '/services/esim/$planId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
   id: '/explore/service/$id',
   path: '/explore/service/$id',
@@ -611,6 +617,7 @@ export interface FileRoutesByFullPath {
   '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/services/esim/$planId': typeof ServicesEsimPlanIdRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/explore/idf/': typeof ExploreIdfIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
@@ -698,6 +705,7 @@ export interface FileRoutesByTo {
   '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/services/esim/$planId': typeof ServicesEsimPlanIdRoute
   '/explore/fitness': typeof ExploreFitnessIndexRoute
   '/explore/idf': typeof ExploreIdfIndexRoute
   '/explore/map': typeof ExploreMapIndexRoute
@@ -787,6 +795,7 @@ export interface FileRoutesById {
   '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/services/esim/$planId': typeof ServicesEsimPlanIdRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/explore/idf/': typeof ExploreIdfIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
@@ -877,6 +886,7 @@ export interface FileRouteTypes {
     | '/explore/idf/$unitId'
     | '/explore/map/$id'
     | '/explore/service/$id'
+    | '/services/esim/$planId'
     | '/explore/fitness/'
     | '/explore/idf/'
     | '/explore/map/'
@@ -964,6 +974,7 @@ export interface FileRouteTypes {
     | '/explore/idf/$unitId'
     | '/explore/map/$id'
     | '/explore/service/$id'
+    | '/services/esim/$planId'
     | '/explore/fitness'
     | '/explore/idf'
     | '/explore/map'
@@ -1052,6 +1063,7 @@ export interface FileRouteTypes {
     | '/explore/idf/$unitId'
     | '/explore/map/$id'
     | '/explore/service/$id'
+    | '/services/esim/$planId'
     | '/explore/fitness/'
     | '/explore/idf/'
     | '/explore/map/'
@@ -1133,6 +1145,7 @@ export interface RootRouteChildren {
   ExploreIdfUnitIdRoute: typeof ExploreIdfUnitIdRoute
   ExploreMapIdRoute: typeof ExploreMapIdRoute
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
+  ServicesEsimPlanIdRoute: typeof ServicesEsimPlanIdRoute
   ExploreFitnessIndexRoute: typeof ExploreFitnessIndexRoute
   ExploreIdfIndexRoute: typeof ExploreIdfIndexRoute
   ExploreMapIndexRoute: typeof ExploreMapIndexRoute
@@ -1664,6 +1677,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreFitnessIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/esim/$planId': {
+      id: '/services/esim/$planId'
+      path: '/services/esim/$planId'
+      fullPath: '/services/esim/$planId'
+      preLoaderRoute: typeof ServicesEsimPlanIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/service/$id': {
       id: '/explore/service/$id'
       path: '/explore/service/$id'
@@ -1848,6 +1868,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreIdfUnitIdRoute: ExploreIdfUnitIdRoute,
   ExploreMapIdRoute: ExploreMapIdRoute,
   ExploreServiceIdRoute: ExploreServiceIdRoute,
+  ServicesEsimPlanIdRoute: ServicesEsimPlanIdRoute,
   ExploreFitnessIndexRoute: ExploreFitnessIndexRoute,
   ExploreIdfIndexRoute: ExploreIdfIndexRoute,
   ExploreMapIndexRoute: ExploreMapIndexRoute,
