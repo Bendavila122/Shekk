@@ -1064,34 +1064,87 @@ export type Database = {
         }
         Relationships: []
       }
+      programme_acknowledgements: {
+        Row: {
+          acknowledged_at: string
+          cohort_id: string
+          id: string
+          subject_id: string
+          subject_type: string
+          user_id: string
+        }
+        Insert: {
+          acknowledged_at?: string
+          cohort_id: string
+          id?: string
+          subject_id: string
+          subject_type: string
+          user_id: string
+        }
+        Update: {
+          acknowledged_at?: string
+          cohort_id?: string
+          id?: string
+          subject_id?: string
+          subject_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_acknowledgements_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       programme_announcements: {
         Row: {
+          audience_kind: string
           body: string
           cohort_id: string
           created_at: string
+          created_by: string | null
+          event_id: string | null
           id: string
+          link_url: string | null
           pinned: boolean
+          priority: string
           published_at: string
+          requires_ack: boolean
           title: string
           updated_at: string
         }
         Insert: {
+          audience_kind?: string
           body: string
           cohort_id: string
           created_at?: string
+          created_by?: string | null
+          event_id?: string | null
           id?: string
+          link_url?: string | null
           pinned?: boolean
+          priority?: string
           published_at?: string
+          requires_ack?: boolean
           title: string
           updated_at?: string
         }
         Update: {
+          audience_kind?: string
           body?: string
           cohort_id?: string
           created_at?: string
+          created_by?: string | null
+          event_id?: string | null
           id?: string
+          link_url?: string | null
           pinned?: boolean
+          priority?: string
           published_at?: string
+          requires_ack?: boolean
           title?: string
           updated_at?: string
         }
@@ -1103,38 +1156,102 @@ export type Database = {
             referencedRelation: "programme_cohorts"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "programme_announcements_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "programme_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_audiences: {
+        Row: {
+          cohort_id: string
+          created_at: string
+          group_id: string | null
+          id: string
+          subject_id: string
+          subject_type: string
+          user_id: string | null
+        }
+        Insert: {
+          cohort_id: string
+          created_at?: string
+          group_id?: string | null
+          id?: string
+          subject_id: string
+          subject_type: string
+          user_id?: string | null
+        }
+        Update: {
+          cohort_id?: string
+          created_at?: string
+          group_id?: string | null
+          id?: string
+          subject_id?: string
+          subject_type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_audiences_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programme_audiences_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "programme_groups"
+            referencedColumns: ["id"]
+          },
         ]
       }
       programme_checklist_items: {
         Row: {
+          action_url: string | null
+          audience_kind: string
           cohort_id: string
           created_at: string
           details: string | null
           due_on: string | null
+          feature_key: string | null
           id: string
           item_key: string
+          required: boolean
           sort_order: number
           title: string
           updated_at: string
         }
         Insert: {
+          action_url?: string | null
+          audience_kind?: string
           cohort_id: string
           created_at?: string
           details?: string | null
           due_on?: string | null
+          feature_key?: string | null
           id?: string
           item_key: string
+          required?: boolean
           sort_order?: number
           title: string
           updated_at?: string
         }
         Update: {
+          action_url?: string | null
+          audience_kind?: string
           cohort_id?: string
           created_at?: string
           details?: string | null
           due_on?: string | null
+          feature_key?: string | null
           id?: string
           item_key?: string
+          required?: boolean
           sort_order?: number
           title?: string
           updated_at?: string
@@ -1198,8 +1315,10 @@ export type Database = {
           programme_id: string
           starts_on: string | null
           status: string
+          timezone: string
           updated_at: string
           welcome_message: string | null
+          year: string | null
         }
         Insert: {
           created_at?: string
@@ -1211,8 +1330,10 @@ export type Database = {
           programme_id: string
           starts_on?: string | null
           status?: string
+          timezone?: string
           updated_at?: string
           welcome_message?: string | null
+          year?: string | null
         }
         Update: {
           created_at?: string
@@ -1224,8 +1345,10 @@ export type Database = {
           programme_id?: string
           starts_on?: string | null
           status?: string
+          timezone?: string
           updated_at?: string
           welcome_message?: string | null
+          year?: string | null
         }
         Relationships: [
           {
@@ -1239,40 +1362,55 @@ export type Database = {
       }
       programme_contacts: {
         Row: {
+          audience_kind: string
+          availability: string | null
+          category: string
           cohort_id: string
           created_at: string
           email: string | null
           id: string
           is_emergency: boolean
           name: string
+          notes: string | null
           phone: string | null
           role: string | null
           sort_order: number
           updated_at: string
+          whatsapp: string | null
         }
         Insert: {
+          audience_kind?: string
+          availability?: string | null
+          category?: string
           cohort_id: string
           created_at?: string
           email?: string | null
           id?: string
           is_emergency?: boolean
           name: string
+          notes?: string | null
           phone?: string | null
           role?: string | null
           sort_order?: number
           updated_at?: string
+          whatsapp?: string | null
         }
         Update: {
+          audience_kind?: string
+          availability?: string | null
+          category?: string
           cohort_id?: string
           created_at?: string
           email?: string | null
           id?: string
           is_emergency?: boolean
           name?: string
+          notes?: string | null
           phone?: string | null
           role?: string | null
           sort_order?: number
           updated_at?: string
+          whatsapp?: string | null
         }
         Relationships: [
           {
@@ -1286,36 +1424,51 @@ export type Database = {
       }
       programme_documents: {
         Row: {
+          audience_kind: string
+          byte_size: number | null
           category: string
           cohort_id: string
           created_at: string
+          created_by: string | null
           description: string | null
           id: string
           label: string
           link_url: string | null
+          mime_type: string | null
           sort_order: number
+          storage_path: string | null
           updated_at: string
         }
         Insert: {
+          audience_kind?: string
+          byte_size?: number | null
           category?: string
           cohort_id: string
           created_at?: string
+          created_by?: string | null
           description?: string | null
           id?: string
           label: string
           link_url?: string | null
+          mime_type?: string | null
           sort_order?: number
+          storage_path?: string | null
           updated_at?: string
         }
         Update: {
+          audience_kind?: string
+          byte_size?: number | null
           category?: string
           cohort_id?: string
           created_at?: string
+          created_by?: string | null
           description?: string | null
           id?: string
           label?: string
           link_url?: string | null
+          mime_type?: string | null
           sort_order?: number
+          storage_path?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -1324,6 +1477,329 @@ export type Database = {
             columns: ["cohort_id"]
             isOneToOne: false
             referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_event_changes: {
+        Row: {
+          after_value: string | null
+          before_value: string | null
+          changed_at: string
+          changed_by: string | null
+          cohort_id: string
+          event_id: string
+          field: string
+          id: string
+          note: string | null
+          notify_level: string
+        }
+        Insert: {
+          after_value?: string | null
+          before_value?: string | null
+          changed_at?: string
+          changed_by?: string | null
+          cohort_id: string
+          event_id: string
+          field: string
+          id?: string
+          note?: string | null
+          notify_level?: string
+        }
+        Update: {
+          after_value?: string | null
+          before_value?: string | null
+          changed_at?: string
+          changed_by?: string | null
+          cohort_id?: string
+          event_id?: string
+          field?: string
+          id?: string
+          note?: string | null
+          notify_level?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_event_changes_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programme_event_changes_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "programme_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_event_rsvps: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          response: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          response: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          response?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_event_rsvps_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "programme_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_events: {
+        Row: {
+          audience_kind: string
+          capacity: number | null
+          cohort_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          ends_at: string | null
+          event_type: string
+          google_place_id: string | null
+          id: string
+          last_changed_at: string | null
+          latitude: number | null
+          location_label: string | null
+          longitude: number | null
+          mandatory: boolean
+          meeting_point: string | null
+          online_url: string | null
+          original_starts_at: string | null
+          requires_ack: boolean
+          rsvp_enabled: boolean
+          starts_at: string
+          status: string
+          status_note: string | null
+          timezone: string
+          title: string
+          updated_at: string
+          updated_by: string | null
+          urgent: boolean
+        }
+        Insert: {
+          audience_kind?: string
+          capacity?: number | null
+          cohort_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string | null
+          event_type?: string
+          google_place_id?: string | null
+          id?: string
+          last_changed_at?: string | null
+          latitude?: number | null
+          location_label?: string | null
+          longitude?: number | null
+          mandatory?: boolean
+          meeting_point?: string | null
+          online_url?: string | null
+          original_starts_at?: string | null
+          requires_ack?: boolean
+          rsvp_enabled?: boolean
+          starts_at: string
+          status?: string
+          status_note?: string | null
+          timezone?: string
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+          urgent?: boolean
+        }
+        Update: {
+          audience_kind?: string
+          capacity?: number | null
+          cohort_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          ends_at?: string | null
+          event_type?: string
+          google_place_id?: string | null
+          id?: string
+          last_changed_at?: string | null
+          latitude?: number | null
+          location_label?: string | null
+          longitude?: number | null
+          mandatory?: boolean
+          meeting_point?: string | null
+          online_url?: string | null
+          original_starts_at?: string | null
+          requires_ack?: boolean
+          rsvp_enabled?: boolean
+          starts_at?: string
+          status?: string
+          status_note?: string | null
+          timezone?: string
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+          urgent?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_events_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_group_members: {
+        Row: {
+          created_at: string
+          group_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          group_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          group_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "programme_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_groups: {
+        Row: {
+          cohort_id: string
+          colour: string | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          cohort_id: string
+          colour?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          cohort_id?: string
+          colour?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_groups_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_invites: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          code: string
+          cohort_id: string | null
+          created_at: string
+          created_by: string | null
+          email: string | null
+          expires_at: string | null
+          id: string
+          kind: string
+          note: string | null
+          programme_id: string
+          role: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          code: string
+          cohort_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          expires_at?: string | null
+          id?: string
+          kind?: string
+          note?: string | null
+          programme_id: string
+          role?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          code?: string
+          cohort_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          expires_at?: string | null
+          id?: string
+          kind?: string
+          note?: string | null
+          programme_id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_invites_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programme_invites_programme_id_fkey"
+            columns: ["programme_id"]
+            isOneToOne: false
+            referencedRelation: "programmes"
             referencedColumns: ["id"]
           },
         ]
@@ -1359,6 +1835,115 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "programme_memberships_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_notifications: {
+        Row: {
+          body: string | null
+          cohort_id: string
+          created_at: string
+          id: string
+          level: string
+          read_at: string | null
+          subject_id: string | null
+          subject_type: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          cohort_id: string
+          created_at?: string
+          id?: string
+          level?: string
+          read_at?: string | null
+          subject_id?: string | null
+          subject_type?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          cohort_id?: string
+          created_at?: string
+          id?: string
+          level?: string
+          read_at?: string | null
+          subject_id?: string | null
+          subject_type?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_notifications_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_places: {
+        Row: {
+          address: string | null
+          audience_kind: string
+          category: string
+          cohort_id: string
+          created_at: string
+          created_by: string | null
+          google_place_id: string | null
+          id: string
+          label: string
+          latitude: number | null
+          longitude: number | null
+          meeting_instructions: string | null
+          notes: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          audience_kind?: string
+          category?: string
+          cohort_id: string
+          created_at?: string
+          created_by?: string | null
+          google_place_id?: string | null
+          id?: string
+          label: string
+          latitude?: number | null
+          longitude?: number | null
+          meeting_instructions?: string | null
+          notes?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          audience_kind?: string
+          category?: string
+          cohort_id?: string
+          created_at?: string
+          created_by?: string | null
+          google_place_id?: string | null
+          id?: string
+          label?: string
+          latitude?: number | null
+          longitude?: number | null
+          meeting_instructions?: string | null
+          notes?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_places_cohort_id_fkey"
             columns: ["cohort_id"]
             isOneToOne: false
             referencedRelation: "programme_cohorts"
@@ -1410,36 +1995,257 @@ export type Database = {
           },
         ]
       }
+      programme_staff: {
+        Row: {
+          created_at: string
+          id: string
+          permissions: string[]
+          programme_id: string
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          permissions?: string[]
+          programme_id: string
+          role?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          permissions?: string[]
+          programme_id?: string
+          role?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_staff_programme_id_fkey"
+            columns: ["programme_id"]
+            isOneToOne: false
+            referencedRelation: "programmes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_vote_options: {
+        Row: {
+          capacity: number | null
+          created_at: string
+          detail: string | null
+          id: string
+          label: string
+          sort_order: number
+          vote_id: string
+        }
+        Insert: {
+          capacity?: number | null
+          created_at?: string
+          detail?: string | null
+          id?: string
+          label: string
+          sort_order?: number
+          vote_id: string
+        }
+        Update: {
+          capacity?: number | null
+          created_at?: string
+          detail?: string | null
+          id?: string
+          label?: string
+          sort_order?: number
+          vote_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_vote_options_vote_id_fkey"
+            columns: ["vote_id"]
+            isOneToOne: false
+            referencedRelation: "programme_votes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_vote_responses: {
+        Row: {
+          created_at: string
+          id: string
+          option_id: string
+          updated_at: string
+          user_id: string
+          vote_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          option_id: string
+          updated_at?: string
+          user_id: string
+          vote_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          option_id?: string
+          updated_at?: string
+          user_id?: string
+          vote_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_vote_responses_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "programme_vote_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programme_vote_responses_vote_id_fkey"
+            columns: ["vote_id"]
+            isOneToOne: false
+            referencedRelation: "programme_votes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programme_votes: {
+        Row: {
+          allow_change: boolean
+          anonymous: boolean
+          audience_kind: string
+          closed_at: string | null
+          closes_at: string | null
+          cohort_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          event_id: string | null
+          id: string
+          question: string
+          results_visible: boolean
+          status: string
+          updated_at: string
+          winning_option_id: string | null
+        }
+        Insert: {
+          allow_change?: boolean
+          anonymous?: boolean
+          audience_kind?: string
+          closed_at?: string | null
+          closes_at?: string | null
+          cohort_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_id?: string | null
+          id?: string
+          question: string
+          results_visible?: boolean
+          status?: string
+          updated_at?: string
+          winning_option_id?: string | null
+        }
+        Update: {
+          allow_change?: boolean
+          anonymous?: boolean
+          audience_kind?: string
+          closed_at?: string | null
+          closes_at?: string | null
+          cohort_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_id?: string | null
+          id?: string
+          question?: string
+          results_visible?: boolean
+          status?: string
+          updated_at?: string
+          winning_option_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programme_votes_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "programme_cohorts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programme_votes_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "programme_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programme_votes_winner_fk"
+            columns: ["winning_option_id"]
+            isOneToOne: false
+            referencedRelation: "programme_vote_options"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       programmes: {
         Row: {
           city: string | null
+          country: string | null
           created_at: string
+          description: string | null
           id: string
           is_demo: boolean
+          logo_url: string | null
           name: string
           organisation: string | null
+          programme_type: string
+          slug: string | null
           status: string
           updated_at: string
+          verified_at: string | null
+          verified_by: string | null
+          website: string | null
         }
         Insert: {
           city?: string | null
+          country?: string | null
           created_at?: string
+          description?: string | null
           id?: string
           is_demo?: boolean
+          logo_url?: string | null
           name: string
           organisation?: string | null
+          programme_type?: string
+          slug?: string | null
           status?: string
           updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          website?: string | null
         }
         Update: {
           city?: string | null
+          country?: string | null
           created_at?: string
+          description?: string | null
           id?: string
           is_demo?: boolean
+          logo_url?: string | null
           name?: string
           organisation?: string | null
+          programme_type?: string
+          slug?: string | null
           status?: string
           updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          website?: string | null
         }
         Relationships: []
       }
@@ -2182,7 +2988,21 @@ export type Database = {
     }
     Functions: {
       are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
+      audience_allows: {
+        Args: {
+          _kind: string
+          _subject_id: string
+          _subject_type: string
+          _user_id: string
+        }
+        Returns: boolean
+      }
       claim_first_admin: { Args: { _user_id: string }; Returns: boolean }
+      cohort_programme_id: { Args: { _cohort_id: string }; Returns: string }
+      cohort_staff_can: {
+        Args: { _cohort_id: string; _perm: string; _user_id: string }
+        Returns: boolean
+      }
       ensure_account: {
         Args: { _user_id: string }
         Returns: {
@@ -2201,6 +3021,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      event_cohort_id: { Args: { _event_id: string }; Returns: string }
       funding_settle: {
         Args: {
           _fee_minor: number
@@ -2240,6 +3061,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      group_cohort_id: { Args: { _group_id: string }; Returns: string }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
         Returns: boolean
@@ -2344,6 +3166,18 @@ export type Database = {
         Returns: boolean
       }
       is_blocked_pair: { Args: { _a: string; _b: string }; Returns: boolean }
+      is_cohort_staff: {
+        Args: { _cohort_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_programme_owner: {
+        Args: { _programme_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_programme_staff: {
+        Args: { _programme_id: string; _user_id: string }
+        Returns: boolean
+      }
       ledger_post: {
         Args: {
           _amount_agorot: number
@@ -2416,6 +3250,10 @@ export type Database = {
         }
       }
       shares_cohort: { Args: { _a: string; _b: string }; Returns: boolean }
+      staff_can: {
+        Args: { _perm: string; _programme_id: string; _user_id: string }
+        Returns: boolean
+      }
       ticket_purchase: {
         Args: {
           _event_id: string
@@ -2474,6 +3312,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      vote_cohort_id: { Args: { _vote_id: string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "reviewer" | "member"
