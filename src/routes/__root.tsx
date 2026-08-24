@@ -105,6 +105,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "impact-site-verification", value: "de536f76-ea4e-4828-b5e2-2c4499cedc97" },
       { title: "Shekk — one wallet for your year in Israel" },
       {
         name: "description",
