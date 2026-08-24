@@ -51,6 +51,7 @@ import { Route as ProgrammeStaffRouteImport } from './routes/programme.staff'
 import { Route as ProgrammeScheduleRouteImport } from './routes/programme.schedule'
 import { Route as ProgrammeInfoRouteImport } from './routes/programme.info'
 import { Route as ProgrammeInboxRouteImport } from './routes/programme.inbox'
+import { Route as JoinCodeRouteImport } from './routes/join.$code'
 import { Route as GuidesIdRouteImport } from './routes/guides/$id'
 import { Route as ExploreVisaRouteImport } from './routes/explore/visa'
 import { Route as ExploreUniFinderRouteImport } from './routes/explore/uni-finder'
@@ -314,6 +315,11 @@ const ProgrammeInboxRoute = ProgrammeInboxRouteImport.update({
   id: '/inbox',
   path: '/inbox',
   getParentRoute: () => ProgrammeRoute,
+} as any)
+const JoinCodeRoute = JoinCodeRouteImport.update({
+  id: '/join/$code',
+  path: '/join/$code',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const GuidesIdRoute = GuidesIdRouteImport.update({
   id: '/guides/$id',
@@ -648,6 +654,7 @@ export interface FileRoutesByFullPath {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
+  '/join/$code': typeof JoinCodeRoute
   '/programme/inbox': typeof ProgrammeInboxRoute
   '/programme/info': typeof ProgrammeInfoRoute
   '/programme/schedule': typeof ProgrammeScheduleRoute
@@ -743,6 +750,7 @@ export interface FileRoutesByTo {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
+  '/join/$code': typeof JoinCodeRoute
   '/programme/inbox': typeof ProgrammeInboxRoute
   '/programme/info': typeof ProgrammeInfoRoute
   '/programme/schedule': typeof ProgrammeScheduleRoute
@@ -841,6 +849,7 @@ export interface FileRoutesById {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
+  '/join/$code': typeof JoinCodeRoute
   '/programme/inbox': typeof ProgrammeInboxRoute
   '/programme/info': typeof ProgrammeInfoRoute
   '/programme/schedule': typeof ProgrammeScheduleRoute
@@ -940,6 +949,7 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
+    | '/join/$code'
     | '/programme/inbox'
     | '/programme/info'
     | '/programme/schedule'
@@ -1035,6 +1045,7 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
+    | '/join/$code'
     | '/programme/inbox'
     | '/programme/info'
     | '/programme/schedule'
@@ -1132,6 +1143,7 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
+    | '/join/$code'
     | '/programme/inbox'
     | '/programme/info'
     | '/programme/schedule'
@@ -1221,6 +1233,7 @@ export interface RootRouteChildren {
   ExploreUniFinderRoute: typeof ExploreUniFinderRoute
   ExploreVisaRoute: typeof ExploreVisaRoute
   GuidesIdRoute: typeof GuidesIdRoute
+  JoinCodeRoute: typeof JoinCodeRoute
   ServicesInsuranceRoute: typeof ServicesInsuranceRoute
   ServicesOffersRoute: typeof ServicesOffersRoute
   SiddurIdRoute: typeof SiddurIdRoute
@@ -1547,6 +1560,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/programme/inbox'
       preLoaderRoute: typeof ProgrammeInboxRouteImport
       parentRoute: typeof ProgrammeRoute
+    }
+    '/join/$code': {
+      id: '/join/$code'
+      path: '/join/$code'
+      fullPath: '/join/$code'
+      preLoaderRoute: typeof JoinCodeRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/guides/$id': {
       id: '/guides/$id'
@@ -2025,6 +2045,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreUniFinderRoute: ExploreUniFinderRoute,
   ExploreVisaRoute: ExploreVisaRoute,
   GuidesIdRoute: GuidesIdRoute,
+  JoinCodeRoute: JoinCodeRoute,
   ServicesInsuranceRoute: ServicesInsuranceRoute,
   ServicesOffersRoute: ServicesOffersRoute,
   SiddurIdRoute: SiddurIdRoute,
