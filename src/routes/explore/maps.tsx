@@ -11,6 +11,7 @@ import {
   PlaceHours,
   PlaceList,
   PlaceMap,
+  PlacePhoto,
   PlacesEmpty,
   PlacesError,
   PlacesLoading,
@@ -169,7 +170,7 @@ function PlaceSheet({ place, onClose }: { place: Place; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
       <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 bg-ink/40" />
-      <div className="relative z-10 w-full max-w-[430px] space-y-3 rounded-t-3xl border border-border bg-card p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lift">
+      <div className="relative z-10 max-h-[85vh] w-full max-w-[430px] space-y-3 overflow-y-auto rounded-t-3xl border border-border bg-card p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-lift">
         <div className="flex items-start gap-3">
           <span className="text-2xl leading-none">{emojiFor(place.types)}</span>
           <div className="min-w-0 flex-1">
@@ -185,6 +186,15 @@ function PlaceSheet({ place, onClose }: { place: Place; onClose: () => void }) {
             <X className="size-4" />
           </button>
         </div>
+        {place.photos[0] && (
+          <PlacePhoto
+            photo={place.photos[0]}
+            alt={place.name}
+            emoji={emojiFor(place.types)}
+            className="h-40 w-full rounded-2xl"
+            variant="detail"
+          />
+        )}
         <PlaceFacts place={place} />
         <GettingThere travel={travel} />
         <PlaceHours place={place} />
