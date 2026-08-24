@@ -1,84 +1,175 @@
-# SIM / eSIM commerce architecture
+# Shekk Location Platform — audit and sprint plan
 
-Turn the current hard-coded SIM recommender into a real, provider-agnostic commerce product that ships this week on affiliate links and later switches to voucher or native API fulfilment without rebuilding the user-facing flow.
+Goal: one shared location/place layer used by every location-dependent mini app, with Fitness as the flagship consumer. No wallet, card, KYC, Airwallex or SIM changes.
 
-## What exists today (verified)
+## 1. Current-state audit
 
-- `src/lib/offers.ts` — hard-coded `ESIM_OFFERS` with indicative prices, a `match` block and `rankSimOffers()`. Also holds insurance and partner offers. `offerUrl()` already falls back to the provider site when no affiliate link exists.
-- `src/routes/services/esim.tsx` — three-question finder, ranked cards, "Best for you" badge, `sim_*` analytics. Good UX skeleton, no persistence, no provider config.
-- `src/routes/before-you-fly/esim.tsx` — read-only "what to expect" page using `ESIM_PREVIEWS` from `src/lib/before-you-fly.ts`. Overlaps with `/services/esim`.
-- `src/lib/analytics.ts` — `track()` into `analytics_events` with a typed event union, already includes `sim_*` events.
-- Ticketing already established the pattern we should copy: `events.server.ts` (data), `events-provider.server.ts` (partner seam, returns empty until credentials exist), `events.functions.ts` (server fns incl. admin ones), `/admin/events` console page.
-- Stripe already wired for memberships (`payments.functions.ts`, `stripe.server.ts`, webhook at `src/routes/api/public/payments/webhook.ts`) — reusable for native SIM purchase later, independent of the frozen wallet.
-- Admin console at `/admin` behind code 0161, server side gated on the `admin` role (`admin.functions.ts` → `admin.server.ts` with service role). Panels come from `src/components/admin/AdminUI.tsx`.
-- Design kit: `Kit.tsx` (`PageHeader`, `SectionHead`, `Chip`, `ToolRow`, `StatusPill`, `EmptyState`, `ErrorState`, `LoadingBlocks`, `MicroLabel`), `AppShell`.
+### Google Maps usage today (all via the Lovable connector gateway)
+- `src/lib/maps.server.ts` (181 lines) — Places (New) `searchNearby`, `searchText`, place details, Routes `computeRoutes`, 403 reason handling, price-level mapping, `PlaceRow -> MapsPlace` mapper.
+- `src/lib/fitness.server.ts` (194 lines) — a near-verbatim copy of the same gateway helper, field masks, place mapper and travel-leg logic, with gym-specific tweaks.
+- `src/lib/maps.functions.ts` and `src/lib/fitness.functions.ts` — duplicated server-fn wrappers (`status`, `nearby`, `search`, `place/venue`, `travel`) with the same Zod coord schema copy-pasted.
+- `src/components/GoogleMapCanvas.tsx` — Maps JS loader using `VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY` + tracking-id channel, `google.maps.Marker` pins, singleton loader promise. Currently only consumed by the Maps mini app surfaces.
+- `src/lib/maps.ts` (79) and `src/lib/fitness.ts` (272) — two separate place models (`MapsPlace` vs `FitnessVenue`), two category taxonomies, two distance/price label helpers.
 
-### Conflicts to resolve, not duplicate
+### Location / geolocation
+- `src/lib/location.ts` (219) — the only geolocation hook: permission states (`idle/denied/unavailable`), city list, manual picker, reverse geocode.
+- `src/lib/live.server.ts:407` — reverse geocoding via bigdatacloud (third-party, not Google) used by the live/weather layer.
+- `src/components/LocationBar.tsx` — home strip that also writes `homeCity` into settings; `src/components/ForYou.tsx`, `src/lib/useFitness.ts`, `src/routes/explore/fitness.index.tsx`, `src/routes/explore/maps.tsx` each read location independently.
+- `src/lib/map-tiles.ts` (98), `src/components/map/IsraelMap.tsx`, `src/lib/israel-map-prefs.ts` — the "Been There" map: raster/ESRI tiles, not Google. Stays as-is.
 
-1. Two SIM surfaces. `/before-you-fly/esim` becomes a short explainer that links to `/services/esim`; the plan list lives in one place only.
-2. `ESIM_OFFERS` in `offers.ts` becomes dead once plans come from the database. Keep `offers.ts` for insurance + partner offers; move all SIM types/logic to the new module. No parallel SIM catalogues.
-3. Existing `sim_*` analytics events stay — we extend the union rather than inventing a second analytics table.
-4. Admin config today is localStorage (`shekk.admin.v1`). Provider/affiliate config must NOT live there — it has to be server-side. New admin SIM pages read/write the database through server fns like the events console does.
+### Hard-coded / mock place data
+- `src/lib/fitness.ts:75-180` — chain knowledge, `dayPassIls`, `monthlyIls`, `minContractMonths`, `facilities`, plus `extrasFor(name, types)` which *guesses* extras by name/type. This is the Shekk-owned metadata that must move behind a proper partner model.
+- `src/lib/israel-map-places.ts` (410) — curated Israel pins with history/todo copy. Editorial content, not Google data. Keep, but give it the shared place shape.
+- `src/lib/health.ts` — provider catalogue (Maccabi/Clalit/Harel) with no geo at all; `health.server.ts` is only insurance-card storage.
+- `src/lib/gett.server.ts` / `gett-fallback.server.ts` — ride estimates with their own `Place` type; a third place model.
 
-## Data model (new tables, nothing touched in wallet/banking)
+### Placeholder (PlannedApp) location-dependent apps
+`food`, `shops`, `housing`, `reserve`, `transit`, `rides` in `src/lib/planned-apps.ts`; routes are one-liners rendering `PlannedApp` (e.g. `src/routes/explore/food.tsx`).
 
-`sim_providers`
-- `id` text PK (`airalo`, `saily`, `local_il`), `name`, `blurb`, `site_url`
-- `mode` text: `disabled` | `affiliate` | `voucher` | `api` (default `disabled`)
-- `affiliate_url_template` text null (`{sub}` placeholder), `affiliate_network` text null, `affiliate_tracking_id` text null
-- `sort_order` int, `active` bool, `metadata` jsonb, timestamps
-- No secrets. API keys stay in Lovable Cloud secrets (`AIRALO_CLIENT_ID/SECRET`, `SAILY_API_KEY`) read only inside handlers.
+### Live location-dependent apps
+`maps` (`src/routes/explore/maps.tsx`, `map.index.tsx`, `map.$id.tsx`), `fitness` (`fitness.index.tsx`, `fitness.$id.tsx`), `events` (`events.server.ts` — venue strings, no geo), `israel map`, `health` (no geo yet), `siddur` (no shul geo yet).
 
-`sim_plans`
-- `id` uuid PK, `provider_id` → `sim_providers`, `external_id` text null, unique `(provider_id, external_id)` for sync upsert
-- `name`, `headline`, `country_code` (default `IL`), `plan_type` (`data_only` | `data_voice` | `local_number`)
-- `data_mb` int null, `unlimited` bool, `fair_use_note` text null
-- `validity_days` int null, `calls_included` bool, `texts_included` bool, `phone_number_included` bool default false (only true when provider metadata confirms it)
-- `rechargeable` bool, `activation_policy` text null, `operator` text null, `networks` text[] null
-- `net_cost_minor` int null, `display_price_minor` int, `currency` text, `source` (`manual` | `api`)
-- `active` bool, `in_stock` bool, `featured` bool, `rank_boost` int default 0 (admin override for Best Match)
-- `raw` jsonb (provider payload), `synced_at` timestamptz, timestamps
+### Keys / env
+- `VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY`, `VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_TRACKING_ID` (browser, referrer-restricted).
+- `GOOGLE_MAPS_API_KEY` + `LOVABLE_API_KEY` (server, gateway only — never in client code).
+- No Google key is hardcoded anywhere. No Supabase table currently stores Google place data (good — nothing to unwind).
 
-`sim_recommendations` — one row per completed wizard run: `user_id` null-able, `answers` jsonb (`days`, `usage`, `needs_calls`, `device_ok`), `ranked` jsonb (plan ids + scores), `top_plan_id`, `created_at`.
+### Deep links
+- `src/lib/maps.ts:74` `directionsUrl()` prefers `googleMapsUri`; `src/routes/explore/map.$id.tsx:132` builds its own search URL. No Waze links exist yet.
 
-`sim_clicks` — affiliate outbound sessions: `id` uuid (used as the `{sub}` value), `user_id` null-able, `provider_id`, `plan_id`, `recommendation_id` null, `target_url`, `created_at`, plus `converted_at`/`reported_amount_minor` null for later reconciliation.
+### Main problems
+1. Two full copies of the Google integration (maps + fitness) already drifting; a third (gett) with its own place type.
+2. No caching, no debouncing, no request dedupe — every filter change re-hits Places.
+3. No shared place card / map-list sync / permission-state UI; each route re-implements.
+4. Shekk partner metadata is faked by string matching on venue names.
+5. Attribution and Google storage terms are not addressed anywhere.
 
-`sim_orders` — only for real Shekk-paid fulfilment (voucher/api): `user_id`, `provider_id`, `plan_id`, `mode`, `status` (`pending_payment` | `paid` | `fulfilling` | `fulfilled` | `failed` | `refunded`), `amount_minor`, `currency`, `stripe_session_id`, `stripe_payment_intent`, `provider_order_ref`, `idempotency_key` unique, `failure_reason`, timestamps. Affiliate clicks are never written here.
+## 2. Map-dependent mini apps, ranked
 
-`sim_esims` — provisioned records: `order_id`, `user_id`, `provider_id`, `plan_id`, `iccid`, `activation_code`/`lpa_string`, `qr_url`, `smdp_address`, `matching_id`, `status` (`provisioning` | `ready` | `active` | `expired` | `failed`), `installed_at`, `expires_at`, `raw` jsonb.
+| # | App | Value | Notes |
+|---|---|---|---|
+| 1 | Fitness / Gyms | Highest | Already half-built, clear money/time saving, flagship |
+| 2 | Maps (general nearby) | High | Becomes the reference consumer of the shared layer |
+| 3 | Food / Kosher | High | Nearby + open-now + kosher flag; no delivery partner needed to be useful |
+| 4 | Jewish Life — Shuls / Chabad / mikveh | High | Uniquely Shekk; pairs with Siddur + Shabbat times |
+| 5 | Health — pharmacies, clinics, kupot, ER | High | Real safety value; joins the existing insurance wallet |
+| 6 | Explore — things to do / nightlife / sights | Medium | Ties into Events and Been There |
+| 7 | Events | Medium | Needs venue geocoding + travel time only |
+| 8 | Housing context | Medium | Neighbourhood context around a listing, not listings themselves |
+| 9 | Transport / Moovit-style | Later | Interface compatibility only in this sprint |
+| 10 | Rides (Gett) | Later | Reuse the shared place picker for pickup/dropoff |
 
-Security: RLS + GRANTs in the same migration. `sim_providers`/`sim_plans` get `SELECT TO anon, authenticated` limited to active rows (writes service_role only). `sim_recommendations` and `sim_clicks` allow insert by `authenticated` scoped to `auth.uid()` plus anonymous rows written server-side. `sim_orders` and `sim_esims` are read-own only (`auth.uid() = user_id`), all writes service_role via server fns.
+## 3. Proposed shared structure
 
-## Server modules
+```text
+src/lib/places/
+  types.ts          Place, PlaceRef, PlacePhoto, OpeningHours, TravelLeg,
+                    LatLon, PlaceSource ("google" | "shekk" | "editorial"),
+                    ShekkVenueMeta, MergedVenue<T>
+  taxonomy.ts       one category registry: id, label, icon, googleTypes,
+                    keyword, appIds (fitness/food/jewish/health/explore)
+  format.ts         distance, km, price level, rating, open-now, hours labels
+  google.server.ts  the single gateway client: headers, 403 reasons,
+                    field masks, PlaceRow -> Place mapper, photo URL builder
+  cache.server.ts   short-TTL in-memory + optional KV-ish cache keyed by
+                    (endpoint, rounded latlon, type, radius); TTL by kind
+  places.server.ts  nearby / textSearch / details / travelMatrix / geocode
+  places.functions.ts  ONE set of server fns: placesStatus, placesNearby,
+                    placesSearch, placesDetails, placesTravel
+  merge.ts          merge Google Place + Shekk partner meta (pure, testable)
+src/lib/usePlaces.ts    query hooks (TanStack Query): keys, debounce, dedupe
+src/lib/location.ts     kept, extended: single source of truth for position,
+                        permission state, manual city, distance-from-me
+src/components/places/
+  PlaceMap.tsx      wraps GoogleMapCanvas: markers, active pin, map/list sync
+  PlaceCard.tsx     one card: photo, name, rating+count, open-now, distance,
+                    travel chip, category emoji, save button
+  PlaceList.tsx     virtual-ish list + empty/error/loading/permission states
+  PlaceSheet.tsx    detail sheet: photos, hours, phone, website, directions
+  PlaceFilters.tsx  radius, open-now, min rating, category chips, sort
+  LocationGate.tsx  permission prompt / denied fallback / city picker reuse
+  GoogleAttribution.tsx  required "powered by Google" + photo attributions
+```
 
-- `src/lib/sim.ts` — shared client-safe types, usage profiles, label helpers (`Data only` / `Calls & texts included` / `Phone number included` only when `phone_number_included`), price formatting.
-- `src/lib/sim-ranking.ts` — pure scoring on normalized plan rows (stay length vs validity, usage profile vs data allowance, calls need, `rank_boost`/`featured`). Ported from `rankSimOffers`, no hard-coded catalogue.
-- `src/lib/sim.server.ts` — reads/writes: `listPlans`, `getPlan`, `saveRecommendation`, `recordClick`, `buildAffiliateUrl` (returns null when unconfigured), order/eSIM readers.
-- `src/lib/sim-providers/types.ts` — the adapter interface: `listPlans`, `getPlan`, `createFulfilment`, `getInstallation`, `getUsage`, `getTopups`, `topUp`, `checkCompatibility`. Every method optional; callers use a `supports()` helper so unsupported operations degrade to a clean "not available with this provider" state rather than throwing.
-- `src/lib/sim-providers/airalo.server.ts` and `saily.server.ts` — stubs that report `configured: false` and return empty results while no credentials exist (exactly like `events-provider.server.ts`). No live calls in this sprint.
-- `src/lib/sim.functions.ts` — `listSimPlans`, `getSimPlan`, `submitSimAnswers`, `startAffiliateHandoff` (writes a `sim_clicks` row, returns the resolved URL), `mySimOrders`, `mySimEsims`, plus admin fns (`adminListSimProviders`, `adminUpsertSimProvider`, `adminUpsertSimPlan`, `adminSetPlanActive`, `adminSimClicks`, `adminSyncProviderCatalogue`) all role-gated like `admin.functions.ts`.
-- Scaffolded for later, not enabled: `src/lib/sim-checkout.functions.ts` (Stripe checkout creating a `pending_payment` order, price read server-side from `sim_plans`), fulfilment handled in the existing payments webhook — a verified `checkout.session.completed` moves the order to `paid` then `fulfilling`, calls the adapter under the order's idempotency key, and leaves `failed` + `failure_reason` on provider error so it can be retried without recharging.
-- Catalogue sync: `POST src/routes/api/public/sim/sync.ts` guarded by a shared-secret header, upserting by `(provider_id, external_id)`; can be scheduled hourly once credentials exist. Never client-side.
+Deleted/absorbed after migration: `maps.server.ts`, `maps.functions.ts`, the gateway half of `fitness.server.ts`, `fitness.functions.ts`; `maps.ts` shrinks to app-specific config; `gett` gets the shared `LatLon`/`PlaceRef`.
 
-## UI
+Supabase additions (Shekk-owned only):
+- `venue_meta` — `google_place_id` (unique), `name_snapshot`, `chain`, `city`, `day_pass_ils`, `monthly_ils`, `min_contract_months`, `facilities[]`, `english_friendly`, `partner_offer`, `verified_at`, `notes`. Public read via `anon` SELECT, writes admin-only.
+- `saved_places` — `user_id`, `google_place_id`, `app_id`, `label`, `created_at`. RLS `auth.uid() = user_id`.
+- Both get explicit GRANTs in the same migration.
 
-- `/services/esim` — rebuilt on live data, same visual language. Steps: stay length → usage profile → calls/number → optional device check → Best Match + up to 3 alternatives. Empty/unconfigured state uses `EmptyState`/`Notice` rather than a fake CTA.
-- `/services/esim/$planId` — plan detail/review: allowance, validity, fair use, activation, operator, honest capability labels, and a single CTA whose behaviour depends on provider mode:
-  - `affiliate` → "Continue with {provider}" → server fn records the click and opens the configured URL.
-  - `voucher`/`api` (later) → "Buy in Shekk" → Stripe checkout.
-  - `disabled`/unconfigured → informational card with the provider site link and a clear "not purchasable in Shekk yet" line.
-- `/services/esim/mine` — my eSIMs and orders; scaffolded now, shows an empty state until native/voucher goes live.
-- Entry points: Services hub row (existing `ToolRow`) and the `esim` setup task keep pointing at `/services/esim`; `/before-you-fly/esim` reduced to a short explainer + link.
-- Admin: one new page `/admin/sim` — providers list with mode selector and affiliate URL field, plan table (add/edit manual plans, toggle active/featured, rank boost), recent outbound clicks and orders, and a "Sync catalogue" button that reports "no credentials configured" until keys exist.
+## 4. Data ownership model
 
-## Analytics (extend the existing union)
+```text
+Google (transient, never persisted beyond short cache)
+  place id, name, address, lat/lon, rating, review count, open-now,
+  hours, phone, website, photos, types, travel time/distance
+        |
+        |  fetched server-side through the connector gateway,
+        |  cached in memory 5-15 min (list) / 60 min (details/hours),
+        |  travel legs 15 min
+        v
+   merge.ts  <----  Shekk-owned, persisted (venue_meta, saved_places,
+        |           israel-map-places editorial content)
+        v
+   MergedVenue -> PlaceCard / PlaceSheet (Google fields always labelled
+   and attributed; Shekk fields marked "Shekk info", partner offers badged)
+```
 
-`sim_recommendation_started`, `sim_recommendation_completed`, `sim_plan_viewed`, `sim_provider_selected`, `sim_affiliate_clicked` (already present, gains `provider_mode`), plus `sim_device_check_used`, `sim_checkout_started`, `sim_order_paid`, `sim_fulfilment_failed`. No new analytics table.
+Rules baked in:
+- Only `google_place_id` is persisted long-term (permitted); no snapshotting of ratings, hours, photos or reviews into the database.
+- `name_snapshot` is stored solely as an admin-facing label, never rendered as Google data.
+- Photos are fetched through the Places photo endpoint at render time with attribution; never re-hosted.
+- Every screen showing Google data renders `GoogleAttribution`.
+- A "Shekk price" and a "Google rating" are visually distinct, and indicative Shekk figures say so (same honesty rule as the SIM catalogue).
 
-## Rollout
+## 5. Google Cloud / connector checklist
 
-1. **Now, functional**: migration, providers/plans seeded from today's plan shapes as `source = manual` with `mode = disabled` until real affiliate URLs are entered, wizard on live data, plan detail, click tracking, admin SIM page, honest unconfigured state.
-2. **On signing an affiliate deal**: set the provider to `affiliate` and paste the URL template in admin. No code change.
-3. **Native/voucher**: enable the scaffolded Stripe checkout + webhook fulfilment, implement one adapter, turn on hourly sync. UI already speaks "Buy in Shekk".
+Enable now:
+- Maps JavaScript API (browser key, referrer-restricted) — already in use.
+- Places API (New) — searchNearby, searchText, place details, place photos (server, via gateway).
+- Routes API — computeRoutes and computeRouteMatrix for batch travel times.
 
-Wallet, Airwallex, ledger and card code are untouched; nothing here reads a Shekk balance.
+Enable only if needed:
+- Geocoding API — only for Events venue strings and Housing addresses (Phase 4). Text Search covers most cases first.
+
+Do NOT enable yet: Directions/Distance Matrix (legacy, removed from the connector), Address Validation, Aerial View, Solar, Roads, Route Optimization, Places Aggregate.
+
+Key hygiene:
+- Server key: application restriction "None" or IP; API restriction to Places (New) + Routes (+ Geocoding if enabled).
+- Browser key: referrer-restricted; Maps JS + Places (New) browser surfaces only. Custom domains `shekk.app` / `www.shekk.app` need their own key with both `https://shekk.app/*` and `https://*.shekk.app/*` in the allowlist — the managed key only covers `*.lovable.app`.
+- No key ever reaches client code except the browser key.
+
+## 6. Phases and acceptance criteria
+
+### Phase 1 — Platform layer (no user-visible change)
+Build `src/lib/places/*`, extend `location.ts`, add `usePlaces.ts`, cache + debounce + dedupe, unit tests for taxonomy, formatters, merge and cache keys.
+Accept: one gateway client in the repo; `maps.server.ts`/`fitness.server.ts` gateway code deleted; existing Maps and Fitness routes work unchanged on top of the new layer; typecheck, build and tests clean.
+
+### Phase 2 — Fitness flagship
+`venue_meta` + `saved_places` migration (with GRANTs and RLS), admin screen for venue meta, `extrasFor()` name-guessing removed. Rebuild `fitness.index.tsx` and `fitness.$id.tsx` on shared components: map/list sync, filters (radius, open-now, rating, facilities, short-stay, partner-only), photos, hours, phone, website, directions, walk/transit/drive time, save/favourite, day-pass/monthly from `venue_meta` only.
+Accept: no invented prices anywhere; every Google-sourced field attributed; filter changes issue at most one debounced request; a disabled/removed venue meta row degrades to Google-only display; permission-denied path still shows a usable city-based list.
+
+### Phase 3 — Reuse across apps
+Maps mini app on shared components; Food/Kosher, Jewish Life (shuls/Chabad/mikveh), Health (pharmacy/clinic/ER/kupa) built as thin category configs over the same layer; Explore things-to-do.
+Accept: each new app is <150 lines of config + route, zero new Google code.
+
+### Phase 4 — Context and compatibility
+Events venue geocoding + travel time from the member's location; Housing neighbourhood context (what's within 10 min walk); Gett pickup/dropoff via the shared place picker; a `TransitStop`/`TransitLeg` interface stub so a Moovit-style app can slot in without touching the layer.
+Accept: Events detail shows travel time; Transport stays a `PlannedApp` but its interfaces compile against the shared types.
+
+### Phase 5 — Cost, polish, guardrails
+Field-mask minimisation review, cache-hit logging, per-session request caps, monitoring of gateway 4xx, attribution audit across every screen.
+Accept: measured request count per finder session documented and under an agreed cap.
+
+## 7. Risks and cost controls
+
+- **Cost blowout.** Places (New) and Routes are metered, and the workspace gateway allows 6,000 requests / 24h. Controls: server-side only, rounded-coordinate cache keys, 300-400 ms debounce, in-flight dedupe, `computeRouteMatrix` batching instead of per-card legs, narrow field masks (list mask stays tiny, detail mask only on open), no autocomplete-per-keystroke, and no unauthenticated public proxy — every server fn is called from app flows only.
+- **Policy.** No permanent Google place database, no scraping, attribution everywhere, photos fetched live.
+- **Custom domain.** Browser key referrer restrictions will break maps on `shekk.app` until a project-specific key is connected — flagged for you to action.
+- **Regression risk.** Deleting two integrations at once; mitigated by Phase 1 being behaviour-preserving with tests before any UI rework.
+- **Quality of Shekk data.** Partner prices become admin-entered and dated (`verified_at`), so stale figures are visible rather than silent.
+
+## 8. Recommendation
+
+Implement **Phase 1 + Phase 2 together** as the first sprint: the platform layer is only proven by a real consumer, and Fitness is the flagship you asked for. Phase 3 then lands quickly because each app is config, not code.
