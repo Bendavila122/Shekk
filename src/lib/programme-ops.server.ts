@@ -1669,7 +1669,7 @@ export type AdminCohortDetail = {
     announcements: { id: string; title: string; priority: string; createdAt: string }[];
     votes: { id: string; question: string; status: string; responses: number }[];
     checklist: { id: string; title: string; category: string | null }[];
-    documents: { id: string; title: string; kind: string | null }[];
+    documents: { id: string; title: string; category: string | null }[];
     contacts: { id: string; name: string; role: string | null }[];
     places: { id: string; name: string; category: string | null }[];
   };
@@ -1709,9 +1709,9 @@ export async function adminCohortDetail(cohortId: string): Promise<AdminCohortDe
     db.from("programme_votes").select("id, question, status").eq("cohort_id", cohortId),
     db.from("programme_vote_responses").select("vote_id"),
     db.from("programme_checklist_items").select("id, title, category").eq("cohort_id", cohortId),
-    db.from("programme_documents").select("id, title, kind").eq("cohort_id", cohortId),
+    db.from("programme_documents").select("id, label, category").eq("cohort_id", cohortId),
     db.from("programme_contacts").select("id, name, role").eq("cohort_id", cohortId),
-    db.from("programme_places").select("id, name, category").eq("cohort_id", cohortId),
+    db.from("programme_places").select("id, label, category").eq("cohort_id", cohortId),
     db.from("programme_groups").select("id, name").eq("cohort_id", cohortId),
     db.from("programme_group_members").select("group_id"),
   ]);
@@ -1778,8 +1778,8 @@ export async function adminCohortDetail(cohortId: string): Promise<AdminCohortDe
       })),
       documents: ((documents ?? []) as Row[]).map((d) => ({
         id: String(d["id"]),
-        title: String(d["title"]),
-        kind: s(d, "kind"),
+        title: String(d["label"]),
+        category: s(d, "category"),
       })),
       contacts: ((contacts ?? []) as Row[]).map((c) => ({
         id: String(c["id"]),
@@ -1788,7 +1788,7 @@ export async function adminCohortDetail(cohortId: string): Promise<AdminCohortDe
       })),
       places: ((places ?? []) as Row[]).map((p) => ({
         id: String(p["id"]),
-        name: String(p["name"]),
+        name: String(p["label"]),
         category: s(p, "category"),
       })),
     },
