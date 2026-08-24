@@ -4,6 +4,8 @@ import { Navigation, X } from "lucide-react";
 import { AppShell, ScreenHeader } from "@/components/AppShell";
 import {
   GettingThere,
+  LocationBar,
+  NeedsLocation,
   PlaceActions,
   PlaceFacts,
   PlaceHours,
@@ -87,6 +89,8 @@ function MapsApp() {
       <ScreenHeader title="Maps" subtitle={here ? `${here.city}${here.area ? ` · ${here.area}` : ""}` : "Israel"} />
 
       <div className="space-y-3 px-4 pb-6">
+        <LocationBar />
+
         <label className="flex items-center gap-2 rounded-2xl border border-border bg-card px-3 py-2">
           <span className="sr-only">Search a place</span>
           <input
@@ -144,6 +148,9 @@ function MapsApp() {
         )}
 
         {feed.ready === false && <PlacesNotConfigured what="Maps" />}
+        {!feed.at && !term && feed.ready !== false && (
+          <NeedsLocation hint="Share your location or pick a city above to see what's nearby — or search a place by name." />
+        )}
         {feed.error && <PlacesError message={feed.error} />}
         {feed.loading && feed.places.length === 0 && <PlacesLoading />}
         {!feed.loading && feed.places.length === 0 && feed.ready && !feed.error && <PlacesEmpty />}

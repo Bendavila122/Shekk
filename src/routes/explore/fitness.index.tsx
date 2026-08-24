@@ -21,9 +21,10 @@ import {
   STAY_OPTIONS,
   activityType,
   countActiveFilters,
-  effectiveMonthly,
+  storedMonthly,
   filterVenues,
   stayOption,
+  storedDayPass,
   type FitnessFilters,
   type SortMode,
 } from "@/lib/fitness";
@@ -203,7 +204,6 @@ function Fitness() {
   );
 
   const selection = useMapListSelection(shown);
-  const stayMonths = stayOption(filters.stay).months;
   const activeCount = countActiveFilters(filters);
 
   const set = <K extends keyof FitnessFilters>(key: K, value: FitnessFilters[K]) =>
@@ -213,12 +213,13 @@ function Fitness() {
     setCompare((list) => (list.includes(id) ? list.filter((x) => x !== id) : [...list, id].slice(-3)));
 
   const footerFor = (place: Place) => {
-    const monthly = effectiveMonthly(place.meta, stayMonths);
+    const monthly = storedMonthly(place.meta);
+    const dayPass = storedDayPass(place.meta);
     return (
       <div className="space-y-2">
-        {monthly !== null && (
+        {(monthly !== null || dayPass !== null) && (
           <p className="text-[11px] text-muted-foreground">
-            ~{shekels(monthly)}/mo for {stayOption(filters.stay).label.toLowerCase()} · {verifiedLabel(place.meta)}
+            {monthly !== null ? `${shekels(monthly)}/mo` : `Day pass ${shekels(dayPass!)}`} · {verifiedLabel(place.meta)}
           </p>
         )}
         <div className="flex gap-2">

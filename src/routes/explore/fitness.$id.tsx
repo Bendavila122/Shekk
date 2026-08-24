@@ -77,7 +77,7 @@ function VenueDetail() {
         {place && (
           <>
             <PlacePhoto
-              {...(place.photoNames[0] ? { photoName: place.photoNames[0] } : {})}
+              {...(place.photos[0] ? { photo: place.photos[0] } : {})}
               alt={place.name}
               emoji="🏋️"
               className="h-44 w-full rounded-3xl"

@@ -1,7 +1,7 @@
-export { GoogleAttribution, GooglePhotoCredit } from "./GoogleAttribution";
+export { GoogleAttribution, GoogleMapsWordmark, GooglePhotoCredit } from "./GoogleAttribution";
 export { LocationBar } from "./LocationBar";
 export { PlaceCard } from "./PlaceCard";
-export { PlacePhoto } from "./PlacePhoto";
+export { PlacePhoto, PhotoAttribution } from "./PlacePhoto";
 export { PlaceMap } from "./PlaceMap";
 export {
   PlaceList,

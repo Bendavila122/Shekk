@@ -30,6 +30,27 @@ export type OpeningHours = {
   weekdays?: string[];
 };
 
+/** Who took a Google Places photo. Rendering a full photo requires this. */
+export type PhotoAuthor = {
+  displayName: string;
+  /** The author's Google Maps profile, when Google gives one. */
+  uri?: string;
+  photoUri?: string;
+};
+
+/**
+ * A Google Places photo reference. The resource `name` expires, so it is never
+ * cached or stored — it is used immediately to resolve a Google-hosted URL.
+ */
+export type PhotoRef = {
+  name: string;
+  authors: PhotoAuthor[];
+  /** Google Maps page for this exact photo, for the required source link. */
+  googleMapsUri?: string;
+  flagContentUri?: string;
+};
+
+
 /** Shekk-owned metadata about a venue. Persisted; never Google content. */
 export type PlaceMeta = {
   /** Marketing/brand grouping, e.g. "Holmes Place". */
@@ -69,8 +90,11 @@ export type Place = PlaceRef & {
   website: string | null;
   /** Google's own canonical URL for the place. */
   mapsUri: string | null;
-  /** Google photo resource names. Resolve to a URL only when rendering. */
-  photoNames: string[];
+  /**
+   * Google photo references, with their required attributions. Fetched live and
+   * never cached: a photo resource name can expire at any time.
+   */
+  photos: PhotoRef[];
   /** Straight-line km from the member, filled in client-side. */
   distanceKm?: number;
   /** Shekk's own layer, merged from `venue_meta`. Empty when we know nothing. */

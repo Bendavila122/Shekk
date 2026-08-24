@@ -9,7 +9,7 @@
  * minutes and never written to the database. Only the place id is storable.
  */
 
-import type { Place, TravelLeg, TravelMode } from "./types";
+import type { PhotoRef, Place, TravelLeg, TravelMode } from "./types";
 
 const GATEWAY = "https://connector-gateway.lovable.dev/google_maps";
 
@@ -51,7 +51,7 @@ async function gateway<T>(path: string, init: RequestInit & { fieldMask?: string
   return (await res.json()) as T;
 }
 
-type PlaceRow = {
+export type PlaceRow = {
   id: string;
   displayName?: { text?: string };
   formattedAddress?: string;
@@ -66,7 +66,12 @@ type PlaceRow = {
   internationalPhoneNumber?: string;
   websiteUri?: string;
   googleMapsUri?: string;
-  photos?: { name?: string }[];
+  photos?: {
+    name?: string;
+    googleMapsUri?: string;
+    flagContentUri?: string;
+    authorAttributions?: { displayName?: string; uri?: string; photoUri?: string }[];
+  }[];
 };
 
 const PRICE_LEVELS: Record<string, number> = {
@@ -77,14 +82,38 @@ const PRICE_LEVELS: Record<string, number> = {
   PRICE_LEVEL_VERY_EXPENSIVE: 4,
 };
 
+const PHOTO_FIELDS = "photos.name,photos.googleMapsUri,photos.flagContentUri,photos.authorAttributions";
+
 const LIST_MASK =
-  "places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.currentOpeningHours.openNow,places.priceLevel,places.types,places.photos.name";
+  "places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.currentOpeningHours.openNow,places.priceLevel,places.types," +
+  PHOTO_FIELDS.split(",")
+    .map((f) => `places.${f}`)
+    .join(",");
 
 const DETAIL_MASK =
-  "id,displayName,formattedAddress,location,rating,userRatingCount,currentOpeningHours,regularOpeningHours,priceLevel,types,nationalPhoneNumber,internationalPhoneNumber,websiteUri,googleMapsUri,photos.name";
+  "id,displayName,formattedAddress,location,rating,userRatingCount,currentOpeningHours,regularOpeningHours,priceLevel,types,nationalPhoneNumber,internationalPhoneNumber,websiteUri,googleMapsUri," +
+  PHOTO_FIELDS;
+
+/** Google photo rows → Shekk `PhotoRef`s, attributions preserved. */
+export function toPhotoRefs(photos: PlaceRow["photos"]): PhotoRef[] {
+  return (photos ?? [])
+    .filter((x): x is NonNullable<PlaceRow["photos"]>[number] & { name: string } => Boolean(x?.name))
+    .map((x) => ({
+      name: x.name,
+      authors: (x.authorAttributions ?? [])
+        .filter((a) => Boolean(a.displayName))
+        .map((a) => ({
+          displayName: a.displayName!,
+          ...(a.uri ? { uri: a.uri } : {}),
+          ...(a.photoUri ? { photoUri: a.photoUri } : {}),
+        })),
+      ...(x.googleMapsUri ? { googleMapsUri: x.googleMapsUri } : {}),
+      ...(x.flagContentUri ? { flagContentUri: x.flagContentUri } : {}),
+    }));
+}
 
 /** Google row → Shekk `Place`. `meta` is filled later by the merge layer. */
-function toPlace(p: PlaceRow): Place {
+export function toPlace(p: PlaceRow): Place {
   const weekdays = p.currentOpeningHours?.weekdayDescriptions ?? p.regularOpeningHours?.weekdayDescriptions;
   return {
     id: p.id,
@@ -103,7 +132,7 @@ function toPlace(p: PlaceRow): Place {
     phone: p.nationalPhoneNumber ?? p.internationalPhoneNumber ?? null,
     website: p.websiteUri ?? null,
     mapsUri: p.googleMapsUri ?? null,
-    photoNames: (p.photos ?? []).map((x) => x.name).filter((n): n is string => Boolean(n)),
+    photos: toPhotoRefs(p.photos),
     meta: {},
   };
 }

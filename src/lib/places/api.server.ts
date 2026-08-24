@@ -1,12 +1,15 @@
 /**
  * Shekk Location Platform — the server places API. Server only.
  *
- * Every mini app reads places through these four functions. They own caching,
- * dedupe and the Shekk metadata merge, so no consumer ever talks to Google
- * directly again.
+ * Every mini app reads places through these functions. They own concurrent
+ * request dedupe and the Shekk metadata merge, so no consumer ever talks to
+ * Google directly.
+ *
+ * Google-derived content is never cached or stored: each call goes to Google,
+ * and the only thing shared is an already-running identical request.
  */
 
-import { cached, TTL } from "./cache.server";
+import { dedupe } from "./cache.server";
 import { detailKey, nearbyKey, searchKey, travelKey } from "./format";
 import {
   detailRow,
@@ -28,25 +31,28 @@ export async function nearbyPlaces(input: {
   placeTypes: string[];
 }): Promise<Place[]> {
   const key = nearbyKey({ lat: input.lat, lon: input.lon }, input.radiusM, input.placeTypes);
-  const rows = await cached(key, TTL.list, () => nearbyRows(input));
+  const rows = await dedupe(key, () => nearbyRows(input));
   return withMeta(rows);
 }
 
 export async function searchPlaces(input: { query: string; lat?: number; lon?: number }): Promise<Place[]> {
   const at = input.lat !== undefined && input.lon !== undefined ? { lat: input.lat, lon: input.lon } : null;
-  const rows = await cached(searchKey(input.query, at), TTL.list, () => searchRows(input));
+  const rows = await dedupe(searchKey(input.query, at), () => searchRows(input));
   return withMeta(rows);
 }
 
 export async function placeDetails(placeId: string): Promise<Place> {
-  const rows = await cached(detailKey(placeId), TTL.detail, () => detailRow(placeId));
+  const rows = await dedupe(detailKey(placeId), () => detailRow(placeId));
   const [merged] = await withMeta([rows]);
   return merged ?? rows;
 }
 
-/** Google-hosted photo URL for a photo resource name. Never rehosted. */
+/**
+ * Google-hosted photo URL for a photo resource name. Never rehosted, and never
+ * cached — Google says photo names and URLs can expire at any time.
+ */
 export async function placePhoto(photoName: string, maxWidthPx = 800): Promise<string | null> {
-  return cached(`photo:${photoName}:${maxWidthPx}`, TTL.detail, () => photoUrl(photoName, maxWidthPx));
+  return photoUrl(photoName, maxWidthPx);
 }
 
 async function leg(
@@ -54,7 +60,7 @@ async function leg(
   to: { lat: number; lon: number },
   mode: "WALK" | "TRANSIT" | "DRIVE",
 ): Promise<TravelLeg | null> {
-  return cached(travelKey(from, to, mode), TTL.travel, () =>
+  return dedupe(travelKey(from, to, mode), () =>
     travelLeg({ fromLat: from.lat, fromLon: from.lon, toLat: to.lat, toLon: to.lon, mode }),
   );
 }
