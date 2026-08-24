@@ -8,7 +8,7 @@
  */
 
 import { useEffect, useRef } from "react";
-import type { MapsPlace } from "@/lib/maps";
+import type { PlaceRef } from "@/lib/places/types";
 
 export const BROWSER_KEY = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY"] as
   | string
@@ -55,7 +55,7 @@ export function GoogleMapCanvas({
   className = "",
 }: {
   centre: { lat: number; lon: number };
-  places: MapsPlace[];
+  places: PlaceRef[];
   activeId: string | null;
   onSelect: (id: string) => void;
   className?: string;

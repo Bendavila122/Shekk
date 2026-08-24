@@ -1,272 +1,134 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowLeft, Bookmark, Star } from "lucide-react";
+import { AppShell, Card } from "@/components/AppShell";
 import {
-  Bookmark,
-  BookmarkCheck,
-  Bus,
-  Clock,
-  ExternalLink,
-  Footprints,
-  LoaderCircle,
-  MapPin,
-  Phone,
-  Star,
-} from "lucide-react";
-import { AppShell, Card, PrimaryButton, ScreenHeader } from "@/components/AppShell";
-import {
-  FACILITIES,
-  STAY_OPTIONS,
-  distanceLabel,
-  effectiveMonthly,
-  shekels,
-} from "@/lib/fitness";
-import { useFitnessShortlist, useFitnessVenue } from "@/lib/useFitness";
+  GettingThere,
+  GoogleAttribution,
+  PlaceActions,
+  PlaceFacts,
+  PlaceHours,
+  PlacePhoto,
+  PlacesError,
+  PlacesLoading,
+  ShekkPricePanel,
+} from "@/components/places";
+import { FACILITIES, FITNESS_APP } from "@/lib/fitness";
+import { usePlaceDetail, useSavedPlaces, useTravelTo, verifiedLabel } from "@/lib/places";
 import { haptic } from "@/lib/foryou-prefs";
 
 export const Route = createFileRoute("/explore/fitness/$id")({
   head: () => ({
     meta: [
-      { title: "Fitness venue · Shekk" },
+      { title: "Venue · Fitness · Shekk" },
       {
         name: "description",
         content:
-          "Opening hours, travel time, typical membership prices and contract length for a gym, pool or studio in Israel.",
+          "Opening hours, ratings, travel time and what Shekk knows about pricing and contracts for this gym or studio in Israel.",
       },
-      { property: "og:title", content: "Fitness venue · Shekk" },
+      { property: "og:title", content: "Venue · Fitness · Shekk" },
       {
         property: "og:description",
-        content: "Hours, travel time and what a membership actually costs.",
+        content: "Hours, ratings, travel time and Shekk's own notes on pricing and contract length.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: Venue,
+  component: VenueDetail,
 });
 
-function Venue() {
+function VenueDetail() {
   const { id } = Route.useParams();
-  const { venue, loading, error, travel, mapsReady } = useFitnessVenue(id);
-  const { isSaved, toggleSaved, compare, toggleCompare } = useFitnessShortlist();
-
-  if (loading || (mapsReady === null && !venue))
-    return (
-      <AppShell>
-        <ScreenHeader title="Fitness" back="/explore/fitness" />
-        <div className="flex items-center gap-2 p-6 text-sm text-muted-foreground">
-          <LoaderCircle className="size-4 animate-spin" /> Opening this place…
-        </div>
-      </AppShell>
-    );
-
-  if (!venue)
-    return (
-      <AppShell>
-        <ScreenHeader title="Fitness" back="/explore/fitness" />
-        <div className="p-4">
-          <Card className="space-y-2 text-sm text-muted-foreground">
-            <p className="font-display text-base font-bold text-foreground">We couldn't open this place</p>
-            <p>{error ?? "It may have closed or moved. Try searching again."}</p>
-            <Link to="/explore/fitness" className="tap inline-block font-semibold text-primary">
-              Back to Fitness
-            </Link>
-          </Card>
-        </div>
-      </AppShell>
-    );
-
-  const saved = isSaved(venue.id);
-  const extras = venue.extras;
+  const { place, loading, error, ready } = usePlaceDetail(id);
+  const { travel } = useTravelTo(place ? { lat: place.lat, lon: place.lon } : null);
+  const saved = useSavedPlaces(FITNESS_APP);
 
   return (
     <AppShell>
-      <ScreenHeader title={venue.name} subtitle={extras.chain ?? "Fitness"} back="/explore/fitness" />
+      <header className="sticky top-0 z-20 flex items-center gap-2 border-b border-border bg-background/90 px-4 py-3 backdrop-blur">
+        <Link to="/explore/fitness" className="tap-flat rounded-full bg-muted p-2" aria-label="Back to Fitness">
+          <ArrowLeft className="size-4" />
+        </Link>
+        <p className="min-w-0 flex-1 truncate font-display text-base font-bold">{place?.name ?? "Venue"}</p>
+        {place && saved.canSave && (
+          <button
+            type="button"
+            aria-label={saved.savedIds.has(place.id) ? "Remove from saved" : "Save venue"}
+            onClick={() => {
+              haptic();
+              void saved.toggleSaved(place, "gym");
+            }}
+            className={`tap-flat rounded-full p-2 ${saved.savedIds.has(place.id) ? "bg-primary text-primary-foreground" : "bg-muted"}`}
+          >
+            <Bookmark className={`size-4 ${saved.savedIds.has(place.id) ? "fill-current" : ""}`} />
+          </button>
+        )}
+      </header>
 
       <div className="space-y-4 px-4 py-4">
-        <Card className="space-y-3">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <h2 className="font-display text-2xl font-bold leading-tight">{venue.name}</h2>
-              <p className="mt-1 flex items-start gap-1.5 text-sm text-muted-foreground">
-                <MapPin className="mt-0.5 size-4 shrink-0" />
-                {venue.address}
-              </p>
-            </div>
-            <button
-              type="button"
-              aria-label={saved ? "Remove from saved" : "Save this place"}
-              onClick={() => {
-                haptic();
-                toggleSaved(venue);
-              }}
-              className="tap shrink-0 rounded-full bg-muted p-2.5"
-            >
-              {saved ? <BookmarkCheck className="size-5 text-primary" /> : <Bookmark className="size-5" />}
-            </button>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-            {venue.rating !== null && (
-              <span className="inline-flex items-center gap-1 font-semibold">
-                <Star className="size-4 fill-current" />
-                {venue.rating.toFixed(1)}
-                {venue.reviews ? (
-                  <span className="font-normal text-muted-foreground">· {venue.reviews} reviews</span>
-                ) : null}
-              </span>
-            )}
-            {venue.openNow !== null && (
-              <span className={venue.openNow ? "font-semibold text-success" : "text-muted-foreground"}>
-                {venue.openNow ? "Open now" : "Closed right now"}
-              </span>
-            )}
-            {venue.distanceKm !== undefined && (
-              <span className="text-muted-foreground">{distanceLabel(venue.distanceKm)} away</span>
-            )}
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {venue.phone && (
-              <a
-                href={`tel:${venue.phone.replace(/\s/g, "")}`}
-                className="tap inline-flex items-center gap-1.5 rounded-xl bg-muted px-3 py-2 text-xs font-semibold"
-              >
-                <Phone className="size-3.5" /> Call
-              </a>
-            )}
-            {venue.mapsUri && (
-              <a
-                href={venue.mapsUri}
-                target="_blank"
-                rel="noreferrer"
-                className="tap inline-flex items-center gap-1.5 rounded-xl bg-muted px-3 py-2 text-xs font-semibold"
-              >
-                <MapPin className="size-3.5" /> Directions
-              </a>
-            )}
-            {venue.website && (
-              <a
-                href={venue.website}
-                target="_blank"
-                rel="noreferrer"
-                className="tap inline-flex items-center gap-1.5 rounded-xl bg-muted px-3 py-2 text-xs font-semibold"
-              >
-                <ExternalLink className="size-3.5" /> Website
-              </a>
-            )}
-          </div>
-        </Card>
-
-        {(travel?.walk || travel?.transit) && (
-          <Card className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Getting there</p>
-            <div className="flex flex-wrap gap-4 text-sm">
-              {travel.walk && (
-                <span className="inline-flex items-center gap-1.5">
-                  <Footprints className="size-4 text-muted-foreground" /> {travel.walk.minutes} min walk
-                </span>
-              )}
-              {travel.transit && (
-                <span className="inline-flex items-center gap-1.5">
-                  <Bus className="size-4 text-muted-foreground" /> {travel.transit.minutes} min by bus
-                </span>
-              )}
-            </div>
+        {ready === false && (
+          <Card className="text-sm text-muted-foreground">
+            Venue details come from Google Maps. Once that connection is linked, this page fills in automatically.
           </Card>
         )}
+        {loading && <PlacesLoading label="Loading this venue…" />}
+        {error && <PlacesError message={error} />}
 
-        <Card className="space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            What it costs for your stay
-          </p>
-          <div className="grid grid-cols-2 gap-3">
-            {STAY_OPTIONS.filter((s) => s.id !== "unsure").map((s) => {
-              const monthly = effectiveMonthly(extras, s.months);
-              return (
-                <div key={s.id} className="rounded-xl bg-muted p-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{s.label}</p>
-                  <p className="mt-1 font-display text-lg font-bold">
-                    {monthly !== null ? `~${shekels(monthly)}/mo` : "Ask them"}
-                  </p>
-                  <p className="text-[11px] text-muted-foreground">{s.hint}</p>
+        {place && (
+          <>
+            <PlacePhoto
+              {...(place.photoNames[0] ? { photoName: place.photoNames[0] } : {})}
+              alt={place.name}
+              emoji="🏋️"
+              className="h-44 w-full rounded-3xl"
+            />
+
+            <div className="space-y-1">
+              <h1 className="font-display text-2xl font-bold leading-tight">{place.name}</h1>
+              <p className="text-sm text-muted-foreground">{place.address}</p>
+              {place.rating !== null && (
+                <p className="inline-flex items-center gap-1 text-sm font-semibold">
+                  <Star className="size-4 fill-current" /> {place.rating.toFixed(1)}
+                  {place.reviews ? <span className="text-muted-foreground">({place.reviews})</span> : null}
+                </p>
+              )}
+            </div>
+
+            <PlaceFacts place={place} />
+            <GettingThere travel={travel} />
+            <ShekkPricePanel place={place} />
+
+            {(place.meta.facilities ?? []).length > 0 && (
+              <Card className="space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Facilities</p>
+                <div className="flex flex-wrap gap-2">
+                  {(place.meta.facilities ?? []).map((f: string) => (
+                    <span key={f} className="rounded-full bg-muted px-3 py-1 text-xs font-semibold">
+                      {FACILITIES.find((x) => x.id === f)?.emoji ?? "•"}{" "}
+                      {FACILITIES.find((x) => x.id === f)?.label ?? f}
+                    </span>
+                  ))}
                 </div>
-              );
-            })}
-          </div>
-          <dl className="space-y-1.5 text-sm">
-            <div className="flex justify-between gap-3">
-              <dt className="text-muted-foreground">Day pass</dt>
-              <dd className="font-semibold">
-                {extras.dayPassIls !== undefined ? shekels(extras.dayPassIls) : "Ask at the desk"}
-              </dd>
-            </div>
-            <div className="flex justify-between gap-3">
-              <dt className="text-muted-foreground">Shortest contract</dt>
-              <dd className="font-semibold">
-                {extras.minContractMonths !== undefined
-                  ? extras.minContractMonths <= 1
-                    ? "Rolling monthly"
-                    : `${extras.minContractMonths} months`
-                  : "Ask at the desk"}
-              </dd>
-            </div>
-            <div className="flex justify-between gap-3">
-              <dt className="text-muted-foreground">Short-stay option</dt>
-              <dd className="font-semibold">{extras.shortStay ? "Yes" : "Ask at the desk"}</dd>
-            </div>
-          </dl>
-          {extras.note && <p className="text-xs text-muted-foreground">{extras.note}</p>}
-          {extras.offer && (
-            <div className="rounded-xl border border-notice-border bg-notice-soft p-3 text-sm text-notice-foreground">
-              <p className="font-semibold">Shekk offer</p>
-              <p className="text-xs opacity-90">{extras.offer}</p>
-            </div>
-          )}
-        </Card>
+                <p className="text-[11px] text-muted-foreground">{verifiedLabel(place.meta)}</p>
+              </Card>
+            )}
 
-        {(extras.facilities?.length ?? 0) > 0 && (
-          <Card className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Facilities</p>
-            <div className="flex flex-wrap gap-2">
-              {extras.facilities!.map((f) => {
-                const meta = FACILITIES.find((x) => x.id === f);
-                return (
-                  <span key={f} className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium">
-                    {meta?.emoji} {meta?.label ?? f}
-                  </span>
-                );
-              })}
-            </div>
-          </Card>
+            {place.meta.notes && (
+              <Card className="space-y-1">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Shekk's notes</p>
+                {place.meta.notes.split("\n").map((line: string, i: number) => (
+                  <p key={i} className="text-sm text-muted-foreground">
+                    {line}
+                  </p>
+                ))}
+              </Card>
+            )}
+
+            <PlaceHours place={place} />
+            <PlaceActions place={place} />
+            <GoogleAttribution className="pt-1" />
+          </>
         )}
-
-        {venue.hours?.length ? (
-          <Card className="space-y-2">
-            <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              <Clock className="size-3.5" /> Opening hours
-            </p>
-            <ul className="space-y-1 text-sm">
-              {venue.hours.map((line) => (
-                <li key={line} className="text-muted-foreground">
-                  {line}
-                </li>
-              ))}
-            </ul>
-          </Card>
-        ) : null}
-
-        <PrimaryButton
-          onClick={() => {
-            haptic();
-            toggleCompare(venue.id);
-          }}
-        >
-          {compare.includes(venue.id) ? "In your compare list" : "Add to compare"}
-        </PrimaryButton>
-
-        <p className="pb-4 text-[11px] leading-relaxed text-muted-foreground">
-          Prices shown are typical list prices to help you compare and aren't a quote. Venue details, hours and
-          travel times come from Google Maps. Booking and Shekk memberships are coming here next.
-        </p>
       </div>
     </AppShell>
   );

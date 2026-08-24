@@ -1,15 +1,19 @@
 /**
- * Maps mini app — server only.
+ * Shekk Location Platform — the single Google gateway. Server only.
  *
  * Places (New) and the Routes API through the Lovable connector gateway, so no
- * Google key ever reaches the browser.
+ * Google key ever reaches the browser. This is the ONLY file in Shekk allowed
+ * to talk to Google. Everything else goes through `api.server.ts`.
+ *
+ * Google content stays transient: rows returned here are cached in memory for
+ * minutes and never written to the database. Only the place id is storable.
  */
 
-import type { MapsLeg, MapsPlace } from "@/lib/maps";
+import type { Place, TravelLeg, TravelMode } from "./types";
 
 const GATEWAY = "https://connector-gateway.lovable.dev/google_maps";
 
-export function mapsConfigured() {
+export function googleConfigured() {
   return Boolean(process.env["LOVABLE_API_KEY"] && process.env["GOOGLE_MAPS_API_KEY"]);
 }
 
@@ -24,13 +28,13 @@ function headers(fieldMask?: string) {
 }
 
 async function gateway<T>(path: string, init: RequestInit & { fieldMask?: string }): Promise<T> {
-  if (!mapsConfigured()) {
-    throw new Error("Maps needs the Google Maps connection — it isn't linked yet.");
+  if (!googleConfigured()) {
+    throw new Error("Places needs the Google Maps connection — it isn't linked yet.");
   }
   const res = await fetch(`${GATEWAY}${path}`, { ...init, headers: headers(init.fieldMask) });
   if (res.status === 403) {
-    const details: Array<{ reason?: string }> = (await res.json().catch(() => ({})))?.error?.details ?? [];
-    const reason = details.find((d) => d.reason)?.reason;
+    const body = (await res.json().catch(() => ({}))) as { error?: { details?: Array<{ reason?: string }> } };
+    const reason = body.error?.details?.find((d) => d.reason)?.reason;
     if (reason === "API_KEY_HTTP_REFERRER_BLOCKED")
       throw new Error(
         'Google Maps server key is referrer-restricted. Set the server key\'s application restrictions to "None" or "IP addresses".',
@@ -62,6 +66,7 @@ type PlaceRow = {
   internationalPhoneNumber?: string;
   websiteUri?: string;
   googleMapsUri?: string;
+  photos?: { name?: string }[];
 };
 
 const PRICE_LEVELS: Record<string, number> = {
@@ -73,13 +78,14 @@ const PRICE_LEVELS: Record<string, number> = {
 };
 
 const LIST_MASK =
-  "places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.currentOpeningHours.openNow,places.priceLevel,places.types";
+  "places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.currentOpeningHours.openNow,places.priceLevel,places.types,places.photos.name";
 
 const DETAIL_MASK =
-  "id,displayName,formattedAddress,location,rating,userRatingCount,currentOpeningHours,regularOpeningHours,priceLevel,types,nationalPhoneNumber,internationalPhoneNumber,websiteUri,googleMapsUri";
+  "id,displayName,formattedAddress,location,rating,userRatingCount,currentOpeningHours,regularOpeningHours,priceLevel,types,nationalPhoneNumber,internationalPhoneNumber,websiteUri,googleMapsUri,photos.name";
 
-function toPlace(p: PlaceRow): MapsPlace {
-  const hours = p.currentOpeningHours?.weekdayDescriptions ?? p.regularOpeningHours?.weekdayDescriptions;
+/** Google row → Shekk `Place`. `meta` is filled later by the merge layer. */
+function toPlace(p: PlaceRow): Place {
+  const weekdays = p.currentOpeningHours?.weekdayDescriptions ?? p.regularOpeningHours?.weekdayDescriptions;
   return {
     id: p.id,
     name: p.displayName?.text ?? "Unnamed place",
@@ -88,22 +94,26 @@ function toPlace(p: PlaceRow): MapsPlace {
     lon: p.location?.longitude ?? 0,
     rating: p.rating ?? null,
     reviews: p.userRatingCount ?? null,
-    openNow: p.currentOpeningHours?.openNow ?? p.regularOpeningHours?.openNow ?? null,
     priceLevel: p.priceLevel ? PRICE_LEVELS[p.priceLevel] ?? null : null,
     types: p.types ?? [],
+    hours: {
+      openNow: p.currentOpeningHours?.openNow ?? p.regularOpeningHours?.openNow ?? null,
+      ...(weekdays ? { weekdays } : {}),
+    },
     phone: p.nationalPhoneNumber ?? p.internationalPhoneNumber ?? null,
     website: p.websiteUri ?? null,
     mapsUri: p.googleMapsUri ?? null,
-    ...(hours ? { hours } : {}),
+    photoNames: (p.photos ?? []).map((x) => x.name).filter((n): n is string => Boolean(n)),
+    meta: {},
   };
 }
 
-export async function nearby(input: {
+export async function nearbyRows(input: {
   lat: number;
   lon: number;
   radiusM: number;
   placeTypes: string[];
-}): Promise<MapsPlace[]> {
+}): Promise<Place[]> {
   const json = await gateway<{ places?: PlaceRow[] }>("/places/v1/places:searchNearby", {
     method: "POST",
     fieldMask: LIST_MASK,
@@ -122,7 +132,7 @@ export async function nearby(input: {
   return (json.places ?? []).map(toPlace);
 }
 
-export async function search(input: { query: string; lat?: number; lon?: number }): Promise<MapsPlace[]> {
+export async function searchRows(input: { query: string; lat?: number; lon?: number }): Promise<Place[]> {
   const body: Record<string, unknown> = { textQuery: input.query, maxResultCount: 20, regionCode: "IL" };
   if (input.lat !== undefined && input.lon !== undefined) {
     body["locationBias"] = {
@@ -137,7 +147,7 @@ export async function search(input: { query: string; lat?: number; lon?: number 
   return (json.places ?? []).map(toPlace);
 }
 
-export async function details(placeId: string): Promise<MapsPlace> {
+export async function detailRow(placeId: string): Promise<Place> {
   const json = await gateway<PlaceRow>(`/places/v1/places/${encodeURIComponent(placeId)}`, {
     method: "GET",
     fieldMask: DETAIL_MASK,
@@ -145,14 +155,31 @@ export async function details(placeId: string): Promise<MapsPlace> {
   return toPlace(json);
 }
 
+/**
+ * A Google-hosted photo URL. We follow the redirect only to read the final
+ * Google URL — photos are always served from Google, never rehosted by Shekk.
+ */
+export async function photoUrl(photoName: string, maxWidthPx: number): Promise<string | null> {
+  try {
+    const json = await gateway<{ photoUri?: string }>(
+      `/places/v1/${photoName}/media?maxWidthPx=${maxWidthPx}&skipHttpRedirect=true`,
+      { method: "GET" },
+    );
+    return json.photoUri ?? null;
+  } catch (e) {
+    console.error("place photo failed", e);
+    return null;
+  }
+}
+
 /** One travel leg. Never throws — travel info is a nicety, not the feature. */
-export async function leg(input: {
+export async function travelLeg(input: {
   fromLat: number;
   fromLon: number;
   toLat: number;
   toLon: number;
-  mode: "WALK" | "TRANSIT" | "DRIVE";
-}): Promise<MapsLeg> {
+  mode: TravelMode;
+}): Promise<TravelLeg | null> {
   try {
     const json = await gateway<{ routes?: { duration?: string; distanceMeters?: number }[] }>(
       "/routes/directions/v2:computeRoutes",
@@ -175,7 +202,7 @@ export async function leg(input: {
       km: Math.round(((route.distanceMeters ?? 0) / 1000) * 10) / 10,
     };
   } catch (e) {
-    console.error("maps leg failed", e);
+    console.error("travel leg failed", e);
     return null;
   }
 }

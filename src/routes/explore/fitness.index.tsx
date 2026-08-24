@@ -1,35 +1,43 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  Bookmark,
-  BookmarkCheck,
-  Columns3,
-  Filter,
-  LoaderCircle,
-  MapPin,
-  Navigation,
-  RefreshCw,
-  Search,
-  Star,
-  X,
-} from "lucide-react";
+import { Columns3, Filter, List, Map as MapIcon, RefreshCw, Search, X } from "lucide-react";
 import { AppShell, Card, ScreenHeader } from "@/components/AppShell";
-import { LOCATION_CITIES, useLocation } from "@/lib/location";
 import {
-  ACTIVITY_TYPES,
+  GettingThere,
+  LocationBar,
+  NeedsLocation,
+  PlaceList,
+  PlaceMap,
+  PlacesEmpty,
+  PlacesError,
+  PlacesLoading,
+  PlacesNotConfigured,
+} from "@/components/places";
+import {
   DEFAULT_FILTERS,
   FACILITIES,
+  FITNESS_APP,
+  FITNESS_CATEGORIES,
   STAY_OPTIONS,
+  activityType,
   countActiveFilters,
-  distanceLabel,
   effectiveMonthly,
   filterVenues,
-  shekels,
   stayOption,
   type FitnessFilters,
-  type FitnessVenue,
+  type SortMode,
 } from "@/lib/fitness";
-import { useFitnessShortlist, useFitnessVenues, useVenuesByIds } from "@/lib/useFitness";
+import {
+  contractLabel,
+  kmLabel,
+  shekels,
+  usePlacesByIds,
+  usePlacesFeed,
+  useMapListSelection,
+  useSavedPlaces,
+  verifiedLabel,
+  type Place,
+} from "@/lib/places";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
 import { haptic } from "@/lib/foryou-prefs";
 
@@ -40,7 +48,7 @@ export const Route = createFileRoute("/explore/fitness/")({
       {
         name: "description",
         content:
-          "Find gyms, classes, pools, studios and courts near you in Israel — with real prices, contract lengths and short-stay options for your year here.",
+          "Find gyms, classes, pools, studios and courts near you in Israel — with distance, opening hours, ratings and the contract lengths that suit your year here.",
       },
       { property: "og:title", content: "Fitness · Shekk" },
       {
@@ -62,6 +70,12 @@ const RADII = [
 ];
 
 const PRICE_STEPS = [100, 150, 200, 250, 300, 400];
+const RATINGS = [3.5, 4, 4.5];
+const SORTS: { id: SortMode; label: string }[] = [
+  { id: "distance", label: "Nearest" },
+  { id: "rating", label: "Best rated" },
+  { id: "price", label: "Cheapest" },
+];
 
 function Chip({
   active,
@@ -77,9 +91,7 @@ function Chip({
       type="button"
       onClick={onClick}
       className={`tap shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
-        active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-card text-foreground"
+        active ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"
       }`}
     >
       {children}
@@ -87,107 +99,8 @@ function Chip({
   );
 }
 
-function VenueRow({
-  venue,
-  stayMonths,
-  saved,
-  comparing,
-  onSave,
-  onCompare,
-}: {
-  venue: FitnessVenue;
-  stayMonths: number;
-  saved: boolean;
-  comparing: boolean;
-  onSave: () => void;
-  onCompare: () => void;
-}) {
-  const monthly = effectiveMonthly(venue.extras, stayMonths);
-  return (
-    <Card className="space-y-3">
-      <div className="flex items-start gap-3">
-        <Link
-          to="/explore/fitness/$id"
-          params={{ id: venue.id }}
-          className="tap min-w-0 flex-1"
-        >
-          <p className="truncate font-display text-base font-bold">{venue.name}</p>
-          <p className="truncate text-xs text-muted-foreground">{venue.address}</p>
-          <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-            {venue.rating !== null && (
-              <span className="inline-flex items-center gap-1 font-semibold text-foreground">
-                <Star className="size-3.5 fill-current" />
-                {venue.rating.toFixed(1)}
-                {venue.reviews ? <span className="font-normal text-muted-foreground">({venue.reviews})</span> : null}
-              </span>
-            )}
-            {venue.distanceKm !== undefined && <span>{distanceLabel(venue.distanceKm)} away</span>}
-            {venue.openNow !== null && (
-              <span className={venue.openNow ? "font-semibold text-success" : ""}>
-                {venue.openNow ? "Open now" : "Closed"}
-              </span>
-            )}
-          </div>
-        </Link>
-        <button
-          type="button"
-          aria-label={saved ? `Remove ${venue.name} from saved` : `Save ${venue.name}`}
-          onClick={() => {
-            haptic();
-            onSave();
-          }}
-          className="tap shrink-0 rounded-full bg-muted p-2 text-foreground"
-        >
-          {saved ? <BookmarkCheck className="size-4 text-primary" /> : <Bookmark className="size-4" />}
-        </button>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-1.5">
-        {venue.extras.chain && (
-          <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide">
-            {venue.extras.chain}
-          </span>
-        )}
-        {monthly !== null && (
-          <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-semibold">
-            ~{shekels(monthly)}/mo
-          </span>
-        )}
-        {venue.extras.dayPassIls !== undefined && (
-          <span className="rounded-full bg-muted px-2 py-0.5 text-[11px]">
-            Day pass {shekels(venue.extras.dayPassIls)}
-          </span>
-        )}
-        {venue.extras.minContractMonths !== undefined && (
-          <span className="rounded-full bg-muted px-2 py-0.5 text-[11px]">
-            {venue.extras.minContractMonths <= 1 ? "Rolling monthly" : `${venue.extras.minContractMonths}-month min`}
-          </span>
-        )}
-        {venue.extras.offer && (
-          <span className="rounded-full bg-notice-soft px-2 py-0.5 text-[11px] font-semibold text-notice-foreground">
-            Shekk offer
-          </span>
-        )}
-      </div>
-
-      <button
-        type="button"
-        onClick={() => {
-          haptic();
-          onCompare();
-        }}
-        className={`tap w-full rounded-xl border px-3 py-2 text-xs font-semibold ${
-          comparing ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground"
-        }`}
-      >
-        {comparing ? "In compare" : "Add to compare"}
-      </button>
-    </Card>
-  );
-}
-
-function CompareTable({ ids, onClose }: { ids: string[]; onClose: () => void }) {
-  const { venues, loading } = useVenuesByIds(ids);
+function CompareTray({ ids, onClose }: { ids: string[]; onClose: () => void }) {
+  const { places, loading } = usePlacesByIds(ids);
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
       <header className="flex items-center justify-between border-b border-border px-4 py-3">
@@ -199,7 +112,7 @@ function CompareTable({ ids, onClose }: { ids: string[]; onClose: () => void }) 
       <div className="flex-1 overflow-auto p-4">
         {loading && <p className="text-sm text-muted-foreground">Loading your shortlist…</p>}
         <div className="flex gap-3">
-          {venues.map((v) => (
+          {places.map((v) => (
             <div key={v.id} className="w-52 shrink-0 space-y-2 rounded-2xl border border-border bg-card p-3">
               <p className="font-display text-sm font-bold leading-tight">{v.name}</p>
               <p className="text-[11px] text-muted-foreground">{v.address}</p>
@@ -210,42 +123,37 @@ function CompareTable({ ids, onClose }: { ids: string[]; onClose: () => void }) 
                 </div>
                 <div className="flex justify-between gap-2">
                   <dt className="text-muted-foreground">Distance</dt>
-                  <dd className="font-semibold">{distanceLabel(v.distanceKm) || "—"}</dd>
+                  <dd className="font-semibold">{kmLabel(v.distanceKm) || "—"}</dd>
                 </div>
                 <div className="flex justify-between gap-2">
                   <dt className="text-muted-foreground">Monthly</dt>
                   <dd className="font-semibold">
-                    {v.extras.monthlyIls !== undefined ? `~${shekels(v.extras.monthlyIls)}` : "Ask them"}
+                    {v.meta.monthlyIls !== undefined ? `~${shekels(v.meta.monthlyIls)}` : "Ask them"}
                   </dd>
                 </div>
                 <div className="flex justify-between gap-2">
                   <dt className="text-muted-foreground">Day pass</dt>
                   <dd className="font-semibold">
-                    {v.extras.dayPassIls !== undefined ? shekels(v.extras.dayPassIls) : "—"}
+                    {v.meta.dayPassIls !== undefined ? shekels(v.meta.dayPassIls) : "—"}
                   </dd>
                 </div>
                 <div className="flex justify-between gap-2">
                   <dt className="text-muted-foreground">Contract</dt>
-                  <dd className="font-semibold">
-                    {v.extras.minContractMonths !== undefined
-                      ? v.extras.minContractMonths <= 1
-                        ? "Rolling"
-                        : `${v.extras.minContractMonths} mo`
-                      : "Ask them"}
-                  </dd>
+                  <dd className="font-semibold">{contractLabel(v.meta) ?? "Ask them"}</dd>
                 </div>
                 <div className="flex justify-between gap-2">
                   <dt className="text-muted-foreground">Short stay</dt>
-                  <dd className="font-semibold">{v.extras.shortStay ? "Yes" : "Ask them"}</dd>
+                  <dd className="font-semibold">{v.meta.shortStay ? "Yes" : "Ask them"}</dd>
                 </div>
               </dl>
               <div className="flex flex-wrap gap-1">
-                {(v.extras.facilities ?? []).map((f) => (
+                {(v.meta.facilities ?? []).map((f) => (
                   <span key={f} className="rounded-full bg-muted px-2 py-0.5 text-[10px]">
                     {FACILITIES.find((x) => x.id === f)?.label ?? f}
                   </span>
                 ))}
               </div>
+              <p className="text-[10px] text-muted-foreground">{verifiedLabel(v.meta)}</p>
               <Link
                 to="/explore/fitness/$id"
                 params={{ id: v.id }}
@@ -264,28 +172,79 @@ function CompareTable({ ids, onClose }: { ids: string[]; onClose: () => void }) 
 
 function Fitness() {
   const ready = useOnboardedGate();
-  const { place, status, loading: locating, detect, setCity } = useLocation();
   const [query, setQuery] = useState("");
   const [radiusM, setRadiusM] = useState(5000);
   const [filters, setFilters] = useState<FitnessFilters>(DEFAULT_FILTERS);
   const [showFilters, setShowFilters] = useState(false);
-  const [showCompare, setShowCompare] = useState(false);
+  const [view, setView] = useState<"list" | "map">("list");
   const [tab, setTab] = useState<"discover" | "saved">("discover");
+  const [compare, setCompare] = useState<string[]>([]);
+  const [showCompare, setShowCompare] = useState(false);
 
-  const { venues, loading, error, refetch, mapsReady } = useFitnessVenues({
-    activity: filters.activity,
+  const categories = useMemo(
+    () => (filters.activity === "all" ? FITNESS_CATEGORIES : FITNESS_CATEGORIES.filter((c) => c.id === filters.activity)),
+    [filters.activity],
+  );
+
+  const feed = usePlacesFeed({
+    categories,
     query,
     radiusM,
+    ...(filters.activity !== "all" ? { keyword: activityType(filters.activity)?.keyword ?? "" } : {}),
+    enabled: tab === "discover",
   });
-  const { saved, savedIds, compare, toggleSaved, toggleCompare, clearCompare } = useFitnessShortlist();
-  const savedVenues = useVenuesByIds(tab === "saved" ? saved.map((s) => s.id) : []);
 
+  const savedPlaces = useSavedPlaces(FITNESS_APP);
+  const savedList = usePlacesByIds(tab === "saved" ? savedPlaces.saved.map((s) => s.placeId) : []);
+
+  const shown = useMemo(
+    () => (tab === "saved" ? savedList.places : filterVenues(feed.places, filters)),
+    [tab, savedList.places, feed.places, filters],
+  );
+
+  const selection = useMapListSelection(shown);
   const stayMonths = stayOption(filters.stay).months;
-  const shown = useMemo(() => filterVenues(venues, filters), [venues, filters]);
   const activeCount = countActiveFilters(filters);
 
   const set = <K extends keyof FitnessFilters>(key: K, value: FitnessFilters[K]) =>
     setFilters((f) => ({ ...f, [key]: value }));
+
+  const toggleCompare = (id: string) =>
+    setCompare((list) => (list.includes(id) ? list.filter((x) => x !== id) : [...list, id].slice(-3)));
+
+  const footerFor = (place: Place) => {
+    const monthly = effectiveMonthly(place.meta, stayMonths);
+    return (
+      <div className="space-y-2">
+        {monthly !== null && (
+          <p className="text-[11px] text-muted-foreground">
+            ~{shekels(monthly)}/mo for {stayOption(filters.stay).label.toLowerCase()} · {verifiedLabel(place.meta)}
+          </p>
+        )}
+        <div className="flex gap-2">
+          <Link
+            to="/explore/fitness/$id"
+            params={{ id: place.id }}
+            className="tap flex-1 rounded-xl bg-primary px-3 py-2 text-center text-xs font-semibold text-primary-foreground"
+          >
+            Open
+          </Link>
+          <button
+            type="button"
+            onClick={() => {
+              haptic();
+              toggleCompare(place.id);
+            }}
+            className={`tap flex-1 rounded-xl border px-3 py-2 text-xs font-semibold ${
+              compare.includes(place.id) ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground"
+            }`}
+          >
+            {compare.includes(place.id) ? "In compare" : "Compare"}
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   if (!ready)
     return (
@@ -294,64 +253,43 @@ function Fitness() {
       </AppShell>
     );
 
+  const loading = tab === "saved" ? savedList.loading : feed.loading;
+
   return (
     <AppShell>
       <ScreenHeader title="Fitness" subtitle="Gyms, classes, pools & courts" />
 
       <div className="space-y-4 px-4 py-4">
-        {/* location + search */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 text-xs">
-            <MapPin className="size-4 shrink-0 text-muted-foreground" />
-            <span className="font-semibold">{place ? place.area ?? place.city : "No location yet"}</span>
-            <button type="button" onClick={detect} className="tap inline-flex items-center gap-1 text-primary">
-              {locating ? <LoaderCircle className="size-3.5 animate-spin" /> : <Navigation className="size-3.5" />}
-              Use my location
-            </button>
-            <select
-              value={place?.city ?? ""}
-              onChange={(e) => e.target.value && setCity(e.target.value)}
-              className="ml-auto rounded-full border border-border bg-card px-2 py-1 text-xs"
-              aria-label="Pick a city"
-            >
-              <option value="">Pick a city</option>
-              {LOCATION_CITIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          </div>
+        <LocationBar />
 
-          <label className="flex items-center gap-2 rounded-2xl bg-muted px-4 py-3 text-sm">
-            <Search className="size-4 shrink-0 text-muted-foreground" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search gym, pool, krav maga, a street or city…"
-              className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
-            />
-            {query && (
-              <button type="button" aria-label="Clear search" onClick={() => setQuery("")} className="tap">
-                <X className="size-4 text-muted-foreground" />
-              </button>
-            )}
-          </label>
-        </div>
+        <label className="flex items-center gap-2 rounded-2xl bg-muted px-4 py-3 text-sm">
+          <Search className="size-4 shrink-0 text-muted-foreground" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search gym, pool, krav maga, a street or city…"
+            className="w-full bg-transparent outline-none placeholder:text-muted-foreground"
+          />
+          {query && (
+            <button type="button" aria-label="Clear search" onClick={() => setQuery("")} className="tap">
+              <X className="size-4 text-muted-foreground" />
+            </button>
+          )}
+        </label>
 
         {/* activity chips */}
         <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
           <Chip active={filters.activity === "all"} onClick={() => set("activity", "all")}>
             All
           </Chip>
-          {ACTIVITY_TYPES.map((a) => (
-            <Chip key={a.id} active={filters.activity === a.id} onClick={() => set("activity", a.id)}>
+          {FITNESS_CATEGORIES.map((a) => (
+            <Chip key={a.id} active={filters.activity === a.id} onClick={() => set("activity", a.id as never)}>
               {a.emoji} {a.label}
             </Chip>
           ))}
         </div>
 
-        {/* tabs + filter toggle */}
+        {/* tabs, view switch, filters */}
         <div className="flex items-center gap-2">
           <div className="flex rounded-full bg-muted p-1 text-xs font-semibold">
             {(["discover", "saved"] as const).map((t) => (
@@ -361,24 +299,32 @@ function Fitness() {
                 onClick={() => setTab(t)}
                 className={`tap rounded-full px-3 py-1.5 capitalize ${tab === t ? "bg-card shadow-card" : "text-muted-foreground"}`}
               >
-                {t === "saved" ? `Saved${saved.length ? ` (${saved.length})` : ""}` : "Discover"}
+                {t === "saved" ? `Saved${savedPlaces.saved.length ? ` (${savedPlaces.saved.length})` : ""}` : "Discover"}
               </button>
             ))}
           </div>
           <button
             type="button"
+            onClick={() => setView((v) => (v === "list" ? "map" : "list"))}
+            className="tap ml-auto inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-semibold"
+          >
+            {view === "list" ? <MapIcon className="size-3.5" /> : <List className="size-3.5" />}
+            {view === "list" ? "Map" : "List"}
+          </button>
+          <button
+            type="button"
             onClick={() => setShowFilters((v) => !v)}
-            className={`tap ml-auto inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${
+            className={`tap inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${
               activeCount ? "border-primary text-primary" : "border-border text-foreground"
             }`}
           >
             <Filter className="size-3.5" />
-            Filters{activeCount ? ` · ${activeCount}` : ""}
+            {activeCount ? activeCount : ""}
           </button>
           <button
             type="button"
             aria-label="Refresh results"
-            onClick={() => void refetch()}
+            onClick={() => void feed.refetch()}
             className="tap rounded-full border border-border p-1.5"
           >
             <RefreshCw className={`size-3.5 ${loading ? "animate-spin" : ""}`} />
@@ -388,7 +334,20 @@ function Fitness() {
         {showFilters && (
           <Card className="space-y-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">How long are you here?</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Sort by</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {SORTS.map((s) => (
+                  <Chip key={s.id} active={filters.sort === s.id} onClick={() => set("sort", s.id)}>
+                    {s.label}
+                  </Chip>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                How long are you here?
+              </p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {STAY_OPTIONS.map((s) => (
                   <Chip key={s.id} active={filters.stay === s.id} onClick={() => set("stay", s.id)}>
@@ -408,6 +367,23 @@ function Fitness() {
                 {PRICE_STEPS.map((p) => (
                   <Chip key={p} active={filters.maxPriceIls === p} onClick={() => set("maxPriceIls", p)}>
                     ≤ {shekels(p)}
+                  </Chip>
+                ))}
+              </div>
+              <p className="mt-1.5 text-[11px] text-muted-foreground">
+                Only filters out venues where Shekk holds a checked price.
+              </p>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Rating</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <Chip active={filters.minRating === null} onClick={() => set("minRating", null)}>
+                  Any
+                </Chip>
+                {RATINGS.map((r) => (
+                  <Chip key={r} active={filters.minRating === r} onClick={() => set("minRating", r)}>
+                    {r}+
                   </Chip>
                 ))}
               </div>
@@ -454,7 +430,7 @@ function Fitness() {
                 Open now
               </Chip>
               <Chip active={filters.partnerOnly} onClick={() => set("partnerOnly", !filters.partnerOnly)}>
-                Shekk offers only
+                Shekk partners only
               </Chip>
               <Chip active={false} onClick={() => setFilters(DEFAULT_FILTERS)}>
                 Reset
@@ -474,111 +450,84 @@ function Fitness() {
           </Card>
         )}
 
-        {mapsReady === false && (
-          <Card className="space-y-1">
-            <p className="font-display text-base font-bold">Fitness search isn't switched on yet</p>
-            <p className="text-sm text-muted-foreground">
-              Venue data comes from Google Maps. Once the Google Maps connection is linked to Shekk, nearby gyms,
-              pools and studios appear here automatically.
-            </p>
-          </Card>
+        {feed.ready === false && <PlacesNotConfigured what="Fitness search" />}
+
+        {view === "map" && feed.ready !== false && (
+          <div className="space-y-2">
+            <PlaceMap centre={feed.at} places={shown} activeId={selection.activeId} onSelect={selection.select} />
+            {selection.active && (
+              <PlaceList
+                places={[selection.active]}
+                activeId={selection.activeId}
+                savedIds={savedPlaces.savedIds}
+                {...(savedPlaces.canSave ? { onSave: (p: Place) => savedPlaces.toggleSaved(p, "gym") } : {})}
+                footerFor={footerFor}
+              />
+            )}
+          </div>
         )}
 
         {tab === "discover" ? (
           <>
-            {error && (
-              <Card className="text-sm text-muted-foreground">
-                <p className="font-semibold text-foreground">Couldn't load venues</p>
-                <p className="mt-1">{error}</p>
-              </Card>
-            )}
+            {feed.error && <PlacesError message={feed.error} />}
+            {!feed.at && !query && feed.ready !== false && <NeedsLocation />}
+            {loading && shown.length === 0 && <PlacesLoading />}
+            {!loading && shown.length === 0 && (feed.at || query) && feed.ready && !feed.error && <PlacesEmpty />}
 
-            {!place && !query && mapsReady !== false && (
-              <Card className="text-sm text-muted-foreground">
-                Share your location or pick a city above and Shekk will list what's around you — or just search a
-                place name.
-              </Card>
+            {view === "list" && (
+              <PlaceList
+                places={shown}
+                activeId={selection.activeId}
+                savedIds={savedPlaces.savedIds}
+                onSelect={(p) => selection.select(p.id)}
+                {...(savedPlaces.canSave ? { onSave: (p: Place) => savedPlaces.toggleSaved(p, "gym") } : {})}
+                footerFor={footerFor}
+              />
             )}
-
-            {loading && shown.length === 0 && (
-              <Card className="flex items-center gap-2 text-sm text-muted-foreground">
-                <LoaderCircle className="size-4 animate-spin" /> Looking for places near you…
-              </Card>
-            )}
-
-            {!loading && shown.length === 0 && (place || query) && mapsReady && !error && (
-              <Card className="text-sm text-muted-foreground">
-                Nothing matched. Try a wider radius, fewer filters, or search a city.
-              </Card>
-            )}
-
-            <div className="space-y-3">
-              {shown.map((v) => (
-                <VenueRow
-                  key={v.id}
-                  venue={v}
-                  stayMonths={stayMonths}
-                  saved={savedIds.has(v.id)}
-                  comparing={compare.includes(v.id)}
-                  onSave={() => toggleSaved(v)}
-                  onCompare={() => toggleCompare(v.id)}
-                />
-              ))}
-            </div>
           </>
         ) : (
           <>
-            {saved.length === 0 && (
+            {!savedPlaces.canSave && (
               <Card className="text-sm text-muted-foreground">
-                Nothing saved yet. Tap the bookmark on a place and it lands here so you can compare before you sign
-                anything.
+                Sign in to save places you like — your shortlist follows you to any device.
               </Card>
             )}
-            {savedVenues.loading && saved.length > 0 && (
-              <Card className="flex items-center gap-2 text-sm text-muted-foreground">
-                <LoaderCircle className="size-4 animate-spin" /> Opening your shortlist…
+            {savedPlaces.canSave && savedPlaces.saved.length === 0 && (
+              <Card className="text-sm text-muted-foreground">
+                Nothing saved yet. Tap the bookmark on any venue and it lands here.
               </Card>
             )}
-            <div className="space-y-3">
-              {savedVenues.venues.map((v) => (
-                <VenueRow
-                  key={v.id}
-                  venue={v}
-                  stayMonths={stayMonths}
-                  saved
-                  comparing={compare.includes(v.id)}
-                  onSave={() => toggleSaved(v)}
-                  onCompare={() => toggleCompare(v.id)}
-                />
-              ))}
-            </div>
+            {savedList.loading && <PlacesLoading label="Loading your shortlist…" />}
+            {view === "list" && (
+              <PlaceList
+                places={shown}
+                activeId={selection.activeId}
+                savedIds={savedPlaces.savedIds}
+                onSelect={(p) => selection.select(p.id)}
+                onSave={(p: Place) => savedPlaces.toggleSaved(p, "gym")}
+                footerFor={footerFor}
+              />
+            )}
           </>
         )}
 
-        <p className="pb-4 text-[11px] leading-relaxed text-muted-foreground">
-          Prices are typical list prices students report, shown to help you compare — always confirm at the desk.
-          Venue details, ratings and travel times come from Google Maps.
-        </p>
-      </div>
-
-      {compare.length > 0 && (
-        <div className="fixed bottom-[72px] left-1/2 z-40 flex w-[calc(100%-2rem)] max-w-[398px] -translate-x-1/2 items-center gap-2 rounded-2xl border border-border bg-card px-3 py-2 shadow-card">
-          <Columns3 className="size-4 text-primary" />
-          <span className="text-xs font-semibold">{compare.length} to compare</span>
-          <button type="button" onClick={clearCompare} className="tap ml-auto text-xs text-muted-foreground">
-            Clear
-          </button>
+        {compare.length > 1 && (
           <button
             type="button"
-            onClick={() => setShowCompare(true)}
-            className="tap rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground"
+            onClick={() => {
+              haptic();
+              setShowCompare(true);
+            }}
+            className="tap sticky bottom-24 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-ink px-4 py-3 text-sm font-semibold text-ink-foreground shadow-card"
           >
-            Compare
+            <Columns3 className="size-4" /> Compare {compare.length} venues
           </button>
-        </div>
-      )}
+        )}
 
-      {showCompare && <CompareTable ids={compare} onClose={() => setShowCompare(false)} />}
+        <GettingThere travel={null} />
+      </div>
+
+      {showCompare && <CompareTray ids={compare} onClose={() => setShowCompare(false)} />}
     </AppShell>
   );
 }
