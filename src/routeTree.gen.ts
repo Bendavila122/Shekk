@@ -46,7 +46,6 @@ import { Route as SocialConversationIdRouteImport } from './routes/social/$conve
 import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
 import { Route as ServicesOffersRouteImport } from './routes/services/offers'
 import { Route as ServicesInsuranceRouteImport } from './routes/services/insurance'
-import { Route as ServicesEsimRouteImport } from './routes/services/esim'
 import { Route as GuidesIdRouteImport } from './routes/guides/$id'
 import { Route as ExploreVisaRouteImport } from './routes/explore/visa'
 import { Route as ExploreUniFinderRouteImport } from './routes/explore/uni-finder'
@@ -71,6 +70,7 @@ import { Route as ExploreArmyRouteImport } from './routes/explore/army'
 import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
 import { Route as BeforeYouFlyInsuranceRouteImport } from './routes/before-you-fly/insurance'
 import { Route as BeforeYouFlyEsimRouteImport } from './routes/before-you-fly/esim'
+import { Route as AdminSimRouteImport } from './routes/admin/sim'
 import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
 import { Route as AdminMoneyRouteImport } from './routes/admin/money'
 import { Route as AdminMembershipsRouteImport } from './routes/admin/memberships'
@@ -80,9 +80,12 @@ import { Route as AdminAppsRouteImport } from './routes/admin/apps'
 import { Route as AdminAccountsRouteImport } from './routes/admin/accounts'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as ServicesEsimIndexRouteImport } from './routes/services/esim.index'
 import { Route as ExploreMapIndexRouteImport } from './routes/explore/map.index'
 import { Route as ExploreIdfIndexRouteImport } from './routes/explore/idf.index'
 import { Route as ExploreFitnessIndexRouteImport } from './routes/explore/fitness.index'
+import { Route as ServicesEsimMineRouteImport } from './routes/services/esim.mine'
+import { Route as ServicesEsimPlanIdRouteImport } from './routes/services/esim.$planId'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
 import { Route as ExploreMapIdRouteImport } from './routes/explore/map.$id'
 import { Route as ExploreIdfUnitIdRouteImport } from './routes/explore/idf.$unitId'
@@ -281,11 +284,6 @@ const ServicesInsuranceRoute = ServicesInsuranceRouteImport.update({
   path: '/services/insurance',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ServicesEsimRoute = ServicesEsimRouteImport.update({
-  id: '/services/esim',
-  path: '/services/esim',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const GuidesIdRoute = GuidesIdRouteImport.update({
   id: '/guides/$id',
   path: '/guides/$id',
@@ -406,6 +404,11 @@ const BeforeYouFlyEsimRoute = BeforeYouFlyEsimRouteImport.update({
   path: '/before-you-fly/esim',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSimRoute = AdminSimRouteImport.update({
+  id: '/sim',
+  path: '/sim',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminPromotionsRoute = AdminPromotionsRouteImport.update({
   id: '/promotions',
   path: '/promotions',
@@ -453,6 +456,11 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ServicesEsimIndexRoute = ServicesEsimIndexRouteImport.update({
+  id: '/services/esim/',
+  path: '/services/esim/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreMapIndexRoute = ExploreMapIndexRouteImport.update({
   id: '/explore/map/',
   path: '/explore/map/',
@@ -466,6 +474,16 @@ const ExploreIdfIndexRoute = ExploreIdfIndexRouteImport.update({
 const ExploreFitnessIndexRoute = ExploreFitnessIndexRouteImport.update({
   id: '/explore/fitness/',
   path: '/explore/fitness/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesEsimMineRoute = ServicesEsimMineRouteImport.update({
+  id: '/services/esim/mine',
+  path: '/services/esim/mine',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesEsimPlanIdRoute = ServicesEsimPlanIdRouteImport.update({
+  id: '/services/esim/$planId',
+  path: '/services/esim/$planId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
@@ -568,6 +586,7 @@ export interface FileRoutesByFullPath {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
+  '/admin/sim': typeof AdminSimRoute
   '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
   '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
@@ -592,7 +611,6 @@ export interface FileRoutesByFullPath {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
-  '/services/esim': typeof ServicesEsimRoute
   '/services/insurance': typeof ServicesInsuranceRoute
   '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -612,9 +630,12 @@ export interface FileRoutesByFullPath {
   '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/services/esim/$planId': typeof ServicesEsimPlanIdRoute
+  '/services/esim/mine': typeof ServicesEsimMineRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/explore/idf/': typeof ExploreIdfIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
+  '/services/esim/': typeof ServicesEsimIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -655,6 +676,7 @@ export interface FileRoutesByTo {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
+  '/admin/sim': typeof AdminSimRoute
   '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
   '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
@@ -679,7 +701,6 @@ export interface FileRoutesByTo {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
-  '/services/esim': typeof ServicesEsimRoute
   '/services/insurance': typeof ServicesInsuranceRoute
   '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -699,9 +720,12 @@ export interface FileRoutesByTo {
   '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/services/esim/$planId': typeof ServicesEsimPlanIdRoute
+  '/services/esim/mine': typeof ServicesEsimMineRoute
   '/explore/fitness': typeof ExploreFitnessIndexRoute
   '/explore/idf': typeof ExploreIdfIndexRoute
   '/explore/map': typeof ExploreMapIndexRoute
+  '/services/esim': typeof ServicesEsimIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -744,6 +768,7 @@ export interface FileRoutesById {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
+  '/admin/sim': typeof AdminSimRoute
   '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
   '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
@@ -768,7 +793,6 @@ export interface FileRoutesById {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
-  '/services/esim': typeof ServicesEsimRoute
   '/services/insurance': typeof ServicesInsuranceRoute
   '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -788,9 +812,12 @@ export interface FileRoutesById {
   '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
   '/explore/map/$id': typeof ExploreMapIdRoute
   '/explore/service/$id': typeof ExploreServiceIdRoute
+  '/services/esim/$planId': typeof ServicesEsimPlanIdRoute
+  '/services/esim/mine': typeof ServicesEsimMineRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/explore/idf/': typeof ExploreIdfIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
+  '/services/esim/': typeof ServicesEsimIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -834,6 +861,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
+    | '/admin/sim'
     | '/before-you-fly/esim'
     | '/before-you-fly/insurance'
     | '/benefits/$id'
@@ -858,7 +886,6 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
-    | '/services/esim'
     | '/services/insurance'
     | '/services/offers'
     | '/siddur/$id'
@@ -878,9 +905,12 @@ export interface FileRouteTypes {
     | '/explore/idf/$unitId'
     | '/explore/map/$id'
     | '/explore/service/$id'
+    | '/services/esim/$planId'
+    | '/services/esim/mine'
     | '/explore/fitness/'
     | '/explore/idf/'
     | '/explore/map/'
+    | '/services/esim/'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
     | '/lovable/email/auth/preview'
@@ -921,6 +951,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
+    | '/admin/sim'
     | '/before-you-fly/esim'
     | '/before-you-fly/insurance'
     | '/benefits/$id'
@@ -945,7 +976,6 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
-    | '/services/esim'
     | '/services/insurance'
     | '/services/offers'
     | '/siddur/$id'
@@ -965,9 +995,12 @@ export interface FileRouteTypes {
     | '/explore/idf/$unitId'
     | '/explore/map/$id'
     | '/explore/service/$id'
+    | '/services/esim/$planId'
+    | '/services/esim/mine'
     | '/explore/fitness'
     | '/explore/idf'
     | '/explore/map'
+    | '/services/esim'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
     | '/lovable/email/auth/preview'
@@ -1009,6 +1042,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
+    | '/admin/sim'
     | '/before-you-fly/esim'
     | '/before-you-fly/insurance'
     | '/benefits/$id'
@@ -1033,7 +1067,6 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
-    | '/services/esim'
     | '/services/insurance'
     | '/services/offers'
     | '/siddur/$id'
@@ -1053,9 +1086,12 @@ export interface FileRouteTypes {
     | '/explore/idf/$unitId'
     | '/explore/map/$id'
     | '/explore/service/$id'
+    | '/services/esim/$planId'
+    | '/services/esim/mine'
     | '/explore/fitness/'
     | '/explore/idf/'
     | '/explore/map/'
+    | '/services/esim/'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
     | '/lovable/email/auth/preview'
@@ -1115,7 +1151,6 @@ export interface RootRouteChildren {
   ExploreUniFinderRoute: typeof ExploreUniFinderRoute
   ExploreVisaRoute: typeof ExploreVisaRoute
   GuidesIdRoute: typeof GuidesIdRoute
-  ServicesEsimRoute: typeof ServicesEsimRoute
   ServicesInsuranceRoute: typeof ServicesInsuranceRoute
   ServicesOffersRoute: typeof ServicesOffersRoute
   SiddurIdRoute: typeof SiddurIdRoute
@@ -1134,9 +1169,12 @@ export interface RootRouteChildren {
   ExploreIdfUnitIdRoute: typeof ExploreIdfUnitIdRoute
   ExploreMapIdRoute: typeof ExploreMapIdRoute
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
+  ServicesEsimPlanIdRoute: typeof ServicesEsimPlanIdRoute
+  ServicesEsimMineRoute: typeof ServicesEsimMineRoute
   ExploreFitnessIndexRoute: typeof ExploreFitnessIndexRoute
   ExploreIdfIndexRoute: typeof ExploreIdfIndexRoute
   ExploreMapIndexRoute: typeof ExploreMapIndexRoute
+  ServicesEsimIndexRoute: typeof ServicesEsimIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicWebhooksAirwallexRoute: typeof ApiPublicWebhooksAirwallexRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -1405,13 +1443,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesInsuranceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/services/esim': {
-      id: '/services/esim'
-      path: '/services/esim'
-      fullPath: '/services/esim'
-      preLoaderRoute: typeof ServicesEsimRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/guides/$id': {
       id: '/guides/$id'
       path: '/guides/$id'
@@ -1580,6 +1611,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BeforeYouFlyEsimRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/sim': {
+      id: '/admin/sim'
+      path: '/sim'
+      fullPath: '/admin/sim'
+      preLoaderRoute: typeof AdminSimRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/promotions': {
       id: '/admin/promotions'
       path: '/promotions'
@@ -1643,6 +1681,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/esim/': {
+      id: '/services/esim/'
+      path: '/services/esim'
+      fullPath: '/services/esim/'
+      preLoaderRoute: typeof ServicesEsimIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/map/': {
       id: '/explore/map/'
       path: '/explore/map'
@@ -1662,6 +1707,20 @@ declare module '@tanstack/react-router' {
       path: '/explore/fitness'
       fullPath: '/explore/fitness/'
       preLoaderRoute: typeof ExploreFitnessIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/esim/mine': {
+      id: '/services/esim/mine'
+      path: '/services/esim/mine'
+      fullPath: '/services/esim/mine'
+      preLoaderRoute: typeof ServicesEsimMineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/esim/$planId': {
+      id: '/services/esim/$planId'
+      path: '/services/esim/$planId'
+      fullPath: '/services/esim/$planId'
+      preLoaderRoute: typeof ServicesEsimPlanIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore/service/$id': {
@@ -1759,6 +1818,7 @@ interface AdminRouteRouteChildren {
   AdminMembershipsRoute: typeof AdminMembershipsRoute
   AdminMoneyRoute: typeof AdminMoneyRoute
   AdminPromotionsRoute: typeof AdminPromotionsRoute
+  AdminSimRoute: typeof AdminSimRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -1770,6 +1830,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminMembershipsRoute: AdminMembershipsRoute,
   AdminMoneyRoute: AdminMoneyRoute,
   AdminPromotionsRoute: AdminPromotionsRoute,
+  AdminSimRoute: AdminSimRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -1830,7 +1891,6 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreUniFinderRoute: ExploreUniFinderRoute,
   ExploreVisaRoute: ExploreVisaRoute,
   GuidesIdRoute: GuidesIdRoute,
-  ServicesEsimRoute: ServicesEsimRoute,
   ServicesInsuranceRoute: ServicesInsuranceRoute,
   ServicesOffersRoute: ServicesOffersRoute,
   SiddurIdRoute: SiddurIdRoute,
@@ -1849,9 +1909,12 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreIdfUnitIdRoute: ExploreIdfUnitIdRoute,
   ExploreMapIdRoute: ExploreMapIdRoute,
   ExploreServiceIdRoute: ExploreServiceIdRoute,
+  ServicesEsimPlanIdRoute: ServicesEsimPlanIdRoute,
+  ServicesEsimMineRoute: ServicesEsimMineRoute,
   ExploreFitnessIndexRoute: ExploreFitnessIndexRoute,
   ExploreIdfIndexRoute: ExploreIdfIndexRoute,
   ExploreMapIndexRoute: ExploreMapIndexRoute,
+  ServicesEsimIndexRoute: ServicesEsimIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicWebhooksAirwallexRoute: ApiPublicWebhooksAirwallexRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,

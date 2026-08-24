@@ -69,61 +69,7 @@ export function provider(id: string): Provider | undefined {
 
 export type DataNeed = "light" | "normal" | "heavy";
 
-/* ───────────────────────────── eSIM ───────────────────────────── */
-
-export const ESIM_OFFERS: Offer[] = [
-  {
-    id: "esim-short-data",
-    kind: "esim",
-    providerId: "airalo",
-    name: "Short-trip data plan",
-    headline: "Data only, install before you fly",
-    price: "≈ £10",
-    period: "2 weeks",
-    points: ["Around 5 GB of data", "Works the moment you land", "Keeps your home number on your physical SIM"],
-    match: { maxDays: 30, dataNeed: ["light", "normal"], needsNumber: false },
-  },
-  {
-    id: "esim-gap-year",
-    kind: "esim",
-    providerId: "saily",
-    name: "Gap-year data plan",
-    headline: "The usual choice for a few months in Israel",
-    price: "≈ £18",
-    period: "per month",
-    points: ["Around 50 GB a month", "Top up in the app", "No contract"],
-    match: { minDays: 21, dataNeed: ["normal", "heavy"], needsNumber: false },
-    badge: "Most chosen",
-  },
-  {
-    id: "esim-unlimited",
-    kind: "esim",
-    providerId: "holafly",
-    name: "Unlimited data plan",
-    headline: "Hotspotting, video calls and maps all day",
-    price: "≈ £28",
-    period: "per month",
-    points: ["Unlimited fair-use data", "Tethering included", "Simple flat price"],
-    match: { dataNeed: ["heavy"], needsNumber: false },
-  },
-  {
-    id: "sim-israeli-number",
-    kind: "esim",
-    providerId: "partner-il",
-    name: "Israeli number + data",
-    headline: "For deliveries, doctors, Rav-Kav and banks",
-    price: "≈ ₪49",
-    period: "per month",
-    points: ["Real Israeli mobile number", "Calls and SMS to Israeli services", "Best for stays over three months"],
-    match: { minDays: 60, needsNumber: true },
-  },
-];
-
-export type SimAnswers = {
-  days: number | null;
-  needsNumber: boolean | null;
-  data: DataNeed | null;
-};
+/* eSIM plans now live in the database — see src/lib/sim.ts and /services/esim. */
 
 /* ───────────────────────────── Insurance ───────────────────────────── */
 
@@ -204,20 +150,6 @@ function daysFit(offer: Offer, days: number | null) {
   if (m.minDays !== undefined && days < m.minDays) return -3;
   if (m.maxDays !== undefined && days > m.maxDays) return -2;
   return 2;
-}
-
-export function rankSimOffers(a: SimAnswers): Offer[] {
-  return [...ESIM_OFFERS]
-    .map((o) => {
-      let score = daysFit(o, a.days);
-      if (a.needsNumber !== null && o.match?.needsNumber !== undefined) {
-        score += o.match.needsNumber === a.needsNumber ? 3 : -3;
-      }
-      if (a.data && o.match?.dataNeed?.includes(a.data)) score += 2;
-      return { o, score };
-    })
-    .sort((x, y) => y.score - x.score)
-    .map((x) => x.o);
 }
 
 export function rankInsuranceOffers(a: InsuranceAnswers): Offer[] {
