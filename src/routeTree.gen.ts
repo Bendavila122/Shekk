@@ -22,6 +22,7 @@ import { Route as ReverifyRouteImport } from './routes/reverify'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProgrammeRouteImport } from './routes/programme'
 import { Route as NewsRouteImport } from './routes/news'
+import { Route as MoneyRouteImport } from './routes/money'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -158,6 +159,11 @@ const ProgrammeRoute = ProgrammeRouteImport.update({
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MoneyRoute = MoneyRouteImport.update({
+  id: '/money',
+  path: '/money',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MembershipRoute = MembershipRouteImport.update({
@@ -539,6 +545,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
+  '/money': typeof MoneyRoute
   '/news': typeof NewsRoute
   '/programme': typeof ProgrammeRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -625,6 +632,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
+  '/money': typeof MoneyRoute
   '/news': typeof NewsRoute
   '/programme': typeof ProgrammeRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -713,6 +721,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
+  '/money': typeof MoneyRoute
   '/news': typeof NewsRoute
   '/programme': typeof ProgrammeRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -802,6 +811,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/membership'
+    | '/money'
     | '/news'
     | '/programme'
     | '/reset-password'
@@ -888,6 +898,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/membership'
+    | '/money'
     | '/news'
     | '/programme'
     | '/reset-password'
@@ -975,6 +986,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/membership'
+    | '/money'
     | '/news'
     | '/programme'
     | '/reset-password'
@@ -1063,6 +1075,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   MeRoute: typeof MeRoute
   MembershipRoute: typeof MembershipRoute
+  MoneyRoute: typeof MoneyRoute
   NewsRoute: typeof NewsRoute
   ProgrammeRoute: typeof ProgrammeRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -1222,6 +1235,13 @@ declare module '@tanstack/react-router' {
       path: '/news'
       fullPath: '/news'
       preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/money': {
+      id: '/money'
+      path: '/money'
+      fullPath: '/money'
+      preLoaderRoute: typeof MoneyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/membership': {
@@ -1769,6 +1789,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   MeRoute: MeRoute,
   MembershipRoute: MembershipRoute,
+  MoneyRoute: MoneyRoute,
   NewsRoute: NewsRoute,
   ProgrammeRoute: ProgrammeRoute,
   ResetPasswordRoute: ResetPasswordRoute,
