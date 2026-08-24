@@ -34,6 +34,7 @@ const NAV = [
   { to: "/admin/money", label: "Money flow", Icon: Coins },
   { to: "/admin/accounts", label: "Accounts", Icon: Users },
   { to: "/admin/memberships", label: "Memberships", Icon: Crown },
+  { to: "/admin/programmes", label: "Programmes", Icon: GraduationCap },
   { to: "/admin/apps", label: "Apps & services", Icon: LayoutGrid },
   { to: "/admin/sim", label: "SIM & eSIM", Icon: Signal },
   { to: "/admin/places", label: "Places & venues", Icon: MapPin },
