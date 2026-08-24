@@ -48,9 +48,9 @@ export function RequireAccount({ children }: { children: ReactNode }) {
     });
   }, [locked, navigate, pathname]);
 
-  // Hold the door shut while we check, so no signed-out flash of the wallet.
+  // Hold the door shut while we check, so no signed-out flash of the app.
   if (!open && (!authChecked || !signedIn)) {
-    return <Splash message={authChecked ? "Taking you to sign in…" : "Opening your wallet…"} />;
+    return <Splash message={authChecked ? "Taking you to sign in…" : "Getting your Israel setup…"} />;
   }
 
   return <>{children}</>;
