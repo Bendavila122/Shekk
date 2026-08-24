@@ -18,7 +18,7 @@ const gymTypes = ["gym", "fitness_center"];
 describe("taxonomy", () => {
   it("maps Google types back to a category", () => {
     expect(categoryFor(gymTypes)?.id).toBe("gym");
-    expect(categoryFor(["synagogue"])?.id).toBe("synagogue");
+    expect(categoryFor(["synagogue"])?.id).toBe("shul");
     expect(categoryFor(["unheard_of_type"])).toBeUndefined();
   });
 
