@@ -78,6 +78,7 @@ import { Route as BeforeYouFlyInsuranceRouteImport } from './routes/before-you-f
 import { Route as BeforeYouFlyEsimRouteImport } from './routes/before-you-fly/esim'
 import { Route as AdminSimRouteImport } from './routes/admin/sim'
 import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
+import { Route as AdminProgrammesRouteImport } from './routes/admin/programmes'
 import { Route as AdminPlacesRouteImport } from './routes/admin/places'
 import { Route as AdminMoneyRouteImport } from './routes/admin/money'
 import { Route as AdminMembershipsRouteImport } from './routes/admin/memberships'
@@ -451,6 +452,11 @@ const AdminPromotionsRoute = AdminPromotionsRouteImport.update({
   path: '/promotions',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminProgrammesRoute = AdminProgrammesRouteImport.update({
+  id: '/programmes',
+  path: '/programmes',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminPlacesRoute = AdminPlacesRouteImport.update({
   id: '/places',
   path: '/places',
@@ -628,6 +634,7 @@ export interface FileRoutesByFullPath {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/places': typeof AdminPlacesRoute
+  '/admin/programmes': typeof AdminProgrammesRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/admin/sim': typeof AdminSimRoute
   '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
@@ -724,6 +731,7 @@ export interface FileRoutesByTo {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/places': typeof AdminPlacesRoute
+  '/admin/programmes': typeof AdminProgrammesRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/admin/sim': typeof AdminSimRoute
   '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
@@ -823,6 +831,7 @@ export interface FileRoutesById {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/places': typeof AdminPlacesRoute
+  '/admin/programmes': typeof AdminProgrammesRoute
   '/admin/promotions': typeof AdminPromotionsRoute
   '/admin/sim': typeof AdminSimRoute
   '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
@@ -923,6 +932,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/places'
+    | '/admin/programmes'
     | '/admin/promotions'
     | '/admin/sim'
     | '/before-you-fly/esim'
@@ -1019,6 +1029,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/places'
+    | '/admin/programmes'
     | '/admin/promotions'
     | '/admin/sim'
     | '/before-you-fly/esim'
@@ -1117,6 +1128,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/places'
+    | '/admin/programmes'
     | '/admin/promotions'
     | '/admin/sim'
     | '/before-you-fly/esim'
@@ -1750,6 +1762,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPromotionsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/programmes': {
+      id: '/admin/programmes'
+      path: '/programmes'
+      fullPath: '/admin/programmes'
+      preLoaderRoute: typeof AdminProgrammesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/places': {
       id: '/admin/places'
       path: '/places'
@@ -1950,6 +1969,7 @@ interface AdminRouteRouteChildren {
   AdminMembershipsRoute: typeof AdminMembershipsRoute
   AdminMoneyRoute: typeof AdminMoneyRoute
   AdminPlacesRoute: typeof AdminPlacesRoute
+  AdminProgrammesRoute: typeof AdminProgrammesRoute
   AdminPromotionsRoute: typeof AdminPromotionsRoute
   AdminSimRoute: typeof AdminSimRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -1963,6 +1983,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminMembershipsRoute: AdminMembershipsRoute,
   AdminMoneyRoute: AdminMoneyRoute,
   AdminPlacesRoute: AdminPlacesRoute,
+  AdminProgrammesRoute: AdminProgrammesRoute,
   AdminPromotionsRoute: AdminPromotionsRoute,
   AdminSimRoute: AdminSimRoute,
   AdminIndexRoute: AdminIndexRoute,

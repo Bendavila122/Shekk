@@ -165,7 +165,7 @@ function Programmes() {
                           {r.status !== "active" ? <Pill tone="warning">{r.status}</Pill> : null}
                         </span>
                         <span className="mt-0.5 block truncate text-xs text-muted-foreground">
-                          {[r.organisation, r.city, typeLabel(r.programmeType)].filter(Boolean).join(" · ')}
+                          {[r.organisation, r.city, typeLabel(r.programmeType)].filter(Boolean).join(" · ")}
                         </span>
                         <span className="mt-2 flex flex-wrap gap-2 text-[11px] font-semibold text-muted-foreground">
                           <span>{r.cohorts.length} cohorts</span>
