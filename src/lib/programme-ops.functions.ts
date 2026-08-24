@@ -528,3 +528,77 @@ export const adminProgrammeFlags = createServerFn({ method: "POST" })
     const { adminSetProgrammeFlags } = await import("@/lib/programme-ops.server");
     return adminSetProgrammeFlags({ ...data, adminUserId: context.userId });
   });
+
+export const adminProgrammeUpdate = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    programmeFields.partial().extend({ programmeId: uuid, status: z.enum(["active", "inactive", "archived"]).optional() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { assertAdmin } = await import("@/lib/places/admin.server");
+    await assertAdmin(context);
+    const { adminUpdateProgramme } = await import("@/lib/programme-ops.server");
+    return adminUpdateProgramme(data);
+  });
+
+export const adminCohortUpdate = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    cohortFields
+      .omit({ programmeId: true })
+      .partial()
+      .extend({
+        cohortId: uuid,
+        status: z.enum(["open", "closed", "archived"]).optional(),
+        regenerateJoinCode: z.boolean().optional(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { assertAdmin } = await import("@/lib/places/admin.server");
+    await assertAdmin(context);
+    const { adminUpdateCohort } = await import("@/lib/programme-ops.server");
+    return adminUpdateCohort(data);
+  });
+
+export const adminCohortDetailFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ cohortId: uuid }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { assertAdmin } = await import("@/lib/places/admin.server");
+    await assertAdmin(context);
+    const { adminCohortDetail } = await import("@/lib/programme-ops.server");
+    return adminCohortDetail(data.cohortId);
+  });
+
+export const adminStaffSetRole = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({ programmeId: uuid, userId: uuid, role: z.enum(["owner", "staff"]) }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { assertAdmin } = await import("@/lib/places/admin.server");
+    await assertAdmin(context);
+    const { adminSetStaffRole } = await import("@/lib/programme-ops.server");
+    return adminSetStaffRole(data.programmeId, data.userId, data.role);
+  });
+
+export const adminStaffRemove = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ programmeId: uuid, userId: uuid }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { assertAdmin } = await import("@/lib/places/admin.server");
+    await assertAdmin(context);
+    const { adminRemoveStaff } = await import("@/lib/programme-ops.server");
+    return adminRemoveStaff(data.programmeId, data.userId);
+  });
+
+export const adminInviteRevoke = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ inviteId: uuid }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { assertAdmin } = await import("@/lib/places/admin.server");
+    await assertAdmin(context);
+    const { adminRevokeInvite } = await import("@/lib/programme-ops.server");
+    return adminRevokeInvite(data.inviteId);
+  });

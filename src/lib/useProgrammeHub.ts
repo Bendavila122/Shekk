@@ -13,6 +13,12 @@ import { useServerFn } from "@tanstack/react-start";
 import { useApp } from "@/lib/store";
 import {
   adminCohortCreate,
+  adminCohortDetailFn,
+  adminCohortUpdate,
+  adminInviteRevoke,
+  adminProgrammeUpdate,
+  adminStaffRemove,
+  adminStaffSetRole,
   adminProgrammeAssignOwner,
   adminProgrammeCreate,
   adminProgrammeFlags,
@@ -287,6 +293,59 @@ export function useAdminProgrammeActions() {
     }),
     setFlags: useMutation({
       mutationFn: (data: { programmeId: string; verified?: boolean; active?: boolean }) => flagsFn({ data }),
+      ...after,
+    }),
+  };
+}
+
+export function useAdminCohortDetail(cohortId: string | null) {
+  const fn = useServerFn(adminCohortDetailFn);
+  return useQuery({
+    queryKey: ["admin", "programmes", "cohort", cohortId],
+    queryFn: () => fn({ data: { cohortId: cohortId as string } }),
+    enabled: Boolean(cohortId),
+    retry: false,
+  });
+}
+
+/** Editing, archiving, staff and invite management — internal Shekk admin only. */
+export function useAdminProgrammeEditing() {
+  const qc = useQueryClient();
+  const progFn = useServerFn(adminProgrammeUpdate);
+  const cohortFn = useServerFn(adminCohortUpdate);
+  const roleFn = useServerFn(adminStaffSetRole);
+  const removeFn = useServerFn(adminStaffRemove);
+  const revokeFn = useServerFn(adminInviteRevoke);
+  const after = {
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ["admin", "programmes"] }),
+  };
+
+  return {
+    updateProgramme: useMutation({
+      mutationFn: (data: Partial<ProgrammeFieldsInput> & { programmeId: string; status?: "active" | "inactive" | "archived" }) =>
+        progFn({ data }),
+      ...after,
+    }),
+    updateCohort: useMutation({
+      mutationFn: (
+        data: Partial<Omit<CohortFieldsInput, "programmeId">> & {
+          cohortId: string;
+          status?: "open" | "closed" | "archived";
+          regenerateJoinCode?: boolean;
+        },
+      ) => cohortFn({ data }),
+      ...after,
+    }),
+    setStaffRole: useMutation({
+      mutationFn: (data: { programmeId: string; userId: string; role: "owner" | "staff" }) => roleFn({ data }),
+      ...after,
+    }),
+    removeStaff: useMutation({
+      mutationFn: (data: { programmeId: string; userId: string }) => removeFn({ data }),
+      ...after,
+    }),
+    revokeInvite: useMutation({
+      mutationFn: (data: { inviteId: string }) => revokeFn({ data }),
       ...after,
     }),
   };
