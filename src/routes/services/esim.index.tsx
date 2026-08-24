@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Smartphone, Sparkles, ArrowRight, RotateCcw, SimCard } from "lucide-react";
+import { Smartphone, Sparkles, ArrowRight, RotateCcw, Signal } from "lucide-react";
 import { AppShell, ScreenHeader, Notice } from "@/components/AppShell";
 import { Chip, MicroLabel, SectionHead, EmptyState, ErrorState, LoadingBlocks } from "@/components/Kit";
 import { listSimPlans, submitSimAnswers } from "@/lib/sim.functions";
@@ -233,7 +233,7 @@ function EsimFinder() {
           />
         ) : plans.length === 0 ? (
           <EmptyState
-            icon={SimCard}
+            icon={Signal}
             title="No plans in the catalogue yet"
             body="Shekk's SIM catalogue is empty for now. Ask your programme what they recommend in the meantime."
           />
