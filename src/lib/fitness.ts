@@ -1,37 +1,37 @@
 /**
- * Fitness discovery — shared types and Shekk's own layer on top of Google Places.
+ * Fitness — Shekk's own layer on top of the shared location platform.
  *
- * Google tells us WHERE a place is, whether it is open and how people rate it.
+ * Google tells us WHERE a place is, whether it's open and how people rate it.
  * Shekk adds what a student actually needs to decide: what a month costs, how
- * long the contract is, whether there is a short-stay option and whether we
- * have a partner offer. Venue-level extras will move into the backend when
- * partners are signed; the chain-level knowledge below is product content and
- * is matched by name so it works from day one.
+ * long the contract is, whether a short-stay option exists and whether we have
+ * a partner offer.
+ *
+ * Every one of those Shekk facts now comes from the `venue_meta` table via
+ * `Place.meta` — edited by a human in the console, stamped with when it was
+ * last checked. Nothing is guessed from a venue's name any more.
  */
 
-export type ActivityType =
-  | "gym"
-  | "classes"
-  | "pool"
-  | "studio"
-  | "martial"
-  | "climbing"
-  | "courts"
-  | "outdoor";
+import { categorySet, type Place, type PlaceCategoryId, type PlaceMeta } from "@/lib/places";
 
-export const ACTIVITY_TYPES: { id: ActivityType; label: string; emoji: string; placeTypes: string[]; keyword: string }[] = [
-  { id: "gym", label: "Gyms", emoji: "🏋️", placeTypes: ["gym", "fitness_center"], keyword: "gym" },
-  { id: "classes", label: "Classes", emoji: "🤸", placeTypes: ["fitness_center", "yoga_studio"], keyword: "fitness class" },
-  { id: "pool", label: "Pools", emoji: "🏊", placeTypes: ["swimming_pool"], keyword: "swimming pool" },
-  { id: "studio", label: "Studios", emoji: "🧘", placeTypes: ["yoga_studio", "fitness_center"], keyword: "pilates yoga studio" },
-  { id: "martial", label: "Martial arts", emoji: "🥋", placeTypes: ["gym"], keyword: "krav maga boxing martial arts" },
-  { id: "climbing", label: "Climbing", emoji: "🧗", placeTypes: ["gym"], keyword: "climbing wall bouldering" },
-  { id: "courts", label: "Courts & pitches", emoji: "⚽", placeTypes: ["sports_club", "sports_complex", "athletic_field"], keyword: "basketball football court" },
-  { id: "outdoor", label: "Outdoor & running", emoji: "🏃", placeTypes: ["park", "sports_complex"], keyword: "running track outdoor gym" },
-];
+/** The activity chips Fitness offers, drawn from the shared taxonomy. */
+export const FITNESS_CATEGORY_IDS = [
+  "gym",
+  "classes",
+  "pool",
+  "studio",
+  "martial",
+  "climbing",
+  "courts",
+  "outdoor",
+] as const satisfies readonly PlaceCategoryId[];
 
-export const activityType = (id: string) => ACTIVITY_TYPES.find((a) => a.id === id);
+export type ActivityType = (typeof FITNESS_CATEGORY_IDS)[number];
 
+export const FITNESS_CATEGORIES = categorySet(FITNESS_CATEGORY_IDS);
+
+export const activityType = (id: string) => FITNESS_CATEGORIES.find((a) => a.id === id);
+
+/** Shekk-defined facility tags. These are ours, stored in `venue_meta`. */
 export type Facility =
   | "pool"
   | "sauna"
@@ -59,6 +59,8 @@ export const FACILITIES: { id: Facility; label: string; emoji: string }[] = [
 
 export const facility = (id: string) => FACILITIES.find((f) => f.id === id);
 
+export const facilityLabel = (id: string) => facility(id)?.label ?? id;
+
 /** How long the member is in Israel — drives which commitment actually fits. */
 export type StayLength = "weeks" | "term" | "year" | "unsure";
 
@@ -71,202 +73,96 @@ export const STAY_OPTIONS: { id: StayLength; label: string; hint: string; months
 
 export const stayOption = (id: StayLength) => STAY_OPTIONS.find((s) => s.id === id)!;
 
-/** Shekk's commercial layer for a venue or chain. */
-export type FitnessExtras = {
-  /** Typical monthly membership in shekels. */
-  monthlyIls?: number;
-  /** Cheapest one-off entry in shekels. */
-  dayPassIls?: number;
-  /** Shortest contract they will actually sign, in months. 1 = rolling. */
-  minContractMonths?: number;
-  /** True when a term-length or punch-card option exists. */
-  shortStay?: boolean;
-  facilities?: Facility[];
-  /** A Shekk partner offer, when one is agreed. */
-  offer?: string;
-  note?: string;
-};
-
 /**
- * Chain-level knowledge, matched on the venue name. Ranges are typical list
- * prices students report — always shown as "typical", never as a quote.
+ * Cheapest sensible monthly cost for someone staying `months` months. Returns
+ * null when Shekk holds no monthly price — never a guess.
  */
-const CHAINS: { match: RegExp; label: string; extras: FitnessExtras }[] = [
-  {
-    match: /holmes\s*place/i,
-    label: "Holmes Place",
-    extras: {
-      monthlyIls: 329,
-      dayPassIls: 90,
-      minContractMonths: 12,
-      shortStay: false,
-      facilities: ["pool", "sauna", "classes", "weights", "parking", "english"],
-      note: "Big clubs with pools. Contracts are usually 12 months — ask about a student freeze.",
-    },
-  },
-  {
-    match: /\bicon\b|אייקון/i,
-    label: "Icon Fitness",
-    extras: {
-      monthlyIls: 199,
-      dayPassIls: 60,
-      minContractMonths: 3,
-      shortStay: true,
-      facilities: ["classes", "weights", "student"],
-      note: "Often happy to do a 3-month term for gap-year students.",
-    },
-  },
-  {
-    match: /gymbox|ג'ימבוקס/i,
-    label: "GymBox",
-    extras: {
-      monthlyIls: 169,
-      dayPassIls: 50,
-      minContractMonths: 1,
-      shortStay: true,
-      facilities: ["weights", "classes"],
-      note: "Rolling monthly, no long tie-in — the easiest one to leave.",
-    },
-  },
-  {
-    match: /go\s*active|גו\s*אקטיב/i,
-    label: "Go Active",
-    extras: { monthlyIls: 249, dayPassIls: 70, minContractMonths: 6, shortStay: true, facilities: ["pool", "classes", "weights"] },
-  },
-  {
-    match: /country\s*club|קאנטרי/i,
-    label: "Country club",
-    extras: {
-      monthlyIls: 299,
-      dayPassIls: 80,
-      minContractMonths: 3,
-      shortStay: true,
-      facilities: ["pool", "sauna", "classes", "parking"],
-      note: "Municipal country clubs sell single entries — good if you only swim now and then.",
-    },
-  },
-  {
-    match: /krav\s*maga/i,
-    label: "Krav Maga",
-    extras: { monthlyIls: 250, dayPassIls: 80, minContractMonths: 1, shortStay: true, facilities: ["classes", "english"] },
-  },
-  {
-    match: /climb|boulder|טיפוס/i,
-    label: "Climbing",
-    extras: { monthlyIls: 220, dayPassIls: 75, minContractMonths: 1, shortStay: true, facilities: ["classes"] },
-  },
-  {
-    match: /yoga|pilates|יוגה|פילאטיס/i,
-    label: "Studio",
-    extras: { monthlyIls: 320, dayPassIls: 70, minContractMonths: 1, shortStay: true, facilities: ["classes", "english"] },
-  },
-  {
-    match: /pool|swim|בריכ/i,
-    label: "Pool",
-    extras: { dayPassIls: 55, monthlyIls: 240, minContractMonths: 1, shortStay: true, facilities: ["pool"] },
-  },
-];
-
-/** What Shekk knows about this venue beyond what Google returns. */
-export function extrasFor(name: string, types: string[] = []): FitnessExtras & { chain?: string } {
-  const hit = CHAINS.find((c) => c.match.test(name));
-  if (hit) return { ...hit.extras, chain: hit.label };
-  // Fall back to a light guess from the Places types so filters still behave.
-  if (types.includes("swimming_pool")) return { dayPassIls: 55, minContractMonths: 1, shortStay: true, facilities: ["pool"] };
-  if (types.includes("yoga_studio")) return { dayPassIls: 70, minContractMonths: 1, shortStay: true, facilities: ["classes"] };
-  return {};
-}
-
-/** A venue as the Fitness screens use it. */
-export type FitnessVenue = {
-  id: string;
-  name: string;
-  address: string;
-  lat: number;
-  lon: number;
-  rating: number | null;
-  reviews: number | null;
-  openNow: boolean | null;
-  priceLevel: number | null;
-  types: string[];
-  phone?: string | null;
-  website?: string | null;
-  mapsUri?: string | null;
-  photoName?: string | null;
-  hours?: string[];
-  /** Straight-line km from the member, filled in client-side. */
-  distanceKm?: number;
-  extras: FitnessExtras & { chain?: string };
-};
-
-export const shekels = (n: number) => `₪${Math.round(n).toLocaleString("en-IL")}`;
-
-export const distanceLabel = (km?: number) =>
-  km === undefined ? "" : km < 1 ? `${Math.round(km * 1000)} m` : `${km.toFixed(km < 10 ? 1 : 0)} km`;
-
-/** Rough walk time at 4.8 km/h — enough for a discovery list. */
-export const walkMinutes = (km: number) => Math.max(1, Math.round((km / 4.8) * 60));
-
-/** Cheapest sensible monthly cost for someone staying `months` months. */
-export function effectiveMonthly(extras: FitnessExtras, months: number): number | null {
-  if (extras.monthlyIls === undefined) return null;
-  if (!months || months >= 6) return extras.monthlyIls;
+export function effectiveMonthly(meta: PlaceMeta, months: number): number | null {
+  if (meta.monthlyIls === undefined) return null;
+  if (!months || months >= 6) return meta.monthlyIls;
   // Short stays usually pay a premium when they dodge the long contract.
-  return Math.round(extras.monthlyIls * (extras.shortStay ? 1.1 : 1.25));
+  return Math.round(meta.monthlyIls * (meta.shortStay ? 1.1 : 1.25));
 }
 
 /** Does this venue realistically work for a stay of this length? */
-export function fitsStay(extras: FitnessExtras, stay: StayLength): boolean {
+export function fitsStay(meta: PlaceMeta, stay: StayLength): boolean {
   if (stay === "unsure" || stay === "year") return true;
-  const min = extras.minContractMonths;
+  const min = meta.minContractMonths;
   if (min === undefined) return true;
   const months = stayOption(stay).months;
-  return extras.shortStay === true || min <= months || Boolean(extras.dayPassIls);
+  return meta.shortStay === true || min <= months || meta.dayPassIls !== undefined;
 }
+
+export type SortMode = "distance" | "rating" | "price";
 
 export type FitnessFilters = {
   activity: ActivityType | "all";
   maxPriceIls: number | null;
   maxDistanceKm: number | null;
+  minRating: number | null;
   facilities: Facility[];
   stay: StayLength;
   openNow: boolean;
   partnerOnly: boolean;
+  sort: SortMode;
 };
 
 export const DEFAULT_FILTERS: FitnessFilters = {
   activity: "all",
   maxPriceIls: null,
   maxDistanceKm: null,
+  minRating: null,
   facilities: [],
   stay: "unsure",
   openNow: false,
   partnerOnly: false,
+  sort: "distance",
 };
 
-export function filterVenues(venues: FitnessVenue[], f: FitnessFilters): FitnessVenue[] {
-  return venues.filter((v) => {
-    if (f.openNow && v.openNow === false) return false;
-    if (f.partnerOnly && !v.extras.offer) return false;
-    if (f.maxDistanceKm !== null && v.distanceKm !== undefined && v.distanceKm > f.maxDistanceKm) return false;
+export function filterVenues(places: Place[], f: FitnessFilters): Place[] {
+  const filtered = places.filter((p) => {
+    const meta = p.meta;
+    if (f.openNow && p.hours.openNow === false) return false;
+    if (f.partnerOnly && !meta.partner) return false;
+    if (f.minRating !== null && (p.rating ?? 0) < f.minRating) return false;
+    if (f.maxDistanceKm !== null && p.distanceKm !== undefined && p.distanceKm > f.maxDistanceKm) return false;
     if (f.maxPriceIls !== null) {
-      const monthly = effectiveMonthly(v.extras, stayOption(f.stay).months);
+      const monthly = effectiveMonthly(meta, stayOption(f.stay).months);
       if (monthly !== null && monthly > f.maxPriceIls) return false;
     }
     if (f.facilities.length) {
-      const has = new Set(v.extras.facilities ?? []);
+      const has = new Set(meta.facilities ?? []);
       if (!f.facilities.every((x) => has.has(x))) return false;
     }
-    if (!fitsStay(v.extras, f.stay)) return false;
+    if (!fitsStay(meta, f.stay)) return false;
     return true;
   });
+
+  return sortVenues(filtered, f.sort, stayOption(f.stay).months);
+}
+
+export function sortVenues(places: Place[], sort: SortMode, months: number): Place[] {
+  const list = [...places];
+  if (sort === "rating") return list.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+  if (sort === "price")
+    return list.sort((a, b) => {
+      // Venues with no known price sink to the bottom rather than pretending to be free.
+      const pa = effectiveMonthly(a.meta, months) ?? Number.POSITIVE_INFINITY;
+      const pb = effectiveMonthly(b.meta, months) ?? Number.POSITIVE_INFINITY;
+      return pa - pb;
+    });
+  return list.sort((a, b) => (a.distanceKm ?? 99) - (b.distanceKm ?? 99));
 }
 
 export const countActiveFilters = (f: FitnessFilters) =>
   (f.activity !== "all" ? 1 : 0) +
   (f.maxPriceIls !== null ? 1 : 0) +
   (f.maxDistanceKm !== null ? 1 : 0) +
+  (f.minRating !== null ? 1 : 0) +
   f.facilities.length +
   (f.stay !== "unsure" ? 1 : 0) +
   (f.openNow ? 1 : 0) +
   (f.partnerOnly ? 1 : 0);
+
+/** The mini-app key saved places are filed under. */
+export const FITNESS_APP = "fitness";

@@ -1473,6 +1473,42 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_places: {
+        Row: {
+          app: string
+          category: string | null
+          created_at: string
+          google_place_id: string
+          id: string
+          label: string | null
+          name_snapshot: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          app?: string
+          category?: string | null
+          created_at?: string
+          google_place_id: string
+          id?: string
+          label?: string | null
+          name_snapshot?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          app?: string
+          category?: string | null
+          created_at?: string
+          google_place_id?: string
+          id?: string
+          label?: string | null
+          name_snapshot?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       setup_tasks: {
         Row: {
           created_at: string
@@ -2068,6 +2104,72 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      venue_meta: {
+        Row: {
+          active: boolean
+          chain: string | null
+          city: string | null
+          created_at: string
+          day_pass_ils: number | null
+          english_friendly: boolean
+          facilities: string[]
+          google_place_id: string
+          id: string
+          label: string | null
+          min_contract_months: number | null
+          monthly_ils: number | null
+          name_snapshot: string | null
+          notes: string | null
+          partner: boolean
+          partner_offer: string | null
+          short_stay: boolean
+          updated_at: string
+          verified_at: string | null
+        }
+        Insert: {
+          active?: boolean
+          chain?: string | null
+          city?: string | null
+          created_at?: string
+          day_pass_ils?: number | null
+          english_friendly?: boolean
+          facilities?: string[]
+          google_place_id: string
+          id?: string
+          label?: string | null
+          min_contract_months?: number | null
+          monthly_ils?: number | null
+          name_snapshot?: string | null
+          notes?: string | null
+          partner?: boolean
+          partner_offer?: string | null
+          short_stay?: boolean
+          updated_at?: string
+          verified_at?: string | null
+        }
+        Update: {
+          active?: boolean
+          chain?: string | null
+          city?: string | null
+          created_at?: string
+          day_pass_ils?: number | null
+          english_friendly?: boolean
+          facilities?: string[]
+          google_place_id?: string
+          id?: string
+          label?: string | null
+          min_contract_months?: number | null
+          monthly_ils?: number | null
+          name_snapshot?: string | null
+          notes?: string | null
+          partner?: boolean
+          partner_offer?: string | null
+          short_stay?: boolean
+          updated_at?: string
+          verified_at?: string | null
         }
         Relationships: []
       }
