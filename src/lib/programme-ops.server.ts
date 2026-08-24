@@ -1171,6 +1171,14 @@ export type Participant = {
 /** The roster, with just enough to run a programme — no sensitive personal data. */
 export async function listParticipants(db: Db, userId: string, cohortId: string): Promise<Participant[]> {
   await requireStaff(db, userId, cohortId, "participants");
+  return rosterForCohort(cohortId);
+}
+
+/**
+ * The same roster, without the staff check — callers must already have proved
+ * either programme-staff permission or the internal Shekk `admin` role.
+ */
+export async function rosterForCohort(cohortId: string): Promise<Participant[]> {
   const service = await adminDb();
   const { data: members } = await service
     .from("programme_memberships")
