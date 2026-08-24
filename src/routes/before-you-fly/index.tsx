@@ -1,129 +1,110 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, CheckCircle2, Circle, Clock, GraduationCap, PlaneTakeoff, Sparkles } from "lucide-react";
+import { ArrowRight, Check, GraduationCap, PlaneTakeoff, Sparkles, Wallet } from "lucide-react";
+import { toast } from "sonner";
 import { AppShell, Card, Notice, ScreenHeader } from "@/components/AppShell";
-import { Milestone } from "@/components/Kit";
+import { Milestone, MicroLabel, ProgressBar, SectionHead } from "@/components/Kit";
 import { useApp } from "@/lib/store";
-import { useProfile } from "@/lib/useProfile";
-import { useProgramme, useTravel } from "@/lib/useProgramme";
-import { useHealth } from "@/lib/useHealth";
-import { useOfficial } from "@/lib/useOfficial";
-import { BEFORE_YOU_FLY_STEPS, type StepDef, type StepId } from "@/lib/before-you-fly";
+import { useTravel } from "@/lib/useProgramme";
+import { useSetup } from "@/lib/useSetup";
+import { SETUP_TASKS, type SetupPhase } from "@/lib/setup-checklist";
+import { getJourney } from "@/lib/journey-phase";
 
 export const Route = createFileRoute("/before-you-fly/")({
   head: () => ({
     meta: [
-      { title: "Before you fly · Shekk" },
+      { title: "Your Israel setup · Shekk" },
       {
         name: "description",
         content:
-          "A guided pre-arrival checklist for Israel: join your programme, verify your identity, prepare money and your card, sort an eSIM and insurance, and read the arrival guide.",
+          "A guided checklist for moving to Israel: Israeli SIM, travel and medical cover, programme link, paperwork, arrival day and your first week.",
       },
-      { property: "og:title", content: "Before you fly · Shekk" },
+      { property: "og:title", content: "Your Israel setup · Shekk" },
       {
         property: "og:description",
-        content: "Everything to sort in the weeks before you land in Israel, in one guided checklist.",
+        content: "Everything to sort before you fly, on arrival day and in your first week — in one checklist.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: BeforeYouFly,
+  component: SetupChecklist,
 });
 
-type Status = "done" | "todo" | "preview";
+const PHASES: { id: SetupPhase; title: string; hint: string }[] = [
+  { id: "before", title: "Before you fly", hint: "Sort these from home" },
+  { id: "arrival", title: "Arrival day", hint: "Airport to front door" },
+  { id: "first-week", title: "Your first week", hint: "Settling in properly" },
+];
 
-const TONE_LABEL: Record<StepDef["tone"], string> = {
-  finance: "Money",
-  setup: "Israel setup",
-  life: "Daily life",
-};
-
-function BeforeYouFly() {
-  const { state, signedIn } = useApp();
-  const profile = useProfile();
-  const { joined } = useProgramme();
+function SetupChecklist() {
+  const { signedIn } = useApp();
   const { travel, daysToArrival } = useTravel();
-  const { cards } = useHealth();
-  const { documents } = useOfficial();
+  const journey = getJourney(travel);
+  const setup = useSetup();
 
-  const hasTravelBasics = Boolean(
-    (state.name?.trim() || profile.profile?.legalFirstName) &&
-      (travel.arrivalDate || state.profile.arrivalDateISO),
-  );
-
-  const status: Record<StepId, Status> = {
-    programme: joined ? "done" : "todo",
-    profile: hasTravelBasics ? "done" : "todo",
-    kyc: profile.verified ? "done" : "todo",
-    money: state.balance > 0 ? "done" : "todo",
-    card: "preview",
-    esim: "preview",
-    insurance: "preview",
-    health: cards.length > 0 ? "done" : "todo",
-    documents: documents.length > 0 ? "done" : "todo",
-    arrival: "todo",
-    packing: "todo",
-    emergency: "todo",
+  const tick = (key: string, done: boolean) => {
+    if (!signedIn) {
+      toast.error("Sign in to save your progress");
+      return;
+    }
+    setup.toggle.mutate(
+      { key, done },
+      { onError: (e) => toast.error(e instanceof Error ? e.message : "Couldn't save that") },
+    );
   };
-
-  const trackable = BEFORE_YOU_FLY_STEPS.filter((s) => status[s.id] !== "preview");
-  const done = trackable.filter((s) => status[s.id] === "done").length;
-  const pct = trackable.length ? Math.round((done / trackable.length) * 100) : 0;
-  /* The one thing worth doing now: the earliest step Shekk can still see is open. */
-  const next = BEFORE_YOU_FLY_STEPS.find((s) => status[s.id] === "todo") ?? null;
-  const complete = trackable.length > 0 && done === trackable.length;
 
   return (
     <AppShell>
-      <ScreenHeader title="Before you fly" subtitle="Your pre-arrival checklist" back="/israel" />
+      <ScreenHeader title="Your Israel setup" subtitle="Everything, in order" back="/" />
 
-
-      <header className="px-5 pt-5">
+      <header className="px-4 pt-5">
         <div className="grad-balance relative overflow-hidden rounded-[1.5rem] px-5 py-5 text-ink-foreground shadow-lift">
           <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
           <div className="relative">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-ink-foreground/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest">
-              <PlaneTakeoff className="size-3" /> Before you fly
-            </span>
-            <p className="mt-2.5 font-display text-3xl font-bold leading-tight tracking-tight">
+            <MicroLabel className="opacity-70">
+              <span className="inline-flex items-center gap-1.5">
+                <PlaneTakeoff className="size-3" /> Israel setup
+              </span>
+            </MicroLabel>
+            <p className="mt-2 font-display text-3xl font-bold leading-tight tracking-tight">
               {daysToArrival === null
                 ? "Get ready for Israel"
                 : daysToArrival > 0
                   ? `${daysToArrival} ${daysToArrival === 1 ? "day" : "days"} to go`
-                  : "You're in Israel"}
+                  : journey.chip ?? "You're in Israel"}
             </p>
             <p className="mt-1 text-[12px] opacity-75">
-              {done} of {trackable.length} steps done
+              {setup.done} of {setup.total} things sorted
             </p>
-            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-ink-foreground/20">
-              <div className="h-full rounded-full bg-ink-foreground/80" style={{ width: `${pct}%` }} />
-            </div>
+            <ProgressBar value={setup.total ? setup.done / setup.total : 0} tone="onDark" className="mt-3" />
           </div>
         </div>
       </header>
 
-      {complete ? (
+      {setup.complete ? (
         <div className="px-4 pt-4">
           <Milestone
-            title="You're ready to fly"
-            body="Every step Shekk can see is sorted. Nothing left to prepare — go and have the year."
+            title="You're set up"
+            body="Every step on your list is done. Nothing left to prepare — go and have the year."
             actionLabel="Open Explore"
             actionTo="/israel"
           />
         </div>
-      ) : next ? (
+      ) : setup.next ? (
         <section className="px-4 pt-4">
           <div className="rounded-[1.5rem] border border-primary/25 bg-primary-soft p-4">
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
-              <Sparkles className="size-3.5" /> Do this next
-            </span>
-            <p className="mt-2 text-[15px] font-semibold leading-snug">{next.title}</p>
-            <p className="mt-1 text-[12.5px] leading-relaxed text-muted-foreground">{next.blurb}</p>
+            <MicroLabel className="text-primary">
+              <span className="inline-flex items-center gap-1.5">
+                <Sparkles className="size-3.5" /> Do this next
+              </span>
+            </MicroLabel>
+            <p className="mt-2 text-[15px] font-semibold leading-snug">{setup.next.title}</p>
+            <p className="mt-1 text-[12.5px] leading-relaxed text-muted-foreground">{setup.next.blurb}</p>
             <Link
-              to={next.href}
+              to={setup.next.href}
               className="tap mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[12.5px] font-bold text-primary-foreground"
             >
-              {next.cta} <ArrowRight className="size-3.5" />
+              {setup.next.cta} <ArrowRight className="size-3.5" />
             </Link>
           </div>
         </section>
@@ -133,8 +114,7 @@ function BeforeYouFly() {
         <div className="px-4 pt-4">
           <Notice title="Sign in to track your progress">
             You can read every step now.{" "}
-            <Link to="/auth"
-                search={{ next: "/before-you-fly" }} className="font-semibold underline">
+            <Link to="/auth" search={{ next: "/before-you-fly" }} className="font-semibold underline">
               Sign in
             </Link>{" "}
             to have Shekk tick them off as you go.
@@ -142,46 +122,58 @@ function BeforeYouFly() {
         </div>
       ) : null}
 
-      <div className="space-y-2.5 px-4 pb-10 pt-5">
-        {BEFORE_YOU_FLY_STEPS.map((step, i) => {
-          const s = status[step.id];
+      <div className="space-y-7 px-4 pb-10 pt-6">
+        {PHASES.map((phase) => {
+          const tasks = SETUP_TASKS.filter((t) => t.phase === phase.id);
+          if (tasks.length === 0) return null;
+          const phaseDone = tasks.filter((t) => setup.isDone(t.key)).length;
           return (
-            <Link key={step.id} to={step.href} className="tap block">
-              <Card className="flex items-start gap-3">
-                <span className="mt-0.5 shrink-0">
-                  {s === "done" ? (
-                    <CheckCircle2 className="size-5 text-success" />
-                  ) : s === "preview" ? (
-                    <Clock className="size-5 text-muted-foreground" />
-                  ) : (
-                    <Circle className="size-5 text-muted-foreground" />
-                  )}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                      Step {i + 1} · {TONE_LABEL[step.tone]}
-                    </span>
-                    {s === "preview" ? (
-                      <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
-                        Preview
-                      </span>
-                    ) : null}
-                  </span>
-                  <span
-                    className={`mt-1 block text-sm font-semibold ${s === "done" ? "text-muted-foreground" : ""}`}
-                  >
-                    {step.title}
-                  </span>
-                  <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
-                    {step.blurb}
-                  </span>
-                  <span className="mt-1.5 block text-xs font-semibold text-primary">
-                    {s === "done" ? "Done · review" : step.cta} →
-                  </span>
-                </span>
-              </Card>
-            </Link>
+            <section key={phase.id}>
+              <SectionHead title={phase.title} hint={`${phase.hint} · ${phaseDone}/${tasks.length} done`} />
+              <div className="space-y-2.5">
+                {tasks.map((task) => {
+                  const done = setup.isDone(task.key);
+                  const derived = setup.isDerived(task.key);
+                  return (
+                    <Card key={task.key} className="flex items-start gap-3">
+                      <button
+                        type="button"
+                        aria-label={done ? `Mark ${task.title} as not done` : `Mark ${task.title} as done`}
+                        aria-pressed={done}
+                        disabled={derived}
+                        onClick={() => tick(task.key, !done)}
+                        className={`tap mt-0.5 grid size-6 shrink-0 place-items-center rounded-full border-2 transition-colors ${
+                          done ? "border-success bg-success text-success-foreground" : "border-border"
+                        } ${derived ? "opacity-70" : ""}`}
+                      >
+                        {done ? <Check className="size-3.5" strokeWidth={3} /> : null}
+                      </button>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground/70">
+                            <task.Icon className="size-4" />
+                          </span>
+                          <span
+                            className={`text-sm font-semibold leading-snug ${done ? "text-muted-foreground" : ""}`}
+                          >
+                            {task.title}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{task.blurb}</p>
+                        <div className="mt-1.5 flex items-center gap-3">
+                          <Link to={task.href} className="tap-flat text-xs font-semibold text-primary">
+                            {done ? "Review" : task.cta} →
+                          </Link>
+                          {derived ? (
+                            <span className="text-[11px] text-muted-foreground">Shekk ticked this for you</span>
+                          ) : null}
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            </section>
           );
         })}
 
@@ -200,10 +192,20 @@ function BeforeYouFly() {
           </Card>
         </Link>
 
-        <Notice title="Why some steps say Preview">
-          Card issuing, eSIM and insurance checkout are not live yet. Those screens show what's coming and what
-          the options usually cost, so nothing pretends to be a finished purchase.
-        </Notice>
+        <Link to="/money" className="tap block">
+          <Card className="flex items-center gap-3">
+            <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-muted">
+              <Wallet className="size-5 text-muted-foreground" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-semibold">Money in Israel</span>
+              <span className="block text-xs text-muted-foreground">
+                What things cost, how to pay — and Shekk Money early access
+              </span>
+            </span>
+            <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
+          </Card>
+        </Link>
       </div>
     </AppShell>
   );
