@@ -37,6 +37,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SocialIndexRouteImport } from './routes/social/index'
 import { Route as SiddurIndexRouteImport } from './routes/siddur/index'
 import { Route as ServicesIndexRouteImport } from './routes/services/index'
+import { Route as ProgrammeIndexRouteImport } from './routes/programme.index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
 import { Route as BenefitsIndexRouteImport } from './routes/benefits/index'
@@ -46,6 +47,9 @@ import { Route as SocialConversationIdRouteImport } from './routes/social/$conve
 import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
 import { Route as ServicesOffersRouteImport } from './routes/services/offers'
 import { Route as ServicesInsuranceRouteImport } from './routes/services/insurance'
+import { Route as ProgrammeScheduleRouteImport } from './routes/programme.schedule'
+import { Route as ProgrammeInfoRouteImport } from './routes/programme.info'
+import { Route as ProgrammeInboxRouteImport } from './routes/programme.inbox'
 import { Route as GuidesIdRouteImport } from './routes/guides/$id'
 import { Route as ExploreVisaRouteImport } from './routes/explore/visa'
 import { Route as ExploreUniFinderRouteImport } from './routes/explore/uni-finder'
@@ -240,6 +244,11 @@ const ServicesIndexRoute = ServicesIndexRouteImport.update({
   path: '/services/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProgrammeIndexRoute = ProgrammeIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProgrammeRoute,
+} as any)
 const GuidesIndexRoute = GuidesIndexRouteImport.update({
   id: '/guides/',
   path: '/guides/',
@@ -284,6 +293,21 @@ const ServicesInsuranceRoute = ServicesInsuranceRouteImport.update({
   id: '/services/insurance',
   path: '/services/insurance',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ProgrammeScheduleRoute = ProgrammeScheduleRouteImport.update({
+  id: '/schedule',
+  path: '/schedule',
+  getParentRoute: () => ProgrammeRoute,
+} as any)
+const ProgrammeInfoRoute = ProgrammeInfoRouteImport.update({
+  id: '/info',
+  path: '/info',
+  getParentRoute: () => ProgrammeRoute,
+} as any)
+const ProgrammeInboxRoute = ProgrammeInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => ProgrammeRoute,
 } as any)
 const GuidesIdRoute = GuidesIdRouteImport.update({
   id: '/guides/$id',
@@ -571,7 +595,7 @@ export interface FileRoutesByFullPath {
   '/membership': typeof MembershipRoute
   '/money': typeof MoneyRoute
   '/news': typeof NewsRoute
-  '/programme': typeof ProgrammeRoute
+  '/programme': typeof ProgrammeRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
@@ -618,6 +642,9 @@ export interface FileRoutesByFullPath {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
+  '/programme/inbox': typeof ProgrammeInboxRoute
+  '/programme/info': typeof ProgrammeInfoRoute
+  '/programme/schedule': typeof ProgrammeScheduleRoute
   '/services/insurance': typeof ServicesInsuranceRoute
   '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -627,6 +654,7 @@ export interface FileRoutesByFullPath {
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
+  '/programme/': typeof ProgrammeIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/siddur/': typeof SiddurIndexRoute
   '/social/': typeof SocialIndexRoute
@@ -662,7 +690,6 @@ export interface FileRoutesByTo {
   '/membership': typeof MembershipRoute
   '/money': typeof MoneyRoute
   '/news': typeof NewsRoute
-  '/programme': typeof ProgrammeRoute
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
@@ -709,6 +736,9 @@ export interface FileRoutesByTo {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
+  '/programme/inbox': typeof ProgrammeInboxRoute
+  '/programme/info': typeof ProgrammeInfoRoute
+  '/programme/schedule': typeof ProgrammeScheduleRoute
   '/services/insurance': typeof ServicesInsuranceRoute
   '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -718,6 +748,7 @@ export interface FileRoutesByTo {
   '/benefits': typeof BenefitsIndexRoute
   '/explore': typeof ExploreIndexRoute
   '/guides': typeof GuidesIndexRoute
+  '/programme': typeof ProgrammeIndexRoute
   '/services': typeof ServicesIndexRoute
   '/siddur': typeof SiddurIndexRoute
   '/social': typeof SocialIndexRoute
@@ -755,7 +786,7 @@ export interface FileRoutesById {
   '/membership': typeof MembershipRoute
   '/money': typeof MoneyRoute
   '/news': typeof NewsRoute
-  '/programme': typeof ProgrammeRoute
+  '/programme': typeof ProgrammeRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
@@ -802,6 +833,9 @@ export interface FileRoutesById {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
+  '/programme/inbox': typeof ProgrammeInboxRoute
+  '/programme/info': typeof ProgrammeInfoRoute
+  '/programme/schedule': typeof ProgrammeScheduleRoute
   '/services/insurance': typeof ServicesInsuranceRoute
   '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -811,6 +845,7 @@ export interface FileRoutesById {
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
+  '/programme/': typeof ProgrammeIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/siddur/': typeof SiddurIndexRoute
   '/social/': typeof SocialIndexRoute
@@ -896,6 +931,9 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
+    | '/programme/inbox'
+    | '/programme/info'
+    | '/programme/schedule'
     | '/services/insurance'
     | '/services/offers'
     | '/siddur/$id'
@@ -905,6 +943,7 @@ export interface FileRouteTypes {
     | '/benefits/'
     | '/explore/'
     | '/guides/'
+    | '/programme/'
     | '/services/'
     | '/siddur/'
     | '/social/'
@@ -940,7 +979,6 @@ export interface FileRouteTypes {
     | '/membership'
     | '/money'
     | '/news'
-    | '/programme'
     | '/reset-password'
     | '/reverify'
     | '/settings'
@@ -987,6 +1025,9 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
+    | '/programme/inbox'
+    | '/programme/info'
+    | '/programme/schedule'
     | '/services/insurance'
     | '/services/offers'
     | '/siddur/$id'
@@ -996,6 +1037,7 @@ export interface FileRouteTypes {
     | '/benefits'
     | '/explore'
     | '/guides'
+    | '/programme'
     | '/services'
     | '/siddur'
     | '/social'
@@ -1079,6 +1121,9 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
+    | '/programme/inbox'
+    | '/programme/info'
+    | '/programme/schedule'
     | '/services/insurance'
     | '/services/offers'
     | '/siddur/$id'
@@ -1088,6 +1133,7 @@ export interface FileRouteTypes {
     | '/benefits/'
     | '/explore/'
     | '/guides/'
+    | '/programme/'
     | '/services/'
     | '/siddur/'
     | '/social/'
@@ -1125,7 +1171,7 @@ export interface RootRouteChildren {
   MembershipRoute: typeof MembershipRoute
   MoneyRoute: typeof MoneyRoute
   NewsRoute: typeof NewsRoute
-  ProgrammeRoute: typeof ProgrammeRoute
+  ProgrammeRoute: typeof ProgrammeRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
   ReverifyRoute: typeof ReverifyRoute
   SettingsRoute: typeof SettingsRoute
@@ -1392,6 +1438,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/programme/': {
+      id: '/programme/'
+      path: '/'
+      fullPath: '/programme/'
+      preLoaderRoute: typeof ProgrammeIndexRouteImport
+      parentRoute: typeof ProgrammeRoute
+    }
     '/guides/': {
       id: '/guides/'
       path: '/guides'
@@ -1454,6 +1507,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/services/insurance'
       preLoaderRoute: typeof ServicesInsuranceRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/programme/schedule': {
+      id: '/programme/schedule'
+      path: '/schedule'
+      fullPath: '/programme/schedule'
+      preLoaderRoute: typeof ProgrammeScheduleRouteImport
+      parentRoute: typeof ProgrammeRoute
+    }
+    '/programme/info': {
+      id: '/programme/info'
+      path: '/info'
+      fullPath: '/programme/info'
+      preLoaderRoute: typeof ProgrammeInfoRouteImport
+      parentRoute: typeof ProgrammeRoute
+    }
+    '/programme/inbox': {
+      id: '/programme/inbox'
+      path: '/inbox'
+      fullPath: '/programme/inbox'
+      preLoaderRoute: typeof ProgrammeInboxRouteImport
+      parentRoute: typeof ProgrammeRoute
     }
     '/guides/$id': {
       id: '/guides/$id'
@@ -1859,6 +1933,24 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
   AdminRouteRouteChildren,
 )
 
+interface ProgrammeRouteChildren {
+  ProgrammeInboxRoute: typeof ProgrammeInboxRoute
+  ProgrammeInfoRoute: typeof ProgrammeInfoRoute
+  ProgrammeScheduleRoute: typeof ProgrammeScheduleRoute
+  ProgrammeIndexRoute: typeof ProgrammeIndexRoute
+}
+
+const ProgrammeRouteChildren: ProgrammeRouteChildren = {
+  ProgrammeInboxRoute: ProgrammeInboxRoute,
+  ProgrammeInfoRoute: ProgrammeInfoRoute,
+  ProgrammeScheduleRoute: ProgrammeScheduleRoute,
+  ProgrammeIndexRoute: ProgrammeIndexRoute,
+}
+
+const ProgrammeRouteWithChildren = ProgrammeRoute._addFileChildren(
+  ProgrammeRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRouteRoute: AdminRouteRouteWithChildren,
@@ -1873,7 +1965,7 @@ const rootRouteChildren: RootRouteChildren = {
   MembershipRoute: MembershipRoute,
   MoneyRoute: MoneyRoute,
   NewsRoute: NewsRoute,
-  ProgrammeRoute: ProgrammeRoute,
+  ProgrammeRoute: ProgrammeRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,
   ReverifyRoute: ReverifyRoute,
   SettingsRoute: SettingsRoute,

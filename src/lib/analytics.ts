@@ -32,7 +32,18 @@ export type AnalyticsEvent =
   | "insurance_provider_selected"
   | "insurance_affiliate_clicked"
   | "money_preview_viewed"
-  | "money_early_access_joined";
+  | "money_early_access_joined"
+  | "programme_joined"
+  | "programme_hub_viewed"
+  | "programme_rsvp_set"
+  | "programme_acknowledged"
+  | "programme_vote_submitted"
+  | "programme_checklist_completed"
+  | "programme_directions_opened"
+  | "programme_staff_event_created"
+  | "programme_staff_event_updated"
+  | "programme_staff_announcement_sent";
+
 
 type Props = Record<string, string | number | boolean | null | undefined>;
 
