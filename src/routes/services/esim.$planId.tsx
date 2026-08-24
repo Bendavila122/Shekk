@@ -183,7 +183,7 @@ function PlanDetail() {
         <section className="rounded-2xl border border-border bg-card p-4 shadow-card">
           <div className="flex items-center justify-between gap-3">
             <p className="text-sm font-semibold">Getting this plan</p>
-            <StatusPill tone={action.kind === "affiliate" ? "positive" : "muted"}>
+            <StatusPill tone={action.kind === "affiliate" ? "live" : "preview"}>
               {action.kind === "affiliate" ? "Partner link" : "Not sold in Shekk"}
             </StatusPill>
           </div>

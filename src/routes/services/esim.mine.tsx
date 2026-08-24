@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Signal, Smartphone } from "lucide-react";
@@ -63,14 +63,8 @@ function MyEsims() {
             icon={Signal}
             title="Nothing here yet"
             body="You haven't bought a SIM through Shekk. Use the finder to work out which plan fits your stay."
-            action={
-              <Link
-                to="/services/esim"
-                className="tap inline-flex items-center justify-center rounded-full bg-primary px-4 py-2.5 text-[13px] font-bold text-primary-foreground"
-              >
-                Find my SIM
-              </Link>
-            }
+            actionLabel="Find my SIM"
+            actionTo="/services/esim"
           />
         ) : (
           <>
@@ -82,7 +76,7 @@ function MyEsims() {
                     <div key={e.id} className="rounded-2xl border border-border bg-card p-4 shadow-card">
                       <div className="flex items-center justify-between gap-3">
                         <p className="text-sm font-semibold">{e.provider_id}</p>
-                        <StatusPill tone={e.status === "ready" || e.status === "active" ? "positive" : "quiet"}>
+                        <StatusPill tone={e.status === "ready" || e.status === "active" ? "live" : "quiet"}>
                           {e.status}
                         </StatusPill>
                       </div>
@@ -101,7 +95,7 @@ function MyEsims() {
                     <div key={o.id} className="rounded-2xl border border-border bg-card p-4 shadow-card">
                       <div className="flex items-center justify-between gap-3">
                         <p className="text-sm font-semibold">{o.provider_id}</p>
-                        <StatusPill tone={o.status === "fulfilled" ? "positive" : "quiet"}>{o.status}</StatusPill>
+                        <StatusPill tone={o.status === "fulfilled" ? "live" : "quiet"}>{o.status}</StatusPill>
                       </div>
                       <p className="mt-1 text-[12px] text-muted-foreground">
                         {money(o.amount_minor ?? 0, o.currency ?? "GBP")} ·{" "}
