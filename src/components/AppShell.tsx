@@ -194,23 +194,17 @@ export function QuickMenu() {
             className="fixed inset-0 z-40 cursor-default"
           />
           <div className="fixed left-1/2 top-16 z-50 ml-[-15px] w-60 max-w-[calc(100vw-1.5rem)] translate-x-[calc(215px-100%)] overflow-hidden rounded-2xl border border-border bg-card shadow-lift">
-            <div className="border-b border-border bg-ink px-4 py-3 text-ink-foreground">
-              <BalanceMini />
-            </div>
-            <Link
-              to="/topup"
-              className="tap-flat flex items-center gap-2 border-b border-border px-4 py-3 text-sm font-bold text-primary"
-            >
-              <Plus className="size-4" strokeWidth={3} /> Add money
+            <Link to="/before-you-fly" className="tap-flat flex items-center gap-2 border-b border-border px-4 py-3 text-sm font-bold text-primary">
+              <PlaneTakeoff className="size-4" /> Israel setup
             </Link>
-            <Link to="/me" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
-              <User className="size-4 text-muted-foreground" /> You
-            </Link>
-            <Link to="/before-you-fly" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
-              <PlaneTakeoff className="size-4 text-muted-foreground" /> Before you fly
+            <Link to="/services" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <ShieldCheck className="size-4 text-muted-foreground" /> Services
             </Link>
             <Link to="/benefits" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <Tag className="size-4 text-muted-foreground" /> Benefits
+            </Link>
+            <Link to="/money" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <Wallet className="size-4 text-muted-foreground" /> Shekk Money
             </Link>
             <Link to="/settings" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <Settings className="size-4 text-muted-foreground" /> Settings
@@ -232,9 +226,8 @@ function useActive() {
 
 
 /**
- * The one balance figure in the navigation, shared by the mobile quick menu and
- * the desktop sidebar so the two breakpoints can never drift apart. One rule:
- * the figure is "Your shekels", the action is "Add money".
+ * The one balance figure in the navigation. Kept for the preserved wallet
+ * screens; it is no longer part of the launch navigation.
  */
 export function BalanceMini({ size = "sm" }: { size?: "sm" | "lg" }) {
   const { state } = useApp();
@@ -249,22 +242,22 @@ export function BalanceMini({ size = "sm" }: { size?: "sm" | "lg" }) {
   );
 }
 
-/** Balance + top up, shown inside the navigation. */
+/** Desktop sidebar footer: the Shekk Money teaser, in place of a live balance. */
 function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
   return (
-    <div className="mt-auto rounded-2xl bg-ink px-4 py-3 text-ink-foreground">
-      <BalanceMini size="lg" />
-      <Link
-        to="/topup"
-        onClick={onNavigate}
-        className="tap mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-card px-4 py-3 text-sm font-bold uppercase tracking-wide text-primary shadow-lift ring-2 ring-card/60 transition-transform hover:scale-[1.03] active:scale-[0.98]"
-      >
-        <Plus className="size-4" strokeWidth={3} /> Add money
-      </Link>
-
-    </div>
+    <Link
+      to="/money"
+      onClick={onNavigate}
+      className="tap mt-auto block rounded-2xl bg-ink px-4 py-4 text-ink-foreground"
+    >
+      <p className="text-[10px] uppercase tracking-widest opacity-60">Coming next</p>
+      <p className="mt-1 font-display text-lg font-bold leading-tight">Shekk Money</p>
+      <p className="mt-1 text-[11px] opacity-70">Hold shekels, convert at a fair rate, spend with a Shekk card.</p>
+      <span className="mt-2 inline-block text-[11px] font-bold uppercase tracking-wide">Join early access →</span>
+    </Link>
   );
 }
+
 
 /**
  * The Explore tab's home. The path is /israel for published-URL reasons; every
