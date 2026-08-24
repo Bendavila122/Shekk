@@ -44,6 +44,33 @@ export type Database = {
         }
         Relationships: []
       }
+      analytics_events: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          path: string | null
+          props: Json
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          path?: string | null
+          props?: Json
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          path?: string | null
+          props?: Json
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       cohort_members: {
         Row: {
           cohort_id: string
@@ -926,6 +953,33 @@ export type Database = {
           },
         ]
       }
+      money_waitlist: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          interests: string[]
+          note: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          interests?: string[]
+          note?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          interests?: string[]
+          note?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       official_documents: {
         Row: {
           byte_size: number | null
@@ -1416,6 +1470,36 @@ export type Database = {
           kind?: string
           name?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      setup_tasks: {
+        Row: {
+          created_at: string
+          done: boolean
+          done_at: string | null
+          id: string
+          task_key: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          done?: boolean
+          done_at?: string | null
+          id?: string
+          task_key: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          done?: boolean
+          done_at?: string | null
+          id?: string
+          task_key?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
