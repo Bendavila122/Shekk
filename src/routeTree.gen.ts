@@ -47,6 +47,7 @@ import { Route as SocialConversationIdRouteImport } from './routes/social/$conve
 import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
 import { Route as ServicesOffersRouteImport } from './routes/services/offers'
 import { Route as ServicesInsuranceRouteImport } from './routes/services/insurance'
+import { Route as ProgrammeStaffRouteImport } from './routes/programme.staff'
 import { Route as ProgrammeScheduleRouteImport } from './routes/programme.schedule'
 import { Route as ProgrammeInfoRouteImport } from './routes/programme.info'
 import { Route as ProgrammeInboxRouteImport } from './routes/programme.inbox'
@@ -293,6 +294,11 @@ const ServicesInsuranceRoute = ServicesInsuranceRouteImport.update({
   id: '/services/insurance',
   path: '/services/insurance',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ProgrammeStaffRoute = ProgrammeStaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => ProgrammeRoute,
 } as any)
 const ProgrammeScheduleRoute = ProgrammeScheduleRouteImport.update({
   id: '/schedule',
@@ -645,6 +651,7 @@ export interface FileRoutesByFullPath {
   '/programme/inbox': typeof ProgrammeInboxRoute
   '/programme/info': typeof ProgrammeInfoRoute
   '/programme/schedule': typeof ProgrammeScheduleRoute
+  '/programme/staff': typeof ProgrammeStaffRoute
   '/services/insurance': typeof ServicesInsuranceRoute
   '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -739,6 +746,7 @@ export interface FileRoutesByTo {
   '/programme/inbox': typeof ProgrammeInboxRoute
   '/programme/info': typeof ProgrammeInfoRoute
   '/programme/schedule': typeof ProgrammeScheduleRoute
+  '/programme/staff': typeof ProgrammeStaffRoute
   '/services/insurance': typeof ServicesInsuranceRoute
   '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -836,6 +844,7 @@ export interface FileRoutesById {
   '/programme/inbox': typeof ProgrammeInboxRoute
   '/programme/info': typeof ProgrammeInfoRoute
   '/programme/schedule': typeof ProgrammeScheduleRoute
+  '/programme/staff': typeof ProgrammeStaffRoute
   '/services/insurance': typeof ServicesInsuranceRoute
   '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
@@ -934,6 +943,7 @@ export interface FileRouteTypes {
     | '/programme/inbox'
     | '/programme/info'
     | '/programme/schedule'
+    | '/programme/staff'
     | '/services/insurance'
     | '/services/offers'
     | '/siddur/$id'
@@ -1028,6 +1038,7 @@ export interface FileRouteTypes {
     | '/programme/inbox'
     | '/programme/info'
     | '/programme/schedule'
+    | '/programme/staff'
     | '/services/insurance'
     | '/services/offers'
     | '/siddur/$id'
@@ -1124,6 +1135,7 @@ export interface FileRouteTypes {
     | '/programme/inbox'
     | '/programme/info'
     | '/programme/schedule'
+    | '/programme/staff'
     | '/services/insurance'
     | '/services/offers'
     | '/siddur/$id'
@@ -1507,6 +1519,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/services/insurance'
       preLoaderRoute: typeof ServicesInsuranceRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/programme/staff': {
+      id: '/programme/staff'
+      path: '/staff'
+      fullPath: '/programme/staff'
+      preLoaderRoute: typeof ProgrammeStaffRouteImport
+      parentRoute: typeof ProgrammeRoute
     }
     '/programme/schedule': {
       id: '/programme/schedule'
@@ -1937,6 +1956,7 @@ interface ProgrammeRouteChildren {
   ProgrammeInboxRoute: typeof ProgrammeInboxRoute
   ProgrammeInfoRoute: typeof ProgrammeInfoRoute
   ProgrammeScheduleRoute: typeof ProgrammeScheduleRoute
+  ProgrammeStaffRoute: typeof ProgrammeStaffRoute
   ProgrammeIndexRoute: typeof ProgrammeIndexRoute
 }
 
@@ -1944,6 +1964,7 @@ const ProgrammeRouteChildren: ProgrammeRouteChildren = {
   ProgrammeInboxRoute: ProgrammeInboxRoute,
   ProgrammeInfoRoute: ProgrammeInfoRoute,
   ProgrammeScheduleRoute: ProgrammeScheduleRoute,
+  ProgrammeStaffRoute: ProgrammeStaffRoute,
   ProgrammeIndexRoute: ProgrammeIndexRoute,
 }
 
