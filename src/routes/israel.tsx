@@ -87,7 +87,7 @@ const MINI_GROUPS: { title: string; hint: string; ids: string[] }[] = [
   {
     title: "Plan and paperwork",
     hint: "Guides, visas, documents and budgeting",
-    ids: ["guides", "visa", "documents", "money-planner", "exchange"],
+    ids: ["guides", "visa", "documents", "money-planner"],
   },
   {
     title: "Staying longer",
@@ -97,7 +97,7 @@ const MINI_GROUPS: { title: string; hint: string; ids: string[] }[] = [
 ];
 
 /** Money features that live in the Money tab, not as Explore tiles. */
-const HIDDEN_SERVICE_IDS = new Set(["topup", "split"]);
+const HIDDEN_SERVICE_IDS = new Set(["topup", "split", "exchange", "card", "wallet"]);
 
 
 function ExploreHub() {
@@ -222,9 +222,9 @@ function ExploreHub() {
               <PlaneTakeoff className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-semibold">Before you fly</span>
+              <span className="block text-sm font-semibold">Your Israel setup</span>
               <span className="block text-xs text-muted-foreground">
-                The guided checklist for the weeks before you land
+                The guided checklist: SIM, cover, paperwork, arrival and your first week
               </span>
             </span>
             <span className="text-sm font-semibold text-primary">→</span>
