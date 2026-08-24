@@ -1,6 +1,6 @@
 import { Link, useRouterState, useRouter, useCanGoBack, useNavigate } from "@tanstack/react-router";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { Wallet, Compass, Tag, Users, User, ChevronLeft, Plus, Info, Menu, X, Settings, LifeBuoy, Home, GraduationCap, PlaneTakeoff } from "lucide-react";
+import { Compass, Tag, Users, User, ChevronLeft, Info, Menu, X, Settings, LifeBuoy, Home, ShieldCheck, PlaneTakeoff, Wallet } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
@@ -12,18 +12,20 @@ import { miniAppFor } from "@/lib/mini-apps";
 
 
 /**
- * Five tabs, so nothing truncates on a small iPhone. "You" lives in the quick
- * menu and on the desktop sidebar rather than competing for a tab.
+ * Five tabs for the launch product: getting set up and living in Israel.
+ * Money is intentionally not a tab — the regulated work is paused, so it lives
+ * behind one honest preview at /money instead of fronting four dead ends.
  */
 const TABS = [
-  { to: "/", label: "Today", Icon: Home },
-  { to: "/wallet", label: "Money", Icon: Wallet },
+  { to: "/", label: "Home", Icon: Home },
   { to: "/israel", label: "Explore", Icon: Compass },
-  { to: "/programme", label: "Programme", Icon: GraduationCap },
-  { to: "/social", label: "Friends", Icon: Users },
+  { to: "/services", label: "Services", Icon: ShieldCheck },
+  { to: "/social", label: "Community", Icon: Users },
+  { to: "/me", label: "You", Icon: User },
 ];
 
-const SIDEBAR_TABS = [...TABS, { to: "/me", label: "You", Icon: User }];
+const SIDEBAR_TABS = TABS;
+
 
 
 
