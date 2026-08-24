@@ -11,6 +11,7 @@ import {
   PlaceHours,
   PlaceList,
   PlaceMap,
+  PlacePhoto,
   PlacesEmpty,
   PlacesError,
   PlacesLoading,
