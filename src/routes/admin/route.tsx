@@ -5,6 +5,7 @@ import {
   Boxes,
   Coins,
   Crown,
+  GraduationCap,
   LayoutGrid,
   MapPin,
   Lock,
