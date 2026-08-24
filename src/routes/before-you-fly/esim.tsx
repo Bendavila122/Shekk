@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AppShell, Card, Notice, ScreenHeader } from "@/components/AppShell";
-import { ESIM_PREVIEWS } from "@/lib/before-you-fly";
+import { Smartphone } from "lucide-react";
+import { AppShell, Card, ScreenHeader } from "@/components/AppShell";
+import { ToolRow } from "@/components/Kit";
 
 export const Route = createFileRoute("/before-you-fly/esim")({
   head: () => ({
@@ -9,10 +10,10 @@ export const Route = createFileRoute("/before-you-fly/esim")({
       {
         name: "description",
         content:
-          "Compare the kinds of Israeli eSIM plans participants usually buy — light, standard and heavy data — so you land with a working number.",
+          "Why you want an Israeli eSIM before you fly, what to check on your phone first, and where to find the plan that fits your stay.",
       },
       { property: "og:title", content: "Israeli eSIM options · Shekk" },
-      { property: "og:description", content: "What an Israeli eSIM typically costs and includes." },
+      { property: "og:description", content: "Land with working data, and know what to sort before you fly." },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -23,44 +24,24 @@ export const Route = createFileRoute("/before-you-fly/esim")({
 function EsimPage() {
   return (
     <AppShell>
-      <ScreenHeader title="Israeli eSIM" subtitle="What to expect" back="/before-you-fly" />
+      <ScreenHeader title="Israeli eSIM" subtitle="Before you fly" back="/before-you-fly" />
 
       <header className="px-5 pt-5">
         <h1 className="font-display text-3xl font-bold leading-tight tracking-tight">Land with data</h1>
         <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-          An eSIM installs before you fly and switches on when you land, so you can order a taxi and message home
-          from the terminal. Most participants want an Israeli number for deliveries, Rav-Kav and doctors.
+          An eSIM installs before you fly and switches on when you land, so you can order a taxi and message home from
+          the terminal. Some people also want an Israeli number for deliveries, Rav-Kav and clinics — that's a different
+          kind of plan, and usually bought once you're here.
         </p>
       </header>
 
       <div className="space-y-3 px-4 pb-10 pt-5">
-        <Notice title="Not purchasable in Shekk yet">
-          We're still choosing a partner, so these are indicative plan shapes and prices — not offers. Buy from any
-          eSIM provider for now; when a partner is live you'll be able to do it here in a tap.
-        </Notice>
-
-        {ESIM_PREVIEWS.map((o) => (
-          <Card key={o.id}>
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-sm font-semibold">{o.name}</p>
-                <p className="text-xs text-muted-foreground">{o.headline}</p>
-              </div>
-              <div className="shrink-0 text-right">
-                <p className="font-display text-lg font-bold leading-none">{o.price}</p>
-                <p className="text-[11px] text-muted-foreground">{o.period}</p>
-              </div>
-            </div>
-            <ul className="mt-3 space-y-1.5">
-              {o.points.map((p) => (
-                <li key={p} className="flex gap-2 text-xs text-muted-foreground">
-                  <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" aria-hidden />
-                  {p}
-                </li>
-              ))}
-            </ul>
-          </Card>
-        ))}
+        <ToolRow
+          to="/services/esim"
+          icon={Smartphone}
+          title="Find my SIM"
+          body="Three questions, then the plan that fits your stay and your data use"
+        />
 
         <Card>
           <p className="text-sm font-semibold">Before you buy anything</p>
@@ -68,7 +49,18 @@ function EsimPage() {
             <li>Check your phone supports eSIM — most iPhones from XS and recent Android flagships do.</li>
             <li>Ask your programme first: some include a SIM or have a group deal.</li>
             <li>Keep your home number active on your physical SIM for bank codes.</li>
+            <li>Don't buy an Israeli number before you land — most need your passport in person.</li>
           </ul>
+        </Card>
+
+        <Card>
+          <p className="text-sm font-semibold">Landing day</p>
+          <ol className="mt-2 space-y-1.5 text-xs leading-relaxed text-muted-foreground">
+            <li>1. Install the eSIM at home on Wi-Fi, before you fly.</li>
+            <li>2. Turn your home SIM's data off, but leave the SIM in for bank codes.</li>
+            <li>3. On landing, set the Israeli eSIM as your data line.</li>
+            <li>4. Check data works before you leave arrivals.</li>
+          </ol>
         </Card>
       </div>
     </AppShell>
