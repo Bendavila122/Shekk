@@ -277,7 +277,10 @@ const TAB_ROOTS = new Set([
   "/benefits",
   "/guides",
   "/news",
+  "/programme",
+  "/before-you-fly",
 ]);
+
 
 /** Lets a ScreenHeader tell its AppShell that a back control already exists. */
 const HeaderRegistry = createContext<((v: boolean) => void) | null>(null);
