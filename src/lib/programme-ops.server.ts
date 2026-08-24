@@ -1552,3 +1552,245 @@ export async function adminSetProgrammeFlags(input: {
   if (error) throw new Error(error.message || "We couldn't update that programme");
   return { ok: true };
 }
+
+/* ─────────────── Internal Shekk admin: editing and deep inspection ────────── */
+
+export async function adminUpdateProgramme(input: {
+  programmeId: string;
+  name?: string;
+  organisation?: string | null;
+  city?: string | null;
+  country?: string | null;
+  website?: string | null;
+  description?: string | null;
+  programmeType?: string;
+  slug?: string | null;
+  status?: string;
+}) {
+  const db = await adminDb();
+  const patch: Row = { updated_at: new Date().toISOString() };
+  if (input.name !== undefined) patch["name"] = input.name;
+  if (input.organisation !== undefined) patch["organisation"] = input.organisation;
+  if (input.city !== undefined) patch["city"] = input.city;
+  if (input.country !== undefined) patch["country"] = input.country;
+  if (input.website !== undefined) patch["website"] = input.website;
+  if (input.description !== undefined) patch["description"] = input.description;
+  if (input.programmeType !== undefined) patch["programme_type"] = input.programmeType;
+  if (input.slug !== undefined) patch["slug"] = input.slug;
+  if (input.status !== undefined) patch["status"] = input.status;
+  const { error } = await db.from("programmes").update(patch as never).eq("id", input.programmeId);
+  if (error) throw new Error(error.message || "We couldn't update that programme");
+  return { ok: true };
+}
+
+export async function adminUpdateCohort(input: {
+  cohortId: string;
+  name?: string;
+  year?: string | null;
+  startsOn?: string | null;
+  endsOn?: string | null;
+  welcomeMessage?: string | null;
+  status?: string;
+  joinCode?: string | null;
+  regenerateJoinCode?: boolean;
+}) {
+  const db = await adminDb();
+  const patch: Row = { updated_at: new Date().toISOString() };
+  if (input.name !== undefined) patch["name"] = input.name;
+  if (input.year !== undefined) patch["year"] = input.year;
+  if (input.startsOn !== undefined) patch["starts_on"] = input.startsOn;
+  if (input.endsOn !== undefined) patch["ends_on"] = input.endsOn;
+  if (input.welcomeMessage !== undefined) patch["welcome_message"] = input.welcomeMessage;
+  if (input.status !== undefined) patch["status"] = input.status;
+  if (input.regenerateJoinCode) patch["join_code"] = randomCode("", 6);
+  else if (input.joinCode) patch["join_code"] = input.joinCode.trim().toUpperCase();
+
+  if (patch["join_code"]) {
+    const { data: clash } = await db
+      .from("programme_cohorts")
+      .select("id")
+      .ilike("join_code", String(patch["join_code"]))
+      .neq("id", input.cohortId)
+      .maybeSingle();
+    if (clash) throw new Error("That join code is already in use");
+  }
+
+  const { error } = await db.from("programme_cohorts").update(patch as never).eq("id", input.cohortId);
+  if (error) throw new Error(error.message || "We couldn't update that cohort");
+  return { ok: true, joinCode: (patch["join_code"] as string | undefined) ?? null };
+}
+
+export async function adminRemoveStaff(programmeId: string, userId: string) {
+  const db = await adminDb();
+  const { error } = await db
+    .from("programme_staff")
+    .delete()
+    .eq("programme_id", programmeId)
+    .eq("user_id", userId);
+  if (error) throw new Error(error.message || "We couldn't remove that staff member");
+  return { ok: true };
+}
+
+export async function adminSetStaffRole(programmeId: string, userId: string, role: StaffRole) {
+  const db = await adminDb();
+  const { error } = await db
+    .from("programme_staff")
+    .update({ role, updated_at: new Date().toISOString() } as never)
+    .eq("programme_id", programmeId)
+    .eq("user_id", userId);
+  if (error) throw new Error(error.message || "We couldn't change that role");
+  return { ok: true };
+}
+
+export async function adminRevokeInvite(inviteId: string) {
+  const db = await adminDb();
+  const { error } = await db.from("programme_invites").delete().eq("id", inviteId).is("accepted_at", null);
+  if (error) throw new Error(error.message || "We couldn't revoke that invite");
+  return { ok: true };
+}
+
+export type AdminCohortDetail = {
+  cohort: {
+    id: string;
+    programmeId: string;
+    programmeName: string;
+    name: string;
+    year: string | null;
+    startsOn: string | null;
+    endsOn: string | null;
+    welcomeMessage: string | null;
+    joinCode: string;
+    status: string;
+  };
+  participants: Participant[];
+  groups: { id: string; name: string; members: number }[];
+  content: {
+    events: { id: string; title: string; startsAt: string; status: string; audienceKind: string }[];
+    announcements: { id: string; title: string; priority: string; createdAt: string }[];
+    votes: { id: string; question: string; status: string; responses: number }[];
+    checklist: { id: string; title: string; category: string | null }[];
+    documents: { id: string; title: string; kind: string | null }[];
+    contacts: { id: string; name: string; role: string | null }[];
+    places: { id: string; name: string; category: string | null }[];
+  };
+};
+
+/** Everything the internal console shows for one cohort. Admin-role only. */
+export async function adminCohortDetail(cohortId: string): Promise<AdminCohortDetail> {
+  const db = await adminDb();
+  const { data: cohortRow } = await db.from("programme_cohorts").select("*").eq("id", cohortId).maybeSingle();
+  if (!cohortRow) throw new Error("That cohort no longer exists");
+  const cohort = cohortRow as Row;
+
+  const [
+    { data: programme },
+    { data: events },
+    { data: announcements },
+    { data: votes },
+    { data: voteResponses },
+    { data: checklist },
+    { data: documents },
+    { data: contacts },
+    { data: places },
+    { data: groups },
+    { data: groupMembers },
+  ] = await Promise.all([
+    db.from("programmes").select("id, name").eq("id", String(cohort["programme_id"])).maybeSingle(),
+    db
+      .from("programme_events")
+      .select("id, title, starts_at, status, audience_kind")
+      .eq("cohort_id", cohortId)
+      .order("starts_at", { ascending: true }),
+    db
+      .from("programme_announcements")
+      .select("id, title, priority, created_at")
+      .eq("cohort_id", cohortId)
+      .order("created_at", { ascending: false }),
+    db.from("programme_votes").select("id, question, status").eq("cohort_id", cohortId),
+    db.from("programme_vote_responses").select("vote_id"),
+    db.from("programme_checklist_items").select("id, title, category").eq("cohort_id", cohortId),
+    db.from("programme_documents").select("id, title, kind").eq("cohort_id", cohortId),
+    db.from("programme_contacts").select("id, name, role").eq("cohort_id", cohortId),
+    db.from("programme_places").select("id, name, category").eq("cohort_id", cohortId),
+    db.from("programme_groups").select("id, name").eq("cohort_id", cohortId),
+    db.from("programme_group_members").select("group_id"),
+  ]);
+
+  const voteIds = new Set(((votes ?? []) as Row[]).map((v) => String(v["id"])));
+  const responseCount = new Map<string, number>();
+  for (const r of (voteResponses ?? []) as Row[]) {
+    const id = String(r["vote_id"]);
+    if (!voteIds.has(id)) continue;
+    responseCount.set(id, (responseCount.get(id) ?? 0) + 1);
+  }
+  const groupRows = (groups ?? []) as Row[];
+  const groupIds = new Set(groupRows.map((g) => String(g["id"])));
+  const memberCount = new Map<string, number>();
+  for (const m of (groupMembers ?? []) as Row[]) {
+    const id = String(m["group_id"]);
+    if (!groupIds.has(id)) continue;
+    memberCount.set(id, (memberCount.get(id) ?? 0) + 1);
+  }
+
+  return {
+    cohort: {
+      id: cohortId,
+      programmeId: String(cohort["programme_id"]),
+      programmeName: programme ? String((programme as Row)["name"]) : "Programme",
+      name: String(cohort["name"]),
+      year: s(cohort, "year"),
+      startsOn: s(cohort, "starts_on"),
+      endsOn: s(cohort, "ends_on"),
+      welcomeMessage: s(cohort, "welcome_message"),
+      joinCode: String(cohort["join_code"]),
+      status: String(cohort["status"]),
+    },
+    participants: await rosterForCohort(cohortId),
+    groups: groupRows.map((g) => ({
+      id: String(g["id"]),
+      name: String(g["name"]),
+      members: memberCount.get(String(g["id"])) ?? 0,
+    })),
+    content: {
+      events: ((events ?? []) as Row[]).map((e) => ({
+        id: String(e["id"]),
+        title: String(e["title"]),
+        startsAt: String(e["starts_at"]),
+        status: String(e["status"]),
+        audienceKind: String(e["audience_kind"] ?? "everyone"),
+      })),
+      announcements: ((announcements ?? []) as Row[]).map((a) => ({
+        id: String(a["id"]),
+        title: String(a["title"]),
+        priority: String(a["priority"] ?? "normal"),
+        createdAt: String(a["created_at"]),
+      })),
+      votes: ((votes ?? []) as Row[]).map((v) => ({
+        id: String(v["id"]),
+        question: String(v["question"]),
+        status: String(v["status"]),
+        responses: responseCount.get(String(v["id"])) ?? 0,
+      })),
+      checklist: ((checklist ?? []) as Row[]).map((c) => ({
+        id: String(c["id"]),
+        title: String(c["title"]),
+        category: s(c, "category"),
+      })),
+      documents: ((documents ?? []) as Row[]).map((d) => ({
+        id: String(d["id"]),
+        title: String(d["title"]),
+        kind: s(d, "kind"),
+      })),
+      contacts: ((contacts ?? []) as Row[]).map((c) => ({
+        id: String(c["id"]),
+        name: String(c["name"]),
+        role: s(c, "role"),
+      })),
+      places: ((places ?? []) as Row[]).map((p) => ({
+        id: String(p["id"]),
+        name: String(p["name"]),
+        category: s(p, "category"),
+      })),
+    },
+  };
+}
