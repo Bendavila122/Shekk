@@ -19,7 +19,7 @@ export function Splash({ message }: { message?: string }) {
       <div className="text-center">
         <p className="text-lg font-extrabold tracking-[0.22em] text-foreground">SHEKK</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          {message ?? "One wallet for your year in Israel"}
+          {message ?? "Everything you need to live in Israel"}
         </p>
       </div>
       <div className="h-1 w-28 overflow-hidden rounded-full bg-muted">

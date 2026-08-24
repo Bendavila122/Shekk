@@ -22,6 +22,7 @@ import { Route as ReverifyRouteImport } from './routes/reverify'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProgrammeRouteImport } from './routes/programme'
 import { Route as NewsRouteImport } from './routes/news'
+import { Route as MoneyRouteImport } from './routes/money'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -35,6 +36,7 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SocialIndexRouteImport } from './routes/social/index'
 import { Route as SiddurIndexRouteImport } from './routes/siddur/index'
+import { Route as ServicesIndexRouteImport } from './routes/services/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as ExploreIndexRouteImport } from './routes/explore/index'
 import { Route as BenefitsIndexRouteImport } from './routes/benefits/index'
@@ -42,6 +44,9 @@ import { Route as BeforeYouFlyIndexRouteImport } from './routes/before-you-fly/i
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as SocialConversationIdRouteImport } from './routes/social/$conversationId'
 import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
+import { Route as ServicesOffersRouteImport } from './routes/services/offers'
+import { Route as ServicesInsuranceRouteImport } from './routes/services/insurance'
+import { Route as ServicesEsimRouteImport } from './routes/services/esim'
 import { Route as GuidesIdRouteImport } from './routes/guides/$id'
 import { Route as ExploreVisaRouteImport } from './routes/explore/visa'
 import { Route as ExploreUniFinderRouteImport } from './routes/explore/uni-finder'
@@ -156,6 +161,11 @@ const NewsRoute = NewsRouteImport.update({
   path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MoneyRoute = MoneyRouteImport.update({
+  id: '/money',
+  path: '/money',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MembershipRoute = MembershipRouteImport.update({
   id: '/membership',
   path: '/membership',
@@ -221,6 +231,11 @@ const SiddurIndexRoute = SiddurIndexRouteImport.update({
   path: '/siddur/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GuidesIndexRoute = GuidesIndexRouteImport.update({
   id: '/guides/',
   path: '/guides/',
@@ -254,6 +269,21 @@ const SocialConversationIdRoute = SocialConversationIdRouteImport.update({
 const SiddurIdRoute = SiddurIdRouteImport.update({
   id: '/siddur/$id',
   path: '/siddur/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesOffersRoute = ServicesOffersRouteImport.update({
+  id: '/services/offers',
+  path: '/services/offers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesInsuranceRoute = ServicesInsuranceRouteImport.update({
+  id: '/services/insurance',
+  path: '/services/insurance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesEsimRoute = ServicesEsimRouteImport.update({
+  id: '/services/esim',
+  path: '/services/esim',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuidesIdRoute = GuidesIdRouteImport.update({
@@ -515,6 +545,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
+  '/money': typeof MoneyRoute
   '/news': typeof NewsRoute
   '/programme': typeof ProgrammeRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -561,6 +592,9 @@ export interface FileRoutesByFullPath {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
+  '/services/esim': typeof ServicesEsimRoute
+  '/services/insurance': typeof ServicesInsuranceRoute
+  '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
   '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -568,6 +602,7 @@ export interface FileRoutesByFullPath {
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
+  '/services/': typeof ServicesIndexRoute
   '/siddur/': typeof SiddurIndexRoute
   '/social/': typeof SocialIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -597,6 +632,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
+  '/money': typeof MoneyRoute
   '/news': typeof NewsRoute
   '/programme': typeof ProgrammeRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -643,6 +679,9 @@ export interface FileRoutesByTo {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
+  '/services/esim': typeof ServicesEsimRoute
+  '/services/insurance': typeof ServicesInsuranceRoute
+  '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
   '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin': typeof AdminIndexRoute
@@ -650,6 +689,7 @@ export interface FileRoutesByTo {
   '/benefits': typeof BenefitsIndexRoute
   '/explore': typeof ExploreIndexRoute
   '/guides': typeof GuidesIndexRoute
+  '/services': typeof ServicesIndexRoute
   '/siddur': typeof SiddurIndexRoute
   '/social': typeof SocialIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -681,6 +721,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
+  '/money': typeof MoneyRoute
   '/news': typeof NewsRoute
   '/programme': typeof ProgrammeRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -727,6 +768,9 @@ export interface FileRoutesById {
   '/explore/uni-finder': typeof ExploreUniFinderRoute
   '/explore/visa': typeof ExploreVisaRoute
   '/guides/$id': typeof GuidesIdRoute
+  '/services/esim': typeof ServicesEsimRoute
+  '/services/insurance': typeof ServicesInsuranceRoute
+  '/services/offers': typeof ServicesOffersRoute
   '/siddur/$id': typeof SiddurIdRoute
   '/social/$conversationId': typeof SocialConversationIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -734,6 +778,7 @@ export interface FileRoutesById {
   '/benefits/': typeof BenefitsIndexRoute
   '/explore/': typeof ExploreIndexRoute
   '/guides/': typeof GuidesIndexRoute
+  '/services/': typeof ServicesIndexRoute
   '/siddur/': typeof SiddurIndexRoute
   '/social/': typeof SocialIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -766,6 +811,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/membership'
+    | '/money'
     | '/news'
     | '/programme'
     | '/reset-password'
@@ -812,6 +858,9 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
+    | '/services/esim'
+    | '/services/insurance'
+    | '/services/offers'
     | '/siddur/$id'
     | '/social/$conversationId'
     | '/admin/'
@@ -819,6 +868,7 @@ export interface FileRouteTypes {
     | '/benefits/'
     | '/explore/'
     | '/guides/'
+    | '/services/'
     | '/siddur/'
     | '/social/'
     | '/.lovable/oauth/consent'
@@ -848,6 +898,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/membership'
+    | '/money'
     | '/news'
     | '/programme'
     | '/reset-password'
@@ -894,6 +945,9 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
+    | '/services/esim'
+    | '/services/insurance'
+    | '/services/offers'
     | '/siddur/$id'
     | '/social/$conversationId'
     | '/admin'
@@ -901,6 +955,7 @@ export interface FileRouteTypes {
     | '/benefits'
     | '/explore'
     | '/guides'
+    | '/services'
     | '/siddur'
     | '/social'
     | '/.lovable/oauth/consent'
@@ -931,6 +986,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/me'
     | '/membership'
+    | '/money'
     | '/news'
     | '/programme'
     | '/reset-password'
@@ -977,6 +1033,9 @@ export interface FileRouteTypes {
     | '/explore/uni-finder'
     | '/explore/visa'
     | '/guides/$id'
+    | '/services/esim'
+    | '/services/insurance'
+    | '/services/offers'
     | '/siddur/$id'
     | '/social/$conversationId'
     | '/admin/'
@@ -984,6 +1043,7 @@ export interface FileRouteTypes {
     | '/benefits/'
     | '/explore/'
     | '/guides/'
+    | '/services/'
     | '/siddur/'
     | '/social/'
     | '/.lovable/oauth/consent'
@@ -1015,6 +1075,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   MeRoute: typeof MeRoute
   MembershipRoute: typeof MembershipRoute
+  MoneyRoute: typeof MoneyRoute
   NewsRoute: typeof NewsRoute
   ProgrammeRoute: typeof ProgrammeRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -1054,12 +1115,16 @@ export interface RootRouteChildren {
   ExploreUniFinderRoute: typeof ExploreUniFinderRoute
   ExploreVisaRoute: typeof ExploreVisaRoute
   GuidesIdRoute: typeof GuidesIdRoute
+  ServicesEsimRoute: typeof ServicesEsimRoute
+  ServicesInsuranceRoute: typeof ServicesInsuranceRoute
+  ServicesOffersRoute: typeof ServicesOffersRoute
   SiddurIdRoute: typeof SiddurIdRoute
   SocialConversationIdRoute: typeof SocialConversationIdRoute
   BeforeYouFlyIndexRoute: typeof BeforeYouFlyIndexRoute
   BenefitsIndexRoute: typeof BenefitsIndexRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
+  ServicesIndexRoute: typeof ServicesIndexRoute
   SiddurIndexRoute: typeof SiddurIndexRoute
   SocialIndexRoute: typeof SocialIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
@@ -1172,6 +1237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/money': {
+      id: '/money'
+      path: '/money'
+      fullPath: '/money'
+      preLoaderRoute: typeof MoneyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/membership': {
       id: '/membership'
       path: '/membership'
@@ -1263,6 +1335,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiddurIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/guides/': {
       id: '/guides/'
       path: '/guides'
@@ -1310,6 +1389,27 @@ declare module '@tanstack/react-router' {
       path: '/siddur/$id'
       fullPath: '/siddur/$id'
       preLoaderRoute: typeof SiddurIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/offers': {
+      id: '/services/offers'
+      path: '/services/offers'
+      fullPath: '/services/offers'
+      preLoaderRoute: typeof ServicesOffersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/insurance': {
+      id: '/services/insurance'
+      path: '/services/insurance'
+      fullPath: '/services/insurance'
+      preLoaderRoute: typeof ServicesInsuranceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/esim': {
+      id: '/services/esim'
+      path: '/services/esim'
+      fullPath: '/services/esim'
+      preLoaderRoute: typeof ServicesEsimRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guides/$id': {
@@ -1689,6 +1789,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   MeRoute: MeRoute,
   MembershipRoute: MembershipRoute,
+  MoneyRoute: MoneyRoute,
   NewsRoute: NewsRoute,
   ProgrammeRoute: ProgrammeRoute,
   ResetPasswordRoute: ResetPasswordRoute,
@@ -1729,12 +1830,16 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreUniFinderRoute: ExploreUniFinderRoute,
   ExploreVisaRoute: ExploreVisaRoute,
   GuidesIdRoute: GuidesIdRoute,
+  ServicesEsimRoute: ServicesEsimRoute,
+  ServicesInsuranceRoute: ServicesInsuranceRoute,
+  ServicesOffersRoute: ServicesOffersRoute,
   SiddurIdRoute: SiddurIdRoute,
   SocialConversationIdRoute: SocialConversationIdRoute,
   BeforeYouFlyIndexRoute: BeforeYouFlyIndexRoute,
   BenefitsIndexRoute: BenefitsIndexRoute,
   ExploreIndexRoute: ExploreIndexRoute,
   GuidesIndexRoute: GuidesIndexRoute,
+  ServicesIndexRoute: ServicesIndexRoute,
   SiddurIndexRoute: SiddurIndexRoute,
   SocialIndexRoute: SocialIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,

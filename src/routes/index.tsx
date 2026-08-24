@@ -1,21 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, ArrowLeftRight, ArrowUpRight, CreditCard, PlaneTakeoff, CalendarDays, Compass, ShieldCheck } from "lucide-react";
+import { CalendarDays, Compass, PlaneTakeoff, Wallet, ShieldCheck, Smartphone, Check } from "lucide-react";
 import { useProgramme, useTravel } from "@/lib/useProgramme";
 
 import { GlobalSearch } from "@/components/GlobalSearch";
-import { AppShell, ReverifyBanner } from "@/components/AppShell";
-import { SectionHead, EmptyState, LoadingBlocks, StatusPill, Milestone } from "@/components/Kit";
+import { AppShell } from "@/components/AppShell";
+import { SectionHead, EmptyState, LoadingBlocks, StatusPill, MicroLabel, ProgressBar } from "@/components/Kit";
 
 import { ActiveNow } from "@/components/ActiveNow";
 import { ForYou } from "@/components/ForYou";
 import { LocationBar } from "@/components/LocationBar";
 
-
 import { useApp } from "@/lib/store";
 import { useProfile } from "@/lib/useProfile";
-import { ils } from "@/lib/mock";
-import { refIn } from "@/lib/currencies";
 import { useOnboardedGate } from "@/lib/useOnboardedGate";
+import { useSetup } from "@/lib/useSetup";
 
 import { serviceLinkProps, type Service } from "@/lib/services";
 import { recordServiceUse, useRecentServices } from "@/lib/recents";
@@ -24,18 +22,20 @@ import { usePromotions } from "@/lib/admin";
 import { resolveInterests } from "@/lib/journey-interests";
 import { getJourney, greeting } from "@/lib/journey-phase";
 
-
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Today · Shekk" },
+      { title: "Shekk — everything you need to live in Israel" },
       {
         name: "description",
         content:
-          "Your day in Israel, in one place: your shekel balance, your programme's next session and the things worth doing today.",
+          "Your Israel dashboard: what to sort before you fly, what to do in your first week, and everything worth knowing once you're here.",
       },
-      { property: "og:title", content: "Today · Shekk" },
-      { property: "og:description", content: "Your money, your programme and your Israel, on one home screen." },
+      { property: "og:title", content: "Shekk — everything you need to live in Israel" },
+      {
+        property: "og:description",
+        content: "Setup, services, transport, events and guides for your time in Israel — in one app.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://shekel-connect.lovable.app/" },
       { name: "twitter:card", content: "summary" },
@@ -45,13 +45,6 @@ export const Route = createFileRoute("/")({
   component: HomeScreen,
 });
 
-const HERO_ACTIONS = [
-  { to: "/topup", label: "Add money", Icon: Plus },
-  { to: "/exchange", label: "Exchange", Icon: ArrowLeftRight },
-  { to: "/social", label: "Send", Icon: ArrowUpRight },
-  { to: "/card", label: "Card", Icon: CreditCard },
-] as const;
-
 function AppIcon({ service }: { service: Service }) {
   return (
     <Link
@@ -59,7 +52,6 @@ function AppIcon({ service }: { service: Service }) {
       onClick={() => recordServiceUse(service.id)}
       className="tap-icon group flex flex-col items-center gap-1.5"
     >
-
       <span className="relative">
         <ServiceLogo service={service} size={58} className="rounded-[1.15rem] shadow-card" />
         {service.status !== "live" ? (
@@ -75,105 +67,177 @@ function AppIcon({ service }: { service: Service }) {
   );
 }
 
-/** One clear next step, plus what's happening on the programme today. */
-function TodayPanel() {
-  const { signedIn, state } = useApp();
-  const kyc = useProfile();
-  const { joined, programme, nextItem, checklistDone, checklistTotal } = useProgramme();
+/**
+ * The heart of the home screen: how far through your Israel setup you are and
+ * the one thing worth doing next.
+ */
+function SetupPanel() {
+  const { signedIn } = useApp();
   const { travel, setupComplete, fetched } = useTravel();
   const journey = getJourney(travel);
+  const setup = useSetup();
 
-  const phaseCopy: Record<string, string> = {
-    planning: "Before you fly",
-    "final-countdown": "Almost there",
-    "first-week": "Your first week",
-    settled: "Today",
-    "final-stretch": "Final stretch",
-    unknown: "Your next step",
-  };
+  if (!signedIn) {
+    return (
+      <section className="px-4 pt-4">
+        <div className="rounded-[1.5rem] border border-primary/25 bg-primary-soft p-4">
+          <MicroLabel className="text-primary">Start here</MicroLabel>
+          <p className="mt-1.5 text-[15px] font-semibold leading-snug">Create your Shekk account</p>
+          <p className="mt-1 text-[12.5px] leading-relaxed text-muted-foreground">
+            A minute to set up, then Shekk keeps track of everything you need to sort for Israel.
+          </p>
+          <Link
+            to="/auth"
+            search={{ next: "/" }}
+            className="tap mt-3 inline-flex rounded-full bg-primary px-4 py-2 text-[12.5px] font-bold text-primary-foreground"
+          >
+            Create account
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
-  const nextAction = !signedIn
-    ? { label: "Create your Shekk account", to: "/auth" as const, why: "Takes about a minute" }
-    : fetched && !setupComplete
-      ? {
-          label: "Finish setting up your journey",
-          to: "/welcome" as const,
-          why: "A few quick questions — picks up where you left off",
-        }
-      : !kyc.verified
-      ? { label: "Verify who you are", to: "/verify" as const, why: "One-off ID check, then your money is ready" }
-      : state.balance <= 0
-        ? { label: "Add your first money", to: "/topup" as const, why: "Pay in your home currency, spend in shekels" }
-        : !joined
-          ? { label: "Join your programme", to: "/programme" as const, why: "Enter the code your programme gave you" }
-          : journey.inIsrael
-            ? { label: "Find what's on near you", to: "/israel" as const, why: "Food, transport, fitness and events" }
-            : { label: "Before you fly checklist", to: "/before-you-fly" as const, why: "Keep getting ready" };
-
-  const everythingReady =
-    signedIn && setupComplete && kyc.verified && state.balance > 0 && joined;
+  if (fetched && !setupComplete) {
+    return (
+      <section className="px-4 pt-4">
+        <div className="rounded-[1.5rem] border border-primary/25 bg-primary-soft p-4">
+          <MicroLabel className="text-primary">Nearly there</MicroLabel>
+          <p className="mt-1.5 text-[15px] font-semibold leading-snug">Finish setting up your journey</p>
+          <p className="mt-1 text-[12.5px] leading-relaxed text-muted-foreground">
+            A few quick questions so Shekk can recommend the right things for your stay.
+          </p>
+          <Link
+            to="/welcome"
+            className="tap mt-3 inline-flex rounded-full bg-primary px-4 py-2 text-[12.5px] font-bold text-primary-foreground"
+          >
+            Pick up where I left off
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section className="space-y-2.5 px-4 pt-4">
-      {everythingReady ? (
-        <Milestone
-          title="You're all set for Israel"
-          body="Money ready, identity verified and your programme linked. Everything else is just living it."
-          actionLabel="Explore Israel"
-          actionTo="/israel"
-        />
-      ) : (
-        <Link
-          to={nextAction.to}
-          className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-card"
-        >
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
-            {journey.inIsrael ? <Compass className="size-5" /> : <PlaneTakeoff className="size-5" />}
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              {phaseCopy[journey.phase] ?? "Your next step"}
-              {journey.chip ? ` · ${journey.chip}` : ""}
-            </span>
-            <span className="mt-0.5 block text-sm font-semibold">{nextAction.label}</span>
-            <span className="block text-xs text-muted-foreground">{nextAction.why}</span>
-          </span>
-          <span className="shrink-0 text-sm font-semibold text-primary">→</span>
-        </Link>
-      )}
+    <section className="px-4 pt-4">
+      <div className="rounded-[1.5rem] border border-border bg-card p-4 shadow-card">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <MicroLabel className="text-muted-foreground">Your Israel setup</MicroLabel>
+            <p className="mt-1 font-display text-xl font-bold leading-tight tracking-tight">
+              {journey.chip ?? "Getting set up"}
+            </p>
+          </div>
+          <Link to="/before-you-fly" className="tap-flat shrink-0 text-[12px] font-semibold text-primary">
+            Full checklist →
+          </Link>
+        </div>
+        <p className="mt-2 text-[12px] text-muted-foreground">
+          {setup.done} of {setup.total} things sorted
+        </p>
+        <ProgressBar value={setup.percent / 100} className="mt-2" />
 
-      {joined ? (
-        <Link
-          to="/programme"
-          className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-card"
-        >
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
-            <CalendarDays className="size-5 text-foreground/70" />
+        {setup.complete ? (
+          <p className="mt-3 flex items-center gap-2 text-[13px] font-semibold text-success">
+            <Check className="size-4" /> Everything on your list is done
+          </p>
+        ) : setup.next ? (
+          <Link
+            to={setup.next.href}
+            className="tap mt-3.5 flex items-center gap-3 rounded-2xl bg-primary-soft p-3"
+          >
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+              <setup.next.Icon className="size-4" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[13px] font-semibold leading-snug">{setup.next.title}</span>
+              <span className="block text-[11.5px] leading-snug text-muted-foreground">{setup.next.blurb}</span>
+            </span>
+            <span className="shrink-0 text-sm font-semibold text-primary">→</span>
+          </Link>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+/** Programme card — only when the member has actually joined one. */
+function ProgrammePanel() {
+  const { joined, programme, nextItem, checklistDone, checklistTotal } = useProgramme();
+  if (!joined) return null;
+  return (
+    <section className="px-4 pt-3">
+      <Link
+        to="/programme"
+        className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-card"
+      >
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
+          <CalendarDays className="size-5 text-foreground/70" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <MicroLabel className="text-muted-foreground">{programme.programmeName}</MicroLabel>
+          <span className="mt-0.5 block truncate text-sm font-semibold">
+            {nextItem ? nextItem.title : "Nothing scheduled just yet"}
           </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              {programme.programmeName}
-            </span>
-            <span className="mt-0.5 block truncate text-sm font-semibold">
-              {nextItem ? nextItem.title : "Nothing scheduled just yet"}
-            </span>
-            <span className="block text-xs text-muted-foreground">
-              {nextItem
-                ? new Date(nextItem.startsAt).toLocaleString("en-GB", {
-                    weekday: "short",
-                    day: "numeric",
-                    month: "short",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })
-                : checklistTotal > 0
-                  ? `Checklist ${checklistDone} of ${checklistTotal} done`
-                  : "Announcements, contacts and documents inside"}
-            </span>
+          <span className="block text-xs text-muted-foreground">
+            {nextItem
+              ? new Date(nextItem.startsAt).toLocaleString("en-GB", {
+                  weekday: "short",
+                  day: "numeric",
+                  month: "short",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : checklistTotal > 0
+                ? `Checklist ${checklistDone} of ${checklistTotal} done`
+                : "Announcements, contacts and documents inside"}
           </span>
-          <span className="shrink-0 text-sm font-semibold text-primary">→</span>
-        </Link>
-      ) : null}
+        </span>
+        <span className="shrink-0 text-sm font-semibold text-primary">→</span>
+      </Link>
+    </section>
+  );
+}
+
+/** The two services people actually have to buy before flying. */
+function ServicePrompts() {
+  const setup = useSetup();
+  const prompts = [
+    {
+      to: "/services/esim",
+      title: "Get an Israeli SIM",
+      body: "Four questions, then the right eSIM for your stay",
+      Icon: Smartphone,
+      done: setup.isDone("sim"),
+    },
+    {
+      to: "/services/insurance",
+      title: "Sort travel and medical cover",
+      body: "Compare cover that fits your dates and programme",
+      Icon: ShieldCheck,
+      done: setup.isDone("insurance"),
+    },
+  ].filter((p) => !p.done);
+
+  if (prompts.length === 0) return null;
+
+  return (
+    <section className="px-4 pt-6">
+      <SectionHead title="Sort before you fly" hint="The things you have to buy for Israel" />
+      <div className="space-y-2.5">
+        {prompts.map((p) => (
+          <Link key={p.to} to={p.to} className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-3.5 shadow-card">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
+              <p.Icon className="size-5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[13.5px] font-semibold leading-snug">{p.title}</span>
+              <span className="mt-0.5 block text-[12px] leading-snug text-muted-foreground">{p.body}</span>
+            </span>
+            <span className="shrink-0 text-sm font-semibold text-primary">→</span>
+          </Link>
+        ))}
+      </div>
     </section>
   );
 }
@@ -208,20 +272,39 @@ function PickedForYou() {
   );
 }
 
-
-
+/** The honest banking placeholder: a preview, not a balance. */
+function MoneyTeaser() {
+  return (
+    <section className="px-4 pt-6">
+      <Link to="/money" className="tap block">
+        <div className="grad-balance relative overflow-hidden rounded-[1.5rem] px-5 py-4 text-ink-foreground shadow-lift">
+          <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
+          <div className="relative flex items-center gap-3">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-ink-foreground/15">
+              <Wallet className="size-5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <MicroLabel className="opacity-70">Coming next</MicroLabel>
+              <span className="mt-0.5 block font-display text-lg font-bold leading-tight">Shekk Money</span>
+              <span className="block text-[12px] leading-snug opacity-80">
+                Hold shekels, convert at a fair rate, spend with a Shekk card. Join early access.
+              </span>
+            </span>
+            <span className="shrink-0 text-sm font-bold">→</span>
+          </div>
+        </div>
+      </Link>
+    </section>
+  );
+}
 
 function HomeScreen() {
   const ready = useOnboardedGate();
-  const { state, isPremium } = useApp();
+  const { state } = useApp();
   const kycProfile = useProfile();
   const { travel } = useTravel();
-
   const promos = usePromotions("home");
-
   const recents = useRecentServices();
-
-
 
   if (!ready) {
     return (
@@ -262,55 +345,26 @@ function HomeScreen() {
 
       <LocationBar />
 
-      {/* Wallet hero — the daily financial pulse */}
-      <section className="px-4 pt-3">
-        <div className="grad-balance relative overflow-hidden rounded-[1.5rem] px-5 py-4 text-ink-foreground shadow-lift">
-          <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
-          <div className="relative">
-            <Link to="/wallet" className="tap-flat block">
-              <p className="text-[10px] uppercase tracking-widest opacity-70">Your shekels</p>
-              <p className="font-display text-4xl font-bold leading-none tracking-tight">{ils(state.balance)}</p>
-              <p className="mt-1.5 flex items-center gap-1.5 text-[11px] opacity-75">
-                {kycProfile.verified ? <ShieldCheck className="size-3.5" /> : null}
-                ≈ {refIn(state.settings.payCurrency, state.balance)}
-                {isPremium ? " · Shekk+ member" : ""}
-              </p>
-            </Link>
-            <div className="mt-4 grid grid-cols-4 gap-1.5">
-              {HERO_ACTIONS.map(({ to, label, Icon }) => (
-                <Link
-                  key={label}
-                  to={to}
-                  className="tap-icon flex flex-col items-center gap-1 rounded-xl bg-ink-foreground/10 py-2"
-                >
-                  <Icon className="size-[17px]" strokeWidth={2.4} />
-                  <span className="text-[9.5px] font-semibold leading-none">{label}</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* What do I need today? */}
-      <TodayPanel />
-
-      {/* Straight from the journey setup */}
+      <SetupPanel />
+      <ProgrammePanel />
+      <ServicePrompts />
       <PickedForYou />
 
-      {/* Search into the full catalogue */}
       <div className="px-4 pt-6">
         <GlobalSearch />
       </div>
 
-      {/* Recents */}
+      <ActiveNow />
+
+      <ForYou />
+
       <div className="px-4 pt-6">
         <SectionHead
           title="Jump back in"
           hint="The apps and tools you used most recently"
           action={
             <Link to="/israel" className="tap-flat text-[12.5px] font-semibold text-primary">
-              All apps
+              Explore
             </Link>
           }
         />
@@ -318,8 +372,8 @@ function HomeScreen() {
           <EmptyState
             icon={Compass}
             title="Nothing here yet"
-            body="Open something from Israel — buses, food, guides — and it'll wait for you here."
-            actionLabel="Browse Israel"
+            body="Open something from Explore — transport, food, guides — and it'll wait for you here."
+            actionLabel="Browse Explore"
             actionTo="/israel"
           />
         ) : (
@@ -331,11 +385,6 @@ function HomeScreen() {
         )}
       </div>
 
-      <ActiveNow />
-
-      <ForYou />
-
-      {/* Promotions published from the console */}
       {promos.length > 0 ? (
         <section className="pt-6">
           <div className="px-4">
@@ -358,12 +407,12 @@ function HomeScreen() {
         </section>
       ) : null}
 
-      <div className="mt-6">
-        <ReverifyBanner />
-      </div>
+      <MoneyTeaser />
 
       <div className="pb-8" />
-
     </AppShell>
   );
 }
+
+/** Kept so the pre-arrival phase still reads warmly on an empty account. */
+export const HOME_PHASE_ICON = PlaneTakeoff;
