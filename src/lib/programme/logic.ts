@@ -1,0 +1,598 @@
+/**
+ * Programme operations — pure logic and shared types.
+ *
+ * Browser-safe on purpose: the hub UI, the staff console and the tests all
+ * import from here, so nothing in this file may touch Supabase or `process`.
+ * Every rule that decides "who may see this" or "who may change this" is
+ * mirrored in RLS — this file exists so the UI can agree with the database,
+ * never so it can replace it.
+ */
+
+/* ─────────────────────────────── Vocabulary ─────────────────────────────── */
+
+export const STAFF_PERMISSIONS = [
+  "events",
+  "announcements",
+  "participants",
+  "groups",
+  "documents",
+  "votes",
+  "acknowledgements",
+  "checklists",
+  "contacts",
+  "places",
+] as const;
+
+export type StaffPermission = (typeof STAFF_PERMISSIONS)[number];
+
+export type StaffRole = "owner" | "staff";
+
+export type StaffContext = {
+  programmeId: string;
+  cohortId: string | null;
+  role: StaffRole;
+  permissions: StaffPermission[];
+};
+
+export type AudienceKind = "everyone" | "groups" | "individuals";
+
+export type EventStatus =
+  | "scheduled"
+  | "confirmed"
+  | "tentative"
+  | "delayed"
+  | "moved"
+  | "cancelled"
+  | "completed";
+
+export type NotifyLevel = "silent" | "notify" | "urgent";
+
+export type Priority = "normal" | "important" | "urgent";
+
+export type RsvpResponse = "going" | "maybe" | "not_going";
+
+export const EVENT_TYPES = [
+  "activity",
+  "class",
+  "trip",
+  "meal",
+  "meeting",
+  "travel",
+  "free_time",
+  "shabbat",
+  "other",
+] as const;
+
+export const PLACE_CATEGORIES = [
+  "accommodation",
+  "campus",
+  "classroom",
+  "office",
+  "meeting_point",
+  "dining_hall",
+  "bus_pickup",
+  "synagogue",
+  "venue",
+  "other",
+] as const;
+
+export const CONTACT_CATEGORIES = [
+  "director",
+  "madrich",
+  "coordinator",
+  "emergency",
+  "accommodation",
+  "security",
+  "medical",
+  "other",
+] as const;
+
+/* ──────────────────────────────── Row shapes ─────────────────────────────── */
+
+export type Audience = { kind: AudienceKind; groupIds: string[]; userIds: string[] };
+
+export const everyone: Audience = { kind: "everyone", groupIds: [], userIds: [] };
+
+export type ProgrammeGroup = { id: string; name: string; description: string | null; memberCount: number };
+
+export type EventChange = {
+  id: string;
+  field: string;
+  before: string | null;
+  after: string | null;
+  note: string | null;
+  notifyLevel: NotifyLevel;
+  changedAt: string;
+};
+
+export type ProgrammeEvent = {
+  id: string;
+  title: string;
+  description: string | null;
+  startsAt: string;
+  endsAt: string | null;
+  originalStartsAt: string | null;
+  timezone: string;
+  locationLabel: string | null;
+  meetingPoint: string | null;
+  googlePlaceId: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  onlineUrl: string | null;
+  eventType: string;
+  mandatory: boolean;
+  status: EventStatus;
+  statusNote: string | null;
+  audience: Audience;
+  rsvpEnabled: boolean;
+  capacity: number | null;
+  requiresAck: boolean;
+  urgent: boolean;
+  lastChangedAt: string | null;
+  updatedAt: string;
+  /** Participant view. */
+  myRsvp: RsvpResponse | null;
+  acknowledged: boolean;
+  /** Staff view (null for participants). */
+  goingCount: number | null;
+  ackCount: number | null;
+  changes: EventChange[];
+};
+
+export type ProgrammeAnnouncementRow = {
+  id: string;
+  title: string;
+  body: string;
+  pinned: boolean;
+  priority: Priority;
+  publishedAt: string;
+  requiresAck: boolean;
+  audience: Audience;
+  eventId: string | null;
+  linkUrl: string | null;
+  acknowledged: boolean;
+  ackCount: number | null;
+};
+
+export type VoteOption = {
+  id: string;
+  label: string;
+  detail: string | null;
+  capacity: number | null;
+  count: number | null;
+};
+
+export type ProgrammeVote = {
+  id: string;
+  eventId: string | null;
+  question: string;
+  description: string | null;
+  status: "open" | "closed";
+  anonymous: boolean;
+  allowChange: boolean;
+  resultsVisible: boolean;
+  audience: Audience;
+  closesAt: string | null;
+  closedAt: string | null;
+  winningOptionId: string | null;
+  options: VoteOption[];
+  myOptionId: string | null;
+  responseCount: number | null;
+};
+
+export type ChecklistItem = {
+  id: string;
+  itemKey: string;
+  title: string;
+  details: string | null;
+  dueOn: string | null;
+  required: boolean;
+  actionUrl: string | null;
+  featureKey: string | null;
+  audience: Audience;
+  done: boolean;
+  doneCount: number | null;
+};
+
+export type ProgrammeDoc = {
+  id: string;
+  label: string;
+  description: string | null;
+  linkUrl: string | null;
+  storagePath: string | null;
+  category: string;
+  audience: Audience;
+};
+
+export type ProgrammeContactRow = {
+  id: string;
+  name: string;
+  role: string | null;
+  category: string;
+  phone: string | null;
+  whatsapp: string | null;
+  email: string | null;
+  notes: string | null;
+  availability: string | null;
+  isEmergency: boolean;
+  audience: Audience;
+};
+
+export type ProgrammePlace = {
+  id: string;
+  label: string;
+  category: string;
+  notes: string | null;
+  meetingInstructions: string | null;
+  googlePlaceId: string | null;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  audience: Audience;
+};
+
+export type ProgrammeNotification = {
+  id: string;
+  level: "notify" | "urgent";
+  title: string;
+  body: string | null;
+  subjectType: string | null;
+  subjectId: string | null;
+  createdAt: string;
+  readAt: string | null;
+};
+
+export type ProgrammeHub = {
+  joined: boolean;
+  cohortId: string | null;
+  programmeId: string | null;
+  programmeName: string | null;
+  organisation: string | null;
+  cohortName: string | null;
+  year: string | null;
+  city: string | null;
+  logoUrl: string | null;
+  verified: boolean;
+  timezone: string;
+  welcomeMessage: string | null;
+  startsOn: string | null;
+  endsOn: string | null;
+  myGroups: ProgrammeGroup[];
+  staff: StaffContext | null;
+  events: ProgrammeEvent[];
+  announcements: ProgrammeAnnouncementRow[];
+  votes: ProgrammeVote[];
+  checklist: ChecklistItem[];
+  documents: ProgrammeDoc[];
+  contacts: ProgrammeContactRow[];
+  places: ProgrammePlace[];
+  notifications: ProgrammeNotification[];
+  recentChanges: (EventChange & { eventId: string; eventTitle: string })[];
+};
+
+export const emptyHub: ProgrammeHub = {
+  joined: false,
+  cohortId: null,
+  programmeId: null,
+  programmeName: null,
+  organisation: null,
+  cohortName: null,
+  year: null,
+  city: null,
+  logoUrl: null,
+  verified: false,
+  timezone: "Asia/Jerusalem",
+  welcomeMessage: null,
+  startsOn: null,
+  endsOn: null,
+  myGroups: [],
+  staff: null,
+  events: [],
+  announcements: [],
+  votes: [],
+  checklist: [],
+  documents: [],
+  contacts: [],
+  places: [],
+  notifications: [],
+  recentChanges: [],
+};
+
+/* ──────────────────────────────── Permissions ────────────────────────────── */
+
+/**
+ * The same rule as `public.staff_can`: owners may do anything, staff with an
+ * empty permission list get the sensible default set, otherwise it must be
+ * granted explicitly. UI only — the database decides for real.
+ */
+export function staffCan(staff: StaffContext | null, perm: StaffPermission): boolean {
+  if (!staff) return false;
+  if (staff.role === "owner") return true;
+  if (staff.permissions.length === 0) return true;
+  return staff.permissions.includes(perm);
+}
+
+/* ───────────────────────────── Audience filtering ────────────────────────── */
+
+/** Mirror of `public.audience_allows` for anything already loaded client-side. */
+export function audienceAllows(
+  audience: Audience,
+  viewer: { userId: string; groupIds: string[] },
+): boolean {
+  if (audience.kind === "everyone") return true;
+  if (audience.userIds.includes(viewer.userId)) return true;
+  return audience.groupIds.some((g) => viewer.groupIds.includes(g));
+}
+
+export function filterForViewer<T extends { audience: Audience }>(
+  rows: T[],
+  viewer: { userId: string; groupIds: string[] },
+): T[] {
+  return rows.filter((row) => audienceAllows(row.audience, viewer));
+}
+
+export function audienceLabel(audience: Audience, groups: { id: string; name: string }[]): string {
+  if (audience.kind === "everyone") return "Everyone";
+  if (audience.kind === "groups") {
+    const names = audience.groupIds
+      .map((id) => groups.find((g) => g.id === id)?.name)
+      .filter((n): n is string => Boolean(n));
+    if (!names.length) return "Selected groups";
+    return names.join(", ");
+  }
+  const n = audience.userIds.length;
+  return n === 1 ? "1 person" : `${n} people`;
+}
+
+/* ─────────────────────────────── Event helpers ───────────────────────────── */
+
+export const STATUS_LABEL: Record<EventStatus, string> = {
+  scheduled: "Scheduled",
+  confirmed: "Confirmed",
+  tentative: "Tentative",
+  delayed: "Delayed",
+  moved: "Moved",
+  cancelled: "Cancelled",
+  completed: "Done",
+};
+
+export function statusTone(status: EventStatus): "live" | "pending" | "attention" | "quiet" {
+  if (status === "cancelled") return "attention";
+  if (status === "delayed" || status === "moved" || status === "tentative") return "attention";
+  if (status === "confirmed") return "live";
+  if (status === "completed") return "quiet";
+  return "pending";
+}
+
+/** "Updated 12 min ago" — the participant's honest freshness signal. */
+export function updatedAgo(iso: string | null, now = Date.now()): string | null {
+  if (!iso) return null;
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return null;
+  const mins = Math.round((now - then) / 60_000);
+  if (mins < 1) return "Updated just now";
+  if (mins < 60) return `Updated ${mins} min ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `Updated ${hours}h ago`;
+  const days = Math.round(hours / 24);
+  return `Updated ${days}d ago`;
+}
+
+export function delayBy(startsAt: string, minutes: number): string {
+  return new Date(new Date(startsAt).getTime() + minutes * 60_000).toISOString();
+}
+
+export function isSameLocalDay(iso: string, ref = new Date()): boolean {
+  const d = new Date(iso);
+  return (
+    d.getFullYear() === ref.getFullYear() &&
+    d.getMonth() === ref.getMonth() &&
+    d.getDate() === ref.getDate()
+  );
+}
+
+const liveStatuses: EventStatus[] = ["scheduled", "confirmed", "tentative", "delayed", "moved"];
+
+export function todaysEvents(events: ProgrammeEvent[], ref = new Date()): ProgrammeEvent[] {
+  return events
+    .filter((e) => isSameLocalDay(e.startsAt, ref))
+    .sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+}
+
+/** What is happening right now, if anything. */
+export function nowEvent(events: ProgrammeEvent[], at = Date.now()): ProgrammeEvent | null {
+  return (
+    events.find((e) => {
+      if (!liveStatuses.includes(e.status)) return false;
+      const start = new Date(e.startsAt).getTime();
+      const end = e.endsAt ? new Date(e.endsAt).getTime() : start + 60 * 60_000;
+      return start <= at && at < end;
+    }) ?? null
+  );
+}
+
+export function nextEvent(events: ProgrammeEvent[], at = Date.now()): ProgrammeEvent | null {
+  return (
+    [...events]
+      .filter((e) => liveStatuses.includes(e.status) && new Date(e.startsAt).getTime() > at)
+      .sort((a, b) => a.startsAt.localeCompare(b.startsAt))[0] ?? null
+  );
+}
+
+/** Changes a participant should notice: recent, and not silent bookkeeping. */
+export function importantChanges(
+  hub: Pick<ProgrammeHub, "events" | "recentChanges">,
+  withinHours = 48,
+  now = Date.now(),
+) {
+  const cutoff = now - withinHours * 3_600_000;
+  return hub.recentChanges.filter(
+    (c) => c.notifyLevel !== "silent" && new Date(c.changedAt).getTime() >= cutoff,
+  );
+}
+
+export function openVotes(votes: ProgrammeVote[]): ProgrammeVote[] {
+  return votes.filter((v) => v.status === "open");
+}
+
+export function pendingAcknowledgements(hub: ProgrammeHub) {
+  return [
+    ...hub.announcements.filter((a) => a.requiresAck && !a.acknowledged).map((a) => ({
+      subjectType: "announcement" as const,
+      id: a.id,
+      title: a.title,
+      priority: a.priority,
+    })),
+    ...hub.events
+      .filter((e) => e.requiresAck && !e.acknowledged && e.status !== "cancelled")
+      .map((e) => ({
+        subjectType: "event" as const,
+        id: e.id,
+        title: e.title,
+        priority: (e.urgent ? "urgent" : "important") as Priority,
+      })),
+  ];
+}
+
+export function checklistProgress(items: ChecklistItem[]) {
+  const required = items.filter((i) => i.required);
+  const done = items.filter((i) => i.done).length;
+  const requiredDone = required.filter((i) => i.done).length;
+  return {
+    done,
+    total: items.length,
+    requiredDone,
+    requiredTotal: required.length,
+    percent: items.length ? Math.round((done / items.length) * 100) : 0,
+  };
+}
+
+/** Can this participant cast (or change) a vote right now, and why not? */
+export function voteBlockedReason(
+  vote: ProgrammeVote,
+  optionId: string | null = null,
+): string | null {
+  if (vote.status !== "open") return "This vote is closed";
+  if (vote.myOptionId && !vote.allowChange) return "You have already voted";
+  if (optionId) {
+    const option = vote.options.find((o) => o.id === optionId);
+    if (!option) return "That option is not part of this vote";
+    if (
+      option.capacity &&
+      option.count !== null &&
+      option.count >= option.capacity &&
+      vote.myOptionId !== optionId
+    ) {
+      return "That option is full";
+    }
+  }
+  return null;
+}
+
+export function eventFullForGoing(event: ProgrammeEvent): boolean {
+  if (!event.capacity || event.capacity <= 0) return false;
+  if (event.goingCount === null) return false;
+  return event.goingCount >= event.capacity && event.myRsvp !== "going";
+}
+
+/** Directions deep link, reusing the same Google target as Shekk Maps. */
+export function placeDirectionsUrl(place: {
+  googlePlaceId?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  address?: string | null;
+  label?: string | null;
+}): string | null {
+  const base = "https://www.google.com/maps/dir/?api=1";
+  if (place.latitude != null && place.longitude != null) {
+    const pid = place.googlePlaceId ? `&destination_place_id=${encodeURIComponent(place.googlePlaceId)}` : "";
+    return `${base}&destination=${place.latitude},${place.longitude}${pid}`;
+  }
+  const text = place.address || place.label;
+  if (!text) return null;
+  const pid = place.googlePlaceId ? `&destination_place_id=${encodeURIComponent(place.googlePlaceId)}` : "";
+  return `${base}&destination=${encodeURIComponent(text)}${pid}`;
+}
+
+/** Sensible, fully editable "Before you fly" defaults for a new cohort. */
+export const DEFAULT_CHECKLIST: {
+  itemKey: string;
+  title: string;
+  details: string;
+  featureKey: string | null;
+  actionUrl: string | null;
+  required: boolean;
+}[] = [
+  {
+    itemKey: "passport",
+    title: "Check your passport is valid",
+    details: "Most programmes need at least six months of validity beyond your return date.",
+    featureKey: null,
+    actionUrl: null,
+    required: true,
+  },
+  {
+    itemKey: "visa",
+    title: "Sort your visa or entry paperwork",
+    details: "Check what your nationality and programme length require.",
+    featureKey: "visa",
+    actionUrl: "/explore/visa",
+    required: true,
+  },
+  {
+    itemKey: "insurance",
+    title: "Arrange travel and health insurance",
+    details: "Bring the policy number and hotline with you, not just the email.",
+    featureKey: "insurance",
+    actionUrl: "/services/insurance",
+    required: true,
+  },
+  {
+    itemKey: "esim",
+    title: "Get an eSIM or SIM for Israel",
+    details: "Have data working the moment you land, before you look for wifi.",
+    featureKey: "esim",
+    actionUrl: "/services/esim",
+    required: true,
+  },
+  {
+    itemKey: "emergency_contact",
+    title: "Give us an emergency contact",
+    details: "One person at home your programme can reach.",
+    featureKey: null,
+    actionUrl: null,
+    required: true,
+  },
+  {
+    itemKey: "flight_info",
+    title: "Send your flight details",
+    details: "Flight number, landing time and terminal so pickups can be planned.",
+    featureKey: null,
+    actionUrl: null,
+    required: true,
+  },
+  {
+    itemKey: "medication",
+    title: "Documentation for any medication",
+    details: "A letter or prescription copy for anything you fly with.",
+    featureKey: null,
+    actionUrl: null,
+    required: false,
+  },
+  {
+    itemKey: "packing",
+    title: "Pack for the season",
+    details: "Check the weather for your dates and what your programme asks you to bring.",
+    featureKey: null,
+    actionUrl: null,
+    required: false,
+  },
+  {
+    itemKey: "programme_forms",
+    title: "Return your programme forms",
+    details: "Whatever your programme office still needs signed.",
+    featureKey: null,
+    actionUrl: null,
+    required: true,
+  },
+];
