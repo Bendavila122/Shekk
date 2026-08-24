@@ -70,6 +70,7 @@ import { Route as ExploreArmyRouteImport } from './routes/explore/army'
 import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
 import { Route as BeforeYouFlyInsuranceRouteImport } from './routes/before-you-fly/insurance'
 import { Route as BeforeYouFlyEsimRouteImport } from './routes/before-you-fly/esim'
+import { Route as AdminSimRouteImport } from './routes/admin/sim'
 import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
 import { Route as AdminMoneyRouteImport } from './routes/admin/money'
 import { Route as AdminMembershipsRouteImport } from './routes/admin/memberships'
@@ -403,6 +404,11 @@ const BeforeYouFlyEsimRoute = BeforeYouFlyEsimRouteImport.update({
   path: '/before-you-fly/esim',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSimRoute = AdminSimRouteImport.update({
+  id: '/sim',
+  path: '/sim',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminPromotionsRoute = AdminPromotionsRouteImport.update({
   id: '/promotions',
   path: '/promotions',
@@ -580,6 +586,7 @@ export interface FileRoutesByFullPath {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
+  '/admin/sim': typeof AdminSimRoute
   '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
   '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
@@ -669,6 +676,7 @@ export interface FileRoutesByTo {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
+  '/admin/sim': typeof AdminSimRoute
   '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
   '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
@@ -760,6 +768,7 @@ export interface FileRoutesById {
   '/admin/memberships': typeof AdminMembershipsRoute
   '/admin/money': typeof AdminMoneyRoute
   '/admin/promotions': typeof AdminPromotionsRoute
+  '/admin/sim': typeof AdminSimRoute
   '/before-you-fly/esim': typeof BeforeYouFlyEsimRoute
   '/before-you-fly/insurance': typeof BeforeYouFlyInsuranceRoute
   '/benefits/$id': typeof BenefitsIdRoute
@@ -852,6 +861,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
+    | '/admin/sim'
     | '/before-you-fly/esim'
     | '/before-you-fly/insurance'
     | '/benefits/$id'
@@ -941,6 +951,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
+    | '/admin/sim'
     | '/before-you-fly/esim'
     | '/before-you-fly/insurance'
     | '/benefits/$id'
@@ -1031,6 +1042,7 @@ export interface FileRouteTypes {
     | '/admin/memberships'
     | '/admin/money'
     | '/admin/promotions'
+    | '/admin/sim'
     | '/before-you-fly/esim'
     | '/before-you-fly/insurance'
     | '/benefits/$id'
@@ -1599,6 +1611,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BeforeYouFlyEsimRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/sim': {
+      id: '/admin/sim'
+      path: '/sim'
+      fullPath: '/admin/sim'
+      preLoaderRoute: typeof AdminSimRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/promotions': {
       id: '/admin/promotions'
       path: '/promotions'
@@ -1799,6 +1818,7 @@ interface AdminRouteRouteChildren {
   AdminMembershipsRoute: typeof AdminMembershipsRoute
   AdminMoneyRoute: typeof AdminMoneyRoute
   AdminPromotionsRoute: typeof AdminPromotionsRoute
+  AdminSimRoute: typeof AdminSimRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -1810,6 +1830,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminMembershipsRoute: AdminMembershipsRoute,
   AdminMoneyRoute: AdminMoneyRoute,
   AdminPromotionsRoute: AdminPromotionsRoute,
+  AdminSimRoute: AdminSimRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

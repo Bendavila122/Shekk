@@ -12,7 +12,7 @@ import {
 import { money, type FulfilmentMode } from "@/lib/sim";
 
 export const Route = createFileRoute("/admin/sim")({
-  component: SimConsole;
+  component: SimConsole,
 });
 
 const MODES: FulfilmentMode[] = ["disabled", "affiliate", "voucher", "api"];
