@@ -53,6 +53,14 @@ function at(dayOffset: number, hour: number, minute = 0) {
 
 const dayOnly = (dayOffset: number) => at(dayOffset, 12).slice(0, 10);
 
+/**
+ * PostgREST rejects a bulk insert whose objects don't share the same keys, so
+ * every seeded row is padded out against one template.
+ */
+function uniform<T extends Row>(template: T, rows: Partial<T>[]): T[] {
+  return rows.map((r) => ({ ...template, ...r }) as T);
+}
+
 /* ─────────────────────────── Programme + cohort shell ────────────────────── */
 
 async function ensureProgramme(db: Db) {
@@ -302,9 +310,35 @@ async function seedEvents(db: Db, cohortId: string, userId: string, groups: Map<
       event_type: "meeting",
       status: "scheduled",
     },
-  ].map((r) => ({ ...r, cohort_id: cohortId, created_by: userId, timezone: "Asia/Jerusalem" }));
+  ];
 
-  const { data, error } = await db.from("programme_events").insert(rows as never).select("id, title, status");
+  const eventRows = uniform(
+    {
+      cohort_id: cohortId,
+      created_by: userId,
+      timezone: "Asia/Jerusalem",
+      title: "",
+      description: null as string | null,
+      starts_at: "",
+      ends_at: null as string | null,
+      original_starts_at: null as string | null,
+      location_label: null as string | null,
+      meeting_point: null as string | null,
+      online_url: null as string | null,
+      event_type: "activity",
+      mandatory: false,
+      status: "scheduled",
+      status_note: null as string | null,
+      audience_kind: "everyone",
+      rsvp_enabled: false,
+      capacity: null as number | null,
+      requires_ack: false,
+      urgent: false,
+    },
+    rows,
+  );
+
+  const { data, error } = await db.from("programme_events").insert(eventRows as never).select("id, title, status");
   if (error) throw new Error(error.message);
   const byTitle = new Map<string, string>();
   for (const e of (data ?? []) as Row[]) byTitle.set(String(e["title"]), String(e["id"]));
@@ -333,36 +367,44 @@ async function seedEvents(db: Db, cohortId: string, userId: string, groups: Map<
     } as never);
   }
 
-  return { count: rows.length, byTitle };
+  return { count: eventRows.length, byTitle };
 }
 
 async function seedAnnouncements(db: Db, cohortId: string, userId: string, eventIds: Map<string, string>) {
-  const rows = [
+  const rows = uniform(
     {
       cohort_id: cohortId,
+      created_by: userId,
+      title: "",
+      body: null as string | null,
+      priority: "normal",
+      pinned: false,
+      requires_ack: false,
+      audience_kind: "everyone",
+      event_id: null as string | null,
+      link_url: null as string | null,
+    },
+    [
+    {
       title: "Welcome to the Shekk Test Programme",
       body: "This cohort is a sandbox. Everything in it is fake and can be reset from the Shekk console at any time.",
       priority: "important",
       pinned: true,
-      created_by: userId,
     },
     {
-      cohort_id: cohortId,
       title: "Curfew tonight is 23:00 — confirm you've seen this",
       body: "Back at the merkaz by 23:00. Tap to acknowledge so your madrich knows you read it.",
       priority: "urgent",
       requires_ack: true,
-      created_by: userId,
       event_id: eventIds.get("Dinner at the merkaz") ?? null,
     },
     {
-      cohort_id: cohortId,
       title: "Laundry pickup moves to Thursday",
       body: "Bags outside your door by 08:00.",
       priority: "normal",
-      created_by: userId,
     },
-  ];
+    ],
+  );
   const { error } = await db.from("programme_announcements").insert(rows as never);
   if (error) throw new Error(error.message);
   return rows.length;
@@ -422,9 +464,23 @@ async function seedChecklist(db: Db, cohortId: string) {
 }
 
 async function seedContacts(db: Db, cohortId: string) {
-  const rows = [
+  const rows = uniform(
     {
       cohort_id: cohortId,
+      name: "",
+      role: null as string | null,
+      category: "other",
+      phone: null as string | null,
+      whatsapp: null as string | null,
+      email: null as string | null,
+      notes: null as string | null,
+      availability: null as string | null,
+      is_emergency: false,
+      audience_kind: "everyone",
+      sort_order: 0,
+    },
+    [
+    {
       name: "Noa (madricha, Bus 1)",
       role: "Madricha",
       category: "madrich",
@@ -435,7 +491,6 @@ async function seedContacts(db: Db, cohortId: string) {
       sort_order: 0,
     },
     {
-      cohort_id: cohortId,
       name: "Programme office",
       role: "Office",
       category: "office",
@@ -445,7 +500,6 @@ async function seedContacts(db: Db, cohortId: string) {
       sort_order: 1,
     },
     {
-      cohort_id: cohortId,
       name: "24/7 emergency line",
       role: "Emergency",
       category: "emergency",
@@ -454,7 +508,8 @@ async function seedContacts(db: Db, cohortId: string) {
       notes: "Test contact — do not call.",
       sort_order: 2,
     },
-  ];
+    ],
+  );
   const { error } = await db.from("programme_contacts").insert(rows as never);
   if (error) throw new Error(error.message);
   return rows.length;
@@ -487,9 +542,23 @@ async function seedDocuments(db: Db, cohortId: string, userId: string) {
 }
 
 async function seedPlaces(db: Db, cohortId: string, userId: string) {
-  const rows = [
+  const rows = uniform(
     {
       cohort_id: cohortId,
+      created_by: userId,
+      label: "",
+      category: "other",
+      notes: null as string | null,
+      meeting_instructions: null as string | null,
+      google_place_id: null as string | null,
+      address: null as string | null,
+      latitude: null as number | null,
+      longitude: null as number | null,
+      audience_kind: "everyone",
+      sort_order: 0,
+    },
+    [
+    {
       label: "The merkaz — home base",
       category: "base",
       notes: "Classes, dinner and the madrichim office.",
@@ -500,7 +569,6 @@ async function seedPlaces(db: Db, cohortId: string, userId: string) {
       created_by: userId,
     },
     {
-      cohort_id: cohortId,
       label: "Jaffa Gate — bus pickup",
       category: "meeting_point",
       meeting_instructions: "Outside the gate by the taxi rank. Be there ten minutes early.",
@@ -511,7 +579,6 @@ async function seedPlaces(db: Db, cohortId: string, userId: string) {
       created_by: userId,
     },
     {
-      cohort_id: cohortId,
       label: "Ulpan building",
       category: "other",
       notes: "Hebrew classes, second floor.",
@@ -519,9 +586,9 @@ async function seedPlaces(db: Db, cohortId: string, userId: string) {
       latitude: 31.7807,
       longitude: 35.2185,
       sort_order: 2,
-      created_by: userId,
     },
-  ];
+    ],
+  );
   const { error } = await db.from("programme_places").insert(rows as never);
   if (error) throw new Error(error.message);
   return rows.length;
