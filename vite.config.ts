@@ -15,6 +15,9 @@ Object.assign(process.env, loadEnv(process.env.NODE_ENV ?? "development", proces
 export default defineConfig({
   plugins: [mcpPlugin()],
   tanstackStart: {
+    // Avoid the default client bootstrap's Suspense/Await wrapper, which can
+    // trip React's dispatcher during dev hydration after dependency updates.
+    client: { entry: "client" },
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
