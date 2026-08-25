@@ -31,7 +31,7 @@ export const Route = createFileRoute("/programme")({
 const TABS = [
   { to: "/programme", label: "Today", Icon: LayoutDashboard, exact: true },
   { to: "/programme/schedule", label: "Schedule", Icon: CalendarDays },
-  { to: "/programme/inbox", label: "Inbox", Icon: Inbox },
+  { to: "/programme/inbox", label: "Updates", Icon: Inbox },
   { to: "/programme/info", label: "Info", Icon: Info },
 ] as const;
 
