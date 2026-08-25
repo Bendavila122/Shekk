@@ -25,10 +25,14 @@ import {
 import { cleanError, useStaffActions } from "@/lib/useProgrammeHub";
 import {
   CONTACT_CATEGORIES,
+  ACTIVITY_KIND_LABEL,
   EVENT_TYPES,
   PLACE_CATEGORIES,
+  activityKindFields,
+  activityKindOf,
   delayBy,
   everyone,
+  type ActivityKind,
   type Audience,
   type ProgrammeEvent,
   type ProgrammeGroup,
@@ -58,10 +62,10 @@ export function EventEditor({
   const [locationLabel, setLocationLabel] = useState(event?.locationLabel ?? "");
   const [meetingPoint, setMeetingPoint] = useState(event?.meetingPoint ?? "");
   const [onlineUrl, setOnlineUrl] = useState(event?.onlineUrl ?? "");
-  const [eventType, setEventType] = useState(event?.eventType ?? "session");
-  const [mandatory, setMandatory] = useState(event?.mandatory ?? false);
-  const [rsvpEnabled, setRsvp] = useState(event?.rsvpEnabled ?? false);
+  const [eventType, setEventType] = useState(event?.eventType ?? "activity");
+  const [kind, setKind] = useState<ActivityKind>(event ? activityKindOf(event) : "mandatory");
   const [capacity, setCapacity] = useState(event?.capacity ? String(event.capacity) : "");
+  const [advanced, setAdvanced] = useState(false);
   const [requiresAck, setAck] = useState(event?.requiresAck ?? false);
   const [audience, setAudience] = useState<Audience>(event?.audience ?? everyone);
   const [note, setNote] = useState("");
@@ -79,9 +83,8 @@ export function EventEditor({
     meetingPoint: meetingPoint.trim() || null,
     onlineUrl: onlineUrl.trim() || null,
     eventType,
-    mandatory,
-    rsvpEnabled,
-    capacity: capacity ? Number(capacity) : null,
+    ...activityKindFields(kind),
+    capacity: kind === "limited" && capacity ? Number(capacity) : null,
     requiresAck,
     audience,
   };
@@ -120,7 +123,7 @@ export function EventEditor({
   }
 
   return (
-    <Sheet open onClose={onClose} title={event ? "Edit event" : "New event"}>
+    <Sheet open onClose={onClose} title={event ? "Edit activity" : "New activity"}>
       <div className="space-y-3">
         <Field label="Title">
           <input value={title} onChange={(e) => setTitle(e.target.value)} className={inputClass} placeholder="Shabbaton departure" />
@@ -135,37 +138,68 @@ export function EventEditor({
           </Field>
         </div>
 
-        <Field label="Type">
-          <select value={eventType} onChange={(e) => setEventType(e.target.value)} className={inputClass}>
-            {EVENT_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t.replace(/_/g, " ")}
-              </option>
-            ))}
-          </select>
-        </Field>
-
-        <Field label="Location">
+        <Field label="Where">
           <input value={locationLabel} onChange={(e) => setLocationLabel(e.target.value)} className={inputClass} placeholder="Tachana Merkazit, Jerusalem" />
         </Field>
         <Field label="Meeting point" hint="Where exactly to stand — this is what people ask on the day.">
           <input value={meetingPoint} onChange={(e) => setMeetingPoint(e.target.value)} className={inputClass} placeholder="Bay 6, next to the kiosk" />
         </Field>
-        <Field label="Online link (optional)">
-          <input value={onlineUrl} onChange={(e) => setOnlineUrl(e.target.value)} className={inputClass} placeholder="https://" />
-        </Field>
-        <Field label="Details">
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} className={inputClass} />
-        </Field>
 
-        <Toggle label="Mandatory" checked={mandatory} onChange={setMandatory} hint="Shows as required on the participant's day." />
-        <Toggle label="Ask for RSVP" checked={rsvpEnabled} onChange={setRsvp} />
-        {rsvpEnabled ? (
-          <Field label="Capacity (optional)" hint="Once full, 'going' is blocked by the database, not just the screen.">
+        <div>
+          <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+            Who has to come
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            {(["mandatory", "optional", "limited"] as ActivityKind[]).map((k) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setKind(k)}
+                className={`tap-flat rounded-xl border px-2 py-2.5 text-[12px] font-bold ${
+                  kind === k ? "border-primary bg-primary-soft text-primary" : "border-border bg-card"
+                }`}
+              >
+                {k === "mandatory" ? "Everyone" : k === "optional" ? "Optional" : "Limited"}
+              </button>
+            ))}
+          </div>
+          <p className="mt-1.5 text-[11px] text-muted-foreground">{ACTIVITY_KIND_LABEL[kind]}</p>
+        </div>
+
+        {kind === "limited" ? (
+          <Field label="Spaces" hint="Once full, 'going' is blocked by the database, not just the screen.">
             <input value={capacity} onChange={(e) => setCapacity(e.target.value.replace(/\D/g, ""))} inputMode="numeric" className={inputClass} />
           </Field>
         ) : null}
-        <Toggle label="Require 'Got it'" checked={requiresAck} onChange={setAck} hint="You'll see who has confirmed." />
+
+        <button
+          type="button"
+          onClick={() => setAdvanced((v) => !v)}
+          className="tap-flat text-[12px] font-bold text-primary"
+        >
+          {advanced ? "Hide options" : "More options"}
+        </button>
+
+        {advanced ? (
+          <div className="space-y-3">
+            <Field label="Details">
+              <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} className={inputClass} />
+            </Field>
+            <Field label="Type">
+              <select value={eventType} onChange={(e) => setEventType(e.target.value)} className={inputClass}>
+                {EVENT_TYPES.map((t) => (
+                  <option key={t} value={t}>
+                    {t.replace(/_/g, " ")}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Online link (optional)">
+              <input value={onlineUrl} onChange={(e) => setOnlineUrl(e.target.value)} className={inputClass} placeholder="https://" />
+            </Field>
+            <Toggle label="Require 'Got it'" checked={requiresAck} onChange={setAck} hint="You'll see who has confirmed." />
+          </div>
+        ) : null}
 
         <Field label="Who sees this">
           <AudiencePicker value={audience} onChange={setAudience} groups={hub.myGroups} people={people} />
@@ -193,7 +227,7 @@ export function EventEditor({
         <ErrorText>{error}</ErrorText>
 
         <ActionButton className="w-full" onClick={save} disabled={busy}>
-          {busy ? "Saving…" : event ? "Save changes" : "Publish event"}
+          {busy ? "Saving…" : event ? "Save changes" : "Publish to the cohort"}
         </ActionButton>
 
         {event ? (
