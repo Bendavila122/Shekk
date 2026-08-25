@@ -395,6 +395,8 @@ export async function readHub(db: Db, userId: string): Promise<ProgrammeHub> {
       eventId: s(v, "event_id"),
       question: String(v["question"]),
       description: s(v, "description"),
+      voteKind: (s(v, "vote_kind") ?? "poll") as ProgrammeVote["voteKind"],
+      createdAt: String(v["created_at"]),
       status: String(v["status"]) as "open" | "closed",
       anonymous: Boolean(v["anonymous"]),
       allowChange: Boolean(v["allow_change"]),
@@ -1029,6 +1031,7 @@ export async function deleteAnnouncement(db: Db, userId: string, id: string) {
 
 export type VoteInput = {
   question: string;
+  voteKind?: "poll" | "question" | "yes_no";
   description?: string | null;
   options: { label: string; detail?: string | null; capacity?: number | null }[];
   eventId?: string | null;
@@ -1050,6 +1053,7 @@ export async function createVote(db: Db, userId: string, cohortId: string, input
       event_id: input.eventId ?? null,
       question: input.question,
       description: input.description ?? null,
+      vote_kind: input.voteKind ?? "poll",
       anonymous: input.anonymous ?? true,
       allow_change: input.allowChange ?? true,
       results_visible: input.resultsVisible ?? true,
@@ -1075,7 +1079,9 @@ export async function createVote(db: Db, userId: string, cohortId: string, input
 
   await writeAudience(db, cohortId, "vote", voteId, audience);
   if (input.notify !== false) {
-    await notifyAudience(cohortId, audience.kind, "vote", voteId, "notify", "New vote", input.question);
+    const heading =
+      input.voteKind === "question" || input.voteKind === "yes_no" ? "A question for you" : "New vote";
+    await notifyAudience(cohortId, audience.kind, "vote", voteId, "notify", heading, input.question);
   }
   return readHub(db, userId);
 }

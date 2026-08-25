@@ -9,12 +9,14 @@ import { useEffect, type ReactNode } from "react";
 import { X } from "lucide-react";
 import { StatusPill } from "@/components/Kit";
 import {
+  POST_LABEL,
   STATUS_LABEL,
   statusTone,
   updatedAgo,
   type Audience,
   type EventStatus,
   type ProgrammeEvent,
+  type PostKind,
   type ProgrammeGroup,
 } from "@/lib/programme/logic";
 
@@ -287,4 +289,86 @@ export function AudiencePicker({
 export function ErrorText({ children }: { children?: ReactNode }) {
   if (!children) return null;
   return <p className="text-[12px] font-semibold text-destructive">{children}</p>;
+}
+
+/* ─────────────────────────────── V2 primitives ────────────────────────────── */
+
+/** Chunky segmented control — the only tab pattern Programme V2 uses. */
+export function Segmented<T extends string>({
+  value,
+  options,
+  onChange,
+}: {
+  value: T;
+  options: readonly { value: T; label: string; badge?: number }[];
+  onChange: (next: T) => void;
+}) {
+  return (
+    <div className="flex gap-1.5 overflow-x-auto pb-0.5">
+      {options.map((o) => (
+        <button
+          key={o.value}
+          type="button"
+          onClick={() => onChange(o.value)}
+          aria-pressed={value === o.value}
+          className={`tap-flat flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-[12.5px] font-bold ${
+            value === o.value
+              ? "bg-ink text-ink-foreground"
+              : "border border-border bg-card text-muted-foreground"
+          }`}
+        >
+          {o.label}
+          {o.badge ? (
+            <span className="rounded-full bg-destructive px-1.5 text-[10px] font-bold text-destructive-foreground">
+              {o.badge}
+            </span>
+          ) : null}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** What kind of post this is, in one word. */
+export function KindChip({ kind }: { kind: PostKind }) {
+  const tone =
+    kind === "urgent"
+      ? "attention"
+      : kind === "confirmation"
+        ? "pending"
+        : kind === "announcement"
+          ? "quiet"
+          : "live";
+  return <StatusPill tone={tone}>{POST_LABEL[kind]}</StatusPill>;
+}
+
+/** A soft, tappable row used for to-dos and quick actions. */
+export function TapRow({
+  title,
+  detail,
+  onClick,
+  tone = "plain",
+}: {
+  title: string;
+  detail?: string;
+  onClick: () => void;
+  tone?: "plain" | "urgent";
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`tap flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left shadow-card ${
+        tone === "urgent" ? "border-destructive/40 bg-destructive/5" : "border-border bg-card"
+      }`}
+    >
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-[13.5px] font-semibold">{title}</span>
+        {detail ? <span className="block text-[11.5px] text-muted-foreground">{detail}</span> : null}
+      </span>
+      <span aria-hidden className="text-[13px] font-bold text-primary">
+        →
+      </span>
+    </button>
+  );
 }

@@ -162,11 +162,16 @@ export type VoteOption = {
   count: number | null;
 };
 
+/** How staff framed the ask: a choice poll, an open question, or a quick yes/no. */
+export type VoteKind = "poll" | "question" | "yes_no";
+
 export type ProgrammeVote = {
   id: string;
   eventId: string | null;
   question: string;
   description: string | null;
+  voteKind: VoteKind;
+  createdAt: string;
   status: "open" | "closed";
   anonymous: boolean;
   allowChange: boolean;
@@ -599,3 +604,199 @@ export const DEFAULT_CHECKLIST: {
     required: true,
   },
 ];
+
+/* ─────────────────────────── V2: one feed, one to-do list ─────────────────── */
+
+/**
+ * Programme V2 speaks in "posts", not database tables. An announcement, a
+ * confirmation request, an urgent notice, a poll, an open question and a
+ * yes/no ask are all posts — the participant only ever sees a chronological
+ * list with a clear label and, where relevant, one thing to tap.
+ */
+export type PostKind = "announcement" | "confirmation" | "urgent" | "poll" | "question" | "yes_no";
+
+export const POST_LABEL: Record<PostKind, string> = {
+  announcement: "Announcement",
+  confirmation: "Please confirm",
+  urgent: "Urgent",
+  poll: "Vote",
+  question: "Question",
+  yes_no: "Yes / no",
+};
+
+export type FeedItem = {
+  key: string;
+  kind: PostKind;
+  title: string;
+  at: string;
+  needsAction: boolean;
+  pinned: boolean;
+  announcement: ProgrammeAnnouncementRow | null;
+  vote: ProgrammeVote | null;
+};
+
+export function announcementKind(a: Pick<ProgrammeAnnouncementRow, "priority" | "requiresAck">): PostKind {
+  if (a.priority === "urgent") return "urgent";
+  if (a.requiresAck) return "confirmation";
+  return "announcement";
+}
+
+/** Everything staff has posted, newest first, pinned first. */
+export function feedItems(hub: Pick<ProgrammeHub, "announcements" | "votes">): FeedItem[] {
+  const posts: FeedItem[] = [
+    ...hub.announcements.map((a) => ({
+      key: `announcement:${a.id}`,
+      kind: announcementKind(a),
+      title: a.title,
+      at: a.publishedAt,
+      needsAction: a.requiresAck && !a.acknowledged,
+      pinned: a.pinned,
+      announcement: a,
+      vote: null,
+    })),
+    ...hub.votes.map((v) => ({
+      key: `vote:${v.id}`,
+      kind: v.voteKind as PostKind,
+      title: v.question,
+      at: v.createdAt,
+      needsAction: v.status === "open" && !v.myOptionId,
+      pinned: false,
+      announcement: null,
+      vote: v,
+    })),
+  ];
+  return posts.sort((a, b) => {
+    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+    if (a.needsAction !== b.needsAction) return a.needsAction ? -1 : 1;
+    return b.at.localeCompare(a.at);
+  });
+}
+
+/* ─────────────────────────── V2: the participant to-do ───────────────────── */
+
+export type PendingAction = {
+  key: string;
+  kind: "ack" | "rsvp" | "vote" | "checklist";
+  title: string;
+  detail: string;
+  urgent: boolean;
+  eventId?: string;
+  voteId?: string;
+  itemId?: string;
+};
+
+/**
+ * The short, honest list of things only this participant can clear. Ordered so
+ * the loudest thing is first: urgent, then confirmations, then RSVPs, votes and
+ * finally the pre-arrival checklist.
+ */
+export function pendingActions(hub: ProgrammeHub, now = Date.now()): PendingAction[] {
+  const soon = now + 72 * 3_600_000;
+  const live = (e: ProgrammeEvent) => e.status !== "cancelled" && new Date(e.startsAt).getTime() > now;
+
+  const acks: PendingAction[] = [
+    ...hub.announcements
+      .filter((a) => a.requiresAck && !a.acknowledged)
+      .map((a) => ({
+        key: `ack:announcement:${a.id}`,
+        kind: "ack" as const,
+        title: a.title,
+        detail: "Tap to confirm you've read it",
+        urgent: a.priority === "urgent",
+      })),
+    ...hub.events
+      .filter((e) => e.requiresAck && !e.acknowledged && e.status !== "cancelled")
+      .map((e) => ({
+        key: `ack:event:${e.id}`,
+        kind: "ack" as const,
+        title: e.title,
+        detail: "Confirm you've seen this",
+        urgent: e.urgent,
+        eventId: e.id,
+      })),
+  ];
+
+  const rsvps: PendingAction[] = hub.events
+    .filter((e) => e.rsvpEnabled && !e.myRsvp && live(e) && new Date(e.startsAt).getTime() < soon)
+    .map((e) => ({
+      key: `rsvp:${e.id}`,
+      kind: "rsvp" as const,
+      title: e.title,
+      detail: "Are you coming?",
+      urgent: e.mandatory,
+      eventId: e.id,
+    }));
+
+  const votes: PendingAction[] = hub.votes
+    .filter((v) => v.status === "open" && !v.myOptionId)
+    .map((v) => ({
+      key: `vote:${v.id}`,
+      kind: "vote" as const,
+      title: v.question,
+      detail: v.voteKind === "yes_no" ? "Answer yes or no" : "Your programme is asking",
+      urgent: false,
+      voteId: v.id,
+    }));
+
+  const checklist: PendingAction[] = hub.checklist
+    .filter((i) => i.required && !i.done)
+    .slice(0, 3)
+    .map((i) => ({
+      key: `checklist:${i.id}`,
+      kind: "checklist" as const,
+      title: i.title,
+      detail: i.dueOn ? `Due ${i.dueOn}` : "Before you fly",
+      urgent: false,
+      itemId: i.id,
+    }));
+
+  return [...acks, ...rsvps, ...votes, ...checklist].sort(
+    (a, b) => Number(b.urgent) - Number(a.urgent),
+  );
+}
+
+/* ───────────────────── V2: plain-English activity + changes ───────────────── */
+
+/** Three choices a madrich actually makes, instead of four separate toggles. */
+export type ActivityKind = "mandatory" | "optional" | "limited";
+
+export const ACTIVITY_KIND_LABEL: Record<ActivityKind, string> = {
+  mandatory: "Everyone must come",
+  optional: "Optional",
+  limited: "Limited spaces",
+};
+
+export function activityKindOf(event: Pick<ProgrammeEvent, "mandatory" | "capacity">): ActivityKind {
+  if (event.capacity && event.capacity > 0) return "limited";
+  return event.mandatory ? "mandatory" : "optional";
+}
+
+/** Field flags implied by the chosen kind — the composer writes these for you. */
+export function activityKindFields(kind: ActivityKind): {
+  mandatory: boolean;
+  rsvpEnabled: boolean;
+} {
+  if (kind === "mandatory") return { mandatory: true, rsvpEnabled: false };
+  if (kind === "limited") return { mandatory: false, rsvpEnabled: true };
+  return { mandatory: false, rsvpEnabled: true };
+}
+
+const CHANGE_FIELD_LABEL: Record<string, string> = {
+  starts_at: "New time",
+  startsAt: "New time",
+  ends_at: "New end time",
+  location_label: "New location",
+  locationLabel: "New location",
+  meeting_point: "New meeting point",
+  status: "Status",
+  title: "Renamed",
+  capacity: "Spaces",
+};
+
+/** "New time · 09:00 → 09:30" in words a participant reads without thinking. */
+export function changeLine(change: Pick<EventChange, "field" | "before" | "after">): string {
+  const label = CHANGE_FIELD_LABEL[change.field] ?? change.field.replace(/_/g, " ");
+  if (change.after && change.before) return `${label}: ${change.before} → ${change.after}`;
+  if (change.after) return `${label}: ${change.after}`;
+  return label;
+}

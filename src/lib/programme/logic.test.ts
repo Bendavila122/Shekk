@@ -81,6 +81,8 @@ function vote(over: Partial<ProgrammeVote> = {}): ProgrammeVote {
     eventId: null,
     question: "Which tiyul?",
     description: null,
+    voteKind: "poll",
+    createdAt: "2026-08-24T08:00:00.000Z",
     status: "open",
     anonymous: false,
     allowChange: false,
