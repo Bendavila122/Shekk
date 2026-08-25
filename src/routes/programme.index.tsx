@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AlertTriangle, CalendarClock, Radio, Signal, Sparkles } from "lucide-react";
+import { CalendarClock, Radio, Signal, Sparkles } from "lucide-react";
 import { Card } from "@/components/AppShell";
 import { EmptyState, Milestone, ProgressBar, SectionHead } from "@/components/Kit";
 import { track } from "@/lib/analytics";
-import { useProgrammeHub } from "@/lib/useProgrammeHub";
+import { useParticipantActions, useProgrammeHub } from "@/lib/useProgrammeHub";
 import { AnnouncementCard, EventRow, EventSheet, VoteCard } from "@/components/programme/Participant";
-import { Freshness, StatusChip, fmtDayLong, fmtTime } from "@/components/programme/Bits";
-import type { ProgrammeEvent } from "@/lib/programme/logic";
+import { Freshness, StatusChip, TapRow, fmtDayLong, fmtTime } from "@/components/programme/Bits";
+import { changeLine, pendingActions, type ProgrammeEvent } from "@/lib/programme/logic";
 
 export const Route = createFileRoute("/programme/")({
   head: () => ({
@@ -27,14 +27,16 @@ export const Route = createFileRoute("/programme/")({
 });
 
 function TodayScreen() {
-  const { hub, now, next, today, changes, votes, pendingAcks, checklist } = useProgrammeHub();
+  const { hub, now, next, today, changes, checklist } = useProgrammeHub();
+  const { tick } = useParticipantActions();
   const [open, setOpen] = useState<ProgrammeEvent | null>(null);
 
   useEffect(() => {
     track("programme_hub_viewed");
   }, []);
 
-  const pinned = hub.announcements.filter((a) => a.pinned || a.priority === "urgent").slice(0, 3);
+  const todo = useMemo(() => pendingActions(hub), [hub]);
+  const pinned = hub.announcements.filter((a) => a.pinned || a.priority === "urgent").slice(0, 2);
   const focus = now ?? next;
 
   return (
@@ -82,18 +84,32 @@ function TodayScreen() {
         )}
       </section>
 
-      {/* Anything that needs the participant to act. */}
-      {pendingAcks.length > 0 ? (
+      {/* One honest to-do list: only things this participant can clear. */}
+      {todo.length > 0 ? (
         <section>
-          <SectionHead title="Needs your OK" />
+          <SectionHead title="You need to" hint="Short list. It empties as you go." />
           <div className="space-y-2">
-            {pendingAcks.map((a) => {
-              if (a.subjectType === "announcement") {
-                const ann = hub.announcements.find((x) => x.id === a.id);
-                return ann ? <AnnouncementCard key={a.id} announcement={ann} /> : null;
-              }
-              const ev = hub.events.find((x) => x.id === a.id);
-              return ev ? <EventRow key={a.id} event={ev} onOpen={() => setOpen(ev)} showDay /> : null;
+            {todo.slice(0, 6).map((a) => {
+              const event = a.eventId ? hub.events.find((e) => e.id === a.eventId) : null;
+              return (
+                <TapRow
+                  key={a.key}
+                  title={a.title}
+                  detail={a.detail}
+                  tone={a.urgent ? "urgent" : "plain"}
+                  onClick={() => {
+                    if (event) {
+                      setOpen(event);
+                      return;
+                    }
+                    if (a.kind === "checklist" && a.itemId) {
+                      tick.mutate({ itemId: a.itemId, done: true });
+                      return;
+                    }
+                    window.location.assign("/programme/inbox");
+                  }}
+                />
+              );
             })}
           </div>
         </section>
@@ -103,16 +119,10 @@ function TodayScreen() {
         <section>
           <SectionHead title="What changed" />
           <div className="space-y-2">
-            {changes.slice(0, 5).map((c) => (
+            {changes.slice(0, 4).map((c) => (
               <Card key={c.id} className="border-notice-border bg-notice-soft">
-                <div className="flex items-center gap-2">
-                  <AlertTriangle className="size-4 shrink-0 text-notice-foreground" />
-                  <p className="min-w-0 flex-1 text-[13px] font-semibold text-notice-foreground">{c.eventTitle}</p>
-                </div>
-                <p className="mt-1 text-[12px] text-notice-foreground/90">
-                  {c.field}
-                  {c.before || c.after ? `: ${c.before ?? "—"} → ${c.after ?? "—"}` : ""}
-                </p>
+                <p className="text-[13px] font-semibold text-notice-foreground">{c.eventTitle}</p>
+                <p className="mt-0.5 text-[12px] text-notice-foreground/90">{changeLine(c)}</p>
                 {c.note ? <p className="mt-0.5 text-[12px] text-notice-foreground/90">{c.note}</p> : null}
               </Card>
             ))}
@@ -122,7 +132,14 @@ function TodayScreen() {
 
       {pinned.length > 0 ? (
         <section>
-          <SectionHead title="Pinned announcements" action={<Link to="/programme/inbox" className="text-[12px] font-bold text-primary">Inbox →</Link>} />
+          <SectionHead
+            title="Pinned"
+            action={
+              <Link to="/programme/inbox" className="text-[12px] font-bold text-primary">
+                All updates →
+              </Link>
+            }
+          />
           <div className="space-y-2">
             {pinned.map((a) => (
               <AnnouncementCard key={a.id} announcement={a} />
@@ -131,19 +148,15 @@ function TodayScreen() {
         </section>
       ) : null}
 
-      {votes.length > 0 ? (
-        <section>
-          <SectionHead title="Your programme is asking" />
-          <div className="space-y-2">
-            {votes.map((v) => (
-              <VoteCard key={v.id} vote={v} />
-            ))}
-          </div>
-        </section>
-      ) : null}
-
       <section>
-        <SectionHead title={`Today · ${fmtDayLong(new Date().toISOString())}`} action={<Link to="/programme/schedule" className="text-[12px] font-bold text-primary">All days →</Link>} />
+        <SectionHead
+          title={`Today · ${fmtDayLong(new Date().toISOString())}`}
+          action={
+            <Link to="/programme/schedule" className="text-[12px] font-bold text-primary">
+              All days →
+            </Link>
+          }
+        />
         {today.length === 0 ? (
           <EmptyState icon={CalendarClock} title="Nothing on today" body="Check the full schedule for the days ahead." />
         ) : (
@@ -155,6 +168,19 @@ function TodayScreen() {
         )}
       </section>
 
+      {hub.votes.filter((v) => v.status === "open").length > 0 ? (
+        <section>
+          <SectionHead title="Your programme is asking" />
+          <div className="space-y-2">
+            {hub.votes
+              .filter((v) => v.status === "open")
+              .map((v) => (
+                <VoteCard key={v.id} vote={v} />
+              ))}
+          </div>
+        </section>
+      ) : null}
+
       {checklist.total > 0 ? (
         checklist.done === checklist.total ? (
           <Milestone
@@ -165,7 +191,14 @@ function TodayScreen() {
           />
         ) : (
           <section>
-            <SectionHead title="Before you fly" action={<Link to="/programme/info" className="text-[12px] font-bold text-primary">Open →</Link>} />
+            <SectionHead
+              title="Before you fly"
+              action={
+                <Link to="/programme/info" className="text-[12px] font-bold text-primary">
+                  Open →
+                </Link>
+              }
+            />
             <Card>
               <p className="text-sm font-semibold">
                 {checklist.done} of {checklist.total} done
