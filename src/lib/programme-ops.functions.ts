@@ -136,6 +136,7 @@ const announcementFields = z.object({
 
 const voteFields = z.object({
   question: z.string().trim().min(1).max(200),
+  voteKind: z.enum(["poll", "question", "yes_no"]).optional(),
   description: text(1000),
   options: z
     .array(
