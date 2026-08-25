@@ -108,6 +108,12 @@ function StaffScreen() {
 
   return (
     <div className="space-y-6 px-4 pb-24 pt-4">
+      {hub.isTest ? (
+        <p className="rounded-xl bg-warning px-3 py-2 text-[11px] font-bold uppercase tracking-wide text-warning-foreground">
+          Test sandbox — this is not a real programme
+        </p>
+      ) : null}
+
       <div className="flex gap-1.5 overflow-x-auto">
         {TABS.map((t) => (
           <button

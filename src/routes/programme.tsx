@@ -100,6 +100,11 @@ function ProgrammeLayout() {
         <div className="grad-balance relative overflow-hidden rounded-[1.5rem] px-5 py-5 text-ink-foreground shadow-lift">
           <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
           <div className="relative">
+            {hub.isTest ? (
+              <p className="mb-1.5 inline-block rounded-full bg-warning px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-warning-foreground">
+                Test sandbox
+              </p>
+            ) : null}
             <p className="font-display text-xl font-bold leading-tight">{hub.programmeName}</p>
             <p className="mt-0.5 text-sm opacity-80">
               {hub.cohortName}
