@@ -253,6 +253,8 @@ export type ProgrammeHub = {
   city: string | null;
   logoUrl: string | null;
   verified: boolean;
+  /** True only for the internal Shekk sandbox programme. */
+  isTest: boolean;
   timezone: string;
   welcomeMessage: string | null;
   startsOn: string | null;
@@ -281,6 +283,7 @@ export const emptyHub: ProgrammeHub = {
   city: null,
   logoUrl: null,
   verified: false,
+  isTest: false,
   timezone: "Asia/Jerusalem",
   welcomeMessage: null,
   startsOn: null,

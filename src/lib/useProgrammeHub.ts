@@ -19,6 +19,8 @@ import {
   adminProgrammeUpdate,
   adminStaffRemove,
   adminStaffSetRole,
+  adminTestProgrammeReset,
+  adminTestProgrammeStatus,
   adminProgrammeAssignOwner,
   adminProgrammeCreate,
   adminProgrammeFlags,
@@ -349,4 +351,32 @@ export function useAdminProgrammeEditing() {
       ...after,
     }),
   };
+}
+
+/* ─────────────────────── Internal Shekk testing sandbox ───────────────────── */
+
+/**
+ * The operator-only programme sandbox: read its state, and create/reset it with
+ * the signed-in operator as owner-staff plus participant.
+ */
+export function useAdminTestProgramme() {
+  const qc = useQueryClient();
+  const statusFn = useServerFn(adminTestProgrammeStatus);
+  const resetFn = useServerFn(adminTestProgrammeReset);
+
+  const status = useQuery({
+    queryKey: ["admin", "programmes", "testbed"],
+    queryFn: () => statusFn(),
+    retry: false,
+  });
+
+  const reset = useMutation({
+    mutationFn: () => resetFn(),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["admin", "programmes"] });
+      void qc.invalidateQueries({ queryKey: HUB_KEY });
+    },
+  });
+
+  return { status, reset };
 }
