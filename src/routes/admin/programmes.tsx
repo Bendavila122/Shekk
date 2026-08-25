@@ -17,6 +17,7 @@ import {
   Check,
   CheckCircle2,
   ChevronRight,
+  FlaskConical,
   Copy,
   KeyRound,
   Plus,
@@ -32,6 +33,7 @@ import {
   useAdminProgrammeActions,
   useAdminProgrammeEditing,
   useAdminProgrammes,
+  useAdminTestProgramme,
 } from "@/lib/useProgrammeHub";
 import { cleanError } from "@/lib/useProgrammeHub";
 
@@ -119,6 +121,12 @@ function Programmes() {
             <Stat label="Staff" value={String(totals.staff)} />
             <Stat label="Open invites" value={String(totals.pendingInvites)} />
           </div>
+
+          <div className="mb-6">
+            <TestbedPanel />
+          </div>
+
+
 
           <Panel
             title="All programmes"
@@ -924,5 +932,96 @@ function ContentTab({
         </div>
       ))}
     </div>
+  );
+}
+
+/* ──────────────────────────── Testing sandbox ─────────────────────────────── */
+
+/**
+ * Operator sandbox. One designated test programme (slug `shekk-test-programme`)
+ * that the signed-in operator owns *and* participates in, so both sides of
+ * Programme V1 can be exercised from one account. The reset only ever touches
+ * that cohort's own rows.
+ */
+function TestbedPanel() {
+  const { status, reset } = useAdminTestProgramme();
+  const info = reset.data ?? null;
+  const joinCode = info?.joinCode ?? status.data?.joinCode ?? null;
+  const exists = Boolean(info) || Boolean(status.data?.exists);
+
+  return (
+    <Panel
+      title="Testing sandbox"
+      action={<Pill tone="warning">Shekk operators only</Pill>}
+    >
+      <p className="text-sm text-muted-foreground">
+        Creates or resets <span className="font-semibold text-foreground">Shekk Test Programme</span> →{" "}
+        <span className="font-semibold text-foreground">Summer Test Cohort</span> and makes your own account both
+        programme owner and participant, so you can test <span className="font-semibold text-foreground">/programme</span>{" "}
+        and <span className="font-semibold text-foreground">/programme/staff</span> from one login. Real partner
+        programmes are never touched.
+      </p>
+
+      {status.isLoading ? (
+        <p className="mt-3 text-xs text-muted-foreground">Checking the sandbox…</p>
+      ) : status.error ? (
+        <p className="mt-3 text-xs text-destructive">{cleanError(status.error, "We couldn't read the sandbox state.")}</p>
+      ) : null}
+
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <ActionButton
+          tone={exists ? "ghost" : "primary"}
+          disabled={reset.isPending}
+          onClick={() => reset.mutate(undefined, { onSuccess: () => void status.refetch() })}
+        >
+          <FlaskConical className="mr-1.5 inline size-4" />
+          {reset.isPending ? "Rebuilding…" : exists ? "Reset test data" : "Create test programme"}
+        </ActionButton>
+
+        {exists ? (
+          <>
+            <Link
+              to="/programme"
+              className="tap-flat rounded-xl border border-border bg-card px-3 py-2 text-xs font-bold"
+            >
+              Open student view
+            </Link>
+            <Link
+              to="/programme/staff"
+              className="tap-flat rounded-xl border border-border bg-card px-3 py-2 text-xs font-bold"
+            >
+              Open staff view
+            </Link>
+            {joinCode ? (
+              <Link
+                to="/join/$code"
+                params={{ code: joinCode }}
+                className="tap-flat rounded-xl border border-border bg-card px-3 py-2 text-xs font-bold"
+              >
+                Open join page
+              </Link>
+            ) : null}
+          </>
+        ) : null}
+      </div>
+
+      {joinCode ? (
+        <p className="mt-3 text-xs text-muted-foreground">
+          Join code <span className="font-mono font-bold text-foreground">{joinCode}</span>
+        </p>
+      ) : null}
+
+      {reset.error ? (
+        <p className="mt-3 text-xs text-destructive">{cleanError(reset.error, "We couldn't rebuild the sandbox.")}</p>
+      ) : null}
+
+      {info ? (
+        <p className="mt-3 text-xs font-semibold text-success">
+          Sandbox rebuilt · {info.seeded.events} events · {info.seeded.groups} groups ·{" "}
+          {info.seeded.announcements} announcements · {info.seeded.votes} vote · {info.seeded.checklist} checklist items
+          · {info.seeded.contacts} contacts · {info.seeded.documents} documents · {info.seeded.places} places
+        </p>
+      ) : null}
+    </Panel>
   );
 }

@@ -513,6 +513,7 @@ export async function readHub(db: Db, userId: string): Promise<ProgrammeHub> {
     city: s(programme, "city"),
     logoUrl: s(programme, "logo_url"),
     verified: Boolean(programme["verified_at"]),
+    isTest: s(programme, "slug") === "shekk-test-programme",
     timezone: String(cohort["timezone"] ?? "Asia/Jerusalem"),
     welcomeMessage: s(cohort, "welcome_message"),
     startsOn: s(cohort, "starts_on"),

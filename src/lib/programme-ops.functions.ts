@@ -602,3 +602,28 @@ export const adminInviteRevoke = createServerFn({ method: "POST" })
     const { adminRevokeInvite } = await import("@/lib/programme-ops.server");
     return adminRevokeInvite(data.inviteId);
   });
+
+/* ─────────────────────── Internal Shekk testing sandbox ───────────────────── */
+
+/** Where the designated test programme stands. Shekk operators only. */
+export const adminTestProgrammeStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { assertAdmin } = await import("@/lib/places/admin.server");
+    await assertAdmin(context);
+    const { testProgrammeStatus } = await import("@/lib/programme-testbed.server");
+    return testProgrammeStatus();
+  });
+
+/**
+ * Create or reset the sandbox programme with the calling operator as both
+ * owner-staff and participant. Only ever touches the designated test cohort.
+ */
+export const adminTestProgrammeReset = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { assertAdmin } = await import("@/lib/places/admin.server");
+    await assertAdmin(context);
+    const { resetTestProgramme } = await import("@/lib/programme-testbed.server");
+    return resetTestProgramme(context.userId);
+  });
