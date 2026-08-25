@@ -101,7 +101,7 @@ function ProgrammeLayout() {
           <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
           <div className="relative">
             {hub.isTest ? (
-              <p className="mb-1.5 inline-block rounded-full bg-warning px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-warning-foreground">
+              <p className="mb-1.5 inline-block rounded-full bg-warning-soft px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-warning-foreground">
                 Test sandbox
               </p>
             ) : null}
