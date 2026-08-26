@@ -15,6 +15,7 @@ import {
   getEvent,
   listEvents,
   myTickets,
+  trackOutboundBooking,
 } from "./events.functions";
 
 export const EVENT_KIND_LABEL: Record<string, string> = {
@@ -88,6 +89,17 @@ export function useBuyTicket() {
       qc.invalidateQueries({ queryKey: ["events"] });
       qc.invalidateQueries({ queryKey: ["ledger"] });
     },
+  });
+}
+
+/**
+ * Hand off to a partner checkout. The attribution record is written server-side
+ * first, then we open the provider's page — a click, never a booking.
+ */
+export function useOutboundBooking() {
+  const fn = useServerFn(trackOutboundBooking);
+  return useMutation({
+    mutationFn: (vars: { eventId: string }) => fn({ data: vars }),
   });
 }
 

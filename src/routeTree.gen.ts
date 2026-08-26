@@ -34,6 +34,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WhatsOnIndexRouteImport } from './routes/whats-on.index'
 import { Route as SocialIndexRouteImport } from './routes/social/index'
 import { Route as SiddurIndexRouteImport } from './routes/siddur/index'
 import { Route as ServicesIndexRouteImport } from './routes/services/index'
@@ -92,6 +93,7 @@ import { Route as ServicesEsimIndexRouteImport } from './routes/services/esim.in
 import { Route as ExploreMapIndexRouteImport } from './routes/explore/map.index'
 import { Route as ExploreIdfIndexRouteImport } from './routes/explore/idf.index'
 import { Route as ExploreFitnessIndexRouteImport } from './routes/explore/fitness.index'
+import { Route as WhatsOnEventIdRouteImport } from './routes/whats-on.event.$id'
 import { Route as ServicesEsimMineRouteImport } from './routes/services/esim.mine'
 import { Route as ServicesEsimPlanIdRouteImport } from './routes/services/esim.$planId'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
@@ -230,6 +232,11 @@ const AdminRouteRoute = AdminRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WhatsOnIndexRoute = WhatsOnIndexRouteImport.update({
+  id: '/whats-on/',
+  path: '/whats-on/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SocialIndexRoute = SocialIndexRouteImport.update({
@@ -524,6 +531,11 @@ const ExploreFitnessIndexRoute = ExploreFitnessIndexRouteImport.update({
   path: '/explore/fitness/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WhatsOnEventIdRoute = WhatsOnEventIdRouteImport.update({
+  id: '/whats-on/event/$id',
+  path: '/whats-on/event/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesEsimMineRoute = ServicesEsimMineRouteImport.update({
   id: '/services/esim/mine',
   path: '/services/esim/mine',
@@ -679,6 +691,7 @@ export interface FileRoutesByFullPath {
   '/services/': typeof ServicesIndexRoute
   '/siddur/': typeof SiddurIndexRoute
   '/social/': typeof SocialIndexRoute
+  '/whats-on/': typeof WhatsOnIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
@@ -688,6 +701,7 @@ export interface FileRoutesByFullPath {
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/services/esim/$planId': typeof ServicesEsimPlanIdRoute
   '/services/esim/mine': typeof ServicesEsimMineRoute
+  '/whats-on/event/$id': typeof WhatsOnEventIdRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/explore/idf/': typeof ExploreIdfIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
@@ -776,6 +790,7 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesIndexRoute
   '/siddur': typeof SiddurIndexRoute
   '/social': typeof SocialIndexRoute
+  '/whats-on': typeof WhatsOnIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
@@ -785,6 +800,7 @@ export interface FileRoutesByTo {
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/services/esim/$planId': typeof ServicesEsimPlanIdRoute
   '/services/esim/mine': typeof ServicesEsimMineRoute
+  '/whats-on/event/$id': typeof WhatsOnEventIdRoute
   '/explore/fitness': typeof ExploreFitnessIndexRoute
   '/explore/idf': typeof ExploreIdfIndexRoute
   '/explore/map': typeof ExploreMapIndexRoute
@@ -876,6 +892,7 @@ export interface FileRoutesById {
   '/services/': typeof ServicesIndexRoute
   '/siddur/': typeof SiddurIndexRoute
   '/social/': typeof SocialIndexRoute
+  '/whats-on/': typeof WhatsOnIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
@@ -885,6 +902,7 @@ export interface FileRoutesById {
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/services/esim/$planId': typeof ServicesEsimPlanIdRoute
   '/services/esim/mine': typeof ServicesEsimMineRoute
+  '/whats-on/event/$id': typeof WhatsOnEventIdRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/explore/idf/': typeof ExploreIdfIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
@@ -977,6 +995,7 @@ export interface FileRouteTypes {
     | '/services/'
     | '/siddur/'
     | '/social/'
+    | '/whats-on/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/event/$id'
@@ -986,6 +1005,7 @@ export interface FileRouteTypes {
     | '/explore/service/$id'
     | '/services/esim/$planId'
     | '/services/esim/mine'
+    | '/whats-on/event/$id'
     | '/explore/fitness/'
     | '/explore/idf/'
     | '/explore/map/'
@@ -1074,6 +1094,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/siddur'
     | '/social'
+    | '/whats-on'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/event/$id'
@@ -1083,6 +1104,7 @@ export interface FileRouteTypes {
     | '/explore/service/$id'
     | '/services/esim/$planId'
     | '/services/esim/mine'
+    | '/whats-on/event/$id'
     | '/explore/fitness'
     | '/explore/idf'
     | '/explore/map'
@@ -1173,6 +1195,7 @@ export interface FileRouteTypes {
     | '/services/'
     | '/siddur/'
     | '/social/'
+    | '/whats-on/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/event/$id'
@@ -1182,6 +1205,7 @@ export interface FileRouteTypes {
     | '/explore/service/$id'
     | '/services/esim/$planId'
     | '/services/esim/mine'
+    | '/whats-on/event/$id'
     | '/explore/fitness/'
     | '/explore/idf/'
     | '/explore/map/'
@@ -1257,6 +1281,7 @@ export interface RootRouteChildren {
   ServicesIndexRoute: typeof ServicesIndexRoute
   SiddurIndexRoute: typeof SiddurIndexRoute
   SocialIndexRoute: typeof SocialIndexRoute
+  WhatsOnIndexRoute: typeof WhatsOnIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ExploreEventIdRoute: typeof ExploreEventIdRoute
@@ -1266,6 +1291,7 @@ export interface RootRouteChildren {
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
   ServicesEsimPlanIdRoute: typeof ServicesEsimPlanIdRoute
   ServicesEsimMineRoute: typeof ServicesEsimMineRoute
+  WhatsOnEventIdRoute: typeof WhatsOnEventIdRoute
   ExploreFitnessIndexRoute: typeof ExploreFitnessIndexRoute
   ExploreIdfIndexRoute: typeof ExploreIdfIndexRoute
   ExploreMapIndexRoute: typeof ExploreMapIndexRoute
@@ -1452,6 +1478,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/whats-on/': {
+      id: '/whats-on/'
+      path: '/whats-on'
+      fullPath: '/whats-on/'
+      preLoaderRoute: typeof WhatsOnIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/social/': {
@@ -1860,6 +1893,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreFitnessIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/whats-on/event/$id': {
+      id: '/whats-on/event/$id'
+      path: '/whats-on/event/$id'
+      fullPath: '/whats-on/event/$id'
+      preLoaderRoute: typeof WhatsOnEventIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services/esim/mine': {
       id: '/services/esim/mine'
       path: '/services/esim/mine'
@@ -2078,6 +2118,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesIndexRoute: ServicesIndexRoute,
   SiddurIndexRoute: SiddurIndexRoute,
   SocialIndexRoute: SocialIndexRoute,
+  WhatsOnIndexRoute: WhatsOnIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ExploreEventIdRoute: ExploreEventIdRoute,
@@ -2087,6 +2128,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreServiceIdRoute: ExploreServiceIdRoute,
   ServicesEsimPlanIdRoute: ServicesEsimPlanIdRoute,
   ServicesEsimMineRoute: ServicesEsimMineRoute,
+  WhatsOnEventIdRoute: WhatsOnEventIdRoute,
   ExploreFitnessIndexRoute: ExploreFitnessIndexRoute,
   ExploreIdfIndexRoute: ExploreIdfIndexRoute,
   ExploreMapIndexRoute: ExploreMapIndexRoute,

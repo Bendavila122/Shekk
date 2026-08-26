@@ -43,7 +43,12 @@ export type AnalyticsEvent =
   | "programme_staff_event_created"
   | "programme_staff_event_updated"
   | "programme_staff_announcement_sent"
-  | "programme_staff_post_sent";
+  | "programme_staff_post_sent"
+  | "activity_impression"
+  | "activity_viewed"
+  | "activity_saved"
+  | "activity_shared"
+  | "outbound_booking_clicked";
 
 
 type Props = Record<string, string | number | boolean | null | undefined>;

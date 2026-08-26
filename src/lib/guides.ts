@@ -913,7 +913,7 @@ export const GUIDES: Guide[] = [
             kind: "p",
             text: "On Yom HaZikaron and Yom HaShoah a siren sounds and the entire country stops — people get out of their cars and stand. Nightlife closes the evening before Yom HaZikaron, and reopens into Yom HaAtzmaut, which is a genuine street party.",
           },
-          { kind: "link", label: "Open Events", sub: "What's on around the chagim", to: "/explore/events" },
+          { kind: "link", label: "Open Events", sub: "What's on around the chagim", to: "/whats-on" },
         ],
       },
     ],

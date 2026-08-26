@@ -162,10 +162,33 @@ function SetupPanel() {
   );
 }
 
-/** Programme card — only when the member has actually joined one. */
+/**
+ * Programme card. Joined members see what's next; everyone else gets a compact
+ * prompt rather than Programme quietly disappearing from Home.
+ */
 function ProgrammePanel() {
   const { joined, programme, nextItem, checklistDone, checklistTotal } = useProgramme();
-  if (!joined) return null;
+  if (!joined) {
+    return (
+      <section className="px-4 pt-3">
+        <Link
+          to="/programme"
+          className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-card"
+        >
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
+            <CalendarDays className="size-5" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-semibold">Join your programme</span>
+            <span className="block text-[11.5px] leading-snug text-muted-foreground">
+              Enter the code from your madrich for your schedule, updates and contacts.
+            </span>
+          </span>
+          <span className="shrink-0 text-sm font-semibold text-primary">→</span>
+        </Link>
+      </section>
+    );
+  }
   return (
     <section className="px-4 pt-3">
       <Link
@@ -316,7 +339,7 @@ function WhatsOn() {
         {upcoming.map((e) => (
           <Link
             key={e.id}
-            to="/explore/event/$id"
+            to="/whats-on/event/$id"
             params={{ id: e.id }}
             className="tap w-[190px] shrink-0 snap-start rounded-2xl border border-border bg-card p-3.5 shadow-card"
           >
@@ -338,7 +361,7 @@ function WhatsOn() {
       </div>
       <div className="px-4 pt-3">
         <Link
-          to="/explore/events"
+          to="/whats-on"
           className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-3.5 shadow-card"
         >
           <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
@@ -399,8 +422,8 @@ function HomeScreen() {
 
       <LocationBar />
 
-      <SetupPanel />
       <ProgrammePanel />
+      <SetupPanel />
       <ActiveNow />
       <WhatsOn />
       <ServicePrompts />

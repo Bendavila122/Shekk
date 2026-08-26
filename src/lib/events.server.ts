@@ -14,6 +14,9 @@
 export type EventKind = "shabbaton" | "tiyul" | "club" | "shiur" | "chesed" | "other";
 export type EventStatus = "draft" | "published" | "cancelled";
 
+export type IntegrationType = "internal_ticket" | "affiliate_link" | "widget" | "api";
+export type ProgrammeStatus = "programme_included" | "programme_official" | "independent";
+
 export type EventRow = {
   id: string;
   title: string;
@@ -34,6 +37,21 @@ export type EventRow = {
   provider: string;
   provider_ref: string | null;
   created_at: string;
+  /* provider-neutral commercial fields */
+  external_provider_id: string | null;
+  external_booking_url: string | null;
+  integration_type: IntegrationType;
+  affiliate_campaign_id: string | null;
+  /** Internal/admin only — never shaped into a member response. */
+  commission_type: string | null;
+  commission_rate: number | null;
+  source_category: string | null;
+  programme_status: ProgrammeStatus;
+  last_verified_at: string | null;
+  availability_confidence: "live" | "recent" | "unknown" | null;
+  terms_url: string | null;
+  refund_summary: string | null;
+  age_min: number | null;
 };
 
 /** What the app renders: shekels, and how many spots are actually left. */
@@ -56,7 +74,19 @@ export type PublicEvent = {
   coverUrl: string | null;
   emoji: string;
   provider: string;
+  /* commercial shape, minus anything commercially confidential */
+  externalProviderId: string | null;
+  externalBookingUrl: string | null;
+  integrationType: IntegrationType;
+  sourceCategory: string | null;
+  programmeStatus: ProgrammeStatus;
+  lastVerifiedAt: string | null;
+  availabilityConfidence: "live" | "recent" | "unknown" | null;
+  termsUrl: string | null;
+  refundSummary: string | null;
+  ageMin: number | null;
 };
+
 
 export type TicketRow = {
   id: string;
@@ -141,8 +171,55 @@ function shape(row: EventRow, sold: number): PublicEvent {
     coverUrl: row.cover_url,
     emoji: row.emoji,
     provider: row.provider,
+    externalProviderId: row.external_provider_id ?? null,
+    externalBookingUrl: row.external_booking_url ?? null,
+    integrationType: (row.integration_type ?? "internal_ticket") as IntegrationType,
+    sourceCategory: row.source_category ?? null,
+    programmeStatus: (row.programme_status ?? "independent") as ProgrammeStatus,
+    lastVerifiedAt: row.last_verified_at ?? null,
+    availabilityConfidence: row.availability_confidence ?? null,
+    termsUrl: row.terms_url ?? null,
+    refundSummary: row.refund_summary ?? null,
+    ageMin: row.age_min ?? null,
   };
 }
+
+/**
+ * Record a tap-through to a provider's own checkout.
+ *
+ * A click is a click: this is attribution groundwork, never a confirmed booking
+ * and never a confirmed commission.
+ */
+export async function recordOutboundClick(input: {
+  userId: string;
+  eventId: string;
+}): Promise<{ url: string } | null> {
+  const db = await admin();
+  const { data } = await db
+    .from("events")
+    .select("id, provider, external_provider_id, external_booking_url, affiliate_campaign_id, status")
+    .eq("id", input.eventId)
+    .maybeSingle();
+
+  const row = data as Pick<
+    EventRow,
+    "id" | "provider" | "external_provider_id" | "external_booking_url" | "affiliate_campaign_id" | "status"
+  > | null;
+  if (!row || row.status !== "published" || !row.external_booking_url) return null;
+
+  const { error } = await db.from("activity_outbound_clicks").insert({
+    user_id: input.userId,
+    event_id: row.id,
+    provider: row.provider,
+    external_provider_id: row.external_provider_id,
+    destination_url: row.external_booking_url,
+    affiliate_campaign_id: row.affiliate_campaign_id,
+  });
+  if (error) console.error("[events] outbound click:", error.message);
+
+  return { url: row.external_booking_url };
+}
+
 
 async function soldByEvent(eventIds: string[]): Promise<Record<string, number>> {
   if (eventIds.length === 0) return {};
