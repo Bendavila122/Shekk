@@ -34,6 +34,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WhatsOnIndexRouteImport } from './routes/whats-on.index'
 import { Route as SocialIndexRouteImport } from './routes/social/index'
 import { Route as SiddurIndexRouteImport } from './routes/siddur/index'
 import { Route as ServicesIndexRouteImport } from './routes/services/index'
@@ -230,6 +231,11 @@ const AdminRouteRoute = AdminRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WhatsOnIndexRoute = WhatsOnIndexRouteImport.update({
+  id: '/whats-on/',
+  path: '/whats-on/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SocialIndexRoute = SocialIndexRouteImport.update({
@@ -679,6 +685,7 @@ export interface FileRoutesByFullPath {
   '/services/': typeof ServicesIndexRoute
   '/siddur/': typeof SiddurIndexRoute
   '/social/': typeof SocialIndexRoute
+  '/whats-on/': typeof WhatsOnIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
@@ -776,6 +783,7 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesIndexRoute
   '/siddur': typeof SiddurIndexRoute
   '/social': typeof SocialIndexRoute
+  '/whats-on': typeof WhatsOnIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
@@ -876,6 +884,7 @@ export interface FileRoutesById {
   '/services/': typeof ServicesIndexRoute
   '/siddur/': typeof SiddurIndexRoute
   '/social/': typeof SocialIndexRoute
+  '/whats-on/': typeof WhatsOnIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
@@ -977,6 +986,7 @@ export interface FileRouteTypes {
     | '/services/'
     | '/siddur/'
     | '/social/'
+    | '/whats-on/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/event/$id'
@@ -1074,6 +1084,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/siddur'
     | '/social'
+    | '/whats-on'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/event/$id'
@@ -1173,6 +1184,7 @@ export interface FileRouteTypes {
     | '/services/'
     | '/siddur/'
     | '/social/'
+    | '/whats-on/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/explore/event/$id'
@@ -1257,6 +1269,7 @@ export interface RootRouteChildren {
   ServicesIndexRoute: typeof ServicesIndexRoute
   SiddurIndexRoute: typeof SiddurIndexRoute
   SocialIndexRoute: typeof SocialIndexRoute
+  WhatsOnIndexRoute: typeof WhatsOnIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ExploreEventIdRoute: typeof ExploreEventIdRoute
@@ -1452,6 +1465,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/whats-on/': {
+      id: '/whats-on/'
+      path: '/whats-on'
+      fullPath: '/whats-on/'
+      preLoaderRoute: typeof WhatsOnIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/social/': {
@@ -2078,6 +2098,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesIndexRoute: ServicesIndexRoute,
   SiddurIndexRoute: SiddurIndexRoute,
   SocialIndexRoute: SocialIndexRoute,
+  WhatsOnIndexRoute: WhatsOnIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ExploreEventIdRoute: ExploreEventIdRoute,
