@@ -71,7 +71,7 @@ export type LivePlaceName = {
 /** WMO weather code → label + emoji, tuned to how Israel actually feels. */
 export function describeWeatherCode(code: number, isDay: boolean): { label: string; emoji: string } {
   if (code === 0) return { label: isDay ? "Clear" : "Clear night", emoji: isDay ? "☀️" : "🌙" };
-  if (code === 1) return { label: "Mostly sunny", emoji: isDay ? "🌤" : "🌙" };
+  if (code === 1) return { label: isDay ? "Mostly sunny" : "Mostly clear", emoji: isDay ? "🌤" : "🌙" };
   if (code === 2) return { label: "Partly cloudy", emoji: "⛅️" };
   if (code === 3) return { label: "Overcast", emoji: "☁️" };
   if (code === 45 || code === 48) return { label: "Hamsin haze", emoji: "🌫" };
