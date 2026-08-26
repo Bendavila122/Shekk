@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarDays, Compass, PlaneTakeoff, ShieldCheck, Smartphone, Check, PartyPopper } from "lucide-react";
 import { useProgramme, useTravel } from "@/lib/useProgramme";
+import { useProgrammeHub } from "@/lib/useProgrammeHub";
+import { fmtDay, fmtTime } from "@/components/programme/Bits";
 
 
 import { AppShell } from "@/components/AppShell";
@@ -120,6 +122,23 @@ function SetupPanel() {
     );
   }
 
+  if (setup.complete) {
+    return (
+      <section className="px-4 pt-4">
+        <Link
+          to="/before-you-fly"
+          className="tap flex items-center gap-3 rounded-2xl border border-success/30 bg-success-soft px-4 py-3"
+        >
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-success text-white">
+            <Check className="size-4" />
+          </span>
+          <span className="min-w-0 flex-1 text-[13.5px] font-semibold text-success">Israel setup complete</span>
+          <span className="shrink-0 text-[12px] font-semibold text-success">Full checklist →</span>
+        </Link>
+      </section>
+    );
+  }
+
   return (
     <section className="px-4 pt-4">
       <div className="rounded-[1.5rem] border border-border bg-card p-4 shadow-card">
@@ -168,7 +187,12 @@ function SetupPanel() {
  * prompt rather than Programme quietly disappearing from Home.
  */
 function ProgrammePanel() {
-  const { joined, programme, nextItem, checklistDone, checklistTotal } = useProgramme();
+  // Programme Hub is the current operations source (authorised, visible events).
+  // The legacy programme state stays as a safe fallback so Home never regresses.
+  const hub = useProgrammeHub();
+  const { joined: legacyJoined, programme, nextItem, checklistDone, checklistTotal } = useProgramme();
+  const joined = hub.joined || legacyJoined;
+
   if (!joined) {
     return (
       <section className="px-4 pt-3">
@@ -190,6 +214,24 @@ function ProgrammePanel() {
       </section>
     );
   }
+
+  const hubFocus = hub.now ?? hub.next ?? null;
+  const title = hubFocus?.title ?? nextItem?.title ?? "Nothing scheduled just yet";
+  const name = hub.hub.programmeName ?? programme.programmeName;
+
+  let when: string;
+  if (hubFocus) {
+    when = `${hub.now ? "Happening now" : fmtDay(hubFocus.startsAt)} · ${fmtTime(hubFocus.startsAt)}${
+      hubFocus.locationLabel ? ` · ${hubFocus.locationLabel}` : ""
+    }`;
+  } else if (nextItem) {
+    when = `${fmtDay(nextItem.startsAt)} · ${fmtTime(nextItem.startsAt)}`;
+  } else if (checklistTotal > 0) {
+    when = `Checklist ${checklistDone} of ${checklistTotal} done`;
+  } else {
+    when = "Announcements, contacts and documents inside";
+  }
+
   return (
     <section className="px-4 pt-3">
       <Link
@@ -200,23 +242,9 @@ function ProgrammePanel() {
           <CalendarDays className="size-5 text-foreground/70" />
         </span>
         <span className="min-w-0 flex-1">
-          <MicroLabel className="text-muted-foreground">{programme.programmeName}</MicroLabel>
-          <span className="mt-0.5 block truncate text-sm font-semibold">
-            {nextItem ? nextItem.title : "Nothing scheduled just yet"}
-          </span>
-          <span className="block text-xs text-muted-foreground">
-            {nextItem
-              ? new Date(nextItem.startsAt).toLocaleString("en-GB", {
-                  weekday: "short",
-                  day: "numeric",
-                  month: "short",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : checklistTotal > 0
-                ? `Checklist ${checklistDone} of ${checklistTotal} done`
-                : "Announcements, contacts and documents inside"}
-          </span>
+          <MicroLabel className="text-muted-foreground">{name}</MicroLabel>
+          <span className="mt-0.5 block truncate text-sm font-semibold">{title}</span>
+          <span className="block truncate text-xs text-muted-foreground">{when}</span>
         </span>
         <span className="shrink-0 text-sm font-semibold text-primary">→</span>
       </Link>

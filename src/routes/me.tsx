@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText, Camera, Crown, CreditCard, Sparkles, ShieldCheck } from "lucide-react";
+import { BadgeCheck, AlertTriangle, ChevronRight, Bookmark, Receipt, Settings, FileText, Camera, Crown, CreditCard, Sparkles, ShieldCheck, MessageCircle, LifeBuoy } from "lucide-react";
 import { AppShell, Card, ReverifyBanner } from "@/components/AppShell";
 import { SectionHead, LoadingBlocks, PreviewBadge } from "@/components/Kit";
 import { ils } from "@/lib/mock";
@@ -10,6 +10,8 @@ import { useProfile } from "@/lib/useProfile";
 import { useProgramme, useTravel } from "@/lib/useProgramme";
 import { getJourney } from "@/lib/journey-phase";
 import { ShekkTagCard } from "@/components/social/ShekkTagCard";
+import { useUnreadChats } from "@/lib/useSocial";
+import { MONEY_ENABLED } from "@/lib/flags";
 
 
 export const Route = createFileRoute("/me")({
@@ -19,10 +21,10 @@ export const Route = createFileRoute("/me")({
       {
         name: "description",
         content:
-          "Your Shekk account: verification status, programme, Shekk tag, payment history and how your shekel account works.",
+          "Your Shekk account: your programme, your Shekk tag, saved places, documents, journey details and settings.",
       },
       { property: "og:title", content: "You · Shekk" },
-      { property: "og:description", content: "Your Shekk account, verification status and account terms." },
+      { property: "og:description", content: "Your Shekk account, programme context and everything you have saved." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -37,6 +39,7 @@ function Me() {
   const { programme } = useProgramme();
   const { travel } = useTravel();
   const journey = getJourney(travel);
+  const unread = useUnreadChats();
 
   const onPickPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -100,7 +103,7 @@ function Me() {
           </div>
         </div>
 
-        {kyc.verified ? (
+        {!MONEY_ENABLED ? null : kyc.verified ? (
           <div className={`mt-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${badge.cls}`}>
             <badge.Icon className="size-4" /> {badge.label}
             {daysLeft !== null && <span>· {daysLeft} days left</span>}
@@ -126,73 +129,95 @@ function Me() {
       </header>
 
       <div className="space-y-5 px-4 py-5">
-        <ReverifyBanner />
+        {MONEY_ENABLED ? <ReverifyBanner /> : null}
 
         <ShekkTagCard />
 
-        <Card>
-          <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Your shekels</p>
-          <p className="font-display text-3xl font-bold leading-none tracking-tight">{ils(state.balance)}</p>
-          <p className="mt-1.5 text-xs text-muted-foreground">
-            ≈ {refIn(state.settings.payCurrency, state.balance)} · updated live
-          </p>
-        </Card>
+        {MONEY_ENABLED ? (
+          <Card>
+            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Your shekels</p>
+            <p className="font-display text-3xl font-bold leading-none tracking-tight">{ils(state.balance)}</p>
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              ≈ {refIn(state.settings.payCurrency, state.balance)} · updated live
+            </p>
+          </Card>
+        ) : null}
 
         <div>
           <SectionHead title="Your Shekk" />
           <Card className="p-0">
             <RowLink to="/membership" Icon={Crown} label="Shekk+" hint={isPremium ? "Member" : "See what's included"} />
+            {MONEY_ENABLED ? (
+              <>
+                <RowLink
+                  to="/card"
+                  Icon={CreditCard}
+                  label="Shekk Card"
+                  hint={state.card.issued ? `•••• ${state.card.last4}` : ""}
+                  badge={state.card.issued ? undefined : <PreviewBadge />}
+                />
+                <RowLink to="/activity" Icon={Receipt} label="Payment history" hint={`${state.txns.length} records`} />
+              </>
+            ) : null}
             <RowLink
-              to="/card"
-              Icon={CreditCard}
-              label="Shekk Card"
-              hint={state.card.issued ? `•••• ${state.card.last4}` : ""}
-              badge={state.card.issued ? undefined : <PreviewBadge />}
+              to="/social"
+              Icon={MessageCircle}
+              label="Community"
+              hint=""
+              badge={
+                unread > 0 ? (
+                  <span className="shrink-0 rounded-full bg-destructive px-1.5 py-0.5 text-[10px] font-bold text-destructive-foreground">
+                    {unread}
+                  </span>
+                ) : undefined
+              }
             />
-            <RowLink to="/activity" Icon={Receipt} label="Payment history" hint={`${state.txns.length} records`} />
             <RowLink to="/explore/shops" Icon={Bookmark} label="Saved places & discounts" hint="" />
             <RowLink to="/explore/documents" Icon={FileText} label="Your documents" hint="Private to you" />
             <RowLink to="/welcome" Icon={Sparkles} label="Journey details" hint="Dates & city" />
             <RowLink to="/settings" Icon={Settings} label="Settings" hint="Currency, theme, alerts" />
+            <RowLink to="/help" Icon={LifeBuoy} label="Help & support" hint="" />
             <RowLink to="/terms" Icon={FileText} label="Terms & Conditions" hint="" />
           </Card>
         </div>
 
-        <div>
-          <SectionHead title="How your money works" hint="The short version — full terms are one tap away" />
-          <Card className="space-y-2.5">
-            <ul className="space-y-2 text-[13px] leading-relaxed text-muted-foreground">
-              <li>
-                • Your shekels sit in a real, regulated ILS payment account held with Airwallex — not app credits or
-                vouchers.
-              </li>
-              <li>
-                • You add money from a card or bank account in your own name, and you see the rate and the exact
-                shekels you'll get before you confirm.
-              </li>
-              <li>
-                • Pay a partner inside Shekk and{" "}
-                <span className="font-medium text-foreground">Shekk pays them for you</span> — your card is never
-                charged at the checkout. We take it from your shekel balance.
-              </li>
-              <li>
-                • To open an account you need to be 16 or over, living outside Israel, and have valid ID. Airwallex
-                runs the identity check and makes the decision.
-              </li>
-              <li>• We re-check your ID once a year. If you close your account, unspent shekels come back to you.</li>
-            </ul>
+        {MONEY_ENABLED ? (
+          <div>
+            <SectionHead title="How your money works" hint="The short version — full terms are one tap away" />
+            <Card className="space-y-2.5">
+              <ul className="space-y-2 text-[13px] leading-relaxed text-muted-foreground">
+                <li>
+                  • Your shekels sit in a real, regulated ILS payment account held with Airwallex — not app credits or
+                  vouchers.
+                </li>
+                <li>
+                  • You add money from a card or bank account in your own name, and you see the rate and the exact
+                  shekels you'll get before you confirm.
+                </li>
+                <li>
+                  • Pay a partner inside Shekk and{" "}
+                  <span className="font-medium text-foreground">Shekk pays them for you</span> — your card is never
+                  charged at the checkout. We take it from your shekel balance.
+                </li>
+                <li>
+                  • To open an account you need to be 16 or over, living outside Israel, and have valid ID. Airwallex
+                  runs the identity check and makes the decision.
+                </li>
+                <li>• We re-check your ID once a year. If you close your account, unspent shekels come back to you.</li>
+              </ul>
 
-            <p className="flex items-start gap-2 pt-1 text-[11.5px] leading-relaxed text-muted-foreground">
-              <ShieldCheck className="mt-[3px] size-3.5 shrink-0" />
-              The Shekk Card and partner marketplaces marked "Preview" aren't live yet — we'll tell you the moment
-              they are.
-            </p>
+              <p className="flex items-start gap-2 pt-1 text-[11.5px] leading-relaxed text-muted-foreground">
+                <ShieldCheck className="mt-[3px] size-3.5 shrink-0" />
+                The Shekk Card and partner marketplaces marked "Preview" aren't live yet — we'll tell you the moment
+                they are.
+              </p>
 
-            <Link to="/terms" className="tap-flat inline-block pt-1 text-[13px] font-semibold text-primary">
-              Read the full terms →
-            </Link>
-          </Card>
-        </div>
+              <Link to="/terms" className="tap-flat inline-block pt-1 text-[13px] font-semibold text-primary">
+                Read the full terms →
+              </Link>
+            </Card>
+          </div>
+        ) : null}
       </div>
     </AppShell>
   );

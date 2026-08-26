@@ -203,16 +203,11 @@ function WhatsOnScreen() {
             <p className="text-3xl">🌙</p>
             <p className="text-sm font-semibold">Nothing listed yet</p>
             <p className="text-xs leading-relaxed text-muted-foreground">
-              We only list activities a real host or partner has actually put on — nothing invented. As programmes and
-              venues come online they land here. In the meantime, your programme schedule and the Explore apps are the
-              fastest way to find something to do.
+              Shekk only shows real programme and verified partner listings — nothing invented.
             </p>
             <div className="flex flex-col gap-2 pt-1">
               <Link to="/programme" className="tap text-sm font-semibold text-primary">
                 Open my programme schedule →
-              </Link>
-              <Link to="/israel" className="tap text-sm font-semibold text-primary">
-                Browse Explore →
               </Link>
             </div>
           </Card>

@@ -30,6 +30,7 @@ function TodayScreen() {
   const { hub, now, next, today, changes, checklist } = useProgrammeHub();
   const { tick } = useParticipantActions();
   const [open, setOpen] = useState<ProgrammeEvent | null>(null);
+  const [allTodo, setAllTodo] = useState(false);
 
   useEffect(() => {
     track("programme_hub_viewed");
@@ -89,7 +90,7 @@ function TodayScreen() {
         <section>
           <SectionHead title="You need to" hint="Short list. It empties as you go." />
           <div className="space-y-2">
-            {todo.slice(0, 6).map((a) => {
+            {(allTodo ? todo : todo.slice(0, 3)).map((a) => {
               const event = a.eventId ? hub.events.find((e) => e.id === a.eventId) : null;
               return (
                 <TapRow
@@ -111,6 +112,15 @@ function TodayScreen() {
                 />
               );
             })}
+            {todo.length > 3 ? (
+              <button
+                type="button"
+                onClick={() => setAllTodo((v) => !v)}
+                className="tap-flat w-full rounded-2xl border border-border bg-card px-4 py-2.5 text-[12.5px] font-bold text-primary"
+              >
+                {allTodo ? "Show less" : `Show ${todo.length - 3} more`}
+              </button>
+            ) : null}
           </div>
         </section>
       ) : null}

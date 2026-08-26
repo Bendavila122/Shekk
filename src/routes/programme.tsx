@@ -121,7 +121,7 @@ function ProgrammeLayout() {
         </div>
       </div>
 
-      <nav className="sticky top-[60px] z-30 mt-4 flex gap-1.5 overflow-x-auto bg-background/95 px-4 py-2 backdrop-blur lg:top-0">
+      <nav className="scrollbar-none sticky top-[60px] z-30 mt-4 flex gap-1.5 overflow-x-auto bg-background/95 px-4 py-2 backdrop-blur lg:top-0">
         {TABS.map(({ to, label, Icon, ...rest }) => {
           const active = "exact" in rest ? pathname === to : pathname.startsWith(to);
           return (

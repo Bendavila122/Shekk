@@ -3,7 +3,7 @@ import { AtSign, Check, Copy, Pencil } from "lucide-react";
 import { Card } from "@/components/AppShell";
 import { useMyHandle } from "@/lib/useSocial";
 
-/** The member's Shekk tag — the @name friends use to find and pay them. */
+/** The member's Shekk tag — the @name friends use to find and add them. */
 export function ShekkTagCard() {
   const { me, loading, save } = useMyHandle();
   const [editing, setEditing] = useState(false);
@@ -75,7 +75,8 @@ export function ShekkTagCard() {
         </div>
       ) : (
         <p className="text-xs text-muted-foreground">
-          Friends search this tag — or scan your code in Social — to add you and send you shekels.
+          Friends search this tag — or scan your code in Community — to add you, start a chat and see who else is
+          out here with you.
         </p>
       )}
     </Card>

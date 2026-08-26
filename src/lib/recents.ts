@@ -16,6 +16,15 @@ export const MONEY_SERVICE_IDS = new Set(["topup", "split", "exchange", "card", 
 /** Sensible starting point before the student has opened anything. */
 const DEFAULT_RECENTS = ["siddur", "maps", "fitness", "visa"];
 
+/**
+ * Pure: keep only services a member can actually use right now. A persisted
+ * recent that has since been marked "soon"/"info" (e.g. Gett) stays in
+ * localStorage but is not rendered.
+ */
+export function filterUsableRecents(services: Service[]): Service[] {
+  return services.filter((s) => s.status === "live");
+}
+
 /** Pure: drop paused-money ids while the money product is off. */
 export function filterMoneyRecents(ids: string[], moneyEnabled: boolean): string[] {
   return moneyEnabled ? ids : ids.filter((id) => !MONEY_SERVICE_IDS.has(id));
@@ -50,8 +59,8 @@ export function useRecentServices(): Service[] {
     return () => window.removeEventListener("shekk:recents", sync);
   }, [sync]);
 
-  return filterMoneyRecents(ids, MONEY_ENABLED)
+  const resolved = filterMoneyRecents(ids, MONEY_ENABLED)
     .map((id) => ALL_SERVICES.find((s) => s.id === id))
-    .filter((s): s is Service => Boolean(s))
-    .slice(0, MAX);
+    .filter((s): s is Service => Boolean(s));
+  return filterUsableRecents(resolved).slice(0, MAX);
 }
