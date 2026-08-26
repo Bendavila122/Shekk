@@ -176,6 +176,14 @@ export function QuickMenu() {
             </Link>
             <Link to="/social" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <Users className="size-4 text-muted-foreground" /> Community
+              {unread > 0 ? (
+                <span
+                  aria-label={`${unread > 9 ? "More than 9" : unread} unread message${unread === 1 ? "" : "s"}`}
+                  className="ml-auto min-w-5 rounded-full bg-destructive px-1.5 text-center text-[11px] font-bold leading-5 text-white"
+                >
+                  {unread > 9 ? "9+" : unread}
+                </span>
+              ) : null}
             </Link>
             <Link to="/benefits" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <Tag className="size-4 text-muted-foreground" /> Benefits
