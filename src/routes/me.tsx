@@ -129,7 +129,7 @@ function Me() {
       </header>
 
       <div className="space-y-5 px-4 py-5">
-        <ReverifyBanner />
+        {MONEY_ENABLED ? <ReverifyBanner /> : null}
 
         <ShekkTagCard />
 
