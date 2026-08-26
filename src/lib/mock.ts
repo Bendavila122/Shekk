@@ -45,7 +45,7 @@ export const MINI_PROGRAMS = [
   { id: "rides", label: "Rides", emoji: "🚕", blurb: "Book a taxi", to: "/explore/rides" },
   { id: "food", label: "Food", emoji: "🥙", blurb: "Kosher delivery", to: "/explore/food" },
   { id: "reserve", label: "Reserve", emoji: "🍽️", blurb: "Tables & Shabbatons", to: "/explore/reserve" },
-  { id: "events", label: "Events", emoji: "🎟️", blurb: "Shiurim & tiyulim", to: "/explore/events" },
+  { id: "events", label: "Events", emoji: "🎟️", blurb: "Shiurim & tiyulim", to: "/whats-on" },
   { id: "housing", label: "Housing", emoji: "🏠", blurb: "Dorms & roommates", to: "/explore/housing" },
   { id: "health", label: "Health", emoji: "🩺", blurb: "Insurance & clinics", to: "/explore/health" },
   { id: "admin", label: "Visa", emoji: "🛂", blurb: "Status & paperwork", to: "/explore/visa" },

@@ -316,7 +316,7 @@ function WhatsOn() {
         {upcoming.map((e) => (
           <Link
             key={e.id}
-            to="/explore/event/$id"
+            to="/whats-on/event/$id"
             params={{ id: e.id }}
             className="tap w-[190px] shrink-0 snap-start rounded-2xl border border-border bg-card p-3.5 shadow-card"
           >
@@ -338,7 +338,7 @@ function WhatsOn() {
       </div>
       <div className="px-4 pt-3">
         <Link
-          to="/explore/events"
+          to="/whats-on"
           className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-3.5 shadow-card"
         >
           <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">

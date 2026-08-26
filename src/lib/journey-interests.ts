@@ -69,7 +69,7 @@ export const INTERESTS: Interest[] = [
     label: "Events & nights out",
     action: "What's on",
     hint: "Events and tickets",
-    to: "/explore/events",
+    to: "/whats-on",
     icon: CalendarHeart,
   },
   {
