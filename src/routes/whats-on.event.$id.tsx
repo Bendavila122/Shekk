@@ -40,7 +40,7 @@ function ActivityDetail() {
   const navigate = useNavigate();
   const { data, isLoading, error } = useEvent(id);
   const { available } = useApp();
-  const { programme } = useProgramme();
+  const { programme: myProgramme } = useProgramme();
   const buy = useBuyTicket();
   const outbound = useOutboundBooking();
   const [qty, setQty] = useState(1);
@@ -93,7 +93,7 @@ function ActivityDetail() {
   const shortBy = +(total - available).toFixed(2);
 
   /* A real clash, computed from the member's own programme schedule — never a guess. */
-  const clash = findClash(programme.schedule, activity.startsAt, activity.endsAt);
+  const clash = findClash(myProgramme.schedule, activity.startsAt, activity.endsAt);
 
   const directions = [activity.venue, activity.city].filter(Boolean).join(", ");
 
