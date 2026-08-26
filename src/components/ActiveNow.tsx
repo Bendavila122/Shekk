@@ -51,7 +51,7 @@ export function ActiveNow() {
         meta: [nextTicket.event.venue, nextTicket.event.city].filter(Boolean).join(" · ") || nextTicket.event.host,
         gradient: "from-[oklch(0.45_0.16_265)] to-[oklch(0.32_0.13_265)]",
         cta: "Show QR",
-        qr: nextTicket.qrCode ?? nextTicket.id,
+        qr: `shekk:ticket:${nextTicket.code}`,
       });
     }
 
