@@ -1,6 +1,6 @@
 import { Link, useRouterState, useRouter, useCanGoBack, useNavigate } from "@tanstack/react-router";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { Compass, Tag, Users, User, ChevronLeft, Info, Menu, X, Settings, LifeBuoy, Home, ShieldCheck, PlaneTakeoff, PartyPopper } from "lucide-react";
+import { Compass, Tag, Users, User, ChevronLeft, Info, Menu, X, Settings, LifeBuoy, Home, ShieldCheck, PlaneTakeoff, PartyPopper, GraduationCap } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
@@ -8,6 +8,7 @@ import { MembershipDunningBanner } from "@/components/MembershipDunningBanner";
 import { useUnreadChats } from "@/lib/useSocial";
 import { MiniAppSplash } from "@/components/MiniAppSplash";
 import { miniAppFor } from "@/lib/mini-apps";
+import { activeTabFor, keepsChrome, TAB_EXPLORE, TAB_PROGRAMME, TAB_TODAY, TAB_WHATS_ON, TAB_YOU } from "@/lib/nav";
 
 
 
@@ -18,11 +19,11 @@ import { miniAppFor } from "@/lib/mini-apps";
  * lives on Home, Explore and the quick menu rather than holding a tab.
  */
 const TABS = [
-  { to: "/", label: "Today", Icon: Home },
-  { to: "/israel", label: "Explore", Icon: Compass },
-  { to: "/explore/events", label: "What's on", Icon: PartyPopper },
-  { to: "/social", label: "Community", Icon: Users },
-  { to: "/me", label: "You", Icon: User },
+  { to: TAB_TODAY, label: "Today", Icon: Home },
+  { to: TAB_PROGRAMME, label: "Programme", Icon: GraduationCap },
+  { to: TAB_WHATS_ON, label: "What's on", Icon: PartyPopper },
+  { to: TAB_EXPLORE, label: "Explore", Icon: Compass },
+  { to: TAB_YOU, label: "You", Icon: User },
 ];
 
 const SIDEBAR_TABS = TABS;
@@ -201,6 +202,9 @@ export function QuickMenu() {
             <Link to="/services" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <ShieldCheck className="size-4 text-muted-foreground" /> Services
             </Link>
+            <Link to="/social" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
+              <Users className="size-4 text-muted-foreground" /> Community
+            </Link>
             <Link to="/benefits" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <Tag className="size-4 text-muted-foreground" /> Benefits
             </Link>
@@ -219,7 +223,8 @@ export function QuickMenu() {
 
 function useActive() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  return (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
+  const tab = activeTabFor(pathname);
+  return (to: string) => tab === to;
 }
 
 
@@ -263,33 +268,6 @@ function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
  * keeps the intent readable wherever we fall back to it.
  */
 export const EXPLORE_HOME = "/israel";
-
-/**
- * Screens that keep the Shekk chrome. Full-bleed means "a tool you are inside";
- * browsing destinations like Guides and News keep the tab bar so the rule reads
- * consistently instead of the tab bar vanishing one tap from Explore.
- */
-const TAB_ROOTS = new Set([
-  ...SIDEBAR_TABS.map((t) => t.to),
-  EXPLORE_HOME,
-  "/benefits",
-  "/guides",
-  "/news",
-  "/programme",
-  "/before-you-fly",
-  "/explore/events",
-  "/tickets",
-]);
-
-/** Prefixes that keep the Shekk chrome along with their root (event detail pages). */
-const TAB_ROOT_PREFIXES = ["/explore/event/"];
-
-/** True when a path is a browsing destination that keeps tabs, not a mini app. */
-function keepsChrome(pathname: string) {
-  const path = pathname === "/" ? "/" : pathname.replace(/\/$/, "");
-  return TAB_ROOTS.has(path) || TAB_ROOT_PREFIXES.some((p) => path.startsWith(p));
-}
-
 
 /** Lets a ScreenHeader tell its AppShell that a back control already exists. */
 const HeaderRegistry = createContext<((v: boolean) => void) | null>(null);
