@@ -296,17 +296,6 @@ export function arrangeWidgets(order: string[], hidden: string[]): WidgetDef[] {
   return out;
 }
 
-/**
- * Pure: while the weather feed is broken, the Today tile must not hold the
- * dominant hero slot. It keeps its place in the member's saved order — this
- * only affects what Home renders this session.
- */
-export function demoteBrokenWeather(widgets: WidgetDef[], weatherBroken: boolean): WidgetDef[] {
-  if (!weatherBroken || widgets.length < 2) return widgets;
-  const rest = widgets.filter((w) => w.id !== "today");
-  if (rest.length === widgets.length) return widgets;
-  return [...rest, ...widgets.filter((w) => w.id === "today")];
-}
 
 export function orderWidgets(ctx: UserContext, pinned: string[], hidden: string[]): WidgetDef[] {
   const pinnedDefs = pinned.map((id) => WIDGET_BY_ID[id]).filter(Boolean).filter((w) => !hidden.includes(w.id));
