@@ -26,16 +26,17 @@ import { dayLabel, eventWhen, useEvents, useMyTickets } from "@/lib/useEvents";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Shekk — everything you need to live in Israel" },
+      { title: "Shekk — everything you need for your year in Israel" },
       {
         name: "description",
         content:
-          "Your Israel dashboard: what to sort before you fly, what to do in your first week, and everything worth knowing once you're here.",
+          "Your Israel dashboard: your programme schedule and updates, what's on near you, what to sort before you fly and the practical tools for living here.",
       },
-      { property: "og:title", content: "Shekk — everything you need to live in Israel" },
+      { property: "og:title", content: "Shekk — everything you need for your year in Israel" },
       {
         property: "og:description",
-        content: "Setup, services, transport, events and guides for your time in Israel — in one app.",
+        content:
+          "Programme schedule and updates, activities, Israel setup, services and everyday tools for your year in Israel.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://shekel-connect.lovable.app/" },
