@@ -271,7 +271,6 @@ function FloatingBack() {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const isActive = useActive();
-  const unread = useUnreadChats();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   /* Tab roots get the Shekk chrome. Anything deeper is a mini app or info page:
      no tab bar, no Shekk quick menu — it runs as its own little app. */
