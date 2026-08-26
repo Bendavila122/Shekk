@@ -85,6 +85,21 @@ export const buyTicket = createServerFn({ method: "POST" })
     return purchase(context.userId, data.eventId, data.quantity, data.idempotencyKey ?? null);
   });
 
+/* --------------------------------------------------------- outbound tracking --- */
+
+/**
+ * Hand a member off to a partner's checkout and store the attribution record.
+ * Returns the destination URL only when the listing really has one.
+ */
+export const trackOutboundBooking = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({ eventId: z.string().uuid() }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { recordOutboundClick } = await import("./events.server");
+    const result = await recordOutboundClick({ userId: context.userId, eventId: data.eventId });
+    return { url: result?.url ?? null };
+  });
+
 /* ------------------------------------------------------------------- admin --- */
 
 export const adminListEvents = createServerFn({ method: "GET" })
