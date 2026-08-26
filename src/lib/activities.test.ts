@@ -78,6 +78,13 @@ describe("keepsChrome", () => {
     expect(keepsChrome("/explore/maps")).toBe(false);
     expect(keepsChrome("/siddur")).toBe(false);
   });
+
+  it("keeps chrome on the Services hub but not its purchase flows", () => {
+    expect(keepsChrome("/services")).toBe(true);
+    expect(keepsChrome("/services/")).toBe(true);
+    expect(keepsChrome("/services/esim")).toBe(false);
+    expect(keepsChrome("/services/insurance")).toBe(false);
+  });
 });
 
 describe("bookingMode", () => {
