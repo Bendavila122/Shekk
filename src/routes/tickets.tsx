@@ -35,7 +35,7 @@ function Tickets() {
 
   return (
     <AppShell>
-      <ScreenHeader title="My tickets" subtitle="Show the QR at the door" back="/explore/events" />
+      <ScreenHeader title="My tickets" subtitle="Show the QR at the door" back="/whats-on" />
 
       <div className="space-y-5 px-4 py-4">
         {isLoading && (
@@ -59,7 +59,7 @@ function Tickets() {
             <p className="text-xs text-muted-foreground">
               Book a Shabbaton, tiyul or a Thursday night and it&apos;ll live here.
             </p>
-            <Link to="/explore/events" className="tap inline-block text-sm font-semibold text-primary">
+            <Link to="/whats-on" className="tap inline-block text-sm font-semibold text-primary">
               Browse events
             </Link>
           </Card>
