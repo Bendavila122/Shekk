@@ -134,9 +134,10 @@ export function MobileNav() {
 }
 
 
-/** Top-right quick menu (mobile): balance, top up, Me, Settings, Help. */
+/** Top-right quick menu (mobile): Israel setup, Services, Community, Benefits, Settings, Help. */
 export function QuickMenu() {
   const [open, setOpen] = useState(false);
+  const unread = useUnreadChats();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
