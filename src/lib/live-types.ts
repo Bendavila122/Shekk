@@ -5,14 +5,18 @@ export type LiveWeather = {
   feels: number;
   condition: string;
   emoji: string;
-  uv: number;
-  rain: number;
+  /** null when the answering provider doesn't publish it — never invented. */
+  uv: number | null;
+  /** Rain probability %, null when the answering provider doesn't publish it. */
+  rain: number | null;
   aqi: number | null;
   high: number;
   low: number;
   humidity: number;
   wind: number;
   isDay: boolean;
+  /** Which upstream answered, for support and diagnostics. */
+  provider: "open-meteo" | "met.no";
   /** ISO timestamp of when the reading was produced. */
   updatedAt: string;
 };
@@ -67,7 +71,7 @@ export type LivePlaceName = {
 /** WMO weather code → label + emoji, tuned to how Israel actually feels. */
 export function describeWeatherCode(code: number, isDay: boolean): { label: string; emoji: string } {
   if (code === 0) return { label: isDay ? "Clear" : "Clear night", emoji: isDay ? "☀️" : "🌙" };
-  if (code === 1) return { label: "Mostly sunny", emoji: isDay ? "🌤" : "🌙" };
+  if (code === 1) return { label: isDay ? "Mostly sunny" : "Mostly clear", emoji: isDay ? "🌤" : "🌙" };
   if (code === 2) return { label: "Partly cloudy", emoji: "⛅️" };
   if (code === 3) return { label: "Overcast", emoji: "☁️" };
   if (code === 45 || code === 48) return { label: "Hamsin haze", emoji: "🌫" };

@@ -22,7 +22,9 @@ export function useWeather(place: Place | null) {
     staleTime: 15 * 60_000,
     gcTime: 60 * 60_000,
     refetchOnWindowFocus: true,
-    retry: 1,
+    // Free upstreams throttle occasionally; a couple of spaced retries clears it.
+    retry: 2,
+    retryDelay: (attempt) => Math.min(4000, 600 * 2 ** attempt),
   });
 }
 

@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { changeLine } from "./programme/logic";
 import { filterUsableRecents } from "./recents";
-import { demoteBrokenWeather } from "./widgets";
 import type { Service } from "./services";
 
 describe("changeLine", () => {
@@ -36,19 +35,5 @@ describe("filterUsableRecents", () => {
       { id: "gett", name: "Gett", emoji: "🚕", blurb: "", status: "integrating" },
     ] as unknown as Service[];
     expect(filterUsableRecents(list).map((s) => s.id)).toEqual(["maps"]);
-  });
-});
-
-describe("demoteBrokenWeather", () => {
-  const defs = [{ id: "today" }, { id: "jewish" }, { id: "news" }] as never[];
-  it("moves the weather tile out of the hero slot when broken", () => {
-    expect(demoteBrokenWeather(defs, true).map((w) => (w as { id: string }).id)).toEqual([
-      "jewish",
-      "news",
-      "today",
-    ]);
-  });
-  it("leaves order untouched when weather works", () => {
-    expect(demoteBrokenWeather(defs, false)).toBe(defs);
   });
 });

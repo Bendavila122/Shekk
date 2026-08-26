@@ -5,7 +5,7 @@ import { useUserContext, WEATHER_CITIES } from "@/lib/personalise";
 import { placeForCity, useLocation } from "@/lib/location";
 import { useJewish, useWeather } from "@/lib/live";
 import { useNews } from "@/lib/news";
-import { arrangeWidgets, demoteBrokenWeather, type WidgetDef } from "@/lib/widgets";
+import { arrangeWidgets, type WidgetDef } from "@/lib/widgets";
 import { SkyScene, skyKind } from "@/components/SkyScene";
 import { JewishScene, jewishSceneKind } from "@/components/JewishScene";
 
@@ -406,14 +406,10 @@ export function ForYou() {
   }, []);
 
   // Tiles are stuck where the member left them — no relevance reshuffling.
-  const weatherBroken = Boolean(ctx.weatherError) && !weather.data;
+  // Tiles never move for a failed feed — the card shows its own error + Retry.
   const widgets = useMemo(
-    () =>
-      demoteBrokenWeather(
-        arrangeWidgets(prefs.order.length ? prefs.order : prefs.pinned, prefs.hidden),
-        weatherBroken,
-      ),
-    [prefs.order, prefs.pinned, prefs.hidden, weatherBroken],
+    () => arrangeWidgets(prefs.order.length ? prefs.order : prefs.pinned, prefs.hidden),
+    [prefs.order, prefs.pinned, prefs.hidden],
   );
   const openDef = widgets.find((w) => w.id === openId) ?? null;
 
@@ -640,20 +636,6 @@ export function ForYou() {
       </div>
 
 
-      {weatherBroken && !editing ? (
-        <div className="mx-5 mt-3 flex items-center gap-2 rounded-2xl border border-border bg-card px-3.5 py-2.5 shadow-card">
-          <span className="min-w-0 flex-1 text-[12px] leading-snug text-muted-foreground">
-            Weather unavailable right now.
-          </span>
-          <button
-            onClick={() => void weather.refetch()}
-            className="tap shrink-0 rounded-full bg-muted px-3 py-1.5 text-[12px] font-semibold"
-          >
-            Retry
-          </button>
-        </div>
-      ) : null}
-
       {!ctx.ready ? (
         <div className="pt-3">
           <Skeleton />
@@ -696,6 +678,22 @@ export function ForYou() {
                   editing={editing}
                   onOpen={() => setOpenId(item.def.id)}
                 />
+                {/* Live feed genuinely failed — retry in place, tile stays put. */}
+                {!editing && item.def.id === "today" && weather.isError ? (
+                  <button
+                    type="button"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      haptic();
+                      void weather.refetch();
+                    }}
+                    disabled={weather.isFetching}
+                    className="tap absolute bottom-2 right-2 z-[2] flex items-center gap-1 rounded-full bg-background/85 px-2.5 py-1 text-[11px] font-semibold text-foreground shadow-card disabled:opacity-70"
+                  >
+                    <RotateCw className={`size-3 ${weather.isFetching ? "animate-spin" : ""}`} /> Retry
+                  </button>
+                ) : null}
                 {editing ? (
                   <button
                     type="button"

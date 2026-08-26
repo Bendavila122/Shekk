@@ -53,7 +53,7 @@ export const WIDGETS: WidgetDef[] = [
       const night = w ? !w.isDay : c.timeOfDay === "late" || c.hour >= 20 || c.hour < 5;
       if (night) return "grad-night";
       if (!w) return "grad-sky";
-      if (w.rain > 50 || /rain|drizzle|thunder/i.test(w.condition)) return "grad-rain";
+      if ((w.rain ?? 0) > 50 || /rain|drizzle|thunder/i.test(w.condition)) return "grad-rain";
       switch (w.condition) {
         case "Clear":
           return "grad-sun";
@@ -81,17 +81,20 @@ export const WIDGETS: WidgetDef[] = [
           ctas: [],
         };
       }
+      // Only show a figure the provider actually gave us.
+      const rainRow: WidgetRow[] = w.rain === null ? [] : [{ icon: "☂️", label: "Rain chance", value: `${w.rain}%` }];
+      const uvRow: WidgetRow[] = w.uv === null ? [] : [{ icon: "🔆", label: "UV index", value: `${w.uv}` }];
       const rows: WidgetRow[] = c.isFriday
         ? [
             { icon: "🕯", label: "Candle lighting", value: c.jewish?.candle ?? "—" },
             { icon: "🍷", label: "Havdalah", value: c.jewish?.havdalah ?? "—" },
-            { icon: "☂️", label: "Rain chance", value: `${w.rain}%` },
+            ...rainRow,
           ]
         : [
             { icon: "🌅", label: "Sunrise", value: c.jewish?.sunrise ?? "—" },
             { icon: "🌇", label: "Sunset", value: c.jewish?.sunset ?? "—" },
-            { icon: "🔆", label: "UV index", value: `${w.uv}` },
-            { icon: "☂️", label: "Rain chance", value: `${w.rain}%` },
+            ...uvRow,
+            ...rainRow,
           ];
       if (w.aqi !== null) rows.push({ icon: "🫁", label: "Air quality", value: `AQI ${w.aqi}` });
       return {
@@ -293,17 +296,6 @@ export function arrangeWidgets(order: string[], hidden: string[]): WidgetDef[] {
   return out;
 }
 
-/**
- * Pure: while the weather feed is broken, the Today tile must not hold the
- * dominant hero slot. It keeps its place in the member's saved order — this
- * only affects what Home renders this session.
- */
-export function demoteBrokenWeather(widgets: WidgetDef[], weatherBroken: boolean): WidgetDef[] {
-  if (!weatherBroken || widgets.length < 2) return widgets;
-  const rest = widgets.filter((w) => w.id !== "today");
-  if (rest.length === widgets.length) return widgets;
-  return [...rest, ...widgets.filter((w) => w.id === "today")];
-}
 
 export function orderWidgets(ctx: UserContext, pinned: string[], hidden: string[]): WidgetDef[] {
   const pinnedDefs = pinned.map((id) => WIDGET_BY_ID[id]).filter(Boolean).filter((w) => !hidden.includes(w.id));

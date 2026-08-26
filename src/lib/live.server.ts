@@ -1,28 +1,70 @@
 /**
  * Live data sources for the Home widgets.
  *
- * Weather + air quality: Open-Meteo (free, unauthenticated).
+ * Weather + air quality: Open-Meteo (free, unauthenticated), with MET Norway as
+ * a second, independent provider when Open-Meteo throttles or errors.
  * Jewish calendar, zmanim, candle lighting: Hebcal (free, unauthenticated).
  * Reverse geocoding: OpenStreetMap Nominatim with a BigDataCloud fallback.
  *
  * Everything here runs server-side (called from thin createServerFn wrappers).
  */
 import { describeWeatherCode, type LiveJewish, type LivePlaceName, type LiveWeather, type LiveZman } from "./live-types";
+import {
+  parseMetNo,
+  parseOpenMeteo,
+  type MetNoForecast,
+  type OpenMeteoForecast,
+} from "./weather-parse";
 
 const TZID = "Asia/Jerusalem";
+
+const UA = "Shekk/1.0 (+https://shekk.app)";
 
 async function getJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
     ...init,
-    headers: { accept: "application/json", "user-agent": "Shekk/1.0 (+https://shekk.app)", ...(init?.headers ?? {}) },
+    headers: { accept: "application/json", "user-agent": UA, ...(init?.headers ?? {}) },
   });
   if (!res.ok) throw new Error(`Upstream ${res.status} for ${new URL(url).host}`);
   return (await res.json()) as T;
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Free weather upstreams throttle per egress IP and occasionally 5xx, and this
+ * runs from shared serverless egress — so a single miss must not become a dead
+ * widget. Times out, then retries transient failures with a short backoff.
+ */
+async function getJsonResilient<T>(url: string, attempts = 3): Promise<T> {
+  let lastError: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await getJson<T>(url, { signal: AbortSignal.timeout(8000) });
+    } catch (error) {
+      lastError = error;
+      const msg = String((error as Error)?.message ?? error);
+      const retryable = /Upstream (429|5\d\d)/.test(msg) || /timeout|aborted|network|fetch failed/i.test(msg);
+      if (!retryable || i === attempts - 1) break;
+      await sleep(250 * 2 ** i);
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error(String(lastError));
+}
+
 const round = (n: number | null | undefined) => (typeof n === "number" ? Math.round(n) : 0);
 
 /* ------------------------------------------------------------- weather */
+
+async function fetchAqi(lat: number, lon: number): Promise<number | null> {
+  const url =
+    `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}` +
+    `&current=european_aqi&timezone=auto`;
+  const air = await getJson<{ current?: { european_aqi?: number | null } }>(url, {
+    signal: AbortSignal.timeout(6000),
+  }).catch(() => null);
+  return typeof air?.current?.european_aqi === "number" ? Math.round(air.current.european_aqi) : null;
+}
 
 export async function fetchWeather(lat: number, lon: number): Promise<LiveWeather> {
   const forecastUrl =
@@ -31,60 +73,29 @@ export async function fetchWeather(lat: number, lon: number): Promise<LiveWeathe
     `&hourly=precipitation_probability,uv_index` +
     `&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max` +
     `&timezone=auto&forecast_days=1`;
-  const aqiUrl =
-    `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}` +
-    `&current=european_aqi&timezone=auto`;
 
-  type Forecast = {
-    current: {
-      time: string;
-      temperature_2m: number;
-      apparent_temperature: number;
-      weather_code: number;
-      is_day: number;
-      relative_humidity_2m: number;
-      wind_speed_10m: number;
-    };
-    hourly: { time: string[]; precipitation_probability: (number | null)[]; uv_index: (number | null)[] };
-    daily: {
-      temperature_2m_max: number[];
-      temperature_2m_min: number[];
-      precipitation_probability_max: (number | null)[];
-      uv_index_max: (number | null)[];
-    };
-  };
+  const aqi = fetchAqi(lat, lon);
 
-  const [forecast, air] = await Promise.all([
-    getJson<Forecast>(forecastUrl),
-    getJson<{ current?: { european_aqi?: number | null } }>(aqiUrl).catch(() => null),
-  ]);
-
-  const c = forecast.current;
-  const isDay = c.is_day === 1;
-  const { label, emoji } = describeWeatherCode(c.weather_code, isDay);
-
-  // Line the hourly arrays up with the current hour so UV / rain match "now".
-  const hourKey = c.time.slice(0, 13);
-  const idx = Math.max(0, forecast.hourly.time.findIndex((t) => t.startsWith(hourKey)));
-  const rainNow = forecast.hourly.precipitation_probability?.[idx];
-  const uvNow = forecast.hourly.uv_index?.[idx];
-
-  return {
-    temp: round(c.temperature_2m),
-    feels: round(c.apparent_temperature),
-    condition: label,
-    emoji,
-    uv: round(uvNow ?? forecast.daily.uv_index_max?.[0] ?? 0),
-    rain: round(rainNow ?? forecast.daily.precipitation_probability_max?.[0] ?? 0),
-    aqi: typeof air?.current?.european_aqi === "number" ? Math.round(air.current.european_aqi) : null,
-    high: round(forecast.daily.temperature_2m_max?.[0]),
-    low: round(forecast.daily.temperature_2m_min?.[0]),
-    humidity: round(c.relative_humidity_2m),
-    wind: round(c.wind_speed_10m),
-    isDay,
-    updatedAt: new Date().toISOString(),
-  };
+  try {
+    const forecast = await getJsonResilient<OpenMeteoForecast>(forecastUrl);
+    return parseOpenMeteo(forecast, await aqi);
+  } catch (primaryError) {
+    console.error("[weather] Open-Meteo failed, falling back to MET Norway:", primaryError);
+    try {
+      const met = await getJsonResilient<MetNoForecast>(
+        `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`,
+        2,
+      );
+      return parseMetNo(met, await aqi);
+    } catch (fallbackError) {
+      console.error("[weather] MET Norway fallback failed:", fallbackError);
+      throw new Error(
+        `Weather providers unavailable (${(primaryError as Error)?.message ?? "unknown"})`,
+      );
+    }
+  }
 }
+
 
 /* -------------------------------------------------------- jewish life */
 
