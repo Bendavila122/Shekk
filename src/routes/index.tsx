@@ -293,7 +293,7 @@ function WhatsOn() {
       .map((t) => t.event.id),
   );
   const upcoming = (events ?? [])
-    .filter((e) => !e.cancelled && new Date(e.startsAt).getTime() > now - 3600_000)
+    .filter((e) => new Date(e.startsAt).getTime() > now - 3600_000)
     .sort((a, b) => +new Date(a.startsAt) - +new Date(b.startsAt))
     .slice(0, 4);
 
