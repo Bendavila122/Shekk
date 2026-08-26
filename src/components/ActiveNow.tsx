@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { QRCode } from "@/components/QRCode";
+import { eventWhen, useMyTickets } from "@/lib/useEvents";
 
 type LiveItem = {
   id: string;
@@ -22,9 +23,37 @@ export function ActiveNow() {
   const [qr, setQr] = useState<LiveItem | null>(null);
 
   const pendingSplit = state.splits.find((s) => !s.paid);
+  const { data: tickets } = useMyTickets();
+
+  /** The next thing you're actually going to, with its door QR ready. */
+  const nextTicket = useMemo(() => {
+    const now = Date.now();
+    return (tickets ?? [])
+      .filter(
+        (t) =>
+          !t.event.cancelled &&
+          t.status === "valid" &&
+          new Date(t.event.startsAt).getTime() > now - 6 * 3600_000,
+      )
+      .sort((a, b) => +new Date(a.event.startsAt) - +new Date(b.event.startsAt))[0];
+  }, [tickets]);
 
   const items = useMemo<LiveItem[]>(() => {
     const list: LiveItem[] = [];
+
+    if (nextTicket) {
+      list.push({
+        id: `ticket-${nextTicket.id}`,
+        emoji: nextTicket.event.emoji || "\ud83c\udf9f\ufe0f",
+        label: "Your ticket",
+        title: nextTicket.event.title,
+        sub: eventWhen(nextTicket.event.startsAt),
+        meta: [nextTicket.event.venue, nextTicket.event.city].filter(Boolean).join(" · ") || nextTicket.event.host,
+        gradient: "from-[oklch(0.45_0.16_265)] to-[oklch(0.32_0.13_265)]",
+        cta: "Show QR",
+        qr: nextTicket.qrCode ?? nextTicket.id,
+      });
+    }
 
     if (pendingSplit) {
       list.unshift({
@@ -41,7 +70,7 @@ export function ActiveNow() {
     }
 
     return list;
-  }, [pendingSplit]);
+  }, [pendingSplit, nextTicket]);
 
   if (!hydrated || items.length === 0) return null;
 
