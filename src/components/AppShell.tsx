@@ -204,9 +204,6 @@ export function QuickMenu() {
             <Link to="/benefits" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <Tag className="size-4 text-muted-foreground" /> Benefits
             </Link>
-            <Link to="/money" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
-              <Wallet className="size-4 text-muted-foreground" /> Shekk Money
-            </Link>
             <Link to="/settings" className="tap-flat flex items-center gap-2 px-4 py-3 text-sm font-semibold">
               <Settings className="size-4 text-muted-foreground" /> Settings
             </Link>
@@ -243,18 +240,18 @@ export function BalanceMini({ size = "sm" }: { size?: "sm" | "lg" }) {
   );
 }
 
-/** Desktop sidebar footer: the Shekk Money teaser, in place of a live balance. */
+/** Desktop sidebar footer: the two things everyone has to buy before flying. */
 function NavBalance({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <Link
-      to="/money"
+      to="/services"
       onClick={onNavigate}
       className="tap mt-auto block rounded-2xl bg-ink px-4 py-4 text-ink-foreground"
     >
-      <p className="text-[10px] uppercase tracking-widest opacity-60">Coming next</p>
-      <p className="mt-1 font-display text-lg font-bold leading-tight">Shekk Money</p>
-      <p className="mt-1 text-[11px] opacity-70">Hold shekels, convert at a fair rate, spend with a Shekk card.</p>
-      <span className="mt-2 inline-block text-[11px] font-bold uppercase tracking-wide">Join early access →</span>
+      <p className="text-[10px] uppercase tracking-widest opacity-60">Sort before you fly</p>
+      <p className="mt-1 font-display text-lg font-bold leading-tight">Services</p>
+      <p className="mt-1 text-[11px] opacity-70">An eSIM or Israeli number, and travel and medical cover.</p>
+      <span className="mt-2 inline-block text-[11px] font-bold uppercase tracking-wide">Open services →</span>
     </Link>
   );
 }
@@ -280,7 +277,18 @@ const TAB_ROOTS = new Set([
   "/news",
   "/programme",
   "/before-you-fly",
+  "/explore/events",
+  "/tickets",
 ]);
+
+/** Prefixes that keep the Shekk chrome along with their root (event detail pages). */
+const TAB_ROOT_PREFIXES = ["/explore/event/"];
+
+/** True when a path is a browsing destination that keeps tabs, not a mini app. */
+function keepsChrome(pathname: string) {
+  const path = pathname === "/" ? "/" : pathname.replace(/\/$/, "");
+  return TAB_ROOTS.has(path) || TAB_ROOT_PREFIXES.some((p) => path.startsWith(p));
+}
 
 
 /** Lets a ScreenHeader tell its AppShell that a back control already exists. */
@@ -309,8 +317,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   /* Tab roots get the Shekk chrome. Anything deeper is a mini app or info page:
      no tab bar, no Shekk quick menu — it runs as its own little app. */
-  const isTabRoot = TAB_ROOTS.has(pathname === "/" ? "/" : pathname.replace(/\/$/, ""));
-  const mini = miniAppFor(pathname);
+  const isTabRoot = keepsChrome(pathname);
+  const mini = isTabRoot ? null : miniAppFor(pathname);
   const standalone = !isTabRoot;
   const [hasHeader, setHasHeader] = useState(false);
 
@@ -402,7 +410,7 @@ export function ScreenHeader({
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   /* Inside a mini app there is no Shekk banner at all — the app owns its whole
      screen and gets one small floating back button, like a real app. */
-  const inMiniApp = miniAppFor(pathname) !== null;
+  const inMiniApp = !keepsChrome(pathname) && miniAppFor(pathname) !== null;
   const register = useContext(HeaderRegistry);
 
   useEffect(() => {
