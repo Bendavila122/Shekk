@@ -5,7 +5,7 @@ import { useUserContext, WEATHER_CITIES } from "@/lib/personalise";
 import { placeForCity, useLocation } from "@/lib/location";
 import { useJewish, useWeather } from "@/lib/live";
 import { useNews } from "@/lib/news";
-import { arrangeWidgets, type WidgetDef } from "@/lib/widgets";
+import { arrangeWidgets, demoteBrokenWeather, type WidgetDef } from "@/lib/widgets";
 import { SkyScene, skyKind } from "@/components/SkyScene";
 import { JewishScene, jewishSceneKind } from "@/components/JewishScene";
 
@@ -406,9 +406,14 @@ export function ForYou() {
   }, []);
 
   // Tiles are stuck where the member left them — no relevance reshuffling.
+  const weatherBroken = Boolean(ctx.weatherError) && !weather.data;
   const widgets = useMemo(
-    () => arrangeWidgets(prefs.order.length ? prefs.order : prefs.pinned, prefs.hidden),
-    [prefs.order, prefs.pinned, prefs.hidden],
+    () =>
+      demoteBrokenWeather(
+        arrangeWidgets(prefs.order.length ? prefs.order : prefs.pinned, prefs.hidden),
+        weatherBroken,
+      ),
+    [prefs.order, prefs.pinned, prefs.hidden, weatherBroken],
   );
   const openDef = widgets.find((w) => w.id === openId) ?? null;
 
@@ -634,6 +639,20 @@ export function ForYou() {
 
       </div>
 
+
+      {weatherBroken && !editing ? (
+        <div className="mx-5 mt-3 flex items-center gap-2 rounded-2xl border border-border bg-card px-3.5 py-2.5 shadow-card">
+          <span className="min-w-0 flex-1 text-[12px] leading-snug text-muted-foreground">
+            Weather unavailable right now.
+          </span>
+          <button
+            onClick={() => void weather.refetch()}
+            className="tap shrink-0 rounded-full bg-muted px-3 py-1.5 text-[12px] font-semibold"
+          >
+            Retry
+          </button>
+        </div>
+      ) : null}
 
       {!ctx.ready ? (
         <div className="pt-3">
