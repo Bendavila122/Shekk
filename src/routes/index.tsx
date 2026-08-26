@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CalendarDays, Compass, PlaneTakeoff, Wallet, ShieldCheck, Smartphone, Check } from "lucide-react";
+import { CalendarDays, Compass, PlaneTakeoff, ShieldCheck, Smartphone, Check, PartyPopper } from "lucide-react";
 import { useProgramme, useTravel } from "@/lib/useProgramme";
 
 import { GlobalSearch } from "@/components/GlobalSearch";
@@ -21,6 +21,7 @@ import { ServiceLogo } from "@/components/ServiceLogo";
 import { usePromotions } from "@/lib/admin";
 import { resolveInterests } from "@/lib/journey-interests";
 import { getJourney, greeting } from "@/lib/journey-phase";
+import { dayLabel, eventWhen, useEvents, useMyTickets } from "@/lib/useEvents";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -223,7 +224,15 @@ function ServicePrompts() {
 
   return (
     <section className="px-4 pt-6">
-      <SectionHead title="Sort before you fly" hint="The things you have to buy for Israel" />
+      <SectionHead
+        title="Sort before you fly"
+        hint="The things you have to buy for Israel"
+        action={
+          <Link to="/services" className="tap-flat text-[12.5px] font-semibold text-primary">
+            All services
+          </Link>
+        }
+      />
       <div className="space-y-2.5">
         {prompts.map((p) => (
           <Link key={p.to} to={p.to} className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-3.5 shadow-card">
@@ -272,28 +281,73 @@ function PickedForYou() {
   );
 }
 
-/** The honest banking placeholder: a preview, not a balance. */
-function MoneyTeaser() {
+/** What's on: your next ticket first, then the soonest things you could book. */
+function WhatsOn() {
+  const { data: events, isLoading } = useEvents();
+  const { data: tickets } = useMyTickets();
+
+  const now = Date.now();
+  const booked = new Set(
+    (tickets ?? [])
+      .filter((t) => t.status === "valid" && !t.event.cancelled)
+      .map((t) => t.event.id),
+  );
+  const upcoming = (events ?? [])
+    .filter((e) => new Date(e.startsAt).getTime() > now - 3600_000)
+    .sort((a, b) => +new Date(a.startsAt) - +new Date(b.startsAt))
+    .slice(0, 4);
+
+  if (isLoading || upcoming.length === 0) return null;
+
   return (
-    <section className="px-4 pt-6">
-      <Link to="/money" className="tap block">
-        <div className="grad-balance relative overflow-hidden rounded-[1.5rem] px-5 py-4 text-ink-foreground shadow-lift">
-          <span className="card-sheen pointer-events-none absolute inset-0" aria-hidden />
-          <div className="relative flex items-center gap-3">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-ink-foreground/15">
-              <Wallet className="size-5" />
+    <section className="pt-6">
+      <div className="px-4">
+        <SectionHead
+          title="What's on"
+          hint="Shabbatonim, tiyulim and nights out you can book"
+          action={
+            <Link to="/tickets" className="tap-flat text-[12.5px] font-semibold text-primary">
+              My tickets
+            </Link>
+          }
+        />
+      </div>
+      <div className="scrollbar-none flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 pb-1 scroll-px-5">
+        {upcoming.map((e) => (
+          <Link
+            key={e.id}
+            to="/explore/event/$id"
+            params={{ id: e.id }}
+            className="tap w-[190px] shrink-0 snap-start rounded-2xl border border-border bg-card p-3.5 shadow-card"
+          >
+            <span className="flex items-center gap-2">
+              <span className="text-lg">{e.emoji || "🎟️"}</span>
+              <MicroLabel className="text-muted-foreground">{dayLabel(e.startsAt)}</MicroLabel>
             </span>
-            <span className="min-w-0 flex-1">
-              <MicroLabel className="opacity-70">Coming next</MicroLabel>
-              <span className="mt-0.5 block font-display text-lg font-bold leading-tight">Shekk Money</span>
-              <span className="block text-[12px] leading-snug opacity-80">
-                Hold shekels, convert at a fair rate, spend with a Shekk card. Join early access.
+            <span className="mt-1.5 block line-clamp-2 text-[13.5px] font-semibold leading-snug">{e.title}</span>
+            <span className="mt-0.5 block text-[11.5px] leading-snug text-muted-foreground">
+              {eventWhen(e.startsAt)}
+            </span>
+            {booked.has(e.id) ? (
+              <span className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-success">
+                <Check className="size-3" /> You&apos;re going
               </span>
-            </span>
-            <span className="shrink-0 text-sm font-bold">→</span>
-          </div>
-        </div>
-      </Link>
+            ) : null}
+          </Link>
+        ))}
+      </div>
+      <div className="px-4 pt-3">
+        <Link
+          to="/explore/events"
+          className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-3.5 shadow-card"
+        >
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
+            <PartyPopper className="size-4" />
+          </span>
+          <span className="min-w-0 flex-1 text-[13px] font-semibold">See everything that&apos;s on</span>
+          <span className="shrink-0 text-sm font-semibold text-primary">→</span>
+        </Link>
+      </div>
     </section>
   );
 }
@@ -347,14 +401,14 @@ function HomeScreen() {
 
       <SetupPanel />
       <ProgrammePanel />
+      <ActiveNow />
+      <WhatsOn />
       <ServicePrompts />
       <PickedForYou />
 
       <div className="px-4 pt-6">
         <GlobalSearch />
       </div>
-
-      <ActiveNow />
 
       <ForYou />
 
@@ -406,8 +460,6 @@ function HomeScreen() {
           </div>
         </section>
       ) : null}
-
-      <MoneyTeaser />
 
       <div className="pb-8" />
     </AppShell>

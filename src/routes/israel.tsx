@@ -82,7 +82,6 @@ const MINI_GROUPS: { title: string; hint: string; ids: string[] }[] = [
     hint: "Food, shopping, health, Hebrew and where you live",
     ids: ["food", "shops", "health", "housing", "fitness", "reserve", "ulpan"],
   },
-  { title: "Going out", hint: "Events and tickets", ids: ["events", "tickets"] },
   { title: "Jewish life and news", hint: "Tefillah, times and what's happening", ids: ["siddur", "news"] },
   {
     title: "Plan and paperwork",

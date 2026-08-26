@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Check, GraduationCap, PlaneTakeoff, Sparkles, Wallet } from "lucide-react";
+import { ArrowRight, Check, GraduationCap, PlaneTakeoff, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell, Card, Notice, ScreenHeader } from "@/components/AppShell";
 import { Milestone, MicroLabel, ProgressBar, SectionHead } from "@/components/Kit";
@@ -192,20 +192,6 @@ function SetupChecklist() {
           </Card>
         </Link>
 
-        <Link to="/money" className="tap block">
-          <Card className="flex items-center gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-muted">
-              <Wallet className="size-5 text-muted-foreground" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm font-semibold">Money in Israel</span>
-              <span className="block text-xs text-muted-foreground">
-                What things cost, how to pay — and Shekk Money early access
-              </span>
-            </span>
-            <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
-          </Card>
-        </Link>
       </div>
     </AppShell>
   );
