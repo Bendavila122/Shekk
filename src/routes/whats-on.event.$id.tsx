@@ -40,7 +40,7 @@ function ActivityDetail() {
   const navigate = useNavigate();
   const { data, isLoading, error } = useEvent(id);
   const { available } = useApp();
-  const { hub } = useProgramme();
+  const { programme } = useProgramme();
   const buy = useBuyTicket();
   const outbound = useOutboundBooking();
   const [qty, setQty] = useState(1);
@@ -93,7 +93,7 @@ function ActivityDetail() {
   const shortBy = +(total - available).toFixed(2);
 
   /* A real clash, computed from the member's own programme schedule — never a guess. */
-  const clash = findClash(hub, activity.startsAt, activity.endsAt);
+  const clash = findClash(programme.schedule, activity.startsAt, activity.endsAt);
 
   const directions = [activity.venue, activity.city].filter(Boolean).join(", ");
 
@@ -385,16 +385,14 @@ function ActivityDetail() {
 
 /** A clash only when the member's own programme schedule really overlaps. */
 function findClash(
-  hub: ReturnType<typeof useProgramme>["hub"],
+  events: { title: string; startsAt: string; endsAt: string | null }[],
   startsAt: string,
   endsAt: string | null,
 ): { title: string; startsAt: string } | null {
-  const events = hub?.events ?? [];
   if (events.length === 0) return null;
   const from = new Date(startsAt).getTime();
   const to = endsAt ? new Date(endsAt).getTime() : from + 2 * 3600_000;
   for (const e of events) {
-    if (e.status === "cancelled") continue;
     const eFrom = new Date(e.startsAt).getTime();
     const eTo = e.endsAt ? new Date(e.endsAt).getTime() : eFrom + 2 * 3600_000;
     if (from < eTo && eFrom < to) return { title: e.title, startsAt: e.startsAt };

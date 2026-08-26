@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { CalendarDays, PartyPopper, Search, Ticket, X } from "lucide-react";
+import { CalendarDays, Search, Ticket, X } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { ErrorState } from "@/components/Kit";
 import { dayLabel, eventWhen, useEvents } from "@/lib/useEvents";
@@ -324,5 +324,3 @@ function Chip({
     </button>
   );
 }
-
-export { PartyPopper };
