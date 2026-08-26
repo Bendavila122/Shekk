@@ -76,7 +76,9 @@ export function activeTabFor(pathname: string): TabPath | null {
  * a mini app: full-bleed, its own splash, one floating back button.
  *
  * What's On, activity detail and My Tickets are destinations, not tools, so they
- * stay inside the chrome.
+ * stay inside the chrome. The /services landing page is a browsing hub that
+ * belongs to Explore, so it keeps chrome too — its deeper purchase and
+ * comparison flows (/services/esim, /services/insurance) stay full-screen.
  */
 const CHROME_ROOTS = new Set<string>([
   ...TAB_ORDER,
@@ -87,6 +89,7 @@ const CHROME_ROOTS = new Set<string>([
   "/before-you-fly",
   "/whats-on",
   "/tickets",
+  "/services",
 ]);
 
 const CHROME_PREFIXES = ["/whats-on/", "/programme/", "/explore/events", "/explore/event/"];
