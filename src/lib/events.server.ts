@@ -14,6 +14,9 @@
 export type EventKind = "shabbaton" | "tiyul" | "club" | "shiur" | "chesed" | "other";
 export type EventStatus = "draft" | "published" | "cancelled";
 
+export type IntegrationType = "internal_ticket" | "affiliate_link" | "widget" | "api";
+export type ProgrammeStatus = "programme_included" | "programme_official" | "independent";
+
 export type EventRow = {
   id: string;
   title: string;
@@ -34,6 +37,21 @@ export type EventRow = {
   provider: string;
   provider_ref: string | null;
   created_at: string;
+  /* provider-neutral commercial fields */
+  external_provider_id: string | null;
+  external_booking_url: string | null;
+  integration_type: IntegrationType;
+  affiliate_campaign_id: string | null;
+  /** Internal/admin only — never shaped into a member response. */
+  commission_type: string | null;
+  commission_rate: number | null;
+  source_category: string | null;
+  programme_status: ProgrammeStatus;
+  last_verified_at: string | null;
+  availability_confidence: "live" | "recent" | "unknown" | null;
+  terms_url: string | null;
+  refund_summary: string | null;
+  age_min: number | null;
 };
 
 /** What the app renders: shekels, and how many spots are actually left. */
@@ -56,7 +74,19 @@ export type PublicEvent = {
   coverUrl: string | null;
   emoji: string;
   provider: string;
+  /* commercial shape, minus anything commercially confidential */
+  externalProviderId: string | null;
+  externalBookingUrl: string | null;
+  integrationType: IntegrationType;
+  sourceCategory: string | null;
+  programmeStatus: ProgrammeStatus;
+  lastVerifiedAt: string | null;
+  availabilityConfidence: "live" | "recent" | "unknown" | null;
+  termsUrl: string | null;
+  refundSummary: string | null;
+  ageMin: number | null;
 };
+
 
 export type TicketRow = {
   id: string;
