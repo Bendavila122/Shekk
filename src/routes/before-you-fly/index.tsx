@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Check, GraduationCap, PlaneTakeoff, Sparkles, Wallet } from "lucide-react";
+import { ArrowRight, Check, GraduationCap, PlaneTakeoff, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell, Card, Notice, ScreenHeader } from "@/components/AppShell";
 import { Milestone, MicroLabel, ProgressBar, SectionHead } from "@/components/Kit";
