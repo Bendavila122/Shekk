@@ -589,10 +589,16 @@ export function ForYou() {
 
   return (
     <section className="pt-7">
-      <div className="flex items-center justify-between px-5">
-        <h2 className="flex items-center gap-1.5 text-base font-bold">
-          <Sparkles className="size-4 text-primary" /> For You
-        </h2>
+      <div className="flex items-start justify-between gap-3 px-5">
+        <div className="min-w-0">
+          <h2 className="flex items-center gap-1.5 font-display text-xl font-bold leading-tight tracking-tight">
+            <Sparkles className="size-4 text-primary" /> For You
+          </h2>
+          <p className="mt-0.5 text-[12px] leading-snug text-muted-foreground">
+            Your widgets — hold one to rearrange, or customise the set.
+          </p>
+        </div>
+
         {editing ? (
           <button
             onClick={() => {

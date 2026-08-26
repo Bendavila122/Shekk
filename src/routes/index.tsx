@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarDays, Compass, PlaneTakeoff, ShieldCheck, Smartphone, Check, PartyPopper } from "lucide-react";
 import { useProgramme, useTravel } from "@/lib/useProgramme";
 
-import { GlobalSearch } from "@/components/GlobalSearch";
+
 import { AppShell } from "@/components/AppShell";
 import { SectionHead, EmptyState, LoadingBlocks, StatusPill, MicroLabel, ProgressBar } from "@/components/Kit";
 
@@ -19,7 +19,7 @@ import { serviceLinkProps, type Service } from "@/lib/services";
 import { recordServiceUse, useRecentServices } from "@/lib/recents";
 import { ServiceLogo } from "@/components/ServiceLogo";
 import { usePromotions } from "@/lib/admin";
-import { resolveInterests } from "@/lib/journey-interests";
+
 import { getJourney, greeting } from "@/lib/journey-phase";
 import { dayLabel, eventWhen, useEvents, useMyTickets } from "@/lib/useEvents";
 
@@ -275,35 +275,14 @@ function ServicePrompts() {
   );
 }
 
-/** Picked from what the member said Shekk should help them with, in their order. */
-function PickedForYou() {
-  const { travel } = useTravel();
-  const picks = resolveInterests(travel.interests);
-  if (picks.length === 0) return null;
+/*
+ * "Picked for you" used to live here. It duplicated the customisable For You
+ * section and could surface paused Money links through the "spending" interest,
+ * so Home no longer renders it. Journey interests are still collected in
+ * onboarding (see resolveInterests in @/lib/journey-interests) for future
+ * contextual use.
+ */
 
-  return (
-    <section className="pt-6">
-      <div className="px-4">
-        <SectionHead title="Picked for you" hint="Based on what you asked Shekk to help with" />
-      </div>
-      <div className="scrollbar-none flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 pb-1 scroll-px-5">
-        {picks.map((p) => (
-          <Link
-            key={p.id}
-            to={p.to}
-            className="tap w-[150px] shrink-0 snap-start rounded-2xl border border-border bg-card p-3.5 shadow-card"
-          >
-            <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-primary">
-              <p.icon className="size-4" />
-            </span>
-            <span className="mt-2 block text-sm font-semibold leading-snug">{p.action}</span>
-            <span className="block text-[11px] leading-snug text-muted-foreground">{p.hint}</span>
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
 
 /** What's on: your next ticket first, then the soonest things you could book. */
 function WhatsOn() {
@@ -424,17 +403,12 @@ function HomeScreen() {
       <LocationBar />
 
       <ProgrammePanel />
+      <ForYou />
       <SetupPanel />
       <ActiveNow />
       <WhatsOn />
       <ServicePrompts />
-      <PickedForYou />
 
-      <div className="px-4 pt-6">
-        <GlobalSearch />
-      </div>
-
-      <ForYou />
 
       <div className="px-4 pt-6">
         <SectionHead

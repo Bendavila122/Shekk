@@ -1,12 +1,25 @@
-/** Recently opened partner apps — the only thing the home screen shows. */
+/** Recently opened apps and tools — what Home's "Jump back in" row shows. */
 import { useCallback, useEffect, useState } from "react";
 import { ALL_SERVICES, type Service } from "./services";
+import { MONEY_ENABLED } from "./flags";
 
 const KEY = "shekk.recents.v2";
 const MAX = 5;
 
+/**
+ * Service ids that belong to the paused regulated money product. They are never
+ * deleted from a member's storage — just filtered out of the result while
+ * MONEY_ENABLED is false, so they return with the flag.
+ */
+export const MONEY_SERVICE_IDS = new Set(["topup", "split", "exchange", "card", "wallet"]);
+
 /** Sensible starting point before the student has opened anything. */
-const DEFAULT_RECENTS = ["gett", "siddur", "topup", "split"];
+const DEFAULT_RECENTS = ["siddur", "maps", "fitness", "visa"];
+
+/** Pure: drop paused-money ids while the money product is off. */
+export function filterMoneyRecents(ids: string[], moneyEnabled: boolean): string[] {
+  return moneyEnabled ? ids : ids.filter((id) => !MONEY_SERVICE_IDS.has(id));
+}
 
 function read(): string[] {
   if (typeof window === "undefined") return DEFAULT_RECENTS;
@@ -37,7 +50,7 @@ export function useRecentServices(): Service[] {
     return () => window.removeEventListener("shekk:recents", sync);
   }, [sync]);
 
-  return ids
+  return filterMoneyRecents(ids, MONEY_ENABLED)
     .map((id) => ALL_SERVICES.find((s) => s.id === id))
     .filter((s): s is Service => Boolean(s))
     .slice(0, MAX);

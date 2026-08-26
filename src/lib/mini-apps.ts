@@ -7,6 +7,8 @@
  * a single line glyph, so the icons read as a family instead of a row of emoji.
  */
 import type { LucideIcon } from "lucide-react";
+import { MONEY_ENABLED } from "./flags";
+
 import {
   ArrowLeftRight,
   BookOpenText,
@@ -325,10 +327,31 @@ export const MINI_APPS: MiniApp[] = [
   },
 ];
 
-/** Every mini app Shekk owns, in launch order. */
-export function miniApps(): MiniApp[] {
-  return MINI_APPS;
+/**
+ * Mini apps that belong to the paused regulated money product. They stay in
+ * MINI_APPS (and keep their routes) but are hidden from the app library until
+ * MONEY_ENABLED is true. Money Planner is not here: it is an informational
+ * budgeting tool, not the wallet.
+ */
+export const MONEY_MINI_APP_IDS = new Set(["exchange"]);
+
+/** Pure: the library a member should see for a given money-flag state. */
+export function visibleMiniApps(moneyEnabled: boolean, apps: MiniApp[] = MINI_APPS): MiniApp[] {
+  return moneyEnabled ? apps : apps.filter((a) => !MONEY_MINI_APP_IDS.has(a.id));
 }
+
+/** Pure: mini-app search over name and tagline only. */
+export function searchMiniApps(apps: MiniApp[], query: string): MiniApp[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return apps.filter((a) => `${a.name} ${a.tagline}`.toLowerCase().includes(q));
+}
+
+/** Every mini app a member can open right now, in launch order. */
+export function miniApps(): MiniApp[] {
+  return visibleMiniApps(MONEY_ENABLED);
+}
+
 
 /** Which mini app, if any, owns this route. */
 export function miniAppFor(pathname: string): MiniApp | null {
