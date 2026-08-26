@@ -782,20 +782,60 @@ export function activityKindFields(kind: ActivityKind): {
 }
 
 const CHANGE_FIELD_LABEL: Record<string, string> = {
-  starts_at: "New time",
-  startsAt: "New time",
-  ends_at: "New end time",
-  location_label: "New location",
-  locationLabel: "New location",
-  meeting_point: "New meeting point",
+  starts_at: "Time changed",
+  startsAt: "Time changed",
+  ends_at: "End time changed",
+  location_label: "Location changed",
+  locationLabel: "Location changed",
+  meeting_point: "Meeting point changed",
   status: "Status",
   title: "Renamed",
   capacity: "Spaces",
 };
 
-/** "New time · 09:00 → 09:30" in words a participant reads without thinking. */
+const ISO_LIKE = /^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}|$)/;
+
+function parseWhen(value: string): Date | null {
+  if (!ISO_LIKE.test(value.trim())) return null;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+const clockOf = (d: Date) => d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+const dateOf = (d: Date) => d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+
+function shiftWords(minutes: number): string {
+  const abs = Math.abs(minutes);
+  const unit =
+    abs % 60 === 0 && abs >= 60
+      ? `${abs / 60} ${abs / 60 === 1 ? "hour" : "hours"}`
+      : `${abs} ${abs === 1 ? "minute" : "minutes"}`;
+  return `${minutes > 0 ? "Delayed" : "Moved earlier"} ${unit}`;
+}
+
+/**
+ * Participant-facing change copy. Never prints raw ISO timestamps or database
+ * field names — "Delayed 30 minutes · 16:30 → 17:00", "Location changed:
+ * Old City → Jaffa Port".
+ */
 export function changeLine(change: Pick<EventChange, "field" | "before" | "after">): string {
   const label = CHANGE_FIELD_LABEL[change.field] ?? change.field.replace(/_/g, " ");
+  const before = change.before?.trim() ? parseWhen(change.before) : null;
+  const after = change.after?.trim() ? parseWhen(change.after) : null;
+
+  if (after && before) {
+    const sameDay = before.toDateString() === after.toDateString();
+    if (sameDay) {
+      const minutes = Math.round((after.getTime() - before.getTime()) / 60000);
+      const head = minutes === 0 ? label : shiftWords(minutes);
+      return `${head} · ${clockOf(before)} → ${clockOf(after)}`;
+    }
+    return `Moved to ${dateOf(after)} · ${clockOf(before)} → ${dateOf(after)} ${clockOf(after)}`;
+  }
+  if (after) {
+    const isToday = after.toDateString() === new Date().toDateString();
+    return `${label}: ${isToday ? clockOf(after) : `${dateOf(after)} ${clockOf(after)}`}`;
+  }
   if (change.after && change.before) return `${label}: ${change.before} → ${change.after}`;
   if (change.after) return `${label}: ${change.after}`;
   return label;
