@@ -53,7 +53,7 @@ export const WIDGETS: WidgetDef[] = [
       const night = w ? !w.isDay : c.timeOfDay === "late" || c.hour >= 20 || c.hour < 5;
       if (night) return "grad-night";
       if (!w) return "grad-sky";
-      if (w.rain > 50 || /rain|drizzle|thunder/i.test(w.condition)) return "grad-rain";
+      if ((w.rain ?? 0) > 50 || /rain|drizzle|thunder/i.test(w.condition)) return "grad-rain";
       switch (w.condition) {
         case "Clear":
           return "grad-sun";
