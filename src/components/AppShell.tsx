@@ -101,62 +101,33 @@ export function Notice({
   );
 }
 
-/** Bottom tab bar, shared by every screen (mobile). Home sits centred and raised. */
+/**
+ * Bottom tab bar, shared by every screen (mobile). Tabs render left-to-right in
+ * the same order as TAB_ORDER in nav.ts: Today, Programme, What's on, Explore, You.
+ */
 export function MobileNav() {
   const isActive = useActive();
-  const unread = useUnreadChats();
-  const side = TABS.filter((t) => t.to !== "/");
-  const left = side.slice(0, 2);
-  const right = side.slice(2);
-  const homeActive = isActive("/");
-
-  const item = (to: string, label: string, Icon: typeof Home) => {
-    const active = isActive(to);
-    const badge = to === "/social" && unread > 0 ? unread : 0;
-    return (
-      <Link
-        key={to}
-        to={to}
-        className={`tap-flat flex flex-1 flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold ${
-          active ? "text-primary" : "text-muted-foreground"
-        }`}
-      >
-        <span className="relative">
-          <Icon className="size-6" strokeWidth={active ? 2.6 : 1.8} />
-          {badge > 0 && (
-            <span className="absolute -right-2 -top-1 min-w-4 rounded-full bg-destructive px-1 text-center text-[10px] font-bold leading-4 text-white">
-              {badge > 9 ? "9+" : badge}
-            </span>
-          )}
-        </span>
-        <span>{label}</span>
-      </Link>
-    );
-  };
-
 
   return (
     <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[430px] -translate-x-1/2 border-t border-border bg-card lg:hidden">
       <nav className="flex items-end justify-between px-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-2">
-        {left.map(({ to, label, Icon }) => item(to, label, Icon))}
-
-        <Link
-          to="/"
-          aria-label="Home"
-          className="tap-flat flex flex-1 flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold"
-        >
-          <span
-            className={`flex size-6 items-center justify-center ${
-              homeActive ? "text-primary" : "text-muted-foreground"
-            }`}
-          >
-            <Home className="size-6" strokeWidth={homeActive ? 2.6 : 1.8} />
-          </span>
-          <span className={homeActive ? "text-primary" : "text-muted-foreground"}>Today</span>
-        </Link>
-
-
-        {right.map(({ to, label, Icon }) => item(to, label, Icon))}
+        {TABS.map(({ to, label, Icon }) => {
+          const active = isActive(to);
+          return (
+            <Link
+              key={to}
+              to={to}
+              className={`tap-flat flex flex-1 flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-semibold ${
+                active ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
+              <span className="relative">
+                <Icon className="size-6" strokeWidth={active ? 2.6 : 1.8} />
+              </span>
+              <span>{label}</span>
+            </Link>
+          );
+        })}
       </nav>
     </div>
   );
