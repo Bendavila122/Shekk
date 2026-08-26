@@ -81,17 +81,20 @@ export const WIDGETS: WidgetDef[] = [
           ctas: [],
         };
       }
+      // Only show a figure the provider actually gave us.
+      const rainRow: WidgetRow[] = w.rain === null ? [] : [{ icon: "☂️", label: "Rain chance", value: `${w.rain}%` }];
+      const uvRow: WidgetRow[] = w.uv === null ? [] : [{ icon: "🔆", label: "UV index", value: `${w.uv}` }];
       const rows: WidgetRow[] = c.isFriday
         ? [
             { icon: "🕯", label: "Candle lighting", value: c.jewish?.candle ?? "—" },
             { icon: "🍷", label: "Havdalah", value: c.jewish?.havdalah ?? "—" },
-            { icon: "☂️", label: "Rain chance", value: `${w.rain}%` },
+            ...rainRow,
           ]
         : [
             { icon: "🌅", label: "Sunrise", value: c.jewish?.sunrise ?? "—" },
             { icon: "🌇", label: "Sunset", value: c.jewish?.sunset ?? "—" },
-            { icon: "🔆", label: "UV index", value: `${w.uv}` },
-            { icon: "☂️", label: "Rain chance", value: `${w.rain}%` },
+            ...uvRow,
+            ...rainRow,
           ];
       if (w.aqi !== null) rows.push({ icon: "🫁", label: "Air quality", value: `AQI ${w.aqi}` });
       return {
