@@ -171,8 +171,55 @@ function shape(row: EventRow, sold: number): PublicEvent {
     coverUrl: row.cover_url,
     emoji: row.emoji,
     provider: row.provider,
+    externalProviderId: row.external_provider_id ?? null,
+    externalBookingUrl: row.external_booking_url ?? null,
+    integrationType: (row.integration_type ?? "internal_ticket") as IntegrationType,
+    sourceCategory: row.source_category ?? null,
+    programmeStatus: (row.programme_status ?? "independent") as ProgrammeStatus,
+    lastVerifiedAt: row.last_verified_at ?? null,
+    availabilityConfidence: row.availability_confidence ?? null,
+    termsUrl: row.terms_url ?? null,
+    refundSummary: row.refund_summary ?? null,
+    ageMin: row.age_min ?? null,
   };
 }
+
+/**
+ * Record a tap-through to a provider's own checkout.
+ *
+ * A click is a click: this is attribution groundwork, never a confirmed booking
+ * and never a confirmed commission.
+ */
+export async function recordOutboundClick(input: {
+  userId: string;
+  eventId: string;
+}): Promise<{ url: string } | null> {
+  const db = await admin();
+  const { data } = await db
+    .from("events")
+    .select("id, provider, external_provider_id, external_booking_url, affiliate_campaign_id, status")
+    .eq("id", input.eventId)
+    .maybeSingle();
+
+  const row = data as Pick<
+    EventRow,
+    "id" | "provider" | "external_provider_id" | "external_booking_url" | "affiliate_campaign_id" | "status"
+  > | null;
+  if (!row || row.status !== "published" || !row.external_booking_url) return null;
+
+  const { error } = await db.from("activity_outbound_clicks").insert({
+    user_id: input.userId,
+    event_id: row.id,
+    provider: row.provider,
+    external_provider_id: row.external_provider_id,
+    destination_url: row.external_booking_url,
+    affiliate_campaign_id: row.affiliate_campaign_id,
+  });
+  if (error) console.error("[events] outbound click:", error.message);
+
+  return { url: row.external_booking_url };
+}
+
 
 async function soldByEvent(eventIds: string[]): Promise<Record<string, number>> {
   if (eventIds.length === 0) return {};
