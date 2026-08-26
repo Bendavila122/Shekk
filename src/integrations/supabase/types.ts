@@ -44,6 +44,47 @@ export type Database = {
         }
         Relationships: []
       }
+      activity_outbound_clicks: {
+        Row: {
+          affiliate_campaign_id: string | null
+          created_at: string
+          destination_url: string
+          event_id: string | null
+          external_provider_id: string | null
+          id: string
+          provider: string
+          user_id: string | null
+        }
+        Insert: {
+          affiliate_campaign_id?: string | null
+          created_at?: string
+          destination_url: string
+          event_id?: string | null
+          external_provider_id?: string | null
+          id?: string
+          provider: string
+          user_id?: string | null
+        }
+        Update: {
+          affiliate_campaign_id?: string | null
+          created_at?: string
+          destination_url?: string
+          event_id?: string | null
+          external_provider_id?: string | null
+          id?: string
+          provider?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_outbound_clicks_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       analytics_events: {
         Row: {
           created_at: string
@@ -275,70 +316,109 @@ export type Database = {
       }
       events: {
         Row: {
+          affiliate_campaign_id: string | null
+          age_min: number | null
+          availability_confidence: string | null
           capacity: number
           city: string | null
+          commission_rate: number | null
+          commission_type: string | null
           cover_url: string | null
           created_at: string
           created_by: string | null
           description: string | null
           emoji: string
           ends_at: string | null
+          external_booking_url: string | null
+          external_provider_id: string | null
           host: string
           id: string
           includes: string | null
+          integration_type: string
           kind: string
+          last_verified_at: string | null
           per_person_limit: number
           price_agorot: number
+          programme_status: string
           provider: string
           provider_ref: string | null
+          refund_summary: string | null
+          source_category: string | null
           starts_at: string
           status: string
+          terms_url: string | null
           title: string
           updated_at: string
           venue: string | null
         }
         Insert: {
+          affiliate_campaign_id?: string | null
+          age_min?: number | null
+          availability_confidence?: string | null
           capacity?: number
           city?: string | null
+          commission_rate?: number | null
+          commission_type?: string | null
           cover_url?: string | null
           created_at?: string
           created_by?: string | null
           description?: string | null
           emoji?: string
           ends_at?: string | null
+          external_booking_url?: string | null
+          external_provider_id?: string | null
           host: string
           id?: string
           includes?: string | null
+          integration_type?: string
           kind?: string
+          last_verified_at?: string | null
           per_person_limit?: number
           price_agorot?: number
+          programme_status?: string
           provider?: string
           provider_ref?: string | null
+          refund_summary?: string | null
+          source_category?: string | null
           starts_at: string
           status?: string
+          terms_url?: string | null
           title: string
           updated_at?: string
           venue?: string | null
         }
         Update: {
+          affiliate_campaign_id?: string | null
+          age_min?: number | null
+          availability_confidence?: string | null
           capacity?: number
           city?: string | null
+          commission_rate?: number | null
+          commission_type?: string | null
           cover_url?: string | null
           created_at?: string
           created_by?: string | null
           description?: string | null
           emoji?: string
           ends_at?: string | null
+          external_booking_url?: string | null
+          external_provider_id?: string | null
           host?: string
           id?: string
           includes?: string | null
+          integration_type?: string
           kind?: string
+          last_verified_at?: string | null
           per_person_limit?: number
           price_agorot?: number
+          programme_status?: string
           provider?: string
           provider_ref?: string | null
+          refund_summary?: string | null
+          source_category?: string | null
           starts_at?: string
           status?: string
+          terms_url?: string | null
           title?: string
           updated_at?: string
           venue?: string | null
