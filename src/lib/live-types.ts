@@ -5,14 +5,18 @@ export type LiveWeather = {
   feels: number;
   condition: string;
   emoji: string;
-  uv: number;
-  rain: number;
+  /** null when the answering provider doesn't publish it — never invented. */
+  uv: number | null;
+  /** Rain probability %, null when the answering provider doesn't publish it. */
+  rain: number | null;
   aqi: number | null;
   high: number;
   low: number;
   humidity: number;
   wind: number;
   isDay: boolean;
+  /** Which upstream answered, for support and diagnostics. */
+  provider: "open-meteo" | "met.no";
   /** ISO timestamp of when the reading was produced. */
   updatedAt: string;
 };
