@@ -106,17 +106,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "impact-site-verification", value: "de536f76-ea4e-4828-b5e2-2c4499cedc97" },
-      { title: "Shekk — one wallet for your year in Israel" },
+      { title: "Shekk — everything you need for your year in Israel" },
       {
         name: "description",
         content:
-          "Shekk is the super-app for American gap-year students in Israel: preload Shekk, then Wolt, Gett, Rav-Kav, Go-To and Israel Railways run inside the app and we pay them for you.",
+          "Shekk is the programme-aware app for a gap year or programme year in Israel: your schedule and updates, what's on near you, setup essentials like an eSIM and insurance, and practical tools for living here.",
       },
       { name: "author", content: "Shekk" },
-      { property: "og:title", content: "Shekk — one wallet for your year in Israel" },
+      { property: "og:title", content: "Shekk — everything you need for your year in Israel" },
       {
         property: "og:description",
-        content: "Preload Shekk once — Shekk pays the partner apps for you and deducts them.",
+        content:
+          "Programme schedule and updates, activities near you, Israel setup essentials and everyday tools — in one app.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
