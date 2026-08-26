@@ -678,6 +678,22 @@ export function ForYou() {
                   editing={editing}
                   onOpen={() => setOpenId(item.def.id)}
                 />
+                {/* Live feed genuinely failed — retry in place, tile stays put. */}
+                {!editing && item.def.id === "today" && weather.isError ? (
+                  <button
+                    type="button"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      haptic();
+                      void weather.refetch();
+                    }}
+                    disabled={weather.isFetching}
+                    className="tap absolute bottom-2 right-2 z-[2] flex items-center gap-1 rounded-full bg-background/85 px-2.5 py-1 text-[11px] font-semibold text-foreground shadow-card disabled:opacity-70"
+                  >
+                    <RotateCw className={`size-3 ${weather.isFetching ? "animate-spin" : ""}`} /> Retry
+                  </button>
+                ) : null}
                 {editing ? (
                   <button
                     type="button"
