@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Search, X, PlaneTakeoff } from "lucide-react";
+import { Search, X, PlaneTakeoff , ShieldCheck } from "lucide-react";
 import { AppShell, Card } from "@/components/AppShell";
 import { LoadingBlocks, SectionHead } from "@/components/Kit";
 import { serviceLinkProps, type Service } from "@/lib/services";
@@ -229,8 +229,22 @@ function ExploreHub() {
             <span className="text-sm font-semibold text-primary">→</span>
           </Link>
 
-
-
+          {/* Services no longer holds a tab, so Explore owns the entry point. */}
+          <Link
+            to="/services"
+            className="tap flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-card"
+          >
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground/70">
+              <ShieldCheck className="size-5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-semibold">Services</span>
+              <span className="block text-xs text-muted-foreground">
+                eSIM and an Israeli number, travel and medical cover
+              </span>
+            </span>
+            <span className="text-sm font-semibold text-primary">→</span>
+          </Link>
 
           {/* Shekk's own mini apps, grouped so nothing is hidden behind a tap */}
           <div className="space-y-7">
