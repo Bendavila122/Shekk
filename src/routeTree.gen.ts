@@ -93,6 +93,7 @@ import { Route as ServicesEsimIndexRouteImport } from './routes/services/esim.in
 import { Route as ExploreMapIndexRouteImport } from './routes/explore/map.index'
 import { Route as ExploreIdfIndexRouteImport } from './routes/explore/idf.index'
 import { Route as ExploreFitnessIndexRouteImport } from './routes/explore/fitness.index'
+import { Route as WhatsOnEventIdRouteImport } from './routes/whats-on.event.$id'
 import { Route as ServicesEsimMineRouteImport } from './routes/services/esim.mine'
 import { Route as ServicesEsimPlanIdRouteImport } from './routes/services/esim.$planId'
 import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
@@ -530,6 +531,11 @@ const ExploreFitnessIndexRoute = ExploreFitnessIndexRouteImport.update({
   path: '/explore/fitness/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WhatsOnEventIdRoute = WhatsOnEventIdRouteImport.update({
+  id: '/whats-on/event/$id',
+  path: '/whats-on/event/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesEsimMineRoute = ServicesEsimMineRouteImport.update({
   id: '/services/esim/mine',
   path: '/services/esim/mine',
@@ -695,6 +701,7 @@ export interface FileRoutesByFullPath {
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/services/esim/$planId': typeof ServicesEsimPlanIdRoute
   '/services/esim/mine': typeof ServicesEsimMineRoute
+  '/whats-on/event/$id': typeof WhatsOnEventIdRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/explore/idf/': typeof ExploreIdfIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
@@ -793,6 +800,7 @@ export interface FileRoutesByTo {
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/services/esim/$planId': typeof ServicesEsimPlanIdRoute
   '/services/esim/mine': typeof ServicesEsimMineRoute
+  '/whats-on/event/$id': typeof WhatsOnEventIdRoute
   '/explore/fitness': typeof ExploreFitnessIndexRoute
   '/explore/idf': typeof ExploreIdfIndexRoute
   '/explore/map': typeof ExploreMapIndexRoute
@@ -894,6 +902,7 @@ export interface FileRoutesById {
   '/explore/service/$id': typeof ExploreServiceIdRoute
   '/services/esim/$planId': typeof ServicesEsimPlanIdRoute
   '/services/esim/mine': typeof ServicesEsimMineRoute
+  '/whats-on/event/$id': typeof WhatsOnEventIdRoute
   '/explore/fitness/': typeof ExploreFitnessIndexRoute
   '/explore/idf/': typeof ExploreIdfIndexRoute
   '/explore/map/': typeof ExploreMapIndexRoute
@@ -996,6 +1005,7 @@ export interface FileRouteTypes {
     | '/explore/service/$id'
     | '/services/esim/$planId'
     | '/services/esim/mine'
+    | '/whats-on/event/$id'
     | '/explore/fitness/'
     | '/explore/idf/'
     | '/explore/map/'
@@ -1094,6 +1104,7 @@ export interface FileRouteTypes {
     | '/explore/service/$id'
     | '/services/esim/$planId'
     | '/services/esim/mine'
+    | '/whats-on/event/$id'
     | '/explore/fitness'
     | '/explore/idf'
     | '/explore/map'
@@ -1194,6 +1205,7 @@ export interface FileRouteTypes {
     | '/explore/service/$id'
     | '/services/esim/$planId'
     | '/services/esim/mine'
+    | '/whats-on/event/$id'
     | '/explore/fitness/'
     | '/explore/idf/'
     | '/explore/map/'
@@ -1279,6 +1291,7 @@ export interface RootRouteChildren {
   ExploreServiceIdRoute: typeof ExploreServiceIdRoute
   ServicesEsimPlanIdRoute: typeof ServicesEsimPlanIdRoute
   ServicesEsimMineRoute: typeof ServicesEsimMineRoute
+  WhatsOnEventIdRoute: typeof WhatsOnEventIdRoute
   ExploreFitnessIndexRoute: typeof ExploreFitnessIndexRoute
   ExploreIdfIndexRoute: typeof ExploreIdfIndexRoute
   ExploreMapIndexRoute: typeof ExploreMapIndexRoute
@@ -1880,6 +1893,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreFitnessIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/whats-on/event/$id': {
+      id: '/whats-on/event/$id'
+      path: '/whats-on/event/$id'
+      fullPath: '/whats-on/event/$id'
+      preLoaderRoute: typeof WhatsOnEventIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services/esim/mine': {
       id: '/services/esim/mine'
       path: '/services/esim/mine'
@@ -2108,6 +2128,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreServiceIdRoute: ExploreServiceIdRoute,
   ServicesEsimPlanIdRoute: ServicesEsimPlanIdRoute,
   ServicesEsimMineRoute: ServicesEsimMineRoute,
+  WhatsOnEventIdRoute: WhatsOnEventIdRoute,
   ExploreFitnessIndexRoute: ExploreFitnessIndexRoute,
   ExploreIdfIndexRoute: ExploreIdfIndexRoute,
   ExploreMapIndexRoute: ExploreMapIndexRoute,
