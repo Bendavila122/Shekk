@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { changeLine } from "./programme/logic";
 import { filterUsableRecents } from "./recents";
-import { demoteBrokenWeather } from "./widgets";
 import type { Service } from "./services";
 
 describe("changeLine", () => {
