@@ -1,6 +1,6 @@
 import { Link, useRouterState, useRouter, useCanGoBack, useNavigate } from "@tanstack/react-router";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { Compass, Tag, Users, User, ChevronLeft, Info, Menu, X, Settings, LifeBuoy, Home, ShieldCheck, PlaneTakeoff, Wallet } from "lucide-react";
+import { Compass, Tag, Users, User, ChevronLeft, Info, Menu, X, Settings, LifeBuoy, Home, ShieldCheck, PlaneTakeoff, PartyPopper } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { ils } from "@/lib/mock";
 import { refIn } from "@/lib/currencies";
@@ -12,14 +12,15 @@ import { miniAppFor } from "@/lib/mini-apps";
 
 
 /**
- * Five tabs for the launch product: getting set up and living in Israel.
- * Money is intentionally not a tab — the regulated work is paused, so it lives
- * behind one honest preview at /money instead of fronting four dead ends.
+ * Five tabs for the launch product: getting set up, what's on, and living here.
+ * Money is intentionally not a tab or a link — the regulated work is paused, so
+ * /money stays reachable by URL only. Services is two tools plus links, so it
+ * lives on Home, Explore and the quick menu rather than holding a tab.
  */
 const TABS = [
-  { to: "/", label: "Home", Icon: Home },
+  { to: "/", label: "Today", Icon: Home },
   { to: "/israel", label: "Explore", Icon: Compass },
-  { to: "/services", label: "Services", Icon: ShieldCheck },
+  { to: "/explore/events", label: "What's on", Icon: PartyPopper },
   { to: "/social", label: "Community", Icon: Users },
   { to: "/me", label: "You", Icon: User },
 ];
