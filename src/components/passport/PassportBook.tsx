@@ -275,24 +275,28 @@ export function PassportBook({
   const startOpening = () => {
     if (phase !== "closed") return;
     haptic(14);
-    if (reducedMotion()) {
-      onOpen();
-      return;
-    }
+    /* Reduced motion keeps the same physical beats, just much quicker. */
+    const k = reducedMotion() ? 0.3 : 1;
+    setSpeed(k);
+    const pull = PULL * k;
+    const turn = TURN * k;
+    const settleMs = SETTLE * k;
+    const hinge = HINGE * k;
     setPhase("pull");
     timers.current.push(
-      window.setTimeout(() => setPhase("turn"), PULL),
+      window.setTimeout(() => setPhase("turn"), pull),
       window.setTimeout(() => {
         setPhase("settle");
         haptic(10);
-      }, PULL + TURN),
+      }, pull + turn),
       window.setTimeout(() => {
         setPhase("hinge");
-        runHinge();
-      }, PULL + TURN + SETTLE),
-      window.setTimeout(onOpen, PULL + TURN + SETTLE + HINGE - 60),
+        runHinge(hinge);
+      }, pull + turn + settleMs),
+      window.setTimeout(onOpen, pull + turn + settleMs + hinge - 60 * k),
     );
   };
+
 
   /* The interior waits underneath from the moment the booklet lies flat, so the
      hinge reveals it rather than cross-fading to it. */
