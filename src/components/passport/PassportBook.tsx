@@ -337,32 +337,39 @@ export function PassportBook({
                 transition: `transform ${HINGE}ms cubic-bezier(0.32,0.78,0.22,1)`,
               }}
             >
-              <button
-                type="button"
-                aria-label="Open your Shekk Passport"
-                onClick={startOpening}
-                className="pp-leaf pp-cover absolute left-1/2 top-1/2 overflow-hidden rounded-[12px] text-left"
-                style={{
-                  // Portrait booklet: rotating it -90deg lands exactly on the
-                  // open spread's landscape footprint.
-                  width: fit.h,
-                  height: fit.w,
-                  transformOrigin: "center center",
-                  transform: coverTransform,
-                  transition: coverTransition,
-                }}
+              {/* camera dip: keeps the rotating booklet inside the viewport */}
+              <div
+                className={`absolute inset-0 ${phase === "turn" || phase === "hinge" ? "pp-dip" : ""}`}
+                style={{ transformStyle: "preserve-3d" }}
               >
-                <span
-                  className="absolute inset-0 block"
+                <button
+                  type="button"
+                  aria-label="Open your Shekk Passport"
+                  onClick={startOpening}
+                  className="pp-leaf pp-cover absolute left-1/2 top-1/2 overflow-hidden rounded-[12px] text-left"
                   style={{
-                    opacity: phase === "closed" || phase === "pull" ? 1 : 0.2,
-                    transition: `opacity ${TURN}ms ease-out`,
+                    // Portrait booklet: rotating it -90deg lands exactly on the
+                    // open spread's landscape footprint.
+                    width: fit.h,
+                    height: fit.w,
+                    transformOrigin: "center center",
+                    transform: coverTransform,
+                    transition: coverTransition,
                   }}
                 >
-                  {cover}
-                </span>
-              </button>
+                  <span
+                    className="absolute inset-0 block"
+                    style={{
+                      opacity: phase === "closed" || phase === "pull" ? 1 : 0.2,
+                      transition: `opacity ${TURN}ms ease-out`,
+                    }}
+                  >
+                    {cover}
+                  </span>
+                </button>
+              </div>
             </div>
+
           ) : null}
 
           {/* idle invitation: a hint of depth under the outer corner */}
