@@ -17,15 +17,18 @@ const VB = "0 0 200 130";
 /* ---------------------------------------------------------------- primitives */
 
 function Sky({ from, to }: { from: string; to: string }) {
+  // useId gives a collision-safe fragment id; raw hex values are never
+  // interpolated into id/url(#…) references.
+  const id = `sky${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
   return (
     <>
       <defs>
-        <linearGradient id={`sky-${from}-${to}`} x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={from} />
           <stop offset="100%" stopColor={to} />
         </linearGradient>
       </defs>
-      <rect x="0" y="0" width="200" height="130" fill={`url(#sky-${from}-${to})`} />
+      <rect x="0" y="0" width="200" height="130" fill={`url(#${id})`} />
     </>
   );
 }
