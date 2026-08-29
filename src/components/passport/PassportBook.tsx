@@ -113,11 +113,9 @@ export function PassportBook({
     } catch {
       /* capture is a nicety, not a requirement */
     }
-    const box = stage.current?.getBoundingClientRect();
-    if (box && box.height > 0) {
-      setPivot(Math.max(12, Math.min(88, ((e.clientY - box.top) / box.height) * 100)));
-    }
-    drag.current = { x: e.clientX, w: box?.width ?? 1, dir: null, active: true };
+    const rect = stage.current?.getBoundingClientRect();
+    drag.current = { x: e.clientX, w: rect?.width ?? 1, dir: null, active: true };
+
   };
 
   const onMove = (e: React.PointerEvent) => {
