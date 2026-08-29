@@ -320,9 +320,12 @@ export function PassportBook({
             className="pp-book absolute inset-0 grid grid-rows-2 overflow-hidden rounded-[10px]"
             style={{ opacity: bookVisible ? 1 : 0 }}
           >
-            <div className="min-h-0 overflow-hidden" style={{ opacity: topReveal }}>
-              <Leaf side="top">{from.top}</Leaf>
-            </div>
+            <Leaf side="top">
+              <div className="h-full w-full" style={{ opacity: topReveal }}>
+                {from.top}
+              </div>
+            </Leaf>
+
 
             <Leaf side="bottom">{dir ? to.bottom : from.bottom}</Leaf>
           </div>
