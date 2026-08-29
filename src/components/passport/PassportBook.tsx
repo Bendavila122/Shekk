@@ -45,8 +45,8 @@ export function PassportBook({
     const el = box.current;
     if (!el || typeof ResizeObserver === "undefined") return;
     const measure = () => {
-      const w = Math.min(el.clientWidth, el.clientHeight * 0.7, 460);
-      setFit({ w: Math.round(w), h: Math.round(w / 0.7) });
+      const w = Math.min(el.clientWidth, el.clientHeight * 0.62, 460);
+      setFit({ w: Math.round(w), h: Math.round(w / 0.62) });
     };
     measure();
     const ro = new ResizeObserver(measure);
