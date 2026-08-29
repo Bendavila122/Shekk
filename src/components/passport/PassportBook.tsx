@@ -303,9 +303,12 @@ export function PassportBook({
   };
 
 
-  /* The interior waits underneath from the moment the booklet lies flat, so the
-     hinge reveals it rather than cross-fading to it. */
-  const bookVisible = opened || phase === "settle" || phase === "hinge";
+  /* Nothing of the interior may be seen until the cover is actually moving: the
+     booklet lying flat is still a CLOSED booklet. The bottom leaf is what the
+     cover uncovers, so it appears with the hinge; the top leaf lives underneath
+     the sweeping cover and only fades in once the cover has passed over it. */
+  const bookVisible = opened || (phase === "hinge" && hingeA > 10);
+  const topReveal = opened ? 1 : Math.max(0, Math.min(1, (hingeA - 96) / 48));
   const coverMounted = !opened && fit.w > 0;
 
   return (
@@ -317,9 +320,16 @@ export function PassportBook({
             className="pp-book absolute inset-0 grid grid-rows-2 overflow-hidden rounded-[10px]"
             style={{ opacity: bookVisible ? 1 : 0 }}
           >
-            <Leaf side="top">{from.top}</Leaf>
+            <Leaf side="top">
+              <div className="h-full w-full" style={{ opacity: topReveal }}>
+                {from.top}
+              </div>
+            </Leaf>
+
+
             <Leaf side="bottom">{dir ? to.bottom : from.bottom}</Leaf>
           </div>
+
 
           {/* shadow the lifting leaf casts across the page it uncovers */}
           {dir ? (
