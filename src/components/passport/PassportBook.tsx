@@ -372,28 +372,40 @@ export function PassportBook({
           {/* ---------- beat E: the hinge ----------
               Same artwork, same on-screen orientation as the end of the turn
               (portrait art inside a landscape leaf, rotated -90deg), now
-              swinging off the spine over the spread already sitting beneath. */}
+              swinging off the spine over the spread already sitting beneath.
+              Two faces — printed cover and plain endpaper — so the leaf stays
+              painted for the whole 600ms instead of vanishing past 90deg. */}
           {!opened && phase === "hinge" ? (
             <div
               aria-hidden
-              className="pp-hinge pp-leaf pp-cover absolute inset-0 z-30 overflow-hidden rounded-[12px]"
+              className="pp-hinge absolute inset-0 z-30"
               style={{
                 transformOrigin: "left center",
                 animation: `pp-hinge-open ${HINGE}ms cubic-bezier(0.32,0.72,0.2,1) both`,
               }}
             >
               <span
-                className="absolute left-1/2 top-1/2 block"
-                style={{
-                  width: fit.h,
-                  height: fit.w,
-                  transform: "translate(-50%, -50%) rotate(-90deg)",
-                }}
+                className="pp-cover absolute inset-0 block overflow-hidden rounded-[12px]"
+                style={{ backfaceVisibility: "hidden" }}
               >
-                {cover}
+                <span
+                  className="absolute left-1/2 top-1/2 block"
+                  style={{
+                    width: fit.h,
+                    height: fit.w,
+                    transform: "translate(-50%, -50%) rotate(-90deg)",
+                  }}
+                >
+                  {cover}
+                </span>
               </span>
+              <span
+                className="pp-paper pp-grain absolute inset-0 block overflow-hidden rounded-[12px]"
+                style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
+              />
             </div>
           ) : null}
+
 
 
           {/* idle invitation: a hint of depth under the outer corner */}
