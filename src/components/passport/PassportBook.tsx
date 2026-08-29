@@ -1,20 +1,22 @@
 /**
- * The passport as one physical object.
+ * The passport as one physical object — a calendar-bound booklet.
  *
- * Closed, you see a large portrait booklet. Tapping it pulls the camera back a
- * touch, turns the whole booklet 90deg into landscape (its footprint then
- * matches the open spread exactly, because a leaf is 1:sqrt(2)) and finally
- * hinges the cover away on the spine to reveal the interior.
+ * Closed, you see a large upright portrait booklet. Tapping it pulls the camera
+ * back a touch, then visibly rotates the WHOLE closed booklet 90deg in the
+ * plane of the screen until it lies sideways, and finally hinges its cover away
+ * around the long HORIZONTAL spine — like opening a calendar or a top-bound
+ * notebook. Open, it is two leaves stacked TOP and BOTTOM around a horizontal
+ * gutter, and page turns flip over that same horizontal spine.
  *
- * Open, it is a true landscape two-leaf book: turning forward rotates ONLY the
- * right leaf around the centre spine, in two halves swapped at the midpoint so
- * no face is ever mirrored or backface-culled.
+ * One DOM object persists through closed → diagonal → sideways → half-open, so
+ * the motion is a real physical turn rather than a fade or a component swap.
  */
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { haptic } from "@/lib/foryou-prefs";
 
-export type Leaves = { left: ReactNode; right: ReactNode };
+/** The two physical leaves of one spread, stacked vertically when open. */
+export type Leaves = { top: ReactNode; bottom: ReactNode };
 
 type Dir = "next" | "prev";
 type Phase = "closed" | "pull" | "turn" | "settle" | "hinge";
@@ -23,16 +25,15 @@ type Phase = "closed" | "pull" | "turn" | "settle" | "hinge";
 const COMMIT = 0.3;
 const DURATION = 460;
 
-/* Opening choreography: pull back, turn flat 90deg, hold, then hinge open. */
-const PULL = 180;
-const TURN = 500;
-const SETTLE = 120;
-const HINGE = 600;
+/* Opening choreography: pull back, turn 90deg flat, hold, then hinge open. */
+const PULL = 200;
+const TURN = 760;
+const SETTLE = 160;
+const HINGE = 880;
 
-/** Open-book ratio. A leaf is 1:sqrt(2) portrait, so the closed booklet rotated
- *  90deg lands exactly on the open spread's footprint — no distortion. */
-const BOOK_RATIO = 1.414;
-
+/** A single leaf is landscape 1.414:1, so the open spread (two stacked) is
+ *  W x 1.414W and the closed booklet is exactly one leaf stood on its end. */
+const LEAF_RATIO = 1.414;
 
 function reducedMotion() {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -52,26 +53,25 @@ export function PassportBook({
   onIndex: (i: number) => void;
   /** Short label per spread, shown in the footer ticker. */
   labels: string[];
-  /** The closed cover face; hinges away on the spine when opening. */
+  /** The closed cover face; hinges away on the horizontal spine when opening. */
   cover: ReactNode;
   opened: boolean;
   onOpen: () => void;
 }) {
   const box = useRef<HTMLDivElement | null>(null);
-  const [fit, setFit] = useState({ w: 0, h: 0, cw: 0, ch: 0 });
+  const [fit, setFit] = useState({ w: 0, leaf: 0, cw: 0, ch: 0 });
   const [phase, setPhase] = useState<Phase>("closed");
   const timers = useRef<number[]>([]);
 
-  // Fit the whole landscape book inside the available space, both dimensions
-  // respected, using nearly all of the width on a phone.
+  /* Fit the whole open spread (W wide, 2 leaves tall) inside the available box. */
   useEffect(() => {
     const el = box.current;
     if (!el || typeof ResizeObserver === "undefined") return;
     const measure = () => {
       const cw = el.clientWidth;
       const ch = el.clientHeight;
-      const w = Math.min(cw, ch * BOOK_RATIO, 760);
-      setFit({ w: Math.round(w), h: Math.round(w / BOOK_RATIO), cw, ch });
+      const w = Math.min(cw * 0.97, (ch * 0.95) / LEAF_RATIO, 620);
+      setFit({ w: Math.round(w), leaf: Math.round(w / LEAF_RATIO), cw, ch });
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -86,10 +86,10 @@ export function PassportBook({
     [],
   );
 
-  const drag = useRef<{ x: number; y: number; w: number; dir: Dir | null; active: boolean; locked: boolean }>({
+  const drag = useRef<{ x: number; y: number; h: number; dir: Dir | null; active: boolean; locked: boolean }>({
     x: 0,
     y: 0,
-    w: 1,
+    h: 1,
     dir: null,
     active: false,
     locked: false,
@@ -105,9 +105,8 @@ export function PassportBook({
 
   const raf = useRef<number | null>(null);
 
-  /* The turn is tweened in JS rather than with a CSS transition: the leaf that
-     paints swaps at the midpoint, so a transition on either element would be
-     interrupted. One transform per frame, still cheap. */
+  /* The turn is tweened in JS: the leaf that paints swaps at the midpoint, so a
+     CSS transition on either element would be interrupted. */
   const settle = useCallback(
     (d: Dir, commit: boolean) => {
       const base = d === "next" ? index : index - 1;
@@ -132,7 +131,6 @@ export function PassportBook({
       const ms = Math.max(160, DURATION * span);
       const step = (now: number) => {
         const t = Math.min(1, (now - start) / ms);
-        // ease-out: paper slows as it lands
         const e = 1 - Math.pow(1 - t, 2.4);
         setP(fromP + (target - fromP) * e);
         if (t < 1) {
@@ -146,9 +144,12 @@ export function PassportBook({
     [index, onIndex],
   );
 
-  useEffect(() => () => {
-    if (raf.current) cancelAnimationFrame(raf.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (raf.current) cancelAnimationFrame(raf.current);
+    },
+    [],
+  );
 
   const go = useCallback(
     (d: Dir) => {
@@ -169,7 +170,7 @@ export function PassportBook({
     } catch {
       /* capture is a nicety, not a requirement */
     }
-    drag.current = { x: e.clientX, y: e.clientY, w: fit.w || 1, dir: null, active: true, locked: false };
+    drag.current = { x: e.clientX, y: e.clientY, h: fit.leaf || 1, dir: null, active: true, locked: false };
   };
 
   const onMove = (e: React.PointerEvent) => {
@@ -179,20 +180,20 @@ export function PassportBook({
     const dy = e.clientY - d.y;
     if (!d.dir) {
       if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
-      // Vertical intent wins: content inside a leaf may scroll.
-      if (Math.abs(dy) > Math.abs(dx)) {
+      // Horizontal intent is not a page turn on a calendar binding.
+      if (Math.abs(dx) > Math.abs(dy)) {
         d.locked = true;
         return;
       }
-      const wanted: Dir = dx < 0 ? "next" : "prev";
+      // Flick up to go forward, down to go back.
+      const wanted: Dir = dy < 0 ? "next" : "prev";
       if (wanted === "next" && !canNext) return;
       if (wanted === "prev" && !canPrev) return;
       d.dir = wanted;
       setDir(wanted);
     }
-    const raw = d.dir === "next" ? -dx : dx;
-    // Half the book width is the full travel of one leaf.
-    const t = Math.max(0, Math.min(1, raw / (d.w * 0.5)));
+    const raw = d.dir === "next" ? -dy : dy;
+    const t = Math.max(0, Math.min(1, raw / d.h));
     setP(d.dir === "prev" ? 1 - t : t);
   };
 
@@ -214,43 +215,39 @@ export function PassportBook({
     settle(chosen, travelled > COMMIT);
   };
 
-  /* Which spread pair the turn happens between. Forward: index → index + 1.
-     Backward: index - 1 → index, animated in reverse. */
   const base = dir === "prev" ? index - 1 : index;
   const from = spreads[base] ?? spreads[index];
   const to = spreads[base + 1] ?? from;
   const lift = Math.sin(Math.PI * Math.min(Math.max(p, 0), 1));
-
-  const leafW = fit.w / 2;
-  /* Past the halfway point the leaf shows its reverse side. */
+  /* Past halfway the turning leaf has landed on the other side of the spine. */
   const flipped = p > 0.5;
 
-  /* ---- opening choreography ----
-     One object, one visible beat at a time:
-       closed  → large upright portrait booklet
-       pull    → same object, scaled down a touch (no orientation change)
-       turn    → keyframed 2D rotation to exactly -90deg, art rotating with it
-       settle  → held flat, sideways, still closed
-       hinge   → cover swings off the spine in 3D over the waiting spread
-     The closed booklet is fit.h x fit.w portrait; rotated -90deg it is exactly
-     the landscape stage, so nothing morphs or resizes. */
-  const closedScale = Math.min((fit.ch * 0.84) / (fit.w || 1), (fit.cw * 0.94) / (fit.h || 1)) || 1;
-  const pulled = closedScale * 0.88;
+  const leafH = fit.leaf;
+  const stageH = leafH * 2;
 
-  const coverStyle: React.CSSProperties =
-    phase === "closed"
-      ? { transform: `translate(-50%, -50%) rotate(0deg) scale(${closedScale.toFixed(3)})` }
-      : phase === "pull"
-        ? {
-            transform: `translate(-50%, -50%) rotate(0deg) scale(${pulled.toFixed(3)})`,
-            transition: `transform ${PULL}ms cubic-bezier(0.33,0,0.2,1)`,
-          }
-        : {
-            // Keyframed so the mid-rotation scale dip (which keeps the corners
-            // on screen) cannot cancel out the rotation itself.
-            ["--pp-s0" as string]: pulled.toFixed(3),
-            animation: `pp-flat ${TURN}ms cubic-bezier(0.45,0.05,0.2,1) both`,
-          };
+  /* ---- opening choreography ----
+     The closed booklet IS one leaf stood upright: leafH wide x W tall, with the
+     cover art upright inside it. The turn rotates that same element 90deg, so
+     the art turns with the object and it lands exactly on the top-leaf slot. */
+  const closedScale = Math.min((fit.cw * 0.88) / (leafH || 1), (fit.ch * 0.82) / (fit.w || 1), 1.15) || 1;
+  const pulled = closedScale * 0.9;
+  /* Mid-turn the diagonal is widest; shrink just enough to keep corners on a
+     narrow phone. Lives in the same keyframe as the rotation so the two cannot
+     cancel out. */
+  const diagonal = (leafH + fit.w) / 1.414 || 1;
+  const midScale = Math.min(pulled, (fit.cw * 0.96) / diagonal);
+
+  const spinning = phase === "turn" || phase === "settle" || phase === "hinge";
+  const spinStyle: React.CSSProperties = spinning
+    ? {
+        ["--pp-s1" as string]: pulled.toFixed(3),
+        ["--pp-sm" as string]: midScale.toFixed(3),
+        animation: `pp-spin ${TURN}ms cubic-bezier(0.5,0.02,0.24,1) both`,
+      }
+    : {
+        transform: `rotate(0deg) scale(${(phase === "pull" ? pulled : closedScale).toFixed(3)})`,
+        transition: phase === "pull" ? `transform ${PULL}ms cubic-bezier(0.33,0,0.2,1)` : undefined,
+      };
 
   const startOpening = () => {
     if (phase !== "closed") return;
@@ -267,36 +264,36 @@ export function PassportBook({
         haptic(10);
       }, PULL + TURN),
       window.setTimeout(() => setPhase("hinge"), PULL + TURN + SETTLE),
-      window.setTimeout(onOpen, PULL + TURN + SETTLE + HINGE - 40),
+      window.setTimeout(onOpen, PULL + TURN + SETTLE + HINGE - 60),
     );
   };
 
-  /* The spread waits underneath from the moment the booklet lies flat, so the
+  /* The interior waits underneath from the moment the booklet lies flat, so the
      hinge reveals it rather than cross-fading to it. */
   const bookVisible = opened || phase === "settle" || phase === "hinge";
-
+  const coverMounted = !opened && fit.w > 0;
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
       <div ref={box} className="relative grid min-h-0 flex-1 place-items-center overflow-hidden">
-        <div className="pp-stage relative select-none" style={{ width: fit.w, height: fit.h }}>
-          {/* ---------- the two static leaves ---------- */}
+        <div className="pp-stage relative select-none" style={{ width: fit.w, height: stageH }}>
+          {/* ---------- the two static leaves, stacked ---------- */}
           <div
-            className="pp-book absolute inset-0 grid grid-cols-2 overflow-hidden rounded-[10px]"
+            className="pp-book absolute inset-0 grid grid-rows-2 overflow-hidden rounded-[10px]"
             style={{ opacity: bookVisible ? 1 : 0 }}
           >
-            <Leaf side="left">{from.left}</Leaf>
-            <Leaf side="right">{dir ? to.right : from.right}</Leaf>
+            <Leaf side="top">{from.top}</Leaf>
+            <Leaf side="bottom">{dir ? to.bottom : from.bottom}</Leaf>
           </div>
 
           {/* shadow the lifting leaf casts across the page it uncovers */}
           {dir ? (
             <div
               aria-hidden
-              className={`pointer-events-none absolute inset-y-0 z-[5] ${flipped ? "left-0" : "right-0"}`}
+              className={`pointer-events-none absolute inset-x-0 z-[5] ${flipped ? "top-0" : "bottom-0"}`}
               style={{
-                width: leafW,
-                background: `linear-gradient(${flipped ? 270 : 90}deg, rgba(44,30,10,${(0.22 * lift).toFixed(
+                height: leafH,
+                background: `linear-gradient(${flipped ? 0 : 180}deg, rgba(44,30,10,${(0.22 * lift).toFixed(
                   3,
                 )}) 0%, rgba(44,30,10,0) ${Math.round(70 - 40 * Math.abs(p - 0.5) * 2)}%)`,
               }}
@@ -304,141 +301,126 @@ export function PassportBook({
           ) : null}
 
           {/* ---------- the turning leaf ----------
-              Two halves of the same motion, swapped at the midpoint, each
-              rotating at most 90deg so no face ever turns away from the viewer. */}
+              Two halves of the same motion around the horizontal centre spine,
+              swapped at the midpoint so no face is ever backface-culled. */}
           {dir && !flipped ? (
             <div
-              className="pp-leaf absolute inset-y-0 right-0 z-10 overflow-hidden rounded-r-[10px]"
+              className="pp-leaf absolute inset-x-0 bottom-0 z-10 overflow-hidden rounded-b-[10px]"
               style={{
-                width: leafW,
-                transformOrigin: "left center",
-                transform: `rotateY(${-p * 180}deg)`,
-                boxShadow: `0 ${Math.round(lift * 5)}px ${Math.round(10 + lift * 16)}px rgba(46,32,12,${(
+                height: leafH,
+                transformOrigin: "center top",
+                transform: `rotateX(${p * 180}deg)`,
+                boxShadow: `0 ${Math.round(lift * -5)}px ${Math.round(10 + lift * 16)}px rgba(46,32,12,${(
                   0.06 + lift * 0.12
                 ).toFixed(3)})`,
               }}
             >
-              <Leaf side="right">{from.right}</Leaf>
+              <Leaf side="bottom">{from.bottom}</Leaf>
             </div>
           ) : null}
           {dir && flipped ? (
             <div
-              className="pp-leaf absolute inset-y-0 left-0 z-10 overflow-hidden rounded-l-[10px]"
+              className="pp-leaf absolute inset-x-0 top-0 z-10 overflow-hidden rounded-t-[10px]"
               style={{
-                width: leafW,
-                transformOrigin: "right center",
-                transform: `rotateY(${(1 - p) * 180}deg)`,
+                height: leafH,
+                transformOrigin: "center bottom",
+                transform: `rotateX(${-(1 - p) * 180}deg)`,
                 boxShadow: `0 ${Math.round(lift * 5)}px ${Math.round(10 + lift * 16)}px rgba(46,32,12,${(
                   0.06 + lift * 0.12
                 ).toFixed(3)})`,
               }}
             >
-              <Leaf side="left">{to.left}</Leaf>
+              <Leaf side="top">{to.top}</Leaf>
             </div>
           ) : null}
 
-          {/* centre gutter + outer page edges: the book as an object */}
+          {/* centre gutter + outer page edges: the book as a physical object */}
           {bookVisible ? (
             <>
-              <div aria-hidden className="pp-gutter pointer-events-none absolute inset-y-0 left-1/2 z-20 w-6 -translate-x-1/2" />
-              <div aria-hidden className="pp-edge pp-edge-r pointer-events-none absolute inset-y-2 right-0 z-20 w-[5px]" />
-              <div aria-hidden className="pp-edge pp-edge-l pointer-events-none absolute inset-y-2 left-0 z-20 w-[5px]" />
+              <div aria-hidden className="pp-gutter-h pointer-events-none absolute inset-x-0 top-1/2 z-20 h-6 -translate-y-1/2" />
+              <div aria-hidden className="pp-edge-h pointer-events-none absolute inset-x-2 top-0 z-20 h-[5px] rounded-t-[4px]" />
+              <div aria-hidden className="pp-edge-h pointer-events-none absolute inset-x-2 bottom-0 z-20 h-[5px] rounded-b-[4px]" />
             </>
           ) : null}
 
-          {/* ---------- beats A–D: the closed booklet itself ----------
-              One button, mounted from closed through settle. Full opacity the
-              whole way, so the 90deg turn is plainly visible. */}
-          {!opened && phase !== "hinge" ? (
-            <button
-              type="button"
-              aria-label="Open your Shekk Passport"
-              onClick={startOpening}
-              data-pp-cover
-              className="pp-leaf pp-cover absolute left-1/2 top-1/2 z-30 overflow-hidden rounded-[12px] text-left"
+          {/* ---------- the closed booklet ----------
+              One element mounted from closed all the way through the hinge, at
+              full opacity: portrait art inside, rotated bodily to sideways, then
+              swung away around its (now horizontal) spine. */}
+          {coverMounted ? (
+            <div
+              aria-hidden={phase === "hinge"}
+              className="absolute left-1/2 z-30"
               style={{
-                // Portrait booklet: rotating it -90deg lands exactly on the
-                // open spread's landscape footprint.
-                width: fit.h,
-                height: fit.w,
-                transformOrigin: "center center",
-                ...coverStyle,
+                top: 0,
+                width: fit.w,
+                height: leafH,
+                perspective: "1500px",
+                transform: `translateX(-50%) translateY(${phase === "closed" || phase === "pull" ? leafH / 2 : 0}px)`,
+                transition: `transform ${TURN}ms cubic-bezier(0.5,0.02,0.24,1)`,
               }}
             >
-              {cover}
-            </button>
-          ) : null}
-
-          {/* ---------- beat E: the hinge ----------
-              Same artwork, same on-screen orientation as the end of the turn
-              (portrait art inside a landscape leaf, rotated -90deg), now
-              swinging off the spine over the spread already sitting beneath.
-              Two faces — printed cover and plain endpaper — so the leaf stays
-              painted for the whole 600ms instead of vanishing past 90deg. */}
-          {!opened && phase === "hinge" ? (
-            <div
-              aria-hidden
-              className="absolute inset-0 z-30"
-              /* Flattened wrapper: the stage is a preserve-3d context, so a leaf
-                 rotating through it would be depth-sorted behind the spread.
-                 Its own perspective keeps the hinge reading as real depth while
-                 compositing cleanly above the pages. */
-              style={{ perspective: "1400px", transformStyle: "flat" }}
-            >
               <div
-                className="pp-hinge absolute inset-0"
-                style={{
-                  transformOrigin: "left center",
-                  animation: `pp-hinge-open ${HINGE}ms cubic-bezier(0.32,0.72,0.2,1) both`,
-                }}
+                className="pp-leaf absolute inset-0 grid place-items-center"
+                style={{ transformOrigin: "center center", ...spinStyle }}
               >
-                <span
-                  className="pp-cover absolute inset-0 block overflow-hidden rounded-[12px]"
-                  style={{ backfaceVisibility: "hidden" }}
+                {/* The booklet itself: portrait, art upright, hinged on the edge
+                    that becomes the horizontal spine once it has turned. */}
+                <div
+                  className="pp-leaf absolute"
+                  style={{
+                    width: leafH,
+                    height: fit.w,
+                    transformOrigin: "right center",
+                    ...(phase === "hinge"
+                      ? { animation: `pp-hinge-open ${HINGE}ms cubic-bezier(0.32,0.68,0.18,1) both` }
+                      : { transform: "rotateY(0deg)" }),
+                  }}
                 >
-                  <span
-                    className="absolute left-1/2 top-1/2 block"
-                    style={{
-                      width: fit.h,
-                      height: fit.w,
-                      transform: "translate(-50%, -50%) rotate(-90deg)",
-                    }}
+                  <button
+                    type="button"
+                    aria-label="Open your Shekk Passport"
+                    onClick={startOpening}
+                    data-pp-cover
+                    className="pp-cover absolute inset-0 block overflow-hidden rounded-[12px] text-left"
+                    style={{ backfaceVisibility: "hidden" }}
                   >
                     {cover}
-                  </span>
-                </span>
-                <span
-                  className="pp-paper pp-grain absolute inset-0 block overflow-hidden rounded-[12px]"
-                  style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
-                />
+                  </button>
+                  {/* endpaper on the reverse, so the leaf stays painted past 90deg */}
+                  <span
+                    aria-hidden
+                    className="pp-paper pp-grain absolute inset-0 block overflow-hidden rounded-[12px]"
+                    style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
+                  />
+                </div>
               </div>
             </div>
           ) : null}
 
-
-
-
-          {/* idle invitation: a hint of depth under the outer corner */}
+          {/* idle invitation: a hint of depth under the bottom outer edge */}
           {opened && !dir && canNext ? (
             <div
               aria-hidden
-              className="pointer-events-none absolute bottom-0 right-0 z-20 size-8 rounded-br-[10px]"
+              className="pointer-events-none absolute bottom-0 right-0 z-20 h-8 w-16 rounded-br-[10px]"
               style={{ boxShadow: "inset -8px -8px 12px rgba(46,32,12,0.1)" }}
             />
           ) : null}
 
-          {/* gesture surface: only the outer edge of each leaf catches flicks. */}
+          {/* gesture surface: the outer horizontal edges catch flicks. */}
           {opened ? (
             <>
               <div
-                className="absolute inset-y-0 left-0 z-[25] w-[14%] touch-pan-y"
+                className="absolute inset-x-0 top-0 z-[25] h-[12%]"
+                style={{ touchAction: "none" }}
                 onPointerDown={onDown}
                 onPointerMove={onMove}
                 onPointerUp={onUp}
                 onPointerCancel={onUp}
               />
               <div
-                className="absolute inset-y-0 right-0 z-[25] w-[14%] touch-pan-y"
+                className="absolute inset-x-0 bottom-0 z-[25] h-[12%]"
+                style={{ touchAction: "none" }}
                 onPointerDown={onDown}
                 onPointerMove={onMove}
                 onPointerUp={onUp}
@@ -459,7 +441,7 @@ export function PassportBook({
             aria-label="Previous page"
             className="tap-flat pointer-events-auto grid size-8 place-items-center rounded-full text-muted-foreground/60 disabled:opacity-25"
           >
-            <ChevronLeft className="size-4" />
+            <ChevronUp className="size-4" />
           </button>
           <p className="truncate text-center text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground/70">
             {labels[index]} · {index + 1}/{spreads.length}
@@ -471,7 +453,7 @@ export function PassportBook({
             aria-label="Next page"
             className="tap-flat pointer-events-auto grid size-8 place-items-center rounded-full text-muted-foreground/60 disabled:opacity-25"
           >
-            <ChevronRight className="size-4" />
+            <ChevronDown className="size-4" />
           </button>
         </div>
       ) : null}
@@ -480,15 +462,15 @@ export function PassportBook({
 }
 
 /** One physical leaf: warm stock, grain, gutter shading, scrollable content. */
-function Leaf({ side, children }: { side: "left" | "right"; children: ReactNode }) {
+function Leaf({ side, children }: { side: "top" | "bottom"; children: ReactNode }) {
   return (
     <div className="pp-paper pp-grain relative h-full w-full overflow-hidden">
-      <div className="relative z-10 h-full w-full overflow-y-auto overscroll-contain scrollbar-none px-3.5 py-4">
+      <div className="relative z-10 h-full w-full overflow-y-auto overscroll-contain scrollbar-none px-4 py-3.5">
         {children}
       </div>
       <div
         aria-hidden
-        className={`pointer-events-none absolute inset-0 z-20 ${side === "left" ? "pp-shade-l" : "pp-shade-r"}`}
+        className={`pointer-events-none absolute inset-0 z-20 ${side === "top" ? "pp-shade-t" : "pp-shade-b"}`}
       />
     </div>
   );
