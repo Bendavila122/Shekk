@@ -126,13 +126,16 @@ export function PassportBook({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
+      {/* The book keeps a passport-ish proportion and sits centred, so a tall
+          phone never stretches a spread into a column of empty paper. */}
+      <div className="grid min-h-0 flex-1 place-items-center">
       <div
         ref={stage}
         onPointerDown={onDown}
         onPointerMove={onMove}
         onPointerUp={onUp}
         onPointerCancel={onUp}
-        className="pp-stage relative min-h-0 flex-1 touch-pan-y select-none"
+        className="pp-stage relative aspect-[10/13] max-h-full w-full touch-pan-y select-none"
       >
         {/* page underneath */}
         <div className="absolute inset-0 overflow-hidden rounded-2xl shadow-lift">
@@ -168,6 +171,7 @@ export function PassportBook({
               "repeating-linear-gradient(180deg, oklch(0.88 0.02 84), oklch(0.88 0.02 84) 2px, oklch(0.78 0.03 84) 2px, oklch(0.78 0.03 84) 3px)",
           }}
         />
+      </div>
       </div>
 
       {/* flick controls */}
