@@ -959,7 +959,9 @@
   transform-style: preserve-3d;
   will-change: transform;
 }
-.pp-face { backface-visibility: hidden; }
+/* Faces are swapped deterministically at the halfway point, so they must NOT
+   be backface-culled: the reverse face is a mirrored (scaleX(-1)) element. */
+.pp-face { backface-visibility: visible; }
 
 /* Gutter: the paper curving into the centre spine */
 .pp-gutter {
