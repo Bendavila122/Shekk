@@ -33,3 +33,5 @@ dist-ssr
 
 # Siddur generator cache
 .siddur-cache/
+.vercel
+.env*
