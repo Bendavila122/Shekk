@@ -307,7 +307,7 @@ export function PassportBook({
      booklet lying flat is still a CLOSED booklet. The bottom leaf is what the
      cover uncovers, so it appears with the hinge; the top leaf lives underneath
      the sweeping cover and only fades in once the cover has passed over it. */
-  const bookVisible = opened || phase === "hinge";
+  const bookVisible = opened || (phase === "hinge" && hingeA > 10);
   const topReveal = opened ? 1 : Math.max(0, Math.min(1, (hingeA - 96) / 48));
   const coverMounted = !opened && fit.w > 0;
 
