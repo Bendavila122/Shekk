@@ -179,7 +179,7 @@ function PassportApp() {
 
   return (
     <AppShell>
-      <div className="flex h-[100svh] max-h-[100svh] flex-col overflow-hidden px-2 pb-2 pt-12">
+      <div className="flex h-[100svh] max-h-[100svh] flex-col overflow-hidden px-[1%] pb-1 pt-10">
         <PassportBook
           spreads={spreads}
           labels={labels}
