@@ -508,7 +508,13 @@ export function PassportBook({
 function Leaf({ side, children }: { side: "top" | "bottom"; children: ReactNode }) {
   return (
     <div className="pp-paper pp-grain relative h-full w-full overflow-hidden">
-      <div className="relative z-10 h-full w-full overflow-hidden px-4 py-3.5">
+      {/* extra room on the gutter side, so nothing sits under the spine shading */}
+      <div
+        className={`relative z-10 h-full w-full overflow-hidden px-4 ${
+          side === "top" ? "pb-6 pt-3.5" : "pb-3.5 pt-6"
+        }`}
+      >
+
         {children}
       </div>
 
