@@ -52,9 +52,10 @@ function PassportApp() {
   });
 
   const holder =
-    (profile.profile?.full_name as string | undefined)?.trim() ||
-    (profile.profile?.shekk_tag as string | undefined) ||
-    "Shekk member";
+    [profile.profile?.legalFirstName, profile.profile?.legalLastName]
+      .filter(Boolean)
+      .join(" ")
+      .trim() || "Shekk member";
 
   function doCheckIn(cityId: string, mode: "here" | "manual") {
     if (mode === "manual") {

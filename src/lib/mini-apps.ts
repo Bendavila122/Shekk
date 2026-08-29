@@ -31,6 +31,7 @@ import {
   HeartHandshake,
   ShoppingBag,
   Stamp,
+  BookMarked,
   Stethoscope,
   Ticket,
   UtensilsCrossed,
@@ -289,6 +290,18 @@ export const MINI_APPS: MiniApp[] = [
 
 
 
+  {
+    path: "/passport",
+    id: "passport",
+    name: "Passport",
+    tagline: "Your year in Israel, stamped",
+    emoji: "🛂",
+    Icon: BookMarked,
+    iconScale: 0.44,
+    grad: "var(--grad-chag)",
+    surface: "bg-ink",
+    onSurface: "text-ink-foreground",
+  },
   {
     path: "/guides",
     id: "guides",
