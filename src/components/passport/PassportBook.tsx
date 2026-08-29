@@ -62,9 +62,8 @@ export function PassportBook({
   });
   const [dir, setDir] = useState<Dir | null>(null);
   const [p, setP] = useState(0);
-  /** Where along the spine the page pivots, 0 (top) to 100 (bottom). */
-  const [pivot, setPivot] = useState(50);
   const [animating, setAnimating] = useState(false);
+
 
   const canNext = index < pages.length - 1;
   const canPrev = index > 0;
