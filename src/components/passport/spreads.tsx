@@ -212,36 +212,42 @@ export function citySpread({
 }): Leaves {
   const visited = Boolean(entry?.visited);
   return {
+    /* The top leaf is one full-bleed landscape plate: the artwork is drawn at
+       roughly the same 1.4:1 proportion as the leaf, so nothing is cropped
+       awkwardly, and the city name sits on a printed scrim over it. */
     top: (
-      <div className="grid h-full grid-cols-[1fr_1.05fr] gap-3">
-        <div className="relative -mb-6 -ml-4 -mt-3.5 h-[calc(100%+2.375rem)] overflow-hidden rounded-r-[10px]">
-          <CityArt theme={city.id} locked={!visited} className="h-full w-full" />
-          {!visited ? (
-            <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-ink/80 px-2 py-0.5 text-[7.5px] font-bold uppercase tracking-widest text-ink-foreground">
-              <Lock className="size-2.5" /> Undiscovered
-            </span>
-          ) : null}
-        </div>
-
-        <div className="flex h-full flex-col">
-          <p className="text-[8.5px] font-bold uppercase tracking-[0.28em]" style={{ color: city.ink }}>
-            {city.hebrew}
-          </p>
-          <h2 className="font-display text-[22px] font-bold leading-none tracking-tight text-ink">{city.name}</h2>
-          <Doodle className="mt-1 h-3 w-14" style={{ color: city.ink }} />
-          <p className="mt-1.5 line-clamp-4 text-[10.5px] leading-snug text-ink/70">{city.blurb}</p>
+      <div className="relative -mx-4 -my-3.5 h-[calc(100%+1.75rem)] overflow-hidden">
+        <CityArt theme={city.id} locked={!visited} className="absolute inset-0 h-full w-full" />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-3/5"
+          style={{ background: "linear-gradient(180deg, transparent, oklch(0.18 0.02 70 / 0.78))" }}
+        />
+        <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 px-4 pb-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-[8.5px] font-bold uppercase tracking-[0.28em] text-ink-foreground/70">{city.hebrew}</p>
+            <h2 className="truncate font-display text-[24px] font-bold leading-none tracking-tight text-ink-foreground">
+              {city.name}
+            </h2>
+            <Doodle className="mt-1 h-3 w-14 text-ink-foreground/50" />
+          </div>
           {visited ? (
             <button
               type="button"
               onClick={onUndo}
-              className="tap-flat mt-auto self-start text-[8.5px] font-semibold uppercase tracking-widest text-ink/40"
+              className="tap-flat shrink-0 text-[8.5px] font-semibold uppercase tracking-widest text-ink-foreground/60"
             >
               Remove stamp
             </button>
-          ) : null}
+          ) : (
+            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-ink-foreground/15 px-2 py-0.5 text-[7.5px] font-bold uppercase tracking-widest text-ink-foreground ring-1 ring-ink-foreground/25">
+              <Lock className="size-2.5" /> Undiscovered
+            </span>
+          )}
         </div>
       </div>
     ),
+
     bottom: visited ? (
       <div className="grid h-full grid-cols-[0.85fr_1fr] items-center gap-3">
         <div className="grid h-full place-items-center">
