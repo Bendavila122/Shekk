@@ -215,38 +215,44 @@ export function PassportBook({
             />
           ) : null}
 
-          {/* ---------- the turning leaf ---------- */}
-          {dir ? (
+          {/* ---------- the turning leaf ----------
+              Two halves of the same motion, swapped at the midpoint, each
+              rotating at most 90deg so no face ever turns away from the viewer.
+              First half: the outgoing right page lifts off the right side.
+              Second half: the incoming left page falls onto the left side. */}
+          {dir && !flipped ? (
             <div
-              className="pp-leaf absolute inset-y-0 right-0 z-10"
+              className="pp-leaf absolute inset-y-0 right-0 z-10 overflow-hidden rounded-r-[10px]"
               style={{
                 width: leafW,
                 transformOrigin: "left center",
-                transform: `rotateY(${angle}deg)`,
-                transition: animating ? `transform ${DURATION}ms cubic-bezier(0.3,0.7,0.25,1)` : "none",
+                transform: `rotateY(${-p * 180}deg)`,
+                transition: animating ? `transform ${DURATION / 2}ms linear` : "none",
+                boxShadow: `0 ${Math.round(lift * 5)}px ${Math.round(10 + lift * 16)}px rgba(46,32,12,${(
+                  0.06 + lift * 0.12
+                ).toFixed(3)})`,
               }}
             >
-              {/* One face, content swapped at the halfway point and un-mirrored:
-                  before halfway you see the right page you are lifting, after
-                  it you see the next spread's left page printed on the reverse.
-                  Deterministic — no reliance on backface culling. */}
-              <div
-                className="pp-face absolute inset-0 overflow-hidden"
-                style={{
-                  // Mirrored faces must not be backface-culled: the reverse
-                  // side is the same element flipped on X.
-                  backfaceVisibility: "visible",
-                  transform: flipped ? "scaleX(-1)" : "none",
-                  borderRadius: flipped ? "10px 0 0 10px" : "0 10px 10px 0",
-                  boxShadow: `0 ${Math.round(lift * 5)}px ${Math.round(10 + lift * 16)}px rgba(46,32,12,${(
-                    0.06 + lift * 0.12
-                  ).toFixed(3)})`,
-                }}
-              >
-                <Leaf side={flipped ? "left" : "right"}>{flipped ? to.left : from.right}</Leaf>
-              </div>
+              <Leaf side="right">{from.right}</Leaf>
             </div>
           ) : null}
+          {dir && flipped ? (
+            <div
+              className="pp-leaf absolute inset-y-0 left-0 z-10 overflow-hidden rounded-l-[10px]"
+              style={{
+                width: leafW,
+                transformOrigin: "right center",
+                transform: `rotateY(${(1 - p) * 180}deg)`,
+                transition: animating ? `transform ${DURATION / 2}ms linear` : "none",
+                boxShadow: `0 ${Math.round(lift * 5)}px ${Math.round(10 + lift * 16)}px rgba(46,32,12,${(
+                  0.06 + lift * 0.12
+                ).toFixed(3)})`,
+              }}
+            >
+              <Leaf side="left">{to.left}</Leaf>
+            </div>
+          ) : null}
+
 
           {/* centre gutter + outer page edges: the book as an object */}
           {opened || opening ? (
