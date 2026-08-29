@@ -53,6 +53,27 @@ function PassportApp() {
     message: null,
   });
 
+  /* Passport is one fixed object: the document itself must never scroll or
+     rubber-band while it is open. Released on leaving the mini app. */
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const prev = {
+      htmlOverflow: html.style.overflow,
+      bodyOverflow: body.style.overflow,
+      overscroll: body.style.overscrollBehavior,
+    };
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    body.style.overscrollBehavior = "none";
+    return () => {
+      html.style.overflow = prev.htmlOverflow;
+      body.style.overflow = prev.bodyOverflow;
+      body.style.overscrollBehavior = prev.overscroll;
+    };
+  }, []);
+
+
   const holder =
     [profile.profile?.legalFirstName, profile.profile?.legalLastName]
       .filter(Boolean)
