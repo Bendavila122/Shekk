@@ -638,13 +638,13 @@ export function CityArt({
   return (
     <svg
       viewBox={VB}
-      preserveAspectRatio="xMidYMid slice"
+      preserveAspectRatio="xMidYMax slice"
       role="img"
       aria-label={locked ? "Undiscovered city illustration" : "City illustration"}
       className={`${className} ${locked ? "pp-sketch" : ""}`}
     >
       <Scene />
-      {locked ? <rect x="0" y="0" width="200" height="130" fill="#f6efe0" opacity="0.55" /> : null}
+      {locked ? <rect x="0" y="0" width="200" height="130" fill="#f6efe0" opacity="0.32" /> : null}
     </svg>
   );
 }

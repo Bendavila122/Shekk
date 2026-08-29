@@ -179,7 +179,10 @@ function PassportApp() {
 
   return (
     <AppShell>
-      <div className="flex h-[100svh] max-h-[100svh] flex-col overflow-hidden px-[1%] pb-1 pt-10">
+      {/* Pinned to the viewport: the passport is one fixed object, so nothing
+          here can scroll — not even a programmatic focus scroll. */}
+      <div className="fixed inset-0 z-0 flex flex-col overflow-hidden px-[1%] pb-1 pt-10">
+
         <PassportBook
           spreads={spreads}
           labels={labels}
