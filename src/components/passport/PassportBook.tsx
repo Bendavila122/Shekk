@@ -96,8 +96,8 @@ export function PassportBook({
       if (animating) return;
       if (d === "next" && !canNext) return;
       if (d === "prev" && !canPrev) return;
-      setPivot(66);
       setDir(d);
+
       setP(d === "prev" ? 1 : 0);
       // next frame so the start state paints before we animate
       requestAnimationFrame(() => settle(d, true));
