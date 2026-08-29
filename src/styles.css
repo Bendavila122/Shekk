@@ -959,9 +959,13 @@
   transform-style: preserve-3d;
   will-change: transform;
 }
-/* Faces are swapped deterministically at the halfway point, so they must NOT
-   be backface-culled: the reverse face is a mirrored (scaleX(-1)) element. */
-.pp-face { backface-visibility: visible; }
+/* The closed booklet's hinge: swings the cover off the spine in 3D */
+.pp-hinge {
+  transform-style: preserve-3d;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
 
 /* Gutter: the paper curving into the centre spine */
 .pp-gutter {

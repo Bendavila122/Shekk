@@ -1,11 +1,14 @@
 /**
- * The open passport: a true landscape two-leaf book.
+ * The passport as one physical object.
  *
- * At rest you see the left leaf, the centre gutter and the right leaf of one
- * spread. Turning forward rotates ONLY the right leaf around the centre spine;
- * its backside is the next spread's left page, and the next spread's right page
- * is revealed underneath. Going back mirrors that. One rigid paper leaf, one
- * transform per frame — no curl simulation, no whole-spread rotation.
+ * Closed, you see a large portrait booklet. Tapping it pulls the camera back a
+ * touch, turns the whole booklet 90deg into landscape (its footprint then
+ * matches the open spread exactly, because a leaf is 1:sqrt(2)) and finally
+ * hinges the cover away on the spine to reveal the interior.
+ *
+ * Open, it is a true landscape two-leaf book: turning forward rotates ONLY the
+ * right leaf around the centre spine, in two halves swapped at the midpoint so
+ * no face is ever mirrored or backface-culled.
  */
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -14,13 +17,20 @@ import { haptic } from "@/lib/foryou-prefs";
 export type Leaves = { left: ReactNode; right: ReactNode };
 
 type Dir = "next" | "prev";
+type Phase = "closed" | "pull" | "turn" | "hinge";
 
 /** Release past this much travel and the turn completes. */
 const COMMIT = 0.3;
 const DURATION = 460;
-const OPENING = 620;
-/** Overall open-book ratio: a small passport opened flat. */
-const BOOK_RATIO = 1.46;
+
+/* Opening choreography, ~1.1s in total. */
+const PULL = 190;
+const TURN = 430;
+const HINGE = 540;
+
+/** Open-book ratio. A leaf is 1:sqrt(2) portrait, so the closed booklet rotated
+ *  90deg lands exactly on the open spread's footprint — no distortion. */
+const BOOK_RATIO = 1.414;
 
 function reducedMotion() {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -40,29 +50,39 @@ export function PassportBook({
   onIndex: (i: number) => void;
   /** Short label per spread, shown in the footer ticker. */
   labels: string[];
-  /** The closed cover face; hinges away on the centre spine when opening. */
+  /** The closed cover face; hinges away on the spine when opening. */
   cover: ReactNode;
   opened: boolean;
   onOpen: () => void;
 }) {
   const box = useRef<HTMLDivElement | null>(null);
-  const [fit, setFit] = useState({ w: 0, h: 0 });
-  const [opening, setOpening] = useState(false);
+  const [fit, setFit] = useState({ w: 0, h: 0, cw: 0, ch: 0 });
+  const [phase, setPhase] = useState<Phase>("closed");
+  const timers = useRef<number[]>([]);
 
-  // Fit the whole landscape book inside whatever space is left, both
-  // dimensions respected, so it is never clipped on a phone.
+  // Fit the whole landscape book inside the available space, both dimensions
+  // respected, using nearly all of the width on a phone.
   useEffect(() => {
     const el = box.current;
     if (!el || typeof ResizeObserver === "undefined") return;
     const measure = () => {
-      const w = Math.min(el.clientWidth, el.clientHeight * BOOK_RATIO, 720);
-      setFit({ w: Math.round(w), h: Math.round(w / BOOK_RATIO) });
+      const cw = el.clientWidth;
+      const ch = el.clientHeight;
+      const w = Math.min(cw, ch * BOOK_RATIO, 760);
+      setFit({ w: Math.round(w), h: Math.round(w / BOOK_RATIO), cw, ch });
     };
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+
+  useEffect(
+    () => () => {
+      timers.current.forEach((t) => window.clearTimeout(t));
+    },
+    [],
+  );
 
   const drag = useRef<{ x: number; y: number; w: number; dir: Dir | null; active: boolean; locked: boolean }>({
     x: 0,
@@ -197,31 +217,54 @@ export function PassportBook({
   const base = dir === "prev" ? index - 1 : index;
   const from = spreads[base] ?? spreads[index];
   const to = spreads[base + 1] ?? from;
-  const angle = -(dir ? p : 0) * 180;
   const lift = Math.sin(Math.PI * Math.min(Math.max(p, 0), 1));
 
   const leafW = fit.w / 2;
   /* Past the halfway point the leaf shows its reverse side. */
   const flipped = p > 0.5;
 
+  /* ---- opening choreography ----
+     The closed booklet is a portrait rect of fit.h x fit.w (a leaf turned on
+     its side); rotating it -90deg makes it exactly fit.w x fit.h. */
+  const closedScale = Math.min((fit.ch * 0.82) / (fit.w || 1), (fit.cw * 0.9) / (fit.h || 1)) || 1;
+  const coverTransform =
+    phase === "closed"
+      ? `translate(-50%, -50%) rotate(0deg) scale(${closedScale.toFixed(3)})`
+      : phase === "pull"
+        ? `translate(-50%, -50%) rotate(0deg) scale(${(closedScale * 0.87).toFixed(3)})`
+        : "translate(-50%, -50%) rotate(-90deg) scale(1)";
+  const coverTransition =
+    phase === "closed"
+      ? "none"
+      : phase === "pull"
+        ? `transform ${PULL}ms cubic-bezier(0.33,0,0.2,1)`
+        : `transform ${TURN}ms cubic-bezier(0.4,0.02,0.2,1)`;
+
+  const startOpening = () => {
+    if (phase !== "closed") return;
+    haptic(14);
+    if (reducedMotion()) {
+      onOpen();
+      return;
+    }
+    setPhase("pull");
+    timers.current.push(
+      window.setTimeout(() => setPhase("turn"), PULL),
+      window.setTimeout(() => setPhase("hinge"), PULL + TURN),
+      window.setTimeout(onOpen, PULL + TURN + HINGE - 60),
+    );
+  };
+
+  const bookVisible = opened || phase === "hinge";
+
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div className="relative flex min-h-0 flex-1 flex-col">
       <div ref={box} className="relative grid min-h-0 flex-1 place-items-center overflow-hidden">
-        <div
-          className="pp-stage relative select-none"
-          style={{
-            width: fit.w,
-            height: fit.h,
-            // Closed, the single cover leaf sits centred; opening slides the
-            // book back to centre as the cover hinges away.
-            transform: opened ? "translateX(0)" : "translateX(25%)",
-            transition: opening ? `transform ${OPENING}ms cubic-bezier(0.32,0.78,0.22,1)` : "none",
-          }}
-        >
+        <div className="pp-stage relative select-none" style={{ width: fit.w, height: fit.h }}>
           {/* ---------- the two static leaves ---------- */}
           <div
             className="pp-book absolute inset-0 grid grid-cols-2 overflow-hidden rounded-[10px]"
-            style={{ opacity: opened || opening ? 1 : 0 }}
+            style={{ opacity: bookVisible ? 1 : 0 }}
           >
             <Leaf side="left">{from.left}</Leaf>
             <Leaf side="right">{dir ? to.right : from.right}</Leaf>
@@ -243,9 +286,7 @@ export function PassportBook({
 
           {/* ---------- the turning leaf ----------
               Two halves of the same motion, swapped at the midpoint, each
-              rotating at most 90deg so no face ever turns away from the viewer.
-              First half: the outgoing right page lifts off the right side.
-              Second half: the incoming left page falls onto the left side. */}
+              rotating at most 90deg so no face ever turns away from the viewer. */}
           {dir && !flipped ? (
             <div
               className="pp-leaf absolute inset-y-0 right-0 z-10 overflow-hidden rounded-r-[10px]"
@@ -277,9 +318,8 @@ export function PassportBook({
             </div>
           ) : null}
 
-
           {/* centre gutter + outer page edges: the book as an object */}
-          {opened || opening ? (
+          {bookVisible ? (
             <>
               <div aria-hidden className="pp-gutter pointer-events-none absolute inset-y-0 left-1/2 z-20 w-6 -translate-x-1/2" />
               <div aria-hidden className="pp-edge pp-edge-r pointer-events-none absolute inset-y-2 right-0 z-20 w-[5px]" />
@@ -287,32 +327,42 @@ export function PassportBook({
             </>
           ) : null}
 
-          {/* ---------- the cover, hinged on the centre spine ---------- */}
+          {/* ---------- the closed booklet, hinged on the spine ---------- */}
           {!opened ? (
-            <button
-              type="button"
-              aria-label="Open your Shekk Passport"
-              onClick={() => {
-                if (opening) return;
-                haptic(14);
-                if (reducedMotion()) {
-                  onOpen();
-                  return;
-                }
-                setOpening(true);
-                window.setTimeout(onOpen, OPENING);
-              }}
-              className="pp-leaf pp-cover absolute inset-y-0 right-0 z-30 overflow-hidden rounded-r-[12px] text-left"
+            <div
+              className="pp-hinge absolute inset-0 z-30"
               style={{
-                width: leafW,
                 transformOrigin: "left center",
-                transform: opening ? "rotateY(-180deg)" : "rotateY(0deg)",
-                transition: opening ? `transform ${OPENING}ms cubic-bezier(0.32,0.78,0.22,1)` : "none",
-                backfaceVisibility: "hidden",
+                transform: phase === "hinge" ? "rotateY(-176deg)" : "rotateY(0deg)",
+                transition: `transform ${HINGE}ms cubic-bezier(0.32,0.78,0.22,1)`,
               }}
             >
-              {cover}
-            </button>
+              <button
+                type="button"
+                aria-label="Open your Shekk Passport"
+                onClick={startOpening}
+                className="pp-leaf pp-cover absolute left-1/2 top-1/2 overflow-hidden rounded-[12px] text-left"
+                style={{
+                  // Portrait booklet: rotating it -90deg lands exactly on the
+                  // open spread's landscape footprint.
+                  width: fit.h,
+                  height: fit.w,
+                  transformOrigin: "center center",
+                  transform: coverTransform,
+                  transition: coverTransition,
+                }}
+              >
+                <span
+                  className="absolute inset-0 block"
+                  style={{
+                    opacity: phase === "closed" || phase === "pull" ? 1 : 0.2,
+                    transition: `opacity ${TURN}ms ease-out`,
+                  }}
+                >
+                  {cover}
+                </span>
+              </button>
+            </div>
           ) : null}
 
           {/* idle invitation: a hint of depth under the outer corner */}
@@ -324,8 +374,7 @@ export function PassportBook({
             />
           ) : null}
 
-          {/* gesture surface, above the paper but under nothing interactive on
-              the leaves: only the outer third of each leaf catches flicks. */}
+          {/* gesture surface: only the outer edge of each leaf catches flicks. */}
           {opened ? (
             <>
               <div
@@ -347,19 +396,19 @@ export function PassportBook({
         </div>
       </div>
 
-      {/* de-emphasised fallback controls: flicking is the primary gesture */}
+      {/* de-emphasised fallback controls, overlaid so they never shrink the book */}
       {opened ? (
-        <div className="flex shrink-0 items-center justify-between gap-3 px-5 pb-1 pt-3">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 px-4 pb-1">
           <button
             type="button"
             onClick={() => go("prev")}
             disabled={!canPrev}
             aria-label="Previous page"
-            className="tap-flat grid size-8 place-items-center rounded-full text-muted-foreground/70 disabled:opacity-25"
+            className="tap-flat pointer-events-auto grid size-8 place-items-center rounded-full text-muted-foreground/60 disabled:opacity-25"
           >
             <ChevronLeft className="size-4" />
           </button>
-          <p className="truncate text-center text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground/80">
+          <p className="truncate text-center text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground/70">
             {labels[index]} · {index + 1}/{spreads.length}
           </p>
           <button
@@ -367,7 +416,7 @@ export function PassportBook({
             onClick={() => go("next")}
             disabled={!canNext}
             aria-label="Next page"
-            className="tap-flat grid size-8 place-items-center rounded-full text-muted-foreground/70 disabled:opacity-25"
+            className="tap-flat pointer-events-auto grid size-8 place-items-center rounded-full text-muted-foreground/60 disabled:opacity-25"
           >
             <ChevronRight className="size-4" />
           </button>
