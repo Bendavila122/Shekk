@@ -19,7 +19,6 @@ const OPEN_PREFIXES = [
   "/auth",
   "/reset-password",
   "/terms",
-  "/passport", // TEMP-VERIFY
   "/welcome",
   "/admin",
   "/api",
