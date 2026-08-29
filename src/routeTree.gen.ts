@@ -21,6 +21,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReverifyRouteImport } from './routes/reverify'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProgrammeRouteImport } from './routes/programme'
+import { Route as PassportRouteImport } from './routes/passport'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as MoneyRouteImport } from './routes/money'
 import { Route as MembershipRouteImport } from './routes/membership'
@@ -167,6 +168,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const ProgrammeRoute = ProgrammeRouteImport.update({
   id: '/programme',
   path: '/programme',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PassportRoute = PassportRouteImport.update({
+  id: '/passport',
+  path: '/passport',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewsRoute = NewsRouteImport.update({
@@ -625,6 +631,7 @@ export interface FileRoutesByFullPath {
   '/membership': typeof MembershipRoute
   '/money': typeof MoneyRoute
   '/news': typeof NewsRoute
+  '/passport': typeof PassportRoute
   '/programme': typeof ProgrammeRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
@@ -725,6 +732,7 @@ export interface FileRoutesByTo {
   '/membership': typeof MembershipRoute
   '/money': typeof MoneyRoute
   '/news': typeof NewsRoute
+  '/passport': typeof PassportRoute
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
   '/settings': typeof SettingsRoute
@@ -826,6 +834,7 @@ export interface FileRoutesById {
   '/membership': typeof MembershipRoute
   '/money': typeof MoneyRoute
   '/news': typeof NewsRoute
+  '/passport': typeof PassportRoute
   '/programme': typeof ProgrammeRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/reverify': typeof ReverifyRoute
@@ -929,6 +938,7 @@ export interface FileRouteTypes {
     | '/membership'
     | '/money'
     | '/news'
+    | '/passport'
     | '/programme'
     | '/reset-password'
     | '/reverify'
@@ -1029,6 +1039,7 @@ export interface FileRouteTypes {
     | '/membership'
     | '/money'
     | '/news'
+    | '/passport'
     | '/reset-password'
     | '/reverify'
     | '/settings'
@@ -1129,6 +1140,7 @@ export interface FileRouteTypes {
     | '/membership'
     | '/money'
     | '/news'
+    | '/passport'
     | '/programme'
     | '/reset-password'
     | '/reverify'
@@ -1231,6 +1243,7 @@ export interface RootRouteChildren {
   MembershipRoute: typeof MembershipRoute
   MoneyRoute: typeof MoneyRoute
   NewsRoute: typeof NewsRoute
+  PassportRoute: typeof PassportRoute
   ProgrammeRoute: typeof ProgrammeRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
   ReverifyRoute: typeof ReverifyRoute
@@ -1387,6 +1400,13 @@ declare module '@tanstack/react-router' {
       path: '/programme'
       fullPath: '/programme'
       preLoaderRoute: typeof ProgrammeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/passport': {
+      id: '/passport'
+      path: '/passport'
+      fullPath: '/passport'
+      preLoaderRoute: typeof PassportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/news': {
@@ -2067,6 +2087,7 @@ const rootRouteChildren: RootRouteChildren = {
   MembershipRoute: MembershipRoute,
   MoneyRoute: MoneyRoute,
   NewsRoute: NewsRoute,
+  PassportRoute: PassportRoute,
   ProgrammeRoute: ProgrammeRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,
   ReverifyRoute: ReverifyRoute,

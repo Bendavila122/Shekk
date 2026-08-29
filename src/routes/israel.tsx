@@ -47,7 +47,7 @@ function MiniTile({ app }: { app: MiniApp }) {
 
 /** Shekk mini apps, in plain groups — no near-duplicate sections. */
 const MINI_GROUPS: { title: string; hint: string; ids: string[] }[] = [
-  { title: "Getting around", hint: "Buses, trains, taxis and maps", ids: ["transit", "rides", "maps", "been-there"] },
+  { title: "Getting around", hint: "Buses, trains, taxis and maps", ids: ["transit", "rides", "maps", "been-there", "passport"] },
   {
     title: "Everyday life",
     hint: "Food, shopping, health, Hebrew and where you live",
