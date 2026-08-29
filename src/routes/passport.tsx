@@ -198,7 +198,7 @@ function PassportApp() {
 
   return (
     <AppShell>
-      <div className="flex min-h-[100svh] flex-col px-3 pb-2 pt-16">
+      <div className="flex h-[100svh] max-h-[100svh] flex-col overflow-hidden px-3 pb-2 pt-14">
         <PassportBook pages={pages} labels={labels} index={page} onIndex={setPage} />
       </div>
     </AppShell>
