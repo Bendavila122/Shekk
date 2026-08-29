@@ -25,9 +25,9 @@ function Spread({ left, right }: { left: React.ReactNode; right: React.ReactNode
   );
 }
 
-function Doodle({ className = "" }: { className?: string }) {
+function Doodle({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <svg viewBox="0 0 60 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+    <svg viewBox="0 0 60 24" className={className} style={style} fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
       <path d="M2 18 q10 -14 20 -2 q10 12 20 -2 q8 -10 16 -2" strokeLinecap="round" />
     </svg>
   );
