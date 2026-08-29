@@ -81,6 +81,12 @@ export function PassportBook({
 
   const onDown = (e: React.PointerEvent) => {
     if (animating) return;
+    // Capture the pointer so a fast flick that leaves the book still finishes.
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {
+      /* capture is a nicety, not a requirement */
+    }
     drag.current = { x: e.clientX, w: stage.current?.clientWidth ?? 1, dir: null, active: true };
   };
 
@@ -97,12 +103,19 @@ export function PassportBook({
       setDir(wanted);
     }
     const raw = d.dir === "next" ? -dx : dx;
-    setP(Math.max(0, Math.min(1, raw / (d.w * 0.75))));
+    setP(Math.max(0, Math.min(1, raw / (d.w * 0.4))));
   };
 
-  const onUp = () => {
+  const onUp = (e?: React.PointerEvent) => {
     const d = drag.current;
     d.active = false;
+    if (e) {
+      try {
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch {
+        /* already released */
+      }
+    }
     if (!d.dir) return;
     const chosen = d.dir;
     d.dir = null;
