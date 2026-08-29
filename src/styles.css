@@ -963,7 +963,6 @@
 .pp-hinge {
   transform-style: preserve-3d;
   will-change: transform;
-  backface-visibility: hidden;
 }
 /* Beat C: the whole closed booklet turns flat. The mid-way scale dip keeps its
    corners on a narrow phone; it lives in the same keyframe as the rotation so
@@ -985,7 +984,7 @@
     transform: perspective(1400px) rotateY(0deg);
   }
   100% {
-    transform: perspective(1400px) rotateY(-172deg);
+    transform: perspective(1400px) rotateY(-158deg);
   }
 }
 
