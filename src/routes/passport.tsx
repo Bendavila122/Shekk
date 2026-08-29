@@ -153,7 +153,7 @@ function PassportApp() {
     return (
       <AppShell>
         <div
-          className="pp-open-stage flex min-h-0 flex-1 flex-col items-center justify-center overflow-hidden px-6 py-10"
+          className="pp-open-stage flex h-[100svh] max-h-[100svh] flex-col items-center justify-center overflow-hidden px-6 py-10"
           style={{ perspective: "1400px" }}
         >
           <button
@@ -219,7 +219,7 @@ function PassportApp() {
 
   return (
     <AppShell>
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-3 pb-2 pt-14">
+      <div className="flex h-[100svh] max-h-[100svh] flex-col overflow-hidden px-3 pb-2 pt-14">
         <PassportBook pages={pages} labels={labels} index={page} onIndex={setPage} />
       </div>
     </AppShell>
