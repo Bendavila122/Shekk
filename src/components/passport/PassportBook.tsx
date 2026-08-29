@@ -232,18 +232,15 @@ export function PassportBook({
             }}
           />
 
-          {/* idle invitation: a small curled corner you can flick */}
+          {/* idle invitation: barely-there shadow under the outer corner */}
           {!dir && canNext ? (
             <div
               aria-hidden
-              className="pointer-events-none absolute bottom-0 right-0 z-20 size-10 rounded-br-2xl rounded-tl-xl"
-              style={{
-                background:
-                  "linear-gradient(315deg, oklch(0.93 0.02 84) 0%, oklch(0.87 0.03 84) 55%, transparent 56%)",
-                boxShadow: "-3px -3px 10px rgba(46,32,12,0.16)",
-              }}
+              className="pointer-events-none absolute bottom-0 right-0 z-20 size-8 rounded-br-2xl"
+              style={{ boxShadow: "inset -8px -8px 12px rgba(46,32,12,0.09)" }}
             />
           ) : null}
+
         </div>
       </div>
 
