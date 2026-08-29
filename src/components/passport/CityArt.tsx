@@ -9,7 +9,7 @@
  * All motion is CSS-driven and disabled under prefers-reduced-motion (see the
  * .pp-* rules in styles.css).
  */
-import type { ReactElement } from "react";
+import { useId, type ReactElement } from "react";
 import type { CityTheme } from "@/lib/passport";
 
 const VB = "0 0 200 130";
