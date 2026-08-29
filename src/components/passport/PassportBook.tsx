@@ -1,8 +1,7 @@
 /**
- * The book. One page at a time, hinged at the spine on the left. Dragging
- * curls the page and follows your finger continuously: the hinge pivots at the
- * height of your touch, so the corner nearest your finger lifts first, exactly
- * like flicking through a real passport.
+ * The book. One page at a time, hinged on a fixed vertical spine at the left.
+ * Dragging follows your finger one-to-one and the leaf rotates on that single
+ * axis, the way a real page does — no wobble, no gloss.
  *
  * Hand-rolled with pointer events + CSS 3D transforms — no animation
  * dependency, one transform per frame.
@@ -18,11 +17,12 @@ type Dir = "next" | "prev";
 const COMMIT = 0.32;
 /** How far the leaf swings; past 90deg its backface hides and the page is gone. */
 const SWING = 172;
-const DURATION = 460;
+const DURATION = 420;
 
 function reducedMotion() {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
+
 
 export function PassportBook({
   pages,
