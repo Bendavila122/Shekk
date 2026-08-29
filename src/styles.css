@@ -906,3 +906,91 @@
   .wiggle { animation: none; opacity: 0.92; }
 }
 
+
+/* --- Shekk Passport -----------------------------------------------------
+   The illustrated travel passport: paper, page turns, stamps and ambient
+   scene motion. All motion here is disabled under prefers-reduced-motion. */
+
+.pp-paper {
+  background-color: oklch(0.965 0.018 84);
+  background-image:
+    radial-gradient(oklch(0.62 0.05 70 / 0.07) 1px, transparent 1.2px),
+    linear-gradient(140deg, oklch(1 0 0 / 0.5), transparent 60%);
+  background-size: 4px 4px, 100% 100%;
+}
+
+.pp-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image:
+    radial-gradient(oklch(0.4 0.04 70 / 0.06) 1px, transparent 1.4px),
+    radial-gradient(oklch(0.4 0.04 70 / 0.05) 1px, transparent 1.4px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 2px 3px;
+  mix-blend-mode: multiply;
+}
+
+/* Cover: rounded physical booklet with a stitched spine */
+.pp-cover {
+  background-image: linear-gradient(150deg, oklch(0.33 0.09 262), oklch(0.22 0.07 268) 55%, oklch(0.29 0.1 286));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.16),
+    0 26px 50px oklch(0.14 0.03 274 / 0.4);
+}
+.pp-cover-spine {
+  background-image: linear-gradient(90deg, oklch(0 0 0 / 0.35), oklch(1 0 0 / 0.1) 45%, oklch(0 0 0 / 0.3));
+}
+
+/* Book stage + page turn */
+.pp-stage { perspective: 1400px; }
+.pp-page {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+.pp-page-shade {
+  background-image: linear-gradient(90deg, oklch(0 0 0 / 0.22), transparent 14%, transparent 86%, oklch(0 0 0 / 0.14));
+}
+.pp-spine {
+  background-image: linear-gradient(90deg, oklch(0 0 0 / 0.02), oklch(0.45 0.04 70 / 0.22) 45%, oklch(0.45 0.04 70 / 0.16) 55%, oklch(0 0 0 / 0.02));
+}
+
+/* Stamp landing */
+@keyframes pp-stamp-in {
+  0% { transform: scale(2.1) rotate(-16deg); opacity: 0; }
+  55% { transform: scale(0.93) rotate(-7deg); opacity: 1; }
+  75% { transform: scale(1.05) rotate(-9deg); }
+  100% { transform: scale(1) rotate(-8deg); opacity: 1; }
+}
+.pp-stamp-in { animation: pp-stamp-in 620ms cubic-bezier(0.2, 1.2, 0.3, 1) both; }
+
+/* Ambient scene motion */
+@keyframes pp-drift { from { transform: translateX(0); } to { transform: translateX(20px); } }
+@keyframes pp-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes pp-sway { 0%,100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+@keyframes pp-swim { from { transform: translateX(-12px); } to { transform: translateX(26px); } }
+.pp-wave { animation: pp-drift 5s ease-in-out infinite alternate; }
+.pp-wave-slow { animation-duration: 8s; }
+.pp-cloud { animation: pp-drift 14s ease-in-out infinite alternate; }
+.pp-birds { animation: pp-float 6s ease-in-out infinite; }
+.pp-palm { animation: pp-sway 5.5s ease-in-out infinite; }
+.pp-sun { animation: pp-float 7s ease-in-out infinite; }
+.pp-fish { animation: pp-swim 9s ease-in-out infinite alternate; }
+.pp-fish-slow { animation-duration: 13s; }
+
+/* Locked cities: the same art, drawn as a faint sketch */
+.pp-sketch { filter: grayscale(0.85) contrast(0.8) opacity(0.42); }
+
+/* Scrapbook tape */
+.pp-tape {
+  background-color: oklch(0.9 0.05 96 / 0.7);
+  box-shadow: 0 1px 2px oklch(0.2 0.02 80 / 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-wave, .pp-cloud, .pp-birds, .pp-palm, .pp-sun, .pp-fish { animation: none; }
+  .pp-stamp-in { animation: none; }
+}
