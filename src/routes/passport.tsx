@@ -153,7 +153,7 @@ function PassportApp() {
     return (
       <AppShell>
         <div
-          className="pp-open-stage flex min-h-[100svh] flex-col items-center justify-center px-6 py-10"
+          className="pp-open-stage flex min-h-0 flex-1 flex-col items-center justify-center overflow-hidden px-6 py-10"
           style={{ perspective: "1400px" }}
         >
           <button
