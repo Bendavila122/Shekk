@@ -392,7 +392,7 @@ export function PassportBook({
                 height: leafH,
                 perspective: "1500px",
                 transform: `translateX(-50%) translateY(${phase === "closed" || phase === "pull" ? leafH / 2 : 0}px)`,
-                transition: `transform ${TURN}ms cubic-bezier(0.5,0.02,0.24,1)`,
+                transition: `transform ${TURN * speed}ms cubic-bezier(0.5,0.02,0.24,1)`,
                 ...(phase === "hinge"
                   ? { opacity: Math.max(0, Math.min(1, (HINGE_END - hingeA) / 22)) }
                   : null),
