@@ -358,6 +358,7 @@ export function PassportBook({
                 perspective: "1500px",
                 transform: `translateX(-50%) translateY(${phase === "closed" || phase === "pull" ? leafH / 2 : 0}px)`,
                 transition: `transform ${TURN}ms cubic-bezier(0.5,0.02,0.24,1)`,
+                ...(phase === "hinge" ? { animation: `pp-hinge-fade ${HINGE}ms linear both` } : null),
               }}
             >
               <div
