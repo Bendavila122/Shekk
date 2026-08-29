@@ -125,15 +125,13 @@ export function PassportBook({
         }
       };
       const target = d === "next" ? (commit ? 1 : 0) : commit ? 0 : 1;
-      if (reducedMotion()) {
-        finish();
-        return;
-      }
       setAnimating(true);
       const start = performance.now();
       const fromP = pRef.current;
       const span = Math.abs(target - fromP);
-      const ms = Math.max(160, DURATION * span);
+      /* Reduced motion still turns the page — just briskly, with no flourish. */
+      const ms = Math.max(120, (reducedMotion() ? 180 : DURATION) * span);
+
       const step = (now: number) => {
         const t = Math.min(1, (now - start) / ms);
         const e = 1 - Math.pow(1 - t, 2.4);
