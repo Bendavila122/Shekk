@@ -61,6 +61,9 @@ export function PassportBook({
   const box = useRef<HTMLDivElement | null>(null);
   const [fit, setFit] = useState({ w: 0, leaf: 0, cw: 0, ch: 0 });
   const [phase, setPhase] = useState<Phase>("closed");
+  /* 1 normally; compressed under reduced motion so the beats still read. */
+  const [speed, setSpeed] = useState(1);
+
   /* The hinge is tweened in JS so the printed face can be swapped for the
      endpaper at exactly 90deg — an ancestor 2D rotate defeats CSS backface
      culling here, and a keyframe gives no progress to read. */
