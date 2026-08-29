@@ -982,9 +982,14 @@
 @keyframes pp-hinge-open {
   0% {
     transform: rotateY(0deg);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
   }
   100% {
-    transform: rotateY(-113deg);
+    transform: rotateY(-104deg);
+    opacity: 0;
   }
 }
 
