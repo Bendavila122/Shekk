@@ -380,8 +380,9 @@ export function PassportBook({
 
           {/* ---------- the closed booklet ----------
               One element mounted from closed all the way through the hinge, at
-              full opacity: portrait art inside, rotated bodily to sideways, then
-              swung away around its (now horizontal) spine. */}
+              full opacity: portrait art inside, rotated bodily to sideways, and
+              then swung UP off the horizontal centre spine — the very same
+              direction, hinge and origin as an ordinary page turn. */}
           {coverMounted ? (
             <div
               aria-hidden={phase === "hinge"}
@@ -391,54 +392,57 @@ export function PassportBook({
                 width: fit.w,
                 height: leafH,
                 perspective: "1500px",
-                transform: `translateX(-50%) translateY(${phase === "closed" || phase === "pull" ? leafH / 2 : 0}px)`,
+                /* closed: centred in the stage. turned: the bottom leaf slot,
+                   which is the leaf a page turn lifts. */
+                transform: `translateX(-50%) translateY(${
+                  phase === "closed" || phase === "pull" ? leafH / 2 : leafH
+                }px)`,
                 transition: `transform ${TURN * speed}ms cubic-bezier(0.5,0.02,0.24,1)`,
-                ...(phase === "hinge"
-                  ? { opacity: Math.max(0, Math.min(1, (HINGE_END - hingeA) / 22)) }
-                  : null),
+                ...(phase === "hinge" ? { opacity: Math.max(0, Math.min(1, (HINGE_END - hingeA) / 22)) } : null),
               }}
             >
+              {/* the hinge itself, in screen space: same axis and origin as a page turn */}
               <div
-                className="pp-leaf absolute inset-0 grid place-items-center"
-                style={{ transformOrigin: "center center", ...spinStyle }}
+                className="pp-leaf absolute inset-0"
+                style={{
+                  transformOrigin: "center top",
+                  transform: `rotateX(${phase === "hinge" ? hingeA.toFixed(2) : 0}deg)`,
+                  boxShadow:
+                    phase === "hinge"
+                      ? `0 ${Math.round(-Math.sin((hingeA * Math.PI) / 180) * 12)}px 30px rgba(20,16,40,0.28)`
+                      : undefined,
+                }}
               >
-                {/* The booklet itself: portrait, art upright, hinged on the edge
-                    that becomes the horizontal spine once it has turned. */}
                 <div
-                  className="pp-leaf absolute"
-                  style={{
-                    width: leafH,
-                    height: fit.w,
-                    transformOrigin: "right center",
-                    transform: `rotateY(${phase === "hinge" ? hingeA.toFixed(2) : 0}deg)`,
-                    boxShadow:
-                      phase === "hinge"
-                        ? `0 ${Math.round(Math.sin((hingeA * Math.PI) / 180) * 14)}px 30px rgba(20,16,40,0.3)`
-                        : undefined,
-                  }}
+                  className="pp-leaf absolute inset-0 grid place-items-center"
+                  style={{ transformOrigin: "center center", ...spinStyle }}
                 >
-                  {phase === "hinge" && hingeA > 90 ? (
-                    /* the reverse of the same leaf: plain endpaper */
-                    <span
-                      aria-hidden
-                      className="pp-paper pp-grain absolute inset-0 block overflow-hidden rounded-[12px]"
-                      style={{ boxShadow: "0 -10px 26px rgba(24,20,40,0.28)" }}
-                    />
-                  ) : (
-                    <button
-                      type="button"
-                      aria-label="Open your Shekk Passport"
-                      onClick={startOpening}
-                      data-pp-cover
-                      className="pp-cover absolute inset-0 block overflow-hidden rounded-[12px] text-left"
-                    >
-                      {cover}
-                    </button>
-                  )}
+                  {/* the booklet: portrait while closed, art upright, turned bodily sideways */}
+                  <div className="pp-leaf absolute" style={{ width: leafH, height: fit.w }}>
+                    {phase === "hinge" && hingeA > 90 ? (
+                      /* the reverse of the same leaf: plain endpaper */
+                      <span
+                        aria-hidden
+                        className="pp-paper pp-grain absolute inset-0 block overflow-hidden rounded-[12px]"
+                        style={{ boxShadow: "0 10px 26px rgba(24,20,40,0.26)" }}
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        aria-label="Open your Shekk Passport"
+                        onClick={startOpening}
+                        data-pp-cover
+                        className="pp-cover absolute inset-0 block overflow-hidden rounded-[12px] text-left"
+                      >
+                        {cover}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           ) : null}
+
 
           {/* idle invitation: a hint of depth under the bottom outer edge */}
           {opened && !dir && canNext ? (
