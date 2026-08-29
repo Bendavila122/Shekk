@@ -29,7 +29,7 @@ const DURATION = 460;
 const PULL = 200;
 const TURN = 760;
 const SETTLE = 160;
-const HINGE = 880;
+const HINGE = 950;
 
 /** A single leaf is landscape 1.414:1, so the open spread (two stacked) is
  *  W x 1.414W and the closed booklet is exactly one leaf stood on its end. */
@@ -259,7 +259,8 @@ export function PassportBook({
     const start = performance.now();
     const step = (now: number) => {
       const t = Math.min(1, (now - start) / HINGE);
-      const e = 1 - Math.pow(1 - t, 2.6);
+      // ease-in-out: the cover lifts, sweeps, then lands
+      const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
       setHingeA(HINGE_END * e);
       if (t < 1) hingeRaf.current = requestAnimationFrame(step);
     };
