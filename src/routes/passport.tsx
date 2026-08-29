@@ -10,6 +10,7 @@ import { AppShell } from "@/components/AppShell";
 import { PassportBook } from "@/components/passport/PassportBook";
 import { CitySpread, FrontMatter, MapSpread } from "@/components/passport/spreads";
 import { haptic } from "@/lib/foryou-prefs";
+import { playPageFlick } from "@/lib/page-sound";
 import { useProfile } from "@/lib/useProfile";
 import {
   CHECKIN_RADIUS_KM,
@@ -147,6 +148,7 @@ function PassportApp() {
                 return;
               }
               setOpening(true);
+              playPageFlick(1);
               window.setTimeout(() => setOpen(true), 560);
             }}
             className="pp-cover tap-icon relative aspect-[3/4.3] w-full max-w-[19rem] overflow-hidden rounded-[1.4rem] text-left"
