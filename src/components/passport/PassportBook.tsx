@@ -153,18 +153,17 @@ export function PassportBook({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      {/* Height-driven sizing: the booklet is always fully visible, never
-          clipped by a tall phone or a short viewport. */}
-      <div className="grid min-h-0 flex-1 place-items-center overflow-hidden">
+      {/* The booklet is fitted to whatever space is left, so it is always fully
+          visible: never clipped by a narrow phone or a short viewport. */}
+      <div ref={box} className="relative grid min-h-0 flex-1 place-items-center overflow-hidden">
         <div
           ref={stage}
           onPointerDown={onDown}
           onPointerMove={onMove}
           onPointerUp={onUp}
           onPointerCancel={onUp}
-          onPointerLeave={() => undefined}
-          className="pp-stage relative h-full max-h-full w-auto max-w-full touch-pan-y select-none"
-          style={{ aspectRatio: "3 / 4" }}
+          className="pp-stage relative touch-pan-y select-none"
+          style={{ width: fit.w, height: fit.h }}
         >
           {/* the page underneath */}
           <div className="absolute inset-0 overflow-hidden rounded-l-md rounded-r-2xl shadow-lift">
