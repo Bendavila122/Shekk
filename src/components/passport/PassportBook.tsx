@@ -226,21 +226,31 @@ export function PassportBook({
   const flipped = p > 0.5;
 
   /* ---- opening choreography ----
-     The closed booklet is a portrait rect of fit.h x fit.w (a leaf turned on
-     its side); rotating it -90deg makes it exactly fit.w x fit.h. */
-  const closedScale = Math.min((fit.ch * 0.82) / (fit.w || 1), (fit.cw * 0.9) / (fit.h || 1)) || 1;
-  const coverTransform =
+     One object, one visible beat at a time:
+       closed  → large upright portrait booklet
+       pull    → same object, scaled down a touch (no orientation change)
+       turn    → keyframed 2D rotation to exactly -90deg, art rotating with it
+       settle  → held flat, sideways, still closed
+       hinge   → cover swings off the spine in 3D over the waiting spread
+     The closed booklet is fit.h x fit.w portrait; rotated -90deg it is exactly
+     the landscape stage, so nothing morphs or resizes. */
+  const closedScale = Math.min((fit.ch * 0.84) / (fit.w || 1), (fit.cw * 0.94) / (fit.h || 1)) || 1;
+  const pulled = closedScale * 0.88;
+
+  const coverStyle: React.CSSProperties =
     phase === "closed"
-      ? `translate(-50%, -50%) rotate(0deg) scale(${closedScale.toFixed(3)})`
+      ? { transform: `translate(-50%, -50%) rotate(0deg) scale(${closedScale.toFixed(3)})` }
       : phase === "pull"
-        ? `translate(-50%, -50%) rotate(0deg) scale(${(closedScale * 0.87).toFixed(3)})`
-        : "translate(-50%, -50%) rotate(-90deg) scale(1)";
-  const coverTransition =
-    phase === "closed"
-      ? "none"
-      : phase === "pull"
-        ? `transform ${PULL}ms cubic-bezier(0.33,0,0.2,1)`
-        : `transform ${TURN}ms cubic-bezier(0.4,0.02,0.2,1)`;
+        ? {
+            transform: `translate(-50%, -50%) rotate(0deg) scale(${pulled.toFixed(3)})`,
+            transition: `transform ${PULL}ms cubic-bezier(0.33,0,0.2,1)`,
+          }
+        : {
+            // Keyframed so the mid-rotation scale dip (which keeps the corners
+            // on screen) cannot cancel out the rotation itself.
+            ["--pp-s0" as string]: pulled.toFixed(3),
+            animation: `pp-flat ${TURN}ms cubic-bezier(0.45,0.05,0.2,1) both`,
+          };
 
   const startOpening = () => {
     if (phase !== "closed") return;
@@ -252,12 +262,19 @@ export function PassportBook({
     setPhase("pull");
     timers.current.push(
       window.setTimeout(() => setPhase("turn"), PULL),
-      window.setTimeout(() => setPhase("hinge"), PULL + TURN),
-      window.setTimeout(onOpen, PULL + TURN + HINGE - 60),
+      window.setTimeout(() => {
+        setPhase("settle");
+        haptic(10);
+      }, PULL + TURN),
+      window.setTimeout(() => setPhase("hinge"), PULL + TURN + SETTLE),
+      window.setTimeout(onOpen, PULL + TURN + SETTLE + HINGE - 40),
     );
   };
 
-  const bookVisible = opened || phase === "hinge";
+  /* The spread waits underneath from the moment the booklet lies flat, so the
+     hinge reveals it rather than cross-fading to it. */
+  const bookVisible = opened || phase === "settle" || phase === "hinge";
+
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
