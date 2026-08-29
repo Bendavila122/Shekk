@@ -14,6 +14,9 @@ Object.assign(process.env, loadEnv(process.env.NODE_ENV ?? "development", proces
 
 export default defineConfig({
   plugins: [mcpPlugin()],
+  // Lovable's sandbox always forces the cloudflare-module preset; outside the
+  // sandbox (Vercel, local) this passthrough picks the deploy target instead.
+  nitro: { preset: "vercel" },
   tanstackStart: {
     // Avoid the default client bootstrap's Suspense/Await wrapper, which can
     // trip React's dispatcher during dev hydration after dependency updates.
