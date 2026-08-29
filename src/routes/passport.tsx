@@ -44,6 +44,7 @@ function PassportApp() {
   const { state, ready, stamp, unstamp, setMemory, progress } = usePassport();
   const profile = useProfile();
   const [open, setOpen] = useState(false);
+  const [opening, setOpening] = useState(false);
   const [page, setPage] = useState(0);
   const [justStamped, setJustStamped] = useState<string | null>(null);
   const [checkIn, setCheckIn] = useState<{ busy: boolean; message: string | null }>({
