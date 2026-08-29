@@ -981,10 +981,10 @@
 /* Beat E: the cover swings away on the spine, fully visible the whole time. */
 @keyframes pp-hinge-open {
   0% {
-    transform: perspective(1400px) rotateY(0deg);
+    transform: rotateY(0deg);
   }
   100% {
-    transform: perspective(1400px) rotateY(-158deg);
+    transform: rotateY(-158deg);
   }
 }
 
