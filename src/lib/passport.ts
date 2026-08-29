@@ -341,7 +341,10 @@ export function usePassport() {
       setState((prev) => {
         const next: PassportState = {
           ...prev,
-          entries: { ...prev.entries, [id]: { visited: false, ...prev.entries[id], ...entry } },
+          entries: {
+            ...prev.entries,
+            [id]: { visited: prev.entries[id]?.visited ?? false, ...prev.entries[id], ...entry },
+          },
         };
         try {
           window.localStorage.setItem(PASSPORT_KEY, JSON.stringify(next));
