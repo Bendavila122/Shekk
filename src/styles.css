@@ -985,7 +985,7 @@
     opacity: 1;
   }
   100% {
-    transform: rotateY(-168deg);
+    transform: rotateY(168deg);
     opacity: 0;
   }
 }
