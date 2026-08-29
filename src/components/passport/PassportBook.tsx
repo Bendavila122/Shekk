@@ -37,6 +37,23 @@ export function PassportBook({
   labels: string[];
 }) {
   const stage = useRef<HTMLDivElement | null>(null);
+  const box = useRef<HTMLDivElement | null>(null);
+  const [fit, setFit] = useState({ w: 0, h: 0 });
+
+  // Fit a 3:4 booklet inside the available space, both dimensions respected.
+  useEffect(() => {
+    const el = box.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const measure = () => {
+      const w = Math.min(el.clientWidth, el.clientHeight * 0.75, 460);
+      setFit({ w: Math.round(w), h: Math.round(w / 0.75) });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const drag = useRef<{ x: number; w: number; dir: Dir | null; active: boolean }>({
     x: 0,
     w: 1,
