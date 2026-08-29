@@ -1,6 +1,7 @@
 /**
- * The book. A stack of pages you flick through with a real page-turn: the top
- * page swings around the spine on the left, revealing the page beneath.
+ * The book. A stack of single pages you flick through: the top page lifts
+ * corner-first and swings around the spine on the left, revealing the page
+ * beneath, with a paper flick sound.
  *
  * Deliberately hand-rolled with pointer events + CSS 3D transforms — no new
  * animation dependency, and nothing heavier than one transform per frame.
@@ -8,11 +9,15 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { haptic } from "@/lib/foryou-prefs";
+import { playPageFlick } from "@/lib/page-sound";
 
 type Dir = "next" | "prev";
 
 /** Page turn feels right at ~30% of the width. */
 const COMMIT = 0.3;
+/** How far the leaf swings; past 90deg its backface hides and the page is gone. */
+const SWING = 168;
+const DURATION = 520;
 
 function reducedMotion() {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -59,9 +64,10 @@ export function PassportBook({
         finish();
         return;
       }
+      if (commit) playPageFlick(0.9);
       setAnimating(true);
       setP(commit ? 1 : 0);
-      window.setTimeout(finish, 420);
+      window.setTimeout(finish, DURATION);
     },
     [index, onIndex],
   );
@@ -72,8 +78,8 @@ export function PassportBook({
       if (d === "next" && !canNext) return;
       if (d === "prev" && !canPrev) return;
       setDir(d);
-      setP(0);
-      // next frame so the 0 state paints before we animate to 1
+      setP(d === "prev" ? 1 : 0);
+      // next frame so the start state paints before we animate
       requestAnimationFrame(() => settle(d, true));
     },
     [animating, canNext, canPrev, settle],
@@ -101,9 +107,12 @@ export function PassportBook({
       if (wanted === "prev" && !canPrev) return;
       d.dir = wanted;
       setDir(wanted);
+      playPageFlick(0.35);
     }
     const raw = d.dir === "next" ? -dx : dx;
-    setP(Math.max(0, Math.min(1, raw / (d.w * 0.4))));
+    const t = Math.max(0, Math.min(1, raw / (d.w * 0.45)));
+    // "prev" drags the incoming page back down, so its progress runs backwards.
+    setP(d.dir === "prev" ? 1 - t : t);
   };
 
   const onUp = (e?: React.PointerEvent) => {
@@ -119,7 +128,8 @@ export function PassportBook({
     if (!d.dir) return;
     const chosen = d.dir;
     d.dir = null;
-    settle(chosen, p > COMMIT);
+    const travelled = chosen === "prev" ? 1 - p : p;
+    settle(chosen, travelled > COMMIT);
   };
 
   // Keyboard for desktop / accessibility
@@ -132,81 +142,77 @@ export function PassportBook({
     return () => window.removeEventListener("keydown", onKey);
   }, [go]);
 
-  /* Which spread sits underneath, and which leaf is turning on top.
-     The leaf is only HALF the spread — the right half going forward, the left
-     half coming back — and it swings around the centre spine, so the motion
-     reads as one page lifting rather than the whole screen rotating. */
+  /* One page at a time, like a real passport booklet. Going forward the current
+     page is the leaf that lifts away; coming back the previous page is the leaf
+     that falls into place. `p` always runs 0 (page flat) → 1 (page lifted). */
   const underIndex = dir === "next" ? index + 1 : index;
   const turnIndex = dir === "prev" ? index - 1 : index;
-  const angle = dir === "prev" ? (1 - p) * 180 : -p * 180;
+  const angle = -p * SWING;
+  // Corner-first: tilting the hinge axis lifts the outer top corner first.
+  const tilt = 0.34 * (1 - p * 0.7);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       {/* The book keeps a passport-ish proportion and sits centred, so a tall
-          phone never stretches a spread into a column of empty paper. */}
-      <div className="grid min-h-0 flex-1 place-items-center">
-      <div
-        ref={stage}
-        onPointerDown={onDown}
-        onPointerMove={onMove}
-        onPointerUp={onUp}
-        onPointerCancel={onUp}
-        className="pp-stage relative aspect-[10/13] max-h-full w-full touch-pan-y select-none"
-      >
-        {/* spread underneath */}
-        <div className="absolute inset-0 overflow-hidden rounded-2xl shadow-lift">
-          <Sheet>{pages[underIndex]}</Sheet>
-        </div>
+          phone never stretches a page into a column of empty paper. */}
+      <div className="grid min-h-0 flex-1 place-items-center px-3 py-2">
+        <div
+          ref={stage}
+          onPointerDown={onDown}
+          onPointerMove={onMove}
+          onPointerUp={onUp}
+          onPointerCancel={onUp}
+          className="pp-stage relative aspect-[3/4] max-h-full w-full max-w-[26rem] touch-pan-y select-none"
+        >
+          {/* the page underneath */}
+          <div className="absolute inset-0 overflow-hidden rounded-r-2xl rounded-l-md shadow-lift">
+            <Sheet>{pages[underIndex]}</Sheet>
+          </div>
 
-        {/* turning leaf: half a spread, hinged on the spine */}
-        {dir ? (
-          <div
-            className="pp-page absolute inset-y-0 z-10 w-1/2 overflow-hidden"
-            style={{
-              left: dir === "next" ? "50%" : 0,
-              transformOrigin: dir === "next" ? "left center" : "right center",
-              transform: `rotateY(${angle}deg)`,
-              backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
-              borderRadius: dir === "next" ? "0 1rem 1rem 0" : "1rem 0 0 1rem",
-              transition: animating ? "transform 420ms cubic-bezier(0.3,0.8,0.25,1)" : "none",
-            }}
-          >
-            {/* the full spread, shifted so this window shows exactly its own half */}
+          {/* turning leaf: a whole page, hinged at the spine, lifting corner-first */}
+          {dir ? (
             <div
-              className="absolute inset-y-0 w-[200%]"
-              style={{ left: dir === "next" ? "-100%" : 0 }}
+              className="pp-page absolute inset-0 z-10 overflow-hidden rounded-r-2xl rounded-l-md"
+              style={{
+                transformOrigin: "left center",
+                transform: `rotate3d(${tilt}, 1, 0, ${angle}deg)`,
+                transition: animating
+                  ? `transform ${DURATION}ms cubic-bezier(0.32, 0.72, 0.2, 1)`
+                  : "none",
+                boxShadow: `${Math.round(p * 26)}px ${Math.round(p * 10)}px ${Math.round(
+                  18 + p * 46,
+                )}px rgba(46, 32, 12, ${0.12 + p * 0.26})`,
+              }}
             >
               <Sheet>{pages[turnIndex]}</Sheet>
+              {/* curl sheen: light catches the lifting corner */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background: `linear-gradient(105deg, rgba(0,0,0,${0.26 * p}) 0%, rgba(0,0,0,0) 26%, rgba(255,255,255,${
+                    0.5 * p
+                  }) 74%, rgba(255,255,255,${0.16 * p}) 100%)`,
+                }}
+              />
             </div>
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background:
-                  dir === "next"
-                    ? `linear-gradient(90deg, rgba(0,0,0,${0.3 * (1 - p)}), transparent 55%)`
-                    : `linear-gradient(270deg, rgba(0,0,0,${0.3 * p}), transparent 55%)`,
-              }}
-            />
-          </div>
-        ) : null}
+          ) : null}
 
-        {/* spine + page edge, so the book reads as a physical object */}
-        <div aria-hidden className="pp-spine pointer-events-none absolute inset-y-0 left-1/2 z-20 w-6 -translate-x-1/2" />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-3 right-0 z-20 w-1.5 rounded-r-md"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(180deg, oklch(0.88 0.02 84), oklch(0.88 0.02 84) 2px, oklch(0.78 0.03 84) 2px, oklch(0.78 0.03 84) 3px)",
-          }}
-        />
-      </div>
+          {/* spine + page edge, so the book reads as a physical object */}
+          <div aria-hidden className="pp-spine pointer-events-none absolute inset-y-0 left-0 z-20 w-4" />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-3 right-0 z-20 w-1.5 rounded-r-md"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(180deg, oklch(0.88 0.02 84), oklch(0.88 0.02 84) 2px, oklch(0.78 0.03 84) 2px, oklch(0.78 0.03 84) 3px)",
+            }}
+          />
+        </div>
       </div>
 
       {/* flick controls */}
-      <div className="flex items-center justify-between gap-3 px-4 pb-3 pt-3">
+      <div className="flex items-center justify-between gap-3 px-4 pb-3 pt-1">
         <button
           type="button"
           onClick={() => go("prev")}
