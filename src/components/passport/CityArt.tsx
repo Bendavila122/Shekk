@@ -644,7 +644,7 @@ export function CityArt({
       className={`${className} ${locked ? "pp-sketch" : ""}`}
     >
       <Scene />
-      {locked ? <rect x="0" y="0" width="200" height="130" fill="#f6efe0" opacity="0.55" /> : null}
+      {locked ? <rect x="0" y="0" width="200" height="130" fill="#f6efe0" opacity="0.32" /> : null}
     </svg>
   );
 }
