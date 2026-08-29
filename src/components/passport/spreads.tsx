@@ -250,13 +250,15 @@ export function citySpread({
 
     bottom: visited ? (
       <div className="grid h-full grid-cols-[0.85fr_1fr] items-center gap-3">
-        <div className="grid h-full place-items-center">
-          <PassportStamp city={city} date={entry?.visitedOn} animate={justStamped} size={112} />
+        <div className="flex h-full flex-col items-center justify-center">
+          <PassportStamp city={city} date={entry?.visitedOn} animate={justStamped} size={104} />
+          <p className="mt-1 line-clamp-3 text-center text-[9.5px] leading-snug text-ink/60">{city.blurb}</p>
         </div>
         <div className="grid h-full place-items-center">
           <MemorySlot city={city} photo={entry?.photo} caption={entry?.caption} onChange={onMemory} />
         </div>
       </div>
+
     ) : (
       <div className="grid h-full grid-cols-[0.85fr_1fr] items-center gap-3">
         <div className="grid h-full place-items-center">
