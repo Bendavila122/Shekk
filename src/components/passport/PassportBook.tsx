@@ -74,11 +74,18 @@ export function PassportBook({
   });
   const [dir, setDir] = useState<Dir | null>(null);
   const [p, setP] = useState(0);
+  const pRef = useRef(0);
+  pRef.current = p;
   const [animating, setAnimating] = useState(false);
 
   const canNext = index < spreads.length - 1;
   const canPrev = index > 0;
 
+  const raf = useRef<number | null>(null);
+
+  /* The turn is tweened in JS rather than with a CSS transition: the leaf that
+     paints swaps at the midpoint, so a transition on either element would be
+     interrupted. One transform per frame, still cheap. */
   const settle = useCallback(
     (d: Dir, commit: boolean) => {
       const base = d === "next" ? index : index - 1;
@@ -91,16 +98,35 @@ export function PassportBook({
           haptic(8);
         }
       };
+      const target = d === "next" ? (commit ? 1 : 0) : commit ? 0 : 1;
       if (reducedMotion()) {
         finish();
         return;
       }
       setAnimating(true);
-      setP(d === "next" ? (commit ? 1 : 0) : commit ? 0 : 1);
-      window.setTimeout(finish, DURATION);
+      const start = performance.now();
+      const fromP = pRef.current;
+      const span = Math.abs(target - fromP);
+      const ms = Math.max(160, DURATION * span);
+      const step = (now: number) => {
+        const t = Math.min(1, (now - start) / ms);
+        // ease-out: paper slows as it lands
+        const e = 1 - Math.pow(1 - t, 2.4);
+        setP(fromP + (target - fromP) * e);
+        if (t < 1) {
+          raf.current = requestAnimationFrame(step);
+          return;
+        }
+        finish();
+      };
+      raf.current = requestAnimationFrame(step);
     },
     [index, onIndex],
   );
+
+  useEffect(() => () => {
+    if (raf.current) cancelAnimationFrame(raf.current);
+  }, []);
 
   const go = useCallback(
     (d: Dir) => {
@@ -227,7 +253,6 @@ export function PassportBook({
                 width: leafW,
                 transformOrigin: "left center",
                 transform: `rotateY(${-p * 180}deg)`,
-                transition: animating ? `transform ${DURATION / 2}ms linear` : "none",
                 boxShadow: `0 ${Math.round(lift * 5)}px ${Math.round(10 + lift * 16)}px rgba(46,32,12,${(
                   0.06 + lift * 0.12
                 ).toFixed(3)})`,
@@ -243,7 +268,6 @@ export function PassportBook({
                 width: leafW,
                 transformOrigin: "right center",
                 transform: `rotateY(${(1 - p) * 180}deg)`,
-                transition: animating ? `transform ${DURATION / 2}ms linear` : "none",
                 boxShadow: `0 ${Math.round(lift * 5)}px ${Math.round(10 + lift * 16)}px rgba(46,32,12,${(
                   0.06 + lift * 0.12
                 ).toFixed(3)})`,
