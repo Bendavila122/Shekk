@@ -3,7 +3,7 @@
  * open, then a book of illustrated city spreads you flick through, stamp and
  * paste one photo into. Local-first: nothing here touches auth or the ledger.
  */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { LoadingBlocks } from "@/components/Kit";
 import { AppShell } from "@/components/AppShell";
@@ -52,6 +52,27 @@ function PassportApp() {
     busy: false,
     message: null,
   });
+
+  /* Passport is one fixed object: the document itself must never scroll or
+     rubber-band while it is open. Released on leaving the mini app. */
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const prev = {
+      htmlOverflow: html.style.overflow,
+      bodyOverflow: body.style.overflow,
+      overscroll: body.style.overscrollBehavior,
+    };
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    body.style.overscrollBehavior = "none";
+    return () => {
+      html.style.overflow = prev.htmlOverflow;
+      body.style.overflow = prev.bodyOverflow;
+      body.style.overscrollBehavior = prev.overscroll;
+    };
+  }, []);
+
 
   const holder =
     [profile.profile?.legalFirstName, profile.profile?.legalLastName]
@@ -132,7 +153,7 @@ function PassportApp() {
     return (
       <AppShell>
         <div
-          className="pp-open-stage flex min-h-[100svh] flex-col items-center justify-center px-6 py-10"
+          className="pp-open-stage flex h-[100svh] max-h-[100svh] flex-col items-center justify-center overflow-hidden px-6 py-10"
           style={{ perspective: "1400px" }}
         >
           <button

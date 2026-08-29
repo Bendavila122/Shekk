@@ -1,8 +1,7 @@
 /**
- * The book. One page at a time, hinged at the spine on the left. Dragging
- * curls the page and follows your finger continuously: the hinge pivots at the
- * height of your touch, so the corner nearest your finger lifts first, exactly
- * like flicking through a real passport.
+ * The book. One page at a time, hinged on a fixed vertical spine at the left.
+ * Dragging follows your finger one-to-one and the leaf rotates on that single
+ * axis, the way a real page does — no wobble, no gloss.
  *
  * Hand-rolled with pointer events + CSS 3D transforms — no animation
  * dependency, one transform per frame.
@@ -18,11 +17,12 @@ type Dir = "next" | "prev";
 const COMMIT = 0.32;
 /** How far the leaf swings; past 90deg its backface hides and the page is gone. */
 const SWING = 172;
-const DURATION = 460;
+const DURATION = 420;
 
 function reducedMotion() {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
+
 
 export function PassportBook({
   pages,
@@ -62,9 +62,8 @@ export function PassportBook({
   });
   const [dir, setDir] = useState<Dir | null>(null);
   const [p, setP] = useState(0);
-  /** Where along the spine the page pivots, 0 (top) to 100 (bottom). */
-  const [pivot, setPivot] = useState(50);
   const [animating, setAnimating] = useState(false);
+
 
   const canNext = index < pages.length - 1;
   const canPrev = index > 0;
@@ -97,8 +96,8 @@ export function PassportBook({
       if (animating) return;
       if (d === "next" && !canNext) return;
       if (d === "prev" && !canPrev) return;
-      setPivot(66);
       setDir(d);
+
       setP(d === "prev" ? 1 : 0);
       // next frame so the start state paints before we animate
       requestAnimationFrame(() => settle(d, true));
@@ -114,11 +113,9 @@ export function PassportBook({
     } catch {
       /* capture is a nicety, not a requirement */
     }
-    const box = stage.current?.getBoundingClientRect();
-    if (box && box.height > 0) {
-      setPivot(Math.max(12, Math.min(88, ((e.clientY - box.top) / box.height) * 100)));
-    }
-    drag.current = { x: e.clientX, w: box?.width ?? 1, dir: null, active: true };
+    const rect = stage.current?.getBoundingClientRect();
+    drag.current = { x: e.clientX, w: rect?.width ?? 1, dir: null, active: true };
+
   };
 
   const onMove = (e: React.PointerEvent) => {
@@ -163,9 +160,6 @@ export function PassportBook({
   const underIndex = dir === "next" ? index + 1 : index;
   const turnIndex = dir === "prev" ? index - 1 : index;
   const angle = -p * SWING;
-  // Paper is not rigid: a gentle tilt on the hinge axis lifts the far corner
-  // first and eases off as the page comes over.
-  const tilt = 0.22 * Math.sin(Math.PI * Math.min(p, 1));
   const lift = Math.sin(Math.PI * Math.min(p, 1));
 
   return (
@@ -185,46 +179,45 @@ export function PassportBook({
           {/* the page underneath */}
           <div className="absolute inset-0 overflow-hidden rounded-l-md rounded-r-2xl shadow-lift">
             <Sheet>{pages[underIndex]}</Sheet>
-            {/* shadow the lifting leaf casts onto the page below */}
+            {/* soft shadow the lifting leaf casts onto the page below */}
             {dir ? (
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0"
                 style={{
-                  background: `linear-gradient(90deg, rgba(38,26,10,${0.3 * lift}) 0%, rgba(38,26,10,0) ${
-                    18 + 46 * p
-                  }%)`,
+                  background: `linear-gradient(90deg, rgba(38,26,10,${(0.18 * lift).toFixed(
+                    3,
+                  )}) 0%, rgba(38,26,10,0) ${Math.round(22 + 40 * p)}%)`,
                 }}
               />
             ) : null}
           </div>
 
-          {/* turning leaf: the page itself, pivoting where your finger is */}
+          {/* turning leaf: one page on a fixed vertical hinge at the spine */}
           {dir ? (
             <div
               className="pp-page absolute inset-0 z-10 overflow-hidden rounded-l-md rounded-r-2xl"
               style={{
-                transformOrigin: `left ${pivot}%`,
-                transform: `rotate3d(${tilt.toFixed(3)}, 1, 0, ${angle}deg)`,
-                transition: animating
-                  ? `transform ${DURATION}ms cubic-bezier(0.25, 0.75, 0.2, 1)`
-                  : "none",
-                boxShadow: `${Math.round(lift * 22)}px ${Math.round(lift * 8)}px ${Math.round(
-                  16 + lift * 34,
-                )}px rgba(46, 32, 12, ${0.1 + lift * 0.2})`,
+                transformOrigin: "left center",
+                transform: `rotateY(${angle}deg)`,
+                transition: animating ? `transform ${DURATION}ms cubic-bezier(0.3, 0.7, 0.25, 1)` : "none",
+                boxShadow: `${Math.round(lift * 10)}px ${Math.round(lift * 4)}px ${Math.round(
+                  12 + lift * 18,
+                )}px rgba(46, 32, 12, ${(0.08 + lift * 0.1).toFixed(3)})`,
               }}
             >
               <Sheet>{pages[turnIndex]}</Sheet>
-              {/* curl shading: darker at the hinge, a soft sheen across the bend */}
+              {/* paper shading: just a little darker toward the hinge */}
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0"
                 style={{
-                  background: `linear-gradient(90deg, rgba(60,44,20,${0.2 * lift}) 0%, rgba(60,44,20,0) 26%, rgba(255,255,255,${
-                    0.22 * lift
-                  }) 82%, rgba(255,255,255,0) 100%)`,
+                  background: `linear-gradient(90deg, rgba(60,44,20,${(0.14 * lift).toFixed(
+                    3,
+                  )}) 0%, rgba(60,44,20,0) 32%)`,
                 }}
               />
+
             </div>
           ) : null}
 
@@ -239,18 +232,15 @@ export function PassportBook({
             }}
           />
 
-          {/* idle invitation: a small curled corner you can flick */}
+          {/* idle invitation: barely-there shadow under the outer corner */}
           {!dir && canNext ? (
             <div
               aria-hidden
-              className="pointer-events-none absolute bottom-0 right-0 z-20 size-10 rounded-br-2xl rounded-tl-xl"
-              style={{
-                background:
-                  "linear-gradient(315deg, oklch(0.93 0.02 84) 0%, oklch(0.87 0.03 84) 55%, transparent 56%)",
-                boxShadow: "-3px -3px 10px rgba(46,32,12,0.16)",
-              }}
+              className="pointer-events-none absolute bottom-0 right-0 z-20 size-8 rounded-br-2xl"
+              style={{ boxShadow: "inset -8px -8px 12px rgba(46,32,12,0.09)" }}
             />
           ) : null}
+
         </div>
       </div>
 
