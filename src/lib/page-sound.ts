@@ -1,13 +1,15 @@
 /**
- * A tiny synthesised page-flick sound. No audio asset, no dependency: a short
- * burst of filtered noise with a fast decay, which reads as paper sliding.
+ * A soft synthesised paper rustle for page turns. No audio asset, no
+ * dependency: a very short, heavily low-passed noise brush, kept quiet enough
+ * to feel like paper rather than static.
  *
- * Only ever called from a user gesture (a swipe or a tap), so the browser
- * autoplay policy is satisfied. Silently no-ops where WebAudio is missing.
+ * Only ever called from a user gesture, so autoplay policy is satisfied.
+ * Silently no-ops where WebAudio is missing.
  */
 
 let ctx: AudioContext | null = null;
 let noise: AudioBuffer | null = null;
+let last = 0;
 
 function audio(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -26,48 +28,54 @@ function audio(): AudioContext | null {
 
 function noiseBuffer(c: AudioContext): AudioBuffer {
   if (noise) return noise;
-  const len = Math.floor(c.sampleRate * 0.35);
+  const len = Math.floor(c.sampleRate * 0.2);
   const buf = c.createBuffer(1, len, c.sampleRate);
   const data = buf.getChannelData(0);
+  let prev = 0;
   for (let i = 0; i < len; i += 1) {
-    // Slightly correlated noise sounds more like paper than pure white noise.
-    data[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 0.6;
+    // Smoothed (brown-ish) noise: far softer than white noise.
+    prev = prev * 0.86 + (Math.random() * 2 - 1) * 0.14;
+    data[i] = prev * (1 - i / len) ** 1.4;
   }
   noise = buf;
   return buf;
 }
 
 /**
- * Play the flick.
- * @param strength 0..1 — how firm the turn was, scales brightness and volume.
+ * Play one paper brush.
+ * @param strength 0..1 — how firm the turn was; scales volume very gently.
  */
 export function playPageFlick(strength = 1) {
   const c = audio();
   if (!c) return;
+  // Never machine-gun the sound during a drag.
+  if (c.currentTime - last < 0.12) return;
+  last = c.currentTime;
   try {
-    const s = Math.max(0.25, Math.min(1, strength));
+    const s = Math.max(0.3, Math.min(1, strength));
     const now = c.currentTime;
 
     const src = c.createBufferSource();
     src.buffer = noiseBuffer(c);
-    src.playbackRate.value = 0.9 + s * 0.5;
+    src.playbackRate.value = 1.15;
 
-    // Band-pass sweep: the paper "shhk" rises then closes off.
-    const band = c.createBiquadFilter();
-    band.type = "bandpass";
-    band.Q.value = 0.9;
-    band.frequency.setValueAtTime(900, now);
-    band.frequency.exponentialRampToValueAtTime(2600 + s * 1800, now + 0.09);
-    band.frequency.exponentialRampToValueAtTime(700, now + 0.26);
+    const lp = c.createBiquadFilter();
+    lp.type = "lowpass";
+    lp.frequency.setValueAtTime(2200, now);
+    lp.frequency.exponentialRampToValueAtTime(700, now + 0.16);
+
+    const hp = c.createBiquadFilter();
+    hp.type = "highpass";
+    hp.frequency.value = 320;
 
     const gain = c.createGain();
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.05 * s, now + 0.035);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+    gain.gain.linearRampToValueAtTime(0.022 * s, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
 
-    src.connect(band).connect(gain).connect(c.destination);
+    src.connect(hp).connect(lp).connect(gain).connect(c.destination);
     src.start(now);
-    src.stop(now + 0.32);
+    src.stop(now + 0.2);
   } catch {
     /* audio is a flourish, never a failure */
   }
