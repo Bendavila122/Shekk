@@ -346,50 +346,55 @@ export function PassportBook({
             </>
           ) : null}
 
-          {/* ---------- the closed booklet, hinged on the spine ---------- */}
-          {!opened ? (
-            <div
-              className="pp-hinge absolute inset-0 z-30"
+          {/* ---------- beats A–D: the closed booklet itself ----------
+              One button, mounted from closed through settle. Full opacity the
+              whole way, so the 90deg turn is plainly visible. */}
+          {!opened && phase !== "hinge" ? (
+            <button
+              type="button"
+              aria-label="Open your Shekk Passport"
+              onClick={startOpening}
+              data-pp-cover
+              className="pp-leaf pp-cover absolute left-1/2 top-1/2 z-30 overflow-hidden rounded-[12px] text-left"
               style={{
-                transformOrigin: "left center",
-                transform: phase === "hinge" ? "rotateY(-176deg)" : "rotateY(0deg)",
-                transition: `transform ${HINGE}ms cubic-bezier(0.32,0.78,0.22,1)`,
+                // Portrait booklet: rotating it -90deg lands exactly on the
+                // open spread's landscape footprint.
+                width: fit.h,
+                height: fit.w,
+                transformOrigin: "center center",
+                ...coverStyle,
               }}
             >
-              {/* camera dip: keeps the rotating booklet inside the viewport */}
-              <div
-                className={`absolute inset-0 ${phase === "turn" || phase === "hinge" ? "pp-dip" : ""}`}
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                <button
-                  type="button"
-                  aria-label="Open your Shekk Passport"
-                  onClick={startOpening}
-                  className="pp-leaf pp-cover absolute left-1/2 top-1/2 overflow-hidden rounded-[12px] text-left"
-                  style={{
-                    // Portrait booklet: rotating it -90deg lands exactly on the
-                    // open spread's landscape footprint.
-                    width: fit.h,
-                    height: fit.w,
-                    transformOrigin: "center center",
-                    transform: coverTransform,
-                    transition: coverTransition,
-                  }}
-                >
-                  <span
-                    className="absolute inset-0 block"
-                    style={{
-                      opacity: phase === "closed" || phase === "pull" ? 1 : 0.2,
-                      transition: `opacity ${TURN}ms ease-out`,
-                    }}
-                  >
-                    {cover}
-                  </span>
-                </button>
-              </div>
-            </div>
-
+              {cover}
+            </button>
           ) : null}
+
+          {/* ---------- beat E: the hinge ----------
+              Same artwork, same on-screen orientation as the end of the turn
+              (portrait art inside a landscape leaf, rotated -90deg), now
+              swinging off the spine over the spread already sitting beneath. */}
+          {!opened && phase === "hinge" ? (
+            <div
+              aria-hidden
+              className="pp-hinge pp-leaf pp-cover absolute inset-0 z-30 overflow-hidden rounded-[12px]"
+              style={{
+                transformOrigin: "left center",
+                animation: `pp-hinge-open ${HINGE}ms cubic-bezier(0.32,0.72,0.2,1) both`,
+              }}
+            >
+              <span
+                className="absolute left-1/2 top-1/2 block"
+                style={{
+                  width: fit.h,
+                  height: fit.w,
+                  transform: "translate(-50%, -50%) rotate(-90deg)",
+                }}
+              >
+                {cover}
+              </span>
+            </div>
+          ) : null}
+
 
           {/* idle invitation: a hint of depth under the outer corner */}
           {opened && !dir && canNext ? (
