@@ -963,14 +963,36 @@
 .pp-hinge {
   transform-style: preserve-3d;
   will-change: transform;
-  backface-visibility: hidden;
 }
-@keyframes pp-dip {
-  0% { transform: scale(1); }
-  45% { transform: scale(0.72); }
-  100% { transform: scale(1); }
+/* Beat C: the whole closed booklet turns flat. The mid-way scale dip keeps its
+   corners on a narrow phone; it lives in the same keyframe as the rotation so
+   the two can never cancel each other out. */
+@keyframes pp-flat {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(var(--pp-s0, 1));
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(-45deg) scale(0.76);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(-90deg) scale(1);
+  }
 }
-.pp-dip { animation: pp-dip 430ms cubic-bezier(0.4, 0.02, 0.2, 1) both; }
+/* Beat E: the cover swings away on the spine, fully visible the whole time. */
+@keyframes pp-hinge-open {
+  0% {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotateY(-104deg);
+    opacity: 0;
+  }
+}
+
 
 
 
