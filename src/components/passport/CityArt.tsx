@@ -638,7 +638,7 @@ export function CityArt({
   return (
     <svg
       viewBox={VB}
-      preserveAspectRatio="xMidYMid slice"
+      preserveAspectRatio="xMidYMax slice"
       role="img"
       aria-label={locked ? "Undiscovered city illustration" : "City illustration"}
       className={`${className} ${locked ? "pp-sketch" : ""}`}
