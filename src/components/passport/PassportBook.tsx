@@ -233,6 +233,9 @@ export function PassportBook({
               <div
                 className="pp-face absolute inset-0 overflow-hidden"
                 style={{
+                  // Mirrored faces must not be backface-culled: the reverse
+                  // side is the same element flipped on X.
+                  backfaceVisibility: "visible",
                   transform: flipped ? "scaleX(-1)" : "none",
                   borderRadius: flipped ? "10px 0 0 10px" : "0 10px 10px 0",
                   boxShadow: `0 ${Math.round(lift * 5)}px ${Math.round(10 + lift * 16)}px rgba(46,32,12,${(
