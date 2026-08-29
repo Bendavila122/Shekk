@@ -496,13 +496,15 @@ export function PassportBook({
   );
 }
 
-/** One physical leaf: warm stock, grain, gutter shading, scrollable content. */
+/** One physical leaf: warm stock, grain, gutter shading. Never scrollable —
+ *  a real page cannot scroll, so every spread is laid out to fit. */
 function Leaf({ side, children }: { side: "top" | "bottom"; children: ReactNode }) {
   return (
     <div className="pp-paper pp-grain relative h-full w-full overflow-hidden">
-      <div className="relative z-10 h-full w-full overflow-y-auto overscroll-contain scrollbar-none px-4 py-3.5">
+      <div className="relative z-10 h-full w-full overflow-hidden px-4 py-3.5">
         {children}
       </div>
+
       <div
         aria-hidden
         className={`pointer-events-none absolute inset-0 z-20 ${side === "top" ? "pp-shade-t" : "pp-shade-b"}`}
