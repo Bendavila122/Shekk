@@ -17,20 +17,22 @@ import { haptic } from "@/lib/foryou-prefs";
 export type Leaves = { left: ReactNode; right: ReactNode };
 
 type Dir = "next" | "prev";
-type Phase = "closed" | "pull" | "turn" | "hinge";
+type Phase = "closed" | "pull" | "turn" | "settle" | "hinge";
 
 /** Release past this much travel and the turn completes. */
 const COMMIT = 0.3;
 const DURATION = 460;
 
-/* Opening choreography, ~1.1s in total. */
-const PULL = 190;
-const TURN = 430;
-const HINGE = 540;
+/* Opening choreography: pull back, turn flat 90deg, hold, then hinge open. */
+const PULL = 180;
+const TURN = 500;
+const SETTLE = 120;
+const HINGE = 600;
 
 /** Open-book ratio. A leaf is 1:sqrt(2) portrait, so the closed booklet rotated
  *  90deg lands exactly on the open spread's footprint — no distortion. */
 const BOOK_RATIO = 1.414;
+
 
 function reducedMotion() {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
