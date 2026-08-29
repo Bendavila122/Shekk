@@ -248,11 +248,12 @@ export function PassportBook({
     ? {
         ["--pp-s1" as string]: pulled.toFixed(3),
         ["--pp-sm" as string]: midScale.toFixed(3),
-        animation: `pp-spin ${TURN}ms cubic-bezier(0.5,0.02,0.24,1) both`,
+        animation: `pp-spin ${TURN * speed}ms cubic-bezier(0.5,0.02,0.24,1) both`,
       }
     : {
         transform: `rotate(0deg) scale(${(phase === "pull" ? pulled : closedScale).toFixed(3)})`,
-        transition: phase === "pull" ? `transform ${PULL}ms cubic-bezier(0.33,0,0.2,1)` : undefined,
+        transition: phase === "pull" ? `transform ${PULL * speed}ms cubic-bezier(0.33,0,0.2,1)` : undefined,
+
       };
 
   const HINGE_END = 172;
