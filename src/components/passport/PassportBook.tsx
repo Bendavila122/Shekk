@@ -1,10 +1,11 @@
 /**
- * The book. A stack of single pages you flick through: the top page lifts
- * corner-first and swings around the spine on the left, revealing the page
- * beneath, with a paper flick sound.
+ * The book. One page at a time, hinged at the spine on the left. Dragging
+ * curls the page and follows your finger continuously: the hinge pivots at the
+ * height of your touch, so the corner nearest your finger lifts first, exactly
+ * like flicking through a real passport.
  *
- * Deliberately hand-rolled with pointer events + CSS 3D transforms — no new
- * animation dependency, and nothing heavier than one transform per frame.
+ * Hand-rolled with pointer events + CSS 3D transforms — no animation
+ * dependency, one transform per frame.
  */
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -13,11 +14,11 @@ import { playPageFlick } from "@/lib/page-sound";
 
 type Dir = "next" | "prev";
 
-/** Page turn feels right at ~30% of the width. */
-const COMMIT = 0.3;
+/** Release past this much travel and the turn completes. */
+const COMMIT = 0.32;
 /** How far the leaf swings; past 90deg its backface hides and the page is gone. */
-const SWING = 168;
-const DURATION = 520;
+const SWING = 172;
+const DURATION = 460;
 
 function reducedMotion() {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -44,6 +45,8 @@ export function PassportBook({
   });
   const [dir, setDir] = useState<Dir | null>(null);
   const [p, setP] = useState(0);
+  /** Where along the spine the page pivots, 0 (top) to 100 (bottom). */
+  const [pivot, setPivot] = useState(50);
   const [animating, setAnimating] = useState(false);
 
   const canNext = index < pages.length - 1;
@@ -57,14 +60,14 @@ export function PassportBook({
         setP(0);
         if (commit) {
           onIndex(d === "next" ? index + 1 : index - 1);
-          haptic(10);
+          haptic(8);
         }
       };
       if (reducedMotion()) {
         finish();
         return;
       }
-      if (commit) playPageFlick(0.9);
+      if (commit) playPageFlick(0.85);
       setAnimating(true);
       setP(commit ? 1 : 0);
       window.setTimeout(finish, DURATION);
@@ -77,6 +80,7 @@ export function PassportBook({
       if (animating) return;
       if (d === "next" && !canNext) return;
       if (d === "prev" && !canPrev) return;
+      setPivot(66);
       setDir(d);
       setP(d === "prev" ? 1 : 0);
       // next frame so the start state paints before we animate
@@ -93,7 +97,11 @@ export function PassportBook({
     } catch {
       /* capture is a nicety, not a requirement */
     }
-    drag.current = { x: e.clientX, w: stage.current?.clientWidth ?? 1, dir: null, active: true };
+    const box = stage.current?.getBoundingClientRect();
+    if (box && box.height > 0) {
+      setPivot(Math.max(12, Math.min(88, ((e.clientY - box.top) / box.height) * 100)));
+    }
+    drag.current = { x: e.clientX, w: box?.width ?? 1, dir: null, active: true };
   };
 
   const onMove = (e: React.PointerEvent) => {
@@ -101,22 +109,22 @@ export function PassportBook({
     if (!d.active) return;
     const dx = e.clientX - d.x;
     if (!d.dir) {
-      if (Math.abs(dx) < 8) return;
+      if (Math.abs(dx) < 6) return;
       const wanted: Dir = dx < 0 ? "next" : "prev";
       if (wanted === "next" && !canNext) return;
       if (wanted === "prev" && !canPrev) return;
       d.dir = wanted;
       setDir(wanted);
-      playPageFlick(0.35);
     }
     const raw = d.dir === "next" ? -dx : dx;
-    const t = Math.max(0, Math.min(1, raw / (d.w * 0.45)));
+    const t = Math.max(0, Math.min(1, raw / (d.w * 0.85)));
     // "prev" drags the incoming page back down, so its progress runs backwards.
     setP(d.dir === "prev" ? 1 - t : t);
   };
 
   const onUp = (e?: React.PointerEvent) => {
     const d = drag.current;
+    if (!d.active) return;
     d.active = false;
     if (e) {
       try {
@@ -132,67 +140,73 @@ export function PassportBook({
     settle(chosen, travelled > COMMIT);
   };
 
-  // Keyboard for desktop / accessibility
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") go("next");
-      if (e.key === "ArrowLeft") go("prev");
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [go]);
-
-  /* One page at a time, like a real passport booklet. Going forward the current
-     page is the leaf that lifts away; coming back the previous page is the leaf
-     that falls into place. `p` always runs 0 (page flat) → 1 (page lifted). */
+  /* One page at a time, like a real booklet. Going forward the current page is
+     the leaf that lifts away; coming back the previous page falls into place.
+     `p` always runs 0 (flat) → 1 (fully turned). */
   const underIndex = dir === "next" ? index + 1 : index;
   const turnIndex = dir === "prev" ? index - 1 : index;
   const angle = -p * SWING;
-  // Corner-first: tilting the hinge axis lifts the outer top corner first.
-  const tilt = 0.34 * (1 - p * 0.7);
+  // Paper is not rigid: a gentle tilt on the hinge axis lifts the far corner
+  // first and eases off as the page comes over.
+  const tilt = 0.22 * Math.sin(Math.PI * Math.min(p, 1));
+  const lift = Math.sin(Math.PI * Math.min(p, 1));
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      {/* The book keeps a passport-ish proportion and sits centred, so a tall
-          phone never stretches a page into a column of empty paper. */}
-      <div className="grid min-h-0 flex-1 place-items-center px-3 py-2">
+      {/* Height-driven sizing: the booklet is always fully visible, never
+          clipped by a tall phone or a short viewport. */}
+      <div className="grid min-h-0 flex-1 place-items-center overflow-hidden">
         <div
           ref={stage}
           onPointerDown={onDown}
           onPointerMove={onMove}
           onPointerUp={onUp}
           onPointerCancel={onUp}
-          className="pp-stage relative aspect-[3/4] max-h-full w-full max-w-[26rem] touch-pan-y select-none"
+          onPointerLeave={() => undefined}
+          className="pp-stage relative h-full max-h-full w-auto max-w-full touch-pan-y select-none"
+          style={{ aspectRatio: "3 / 4" }}
         >
           {/* the page underneath */}
-          <div className="absolute inset-0 overflow-hidden rounded-r-2xl rounded-l-md shadow-lift">
+          <div className="absolute inset-0 overflow-hidden rounded-l-md rounded-r-2xl shadow-lift">
             <Sheet>{pages[underIndex]}</Sheet>
-          </div>
-
-          {/* turning leaf: a whole page, hinged at the spine, lifting corner-first */}
-          {dir ? (
-            <div
-              className="pp-page absolute inset-0 z-10 overflow-hidden rounded-r-2xl rounded-l-md"
-              style={{
-                transformOrigin: "left center",
-                transform: `rotate3d(${tilt}, 1, 0, ${angle}deg)`,
-                transition: animating
-                  ? `transform ${DURATION}ms cubic-bezier(0.32, 0.72, 0.2, 1)`
-                  : "none",
-                boxShadow: `${Math.round(p * 26)}px ${Math.round(p * 10)}px ${Math.round(
-                  18 + p * 46,
-                )}px rgba(46, 32, 12, ${0.12 + p * 0.26})`,
-              }}
-            >
-              <Sheet>{pages[turnIndex]}</Sheet>
-              {/* curl sheen: light catches the lifting corner */}
+            {/* shadow the lifting leaf casts onto the page below */}
+            {dir ? (
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0"
                 style={{
-                  background: `linear-gradient(105deg, rgba(0,0,0,${0.26 * p}) 0%, rgba(0,0,0,0) 26%, rgba(255,255,255,${
-                    0.5 * p
-                  }) 74%, rgba(255,255,255,${0.16 * p}) 100%)`,
+                  background: `linear-gradient(90deg, rgba(38,26,10,${0.3 * lift}) 0%, rgba(38,26,10,0) ${
+                    18 + 46 * p
+                  }%)`,
+                }}
+              />
+            ) : null}
+          </div>
+
+          {/* turning leaf: the page itself, pivoting where your finger is */}
+          {dir ? (
+            <div
+              className="pp-page absolute inset-0 z-10 overflow-hidden rounded-l-md rounded-r-2xl"
+              style={{
+                transformOrigin: `left ${pivot}%`,
+                transform: `rotate3d(${tilt.toFixed(3)}, 1, 0, ${angle}deg)`,
+                transition: animating
+                  ? `transform ${DURATION}ms cubic-bezier(0.25, 0.75, 0.2, 1)`
+                  : "none",
+                boxShadow: `${Math.round(lift * 22)}px ${Math.round(lift * 8)}px ${Math.round(
+                  16 + lift * 34,
+                )}px rgba(46, 32, 12, ${0.1 + lift * 0.2})`,
+              }}
+            >
+              <Sheet>{pages[turnIndex]}</Sheet>
+              {/* curl shading: darker at the hinge, a soft sheen across the bend */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background: `linear-gradient(90deg, rgba(60,44,20,${0.2 * lift}) 0%, rgba(60,44,20,0) 26%, rgba(255,255,255,${
+                    0.22 * lift
+                  }) 82%, rgba(255,255,255,0) 100%)`,
                 }}
               />
             </div>
@@ -208,11 +222,24 @@ export function PassportBook({
                 "repeating-linear-gradient(180deg, oklch(0.88 0.02 84), oklch(0.88 0.02 84) 2px, oklch(0.78 0.03 84) 2px, oklch(0.78 0.03 84) 3px)",
             }}
           />
+
+          {/* idle invitation: a small curled corner you can flick */}
+          {!dir && canNext ? (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute bottom-0 right-0 z-20 size-10 rounded-br-2xl rounded-tl-xl"
+              style={{
+                background:
+                  "linear-gradient(315deg, oklch(0.93 0.02 84) 0%, oklch(0.87 0.03 84) 55%, transparent 56%)",
+                boxShadow: "-3px -3px 10px rgba(46,32,12,0.16)",
+              }}
+            />
+          ) : null}
         </div>
       </div>
 
       {/* flick controls */}
-      <div className="flex items-center justify-between gap-3 px-4 pb-3 pt-1">
+      <div className="flex shrink-0 items-center justify-between gap-3 px-4 pb-2 pt-2">
         <button
           type="button"
           onClick={() => go("prev")}
