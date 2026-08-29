@@ -61,6 +61,10 @@ export function PassportBook({
   const box = useRef<HTMLDivElement | null>(null);
   const [fit, setFit] = useState({ w: 0, leaf: 0, cw: 0, ch: 0 });
   const [phase, setPhase] = useState<Phase>("closed");
+  /* Past ~90deg of the hinge the leaf shows its reverse: swap the printed face
+     for the endpaper. Explicit, because an ancestor 2D rotate defeats CSS
+     backface culling here. */
+  const [hingePast, setHingePast] = useState(false);
   const timers = useRef<number[]>([]);
 
   /* Fit the whole open spread (W wide, 2 leaves tall) inside the available box. */
@@ -264,6 +268,7 @@ export function PassportBook({
         haptic(10);
       }, PULL + TURN),
       window.setTimeout(() => setPhase("hinge"), PULL + TURN + SETTLE),
+      window.setTimeout(() => setHingePast(true), PULL + TURN + SETTLE + HINGE * 0.4),
       window.setTimeout(onOpen, PULL + TURN + SETTLE + HINGE - 60),
     );
   };
@@ -378,22 +383,24 @@ export function PassportBook({
                       : { transform: "rotateY(0deg)" }),
                   }}
                 >
-                  <button
-                    type="button"
-                    aria-label="Open your Shekk Passport"
-                    onClick={startOpening}
-                    data-pp-cover
-                    className="pp-cover absolute inset-0 block overflow-hidden rounded-[12px] text-left"
-                    style={{ backfaceVisibility: "hidden" }}
-                  >
-                    {cover}
-                  </button>
-                  {/* endpaper on the reverse, so the leaf stays painted past 90deg */}
-                  <span
-                    aria-hidden
-                    className="pp-paper pp-grain absolute inset-0 block overflow-hidden rounded-[12px]"
-                    style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
-                  />
+                  {hingePast ? (
+                    /* the reverse of the same leaf: plain endpaper */
+                    <span
+                      aria-hidden
+                      className="pp-paper pp-grain absolute inset-0 block overflow-hidden rounded-[12px]"
+                      style={{ boxShadow: "0 -10px 26px rgba(24,20,40,0.28)" }}
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      aria-label="Open your Shekk Passport"
+                      onClick={startOpening}
+                      data-pp-cover
+                      className="pp-cover absolute inset-0 block overflow-hidden rounded-[12px] text-left"
+                    >
+                      {cover}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
