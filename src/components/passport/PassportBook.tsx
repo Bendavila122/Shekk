@@ -378,33 +378,43 @@ export function PassportBook({
           {!opened && phase === "hinge" ? (
             <div
               aria-hidden
-              className="pp-hinge absolute inset-0 z-30"
-              style={{
-                transformOrigin: "left center",
-                animation: `pp-hinge-open ${HINGE}ms cubic-bezier(0.32,0.72,0.2,1) both`,
-              }}
+              className="absolute inset-0 z-30"
+              /* Flattened wrapper: the stage is a preserve-3d context, so a leaf
+                 rotating through it would be depth-sorted behind the spread.
+                 Its own perspective keeps the hinge reading as real depth while
+                 compositing cleanly above the pages. */
+              style={{ perspective: "1400px", transformStyle: "flat" }}
             >
-              <span
-                className="pp-cover absolute inset-0 block overflow-hidden rounded-[12px]"
-                style={{ backfaceVisibility: "hidden" }}
+              <div
+                className="pp-hinge absolute inset-0"
+                style={{
+                  transformOrigin: "left center",
+                  animation: `pp-hinge-open ${HINGE}ms cubic-bezier(0.32,0.72,0.2,1) both`,
+                }}
               >
                 <span
-                  className="absolute left-1/2 top-1/2 block"
-                  style={{
-                    width: fit.h,
-                    height: fit.w,
-                    transform: "translate(-50%, -50%) rotate(-90deg)",
-                  }}
+                  className="pp-cover absolute inset-0 block overflow-hidden rounded-[12px]"
+                  style={{ backfaceVisibility: "hidden" }}
                 >
-                  {cover}
+                  <span
+                    className="absolute left-1/2 top-1/2 block"
+                    style={{
+                      width: fit.h,
+                      height: fit.w,
+                      transform: "translate(-50%, -50%) rotate(-90deg)",
+                    }}
+                  >
+                    {cover}
+                  </span>
                 </span>
-              </span>
-              <span
-                className="pp-paper pp-grain absolute inset-0 block overflow-hidden rounded-[12px]"
-                style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
-              />
+                <span
+                  className="pp-paper pp-grain absolute inset-0 block overflow-hidden rounded-[12px]"
+                  style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
+                />
+              </div>
             </div>
           ) : null}
+
 
 
 
