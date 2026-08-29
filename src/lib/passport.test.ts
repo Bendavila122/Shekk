@@ -36,7 +36,7 @@ describe("passportProgress", () => {
   const state: PassportState = {
     entries: {
       jerusalem: { visited: true, visitedOn: "2026-08-14", photo: "data:image/jpeg;base64,x" },
-      "tel-aviv": { visited: true, visitedOn: "2026-08-20" },
+      "telaviv": { visited: true, visitedOn: "2026-08-20" },
       haifa: { visited: false },
     },
   };
@@ -70,7 +70,7 @@ describe("dates", () => {
 describe("check-in geometry", () => {
   it("measures a sane Jerusalem to Tel Aviv distance", () => {
     const jlm = PASSPORT_CITIES.find((c) => c.id === "jerusalem")!;
-    const tlv = PASSPORT_CITIES.find((c) => c.id === "tel-aviv")!;
+    const tlv = PASSPORT_CITIES.find((c) => c.id === "telaviv")!;
     const km = distanceKm(jlm, tlv);
     expect(km).toBeGreaterThan(45);
     expect(km).toBeLessThan(75);
