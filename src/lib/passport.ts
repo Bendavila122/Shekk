@@ -343,7 +343,7 @@ export function usePassport() {
           ...prev,
           entries: {
             ...prev.entries,
-            [id]: { visited: prev.entries[id]?.visited ?? false, ...prev.entries[id], ...entry },
+            [id]: { ...(prev.entries[id] ?? { visited: false }), ...entry },
           },
         };
         try {
