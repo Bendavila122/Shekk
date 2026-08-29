@@ -3,7 +3,7 @@
  * open, then a book of illustrated city spreads you flick through, stamp and
  * paste one photo into. Local-first: nothing here touches auth or the ledger.
  */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { LoadingBlocks } from "@/components/Kit";
 import { AppShell } from "@/components/AppShell";
