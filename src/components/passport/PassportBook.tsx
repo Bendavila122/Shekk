@@ -132,10 +132,13 @@ export function PassportBook({
     return () => window.removeEventListener("keydown", onKey);
   }, [go]);
 
-  /* Which page sits underneath, and which one is turning on top. */
+  /* Which spread sits underneath, and which leaf is turning on top.
+     The leaf is only HALF the spread — the right half going forward, the left
+     half coming back — and it swings around the centre spine, so the motion
+     reads as one page lifting rather than the whole screen rotating. */
   const underIndex = dir === "next" ? index + 1 : index;
   const turnIndex = dir === "prev" ? index - 1 : index;
-  const angle = dir === "prev" ? -(1 - p) * 180 : -p * 180;
+  const angle = dir === "prev" ? (1 - p) * 180 : -p * 180;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -150,26 +153,41 @@ export function PassportBook({
         onPointerCancel={onUp}
         className="pp-stage relative aspect-[10/13] max-h-full w-full touch-pan-y select-none"
       >
-        {/* page underneath */}
+        {/* spread underneath */}
         <div className="absolute inset-0 overflow-hidden rounded-2xl shadow-lift">
           <Sheet>{pages[underIndex]}</Sheet>
         </div>
 
-        {/* turning page */}
+        {/* turning leaf: half a spread, hinged on the spine */}
         {dir ? (
           <div
-            className="pp-page absolute inset-0 overflow-hidden rounded-2xl shadow-lift"
+            className="pp-page absolute inset-y-0 z-10 w-1/2 overflow-hidden"
             style={{
-              transformOrigin: "left center",
+              left: dir === "next" ? "50%" : 0,
+              transformOrigin: dir === "next" ? "left center" : "right center",
               transform: `rotateY(${angle}deg)`,
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+              borderRadius: dir === "next" ? "0 1rem 1rem 0" : "1rem 0 0 1rem",
               transition: animating ? "transform 420ms cubic-bezier(0.3,0.8,0.25,1)" : "none",
             }}
           >
-            <Sheet>{pages[turnIndex]}</Sheet>
+            {/* the full spread, shifted so this window shows exactly its own half */}
+            <div
+              className="absolute inset-y-0 w-[200%]"
+              style={{ left: dir === "next" ? "-100%" : 0 }}
+            >
+              <Sheet>{pages[turnIndex]}</Sheet>
+            </div>
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0"
-              style={{ background: `linear-gradient(90deg, rgba(0,0,0,${0.28 * (1 - p)}), transparent 45%)` }}
+              style={{
+                background:
+                  dir === "next"
+                    ? `linear-gradient(90deg, rgba(0,0,0,${0.3 * (1 - p)}), transparent 55%)`
+                    : `linear-gradient(270deg, rgba(0,0,0,${0.3 * p}), transparent 55%)`,
+              }}
             />
           </div>
         ) : null}
