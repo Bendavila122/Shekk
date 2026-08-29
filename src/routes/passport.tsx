@@ -8,9 +8,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { LoadingBlocks } from "@/components/Kit";
 import { AppShell } from "@/components/AppShell";
 import { PassportBook } from "@/components/passport/PassportBook";
-import { CitySpread, FrontMatter, MapSpread } from "@/components/passport/spreads";
+import { citySpread, frontMatterSpread, mapSpread } from "@/components/passport/spreads";
 import { haptic } from "@/lib/foryou-prefs";
-import { playPageFlick } from "@/lib/page-sound";
 import { useProfile } from "@/lib/useProfile";
 import {
   CHECKIN_RADIUS_KM,
@@ -45,7 +44,6 @@ function PassportApp() {
   const { state, ready, stamp, unstamp, setMemory, progress } = usePassport();
   const profile = useProfile();
   const [open, setOpen] = useState(false);
-  const [opening, setOpening] = useState(false);
   const [page, setPage] = useState(0);
   const [justStamped, setJustStamped] = useState<string | null>(null);
   const [checkIn, setCheckIn] = useState<{ busy: boolean; message: string | null }>({
@@ -116,26 +114,25 @@ function PassportApp() {
     );
   }
 
-  const pages = useMemo(() => {
-    const list = [
-      <FrontMatter key="front" state={state} name={holder} progress={progress} />,
-      <MapSpread key="map" state={state} />,
-      ...PASSPORT_CITIES.map((city) => (
-        <CitySpread
-          key={city.id}
-          city={city}
-          entry={state.entries[city.id]}
-          justStamped={justStamped === city.id}
-          checkInState={checkIn}
-          onCheckIn={(mode) => doCheckIn(city.id, mode)}
-          onUndo={() => unstamp(city.id)}
-          onMemory={(photo, caption) => setMemory(city.id, photo, caption)}
-        />
-      )),
-    ];
-    return list;
+  const spreads = useMemo(
+    () => [
+      frontMatterSpread({ state, name: holder, progress }),
+      mapSpread({ state }),
+      ...PASSPORT_CITIES.map((city) =>
+        citySpread({
+          city,
+          entry: state.entries[city.id],
+          justStamped: justStamped === city.id,
+          checkInState: checkIn,
+          onCheckIn: (mode: "here" | "manual") => doCheckIn(city.id, mode),
+          onUndo: () => unstamp(city.id),
+          onMemory: (photo?: string, caption?: string) => setMemory(city.id, photo, caption),
+        }),
+      ),
+    ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, holder, progress, justStamped, checkIn]);
+    [state, holder, progress, justStamped, checkIn],
+  );
 
   const labels = useMemo(
     () => ["Front matter", "The map", ...PASSPORT_CITIES.map((c) => c.name)],
@@ -149,78 +146,49 @@ function PassportApp() {
       </AppShell>
     );
 
-  if (!open)
-    return (
-      <AppShell>
-        <div
-          className="pp-open-stage flex h-[100svh] max-h-[100svh] flex-col items-center justify-center overflow-hidden px-6 py-10"
-          style={{ perspective: "1400px" }}
-        >
-          <button
-            type="button"
-            onClick={() => {
-              if (opening) return;
-              haptic(14);
-              const reduce =
-                typeof window !== "undefined" &&
-                window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-              if (reduce) {
-                setOpen(true);
-                return;
-              }
-              setOpening(true);
-              playPageFlick(1);
-              window.setTimeout(() => setOpen(true), 560);
-            }}
-            className="pp-cover tap-icon relative aspect-[3/4.3] w-full max-w-[19rem] overflow-hidden rounded-[1.4rem] text-left"
-            aria-label="Open your Shekk Passport"
-            style={{
-              transformOrigin: "left center",
-              transform: opening
-                ? "rotateY(-118deg) scale(1.04) translateX(6%)"
-                : "rotateY(0deg) scale(1)",
-              opacity: opening ? 0.1 : 1,
-              transition: "transform 560ms cubic-bezier(0.35,0.85,0.2,1), opacity 480ms ease-out 120ms",
-              boxShadow: opening ? "34px 18px 60px rgba(0,0,0,0.35)" : undefined,
-            }}
-          >
-            <span aria-hidden className="pp-cover-spine absolute inset-y-0 left-0 w-4" />
-            <span className="absolute inset-0 flex flex-col justify-between p-6">
-              <span className="text-[9px] font-bold uppercase tracking-[0.38em] text-ink-foreground/70">
-                Shekk
-              </span>
-              <span className="grid place-items-center">
-                <svg viewBox="0 0 100 100" className="w-24 text-ink-foreground/85" fill="none" aria-hidden>
-                  <circle cx="50" cy="50" r="34" stroke="currentColor" strokeWidth="1.6" strokeDasharray="4 3" />
-                  <path
-                    d="M50 20 v60 M20 50 h60 M28 30 q22 20 0 40 M72 30 q-22 20 0 40"
-                    stroke="currentColor"
-                    strokeWidth="1.2"
-                    opacity="0.7"
-                  />
-                </svg>
-              </span>
-              <span className="block">
-                <span className="block font-display text-2xl font-bold leading-none tracking-tight text-ink-foreground">
-                  Passport
-                </span>
-                <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.24em] text-ink-foreground/65">
-                  Israel · {seasonLabel(state.openedOn)}
-                </span>
-                <span className="mt-3 block text-[11px] text-ink-foreground/60">
-                  {progress.visited} of {progress.total} cities stamped · tap to open
-                </span>
-              </span>
-            </span>
-          </button>
-        </div>
-      </AppShell>
-    );
+  const cover = (
+    <span aria-hidden={false} className="absolute inset-0 flex flex-col justify-between p-5">
+      <span aria-hidden className="pp-cover-spine absolute inset-y-0 left-0 w-3.5" />
+      <span className="text-[9px] font-bold uppercase tracking-[0.38em] text-ink-foreground/70">Shekk</span>
+      <span className="grid place-items-center">
+        <svg viewBox="0 0 100 100" className="w-20 text-ink-foreground/85" fill="none" aria-hidden>
+          <circle cx="50" cy="50" r="34" stroke="currentColor" strokeWidth="1.6" strokeDasharray="4 3" />
+          <path
+            d="M50 20 v60 M20 50 h60 M28 30 q22 20 0 40 M72 30 q-22 20 0 40"
+            stroke="currentColor"
+            strokeWidth="1.2"
+            opacity="0.7"
+          />
+        </svg>
+      </span>
+      <span className="block">
+        <span className="block font-display text-[22px] font-bold leading-none tracking-tight text-ink-foreground">
+          Passport
+        </span>
+        <span className="mt-1 block text-[9.5px] font-semibold uppercase tracking-[0.24em] text-ink-foreground/65">
+          Israel · {seasonLabel(state.openedOn)}
+        </span>
+        <span className="mt-2.5 block text-[10.5px] leading-snug text-ink-foreground/60">
+          {progress.visited} of {progress.total} cities stamped
+          <br />
+          tap to open
+        </span>
+      </span>
+    </span>
+  );
 
   return (
     <AppShell>
-      <div className="flex h-[100svh] max-h-[100svh] flex-col overflow-hidden px-3 pb-2 pt-14">
-        <PassportBook pages={pages} labels={labels} index={page} onIndex={setPage} />
+      <div className="flex h-[100svh] max-h-[100svh] flex-col overflow-hidden px-2 pb-2 pt-12">
+        <PassportBook
+          spreads={spreads}
+          labels={labels}
+          index={page}
+          onIndex={setPage}
+          cover={cover}
+          opened={open}
+          onOpen={() => setOpen(true)}
+        />
       </div>
     </AppShell>
   );

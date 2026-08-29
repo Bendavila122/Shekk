@@ -944,19 +944,53 @@
   background-image: linear-gradient(90deg, oklch(0 0 0 / 0.35), oklch(1 0 0 / 0.1) 45%, oklch(0 0 0 / 0.3));
 }
 
-/* Book stage + page turn */
-.pp-stage { perspective: 1400px; }
-.pp-page {
+/* Open book: landscape two-leaf spread, one leaf turns on the centre spine */
+.pp-stage {
+  perspective: 1600px;
   transform-style: preserve-3d;
-  backface-visibility: hidden;
+}
+.pp-book {
+  box-shadow:
+    0 1px 0 oklch(1 0 0 / 0.4) inset,
+    0 18px 40px oklch(0.2 0.03 74 / 0.28),
+    0 2px 6px oklch(0.2 0.03 74 / 0.18);
+}
+.pp-leaf {
+  transform-style: preserve-3d;
   will-change: transform;
 }
-.pp-page-shade {
-  background-image: linear-gradient(90deg, oklch(0 0 0 / 0.26), transparent 12%, transparent 94%, oklch(0 0 0 / 0.08));
+.pp-face { backface-visibility: hidden; }
+
+/* Gutter: the paper curving into the centre spine */
+.pp-gutter {
+  background-image: linear-gradient(
+    90deg,
+    oklch(0 0 0 / 0) 0%,
+    oklch(0.3 0.03 70 / 0.14) 38%,
+    oklch(0.3 0.03 70 / 0.22) 50%,
+    oklch(0.3 0.03 70 / 0.14) 62%,
+    oklch(0 0 0 / 0) 100%
+  );
 }
-.pp-spine {
-  background-image: linear-gradient(90deg, oklch(0.45 0.04 70 / 0.3), oklch(0.45 0.04 70 / 0.12) 60%, oklch(0 0 0 / 0));
+/* Page shading toward the gutter, so each leaf reads as a real sheet */
+.pp-shade-l {
+  background-image: linear-gradient(90deg, oklch(0 0 0 / 0.1), transparent 16%, transparent 84%, oklch(0 0 0 / 0.14));
 }
+.pp-shade-r {
+  background-image: linear-gradient(90deg, oklch(0 0 0 / 0.14), transparent 16%, transparent 84%, oklch(0 0 0 / 0.1));
+}
+/* Stacked page edges at the outer sides */
+.pp-edge {
+  background-image: repeating-linear-gradient(
+    180deg,
+    oklch(0.9 0.02 84),
+    oklch(0.9 0.02 84) 2px,
+    oklch(0.79 0.03 84) 2px,
+    oklch(0.79 0.03 84) 3px
+  );
+}
+.pp-edge-r { border-radius: 0 4px 4px 0; }
+.pp-edge-l { border-radius: 4px 0 0 4px; }
 
 /* Stamp landing */
 @keyframes pp-stamp-in {
