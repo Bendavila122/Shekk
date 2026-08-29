@@ -61,10 +61,11 @@ export function PassportBook({
   const box = useRef<HTMLDivElement | null>(null);
   const [fit, setFit] = useState({ w: 0, leaf: 0, cw: 0, ch: 0 });
   const [phase, setPhase] = useState<Phase>("closed");
-  /* Past ~90deg of the hinge the leaf shows its reverse: swap the printed face
-     for the endpaper. Explicit, because an ancestor 2D rotate defeats CSS
-     backface culling here. */
-  const [hingePast, setHingePast] = useState(false);
+  /* The hinge is tweened in JS so the printed face can be swapped for the
+     endpaper at exactly 90deg — an ancestor 2D rotate defeats CSS backface
+     culling here, and a keyframe gives no progress to read. */
+  const [hingeA, setHingeA] = useState(0);
+  const hingeRaf = useRef<number | null>(null);
   const timers = useRef<number[]>([]);
 
   /* Fit the whole open spread (W wide, 2 leaves tall) inside the available box. */
@@ -253,6 +254,25 @@ export function PassportBook({
         transition: phase === "pull" ? `transform ${PULL}ms cubic-bezier(0.33,0,0.2,1)` : undefined,
       };
 
+  const HINGE_END = 172;
+  const runHinge = useCallback(() => {
+    const start = performance.now();
+    const step = (now: number) => {
+      const t = Math.min(1, (now - start) / HINGE);
+      const e = 1 - Math.pow(1 - t, 2.6);
+      setHingeA(HINGE_END * e);
+      if (t < 1) hingeRaf.current = requestAnimationFrame(step);
+    };
+    hingeRaf.current = requestAnimationFrame(step);
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (hingeRaf.current) cancelAnimationFrame(hingeRaf.current);
+    },
+    [],
+  );
+
   const startOpening = () => {
     if (phase !== "closed") return;
     haptic(14);
@@ -267,8 +287,10 @@ export function PassportBook({
         setPhase("settle");
         haptic(10);
       }, PULL + TURN),
-      window.setTimeout(() => setPhase("hinge"), PULL + TURN + SETTLE),
-      window.setTimeout(() => setHingePast(true), PULL + TURN + SETTLE + HINGE * 0.4),
+      window.setTimeout(() => {
+        setPhase("hinge");
+        runHinge();
+      }, PULL + TURN + SETTLE),
       window.setTimeout(onOpen, PULL + TURN + SETTLE + HINGE - 60),
     );
   };
@@ -363,7 +385,9 @@ export function PassportBook({
                 perspective: "1500px",
                 transform: `translateX(-50%) translateY(${phase === "closed" || phase === "pull" ? leafH / 2 : 0}px)`,
                 transition: `transform ${TURN}ms cubic-bezier(0.5,0.02,0.24,1)`,
-                ...(phase === "hinge" ? { animation: `pp-hinge-fade ${HINGE}ms linear both` } : null),
+                ...(phase === "hinge"
+                  ? { opacity: Math.max(0, Math.min(1, (HINGE_END - hingeA) / 22)) }
+                  : null),
               }}
             >
               <div
@@ -378,12 +402,14 @@ export function PassportBook({
                     width: leafH,
                     height: fit.w,
                     transformOrigin: "right center",
-                    ...(phase === "hinge"
-                      ? { animation: `pp-hinge-open ${HINGE}ms cubic-bezier(0.32,0.68,0.18,1) both` }
-                      : { transform: "rotateY(0deg)" }),
+                    transform: `rotateY(${phase === "hinge" ? hingeA.toFixed(2) : 0}deg)`,
+                    boxShadow:
+                      phase === "hinge"
+                        ? `0 ${Math.round(Math.sin((hingeA * Math.PI) / 180) * 14)}px 30px rgba(20,16,40,0.3)`
+                        : undefined,
                   }}
                 >
-                  {hingePast ? (
+                  {phase === "hinge" && hingeA > 90 ? (
                     /* the reverse of the same leaf: plain endpaper */
                     <span
                       aria-hidden
