@@ -214,7 +214,7 @@ export function citySpread({
   return {
     top: (
       <div className="grid h-full grid-cols-[1fr_1.05fr] gap-3">
-        <div className="relative -my-3.5 -ml-4 h-[calc(100%+1.75rem)] overflow-hidden rounded-r-[10px]">
+        <div className="relative -mb-6 -ml-4 -mt-3.5 h-[calc(100%+2.375rem)] overflow-hidden rounded-r-[10px]">
           <CityArt theme={city.id} locked={!visited} className="h-full w-full" />
           {!visited ? (
             <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-ink/80 px-2 py-0.5 text-[7.5px] font-bold uppercase tracking-widest text-ink-foreground">
