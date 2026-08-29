@@ -253,10 +253,10 @@ export function PassportBook({
       };
 
   const HINGE_END = 172;
-  const runHinge = useCallback(() => {
+  const runHinge = useCallback((ms: number) => {
     const start = performance.now();
     const step = (now: number) => {
-      const t = Math.min(1, (now - start) / HINGE);
+      const t = Math.min(1, (now - start) / ms);
       // ease-in-out: the cover lifts, sweeps, then lands
       const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
       setHingeA(HINGE_END * e);
@@ -264,6 +264,7 @@ export function PassportBook({
     };
     hingeRaf.current = requestAnimationFrame(step);
   }, []);
+
 
   useEffect(
     () => () => {
