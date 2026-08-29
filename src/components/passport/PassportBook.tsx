@@ -160,9 +160,6 @@ export function PassportBook({
   const underIndex = dir === "next" ? index + 1 : index;
   const turnIndex = dir === "prev" ? index - 1 : index;
   const angle = -p * SWING;
-  // Paper is not rigid: a gentle tilt on the hinge axis lifts the far corner
-  // first and eases off as the page comes over.
-  const tilt = 0.22 * Math.sin(Math.PI * Math.min(p, 1));
   const lift = Math.sin(Math.PI * Math.min(p, 1));
 
   return (
@@ -182,46 +179,45 @@ export function PassportBook({
           {/* the page underneath */}
           <div className="absolute inset-0 overflow-hidden rounded-l-md rounded-r-2xl shadow-lift">
             <Sheet>{pages[underIndex]}</Sheet>
-            {/* shadow the lifting leaf casts onto the page below */}
+            {/* soft shadow the lifting leaf casts onto the page below */}
             {dir ? (
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0"
                 style={{
-                  background: `linear-gradient(90deg, rgba(38,26,10,${0.3 * lift}) 0%, rgba(38,26,10,0) ${
-                    18 + 46 * p
-                  }%)`,
+                  background: `linear-gradient(90deg, rgba(38,26,10,${(0.18 * lift).toFixed(
+                    3,
+                  )}) 0%, rgba(38,26,10,0) ${Math.round(22 + 40 * p)}%)`,
                 }}
               />
             ) : null}
           </div>
 
-          {/* turning leaf: the page itself, pivoting where your finger is */}
+          {/* turning leaf: one page on a fixed vertical hinge at the spine */}
           {dir ? (
             <div
               className="pp-page absolute inset-0 z-10 overflow-hidden rounded-l-md rounded-r-2xl"
               style={{
-                transformOrigin: `left ${pivot}%`,
-                transform: `rotate3d(${tilt.toFixed(3)}, 1, 0, ${angle}deg)`,
-                transition: animating
-                  ? `transform ${DURATION}ms cubic-bezier(0.25, 0.75, 0.2, 1)`
-                  : "none",
-                boxShadow: `${Math.round(lift * 22)}px ${Math.round(lift * 8)}px ${Math.round(
-                  16 + lift * 34,
-                )}px rgba(46, 32, 12, ${0.1 + lift * 0.2})`,
+                transformOrigin: "left center",
+                transform: `rotateY(${angle}deg)`,
+                transition: animating ? `transform ${DURATION}ms cubic-bezier(0.3, 0.7, 0.25, 1)` : "none",
+                boxShadow: `${Math.round(lift * 10)}px ${Math.round(lift * 4)}px ${Math.round(
+                  12 + lift * 18,
+                )}px rgba(46, 32, 12, ${(0.08 + lift * 0.1).toFixed(3)})`,
               }}
             >
               <Sheet>{pages[turnIndex]}</Sheet>
-              {/* curl shading: darker at the hinge, a soft sheen across the bend */}
+              {/* paper shading: just a little darker toward the hinge */}
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0"
                 style={{
-                  background: `linear-gradient(90deg, rgba(60,44,20,${0.2 * lift}) 0%, rgba(60,44,20,0) 26%, rgba(255,255,255,${
-                    0.22 * lift
-                  }) 82%, rgba(255,255,255,0) 100%)`,
+                  background: `linear-gradient(90deg, rgba(60,44,20,${(0.14 * lift).toFixed(
+                    3,
+                  )}) 0%, rgba(60,44,20,0) 32%)`,
                 }}
               />
+
             </div>
           ) : null}
 
