@@ -1,8 +1,9 @@
 /**
  * The pages of the Shekk Passport.
  *
- * Each builder returns the two physical leaves of one spread — left and right —
- * which PassportBook renders into the open book and turns independently. They
+ * Each builder returns the two physical leaves of one spread — top and bottom,
+ * stacked around the horizontal calendar spine — which PassportBook renders into
+ * the open book and turns independently. They
  * are plain functions, not components, because the book needs both faces of a
  * spread at once while a leaf is mid-turn.
  */
@@ -40,7 +41,7 @@ export function frontMatterSpread({
   progress: { visited: number; total: number; memories: number; percent: number };
 }): Leaves {
   return {
-    left: (
+    top: (
       <div className="flex h-full flex-col">
         <p className="text-[9.5px] font-bold uppercase tracking-[0.32em] text-ink/50">Shekk Passport</p>
         <h2 className="mt-2 font-display text-[30px] font-bold leading-[0.98] tracking-tight text-ink">
@@ -65,7 +66,7 @@ export function frontMatterSpread({
         </dl>
       </div>
     ),
-    right: (
+    bottom: (
       <div className="flex h-full flex-col">
         <div className="grid grid-cols-2 gap-2">
           {[
@@ -114,7 +115,7 @@ export function frontMatterSpread({
 export function mapSpread({ state }: { state: PassportState }): Leaves {
   const visited = PASSPORT_CITIES.filter((c) => state.entries[c.id]?.visited);
   return {
-    left: (
+    top: (
       <div className="flex h-full flex-col">
         <p className="text-[9.5px] font-bold uppercase tracking-[0.32em] text-ink/50">The map</p>
         <h2 className="mt-1.5 font-display text-[22px] font-bold leading-tight tracking-tight text-ink">
@@ -154,7 +155,7 @@ export function mapSpread({ state }: { state: PassportState }): Leaves {
         </div>
       </div>
     ),
-    right: (
+    bottom: (
       <div className="flex h-full flex-col">
         <p className="text-[9.5px] font-bold uppercase tracking-[0.32em] text-ink/50">Log</p>
         {visited.length === 0 ? (
@@ -203,7 +204,7 @@ export function citySpread({
 }): Leaves {
   const visited = Boolean(entry?.visited);
   return {
-    left: (
+    top: (
       <div className="flex h-full flex-col">
         <div className="relative -mx-3.5 -mt-4 h-[42%] overflow-hidden">
           <CityArt theme={city.id} locked={!visited} className="h-full w-full" />
@@ -234,7 +235,7 @@ export function citySpread({
         ) : null}
       </div>
     ),
-    right: visited ? (
+    bottom: visited ? (
       <div className="flex h-full flex-col">
         <div className="mx-auto">
           <PassportStamp city={city} date={entry?.visitedOn} animate={justStamped} size={128} />
