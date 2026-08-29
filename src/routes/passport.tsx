@@ -44,6 +44,7 @@ function PassportApp() {
   const { state, ready, stamp, unstamp, setMemory, progress } = usePassport();
   const profile = useProfile();
   const [open, setOpen] = useState(false);
+  const [opening, setOpening] = useState(false);
   const [page, setPage] = useState(0);
   const [justStamped, setJustStamped] = useState<string | null>(null);
   const [checkIn, setCheckIn] = useState<{ busy: boolean; message: string | null }>({
@@ -129,15 +130,36 @@ function PassportApp() {
   if (!open)
     return (
       <AppShell>
-        <div className="flex min-h-[100svh] flex-col items-center justify-center px-6 py-10">
+        <div
+          className="pp-open-stage flex min-h-[100svh] flex-col items-center justify-center px-6 py-10"
+          style={{ perspective: "1400px" }}
+        >
           <button
             type="button"
             onClick={() => {
-              setOpen(true);
+              if (opening) return;
               haptic(14);
+              const reduce =
+                typeof window !== "undefined" &&
+                window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+              if (reduce) {
+                setOpen(true);
+                return;
+              }
+              setOpening(true);
+              window.setTimeout(() => setOpen(true), 560);
             }}
             className="pp-cover tap-icon relative aspect-[3/4.3] w-full max-w-[19rem] overflow-hidden rounded-[1.4rem] text-left"
             aria-label="Open your Shekk Passport"
+            style={{
+              transformOrigin: "left center",
+              transform: opening
+                ? "rotateY(-118deg) scale(1.04) translateX(6%)"
+                : "rotateY(0deg) scale(1)",
+              opacity: opening ? 0.1 : 1,
+              transition: "transform 560ms cubic-bezier(0.35,0.85,0.2,1), opacity 480ms ease-out 120ms",
+              boxShadow: opening ? "34px 18px 60px rgba(0,0,0,0.35)" : undefined,
+            }}
           >
             <span aria-hidden className="pp-cover-spine absolute inset-y-0 left-0 w-4" />
             <span className="absolute inset-0 flex flex-col justify-between p-6">
