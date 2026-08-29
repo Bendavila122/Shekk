@@ -261,9 +261,9 @@ export function citySpread({
 
     ) : (
       <div className="grid h-full grid-cols-[0.85fr_1fr] items-center gap-3">
-        <div className="grid h-full place-items-center">
+        <div className="flex h-full flex-col items-center justify-center">
           <div
-            className="grid aspect-square w-[6.5rem] place-items-center rounded-full text-center"
+            className="grid aspect-square w-[6rem] place-items-center rounded-full text-center"
             style={{ border: `1.6px dashed ${city.ink}`, color: city.ink, opacity: 0.55 }}
           >
             <span className="px-3 text-[9px] font-semibold uppercase leading-snug tracking-widest">
@@ -272,7 +272,9 @@ export function citySpread({
               awaits
             </span>
           </div>
+          <p className="mt-1 line-clamp-2 text-center text-[9.5px] leading-snug text-ink/55">{city.blurb}</p>
         </div>
+
 
         <div className="flex h-full flex-col justify-center gap-1.5">
           <p className="text-[8.5px] font-bold uppercase tracking-[0.28em] text-ink/50">Not stamped yet</p>
