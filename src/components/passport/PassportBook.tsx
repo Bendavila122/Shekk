@@ -61,6 +61,9 @@ export function PassportBook({
   const box = useRef<HTMLDivElement | null>(null);
   const [fit, setFit] = useState({ w: 0, leaf: 0, cw: 0, ch: 0 });
   const [phase, setPhase] = useState<Phase>("closed");
+  /* 1 normally; compressed under reduced motion so the beats still read. */
+  const [speed, setSpeed] = useState(1);
+
   /* The hinge is tweened in JS so the printed face can be swapped for the
      endpaper at exactly 90deg — an ancestor 2D rotate defeats CSS backface
      culling here, and a keyframe gives no progress to read. */
@@ -125,15 +128,13 @@ export function PassportBook({
         }
       };
       const target = d === "next" ? (commit ? 1 : 0) : commit ? 0 : 1;
-      if (reducedMotion()) {
-        finish();
-        return;
-      }
       setAnimating(true);
       const start = performance.now();
       const fromP = pRef.current;
       const span = Math.abs(target - fromP);
-      const ms = Math.max(160, DURATION * span);
+      /* Reduced motion still turns the page — just briskly, with no flourish. */
+      const ms = Math.max(120, (reducedMotion() ? 180 : DURATION) * span);
+
       const step = (now: number) => {
         const t = Math.min(1, (now - start) / ms);
         const e = 1 - Math.pow(1 - t, 2.4);
@@ -247,18 +248,19 @@ export function PassportBook({
     ? {
         ["--pp-s1" as string]: pulled.toFixed(3),
         ["--pp-sm" as string]: midScale.toFixed(3),
-        animation: `pp-spin ${TURN}ms cubic-bezier(0.5,0.02,0.24,1) both`,
+        animation: `pp-spin ${TURN * speed}ms cubic-bezier(0.5,0.02,0.24,1) both`,
       }
     : {
         transform: `rotate(0deg) scale(${(phase === "pull" ? pulled : closedScale).toFixed(3)})`,
-        transition: phase === "pull" ? `transform ${PULL}ms cubic-bezier(0.33,0,0.2,1)` : undefined,
+        transition: phase === "pull" ? `transform ${PULL * speed}ms cubic-bezier(0.33,0,0.2,1)` : undefined,
+
       };
 
   const HINGE_END = 172;
-  const runHinge = useCallback(() => {
+  const runHinge = useCallback((ms: number) => {
     const start = performance.now();
     const step = (now: number) => {
-      const t = Math.min(1, (now - start) / HINGE);
+      const t = Math.min(1, (now - start) / ms);
       // ease-in-out: the cover lifts, sweeps, then lands
       const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
       setHingeA(HINGE_END * e);
@@ -266,6 +268,7 @@ export function PassportBook({
     };
     hingeRaf.current = requestAnimationFrame(step);
   }, []);
+
 
   useEffect(
     () => () => {
@@ -277,24 +280,28 @@ export function PassportBook({
   const startOpening = () => {
     if (phase !== "closed") return;
     haptic(14);
-    if (reducedMotion()) {
-      onOpen();
-      return;
-    }
+    /* Reduced motion keeps the same physical beats, just much quicker. */
+    const k = reducedMotion() ? 0.3 : 1;
+    setSpeed(k);
+    const pull = PULL * k;
+    const turn = TURN * k;
+    const settleMs = SETTLE * k;
+    const hinge = HINGE * k;
     setPhase("pull");
     timers.current.push(
-      window.setTimeout(() => setPhase("turn"), PULL),
+      window.setTimeout(() => setPhase("turn"), pull),
       window.setTimeout(() => {
         setPhase("settle");
         haptic(10);
-      }, PULL + TURN),
+      }, pull + turn),
       window.setTimeout(() => {
         setPhase("hinge");
-        runHinge();
-      }, PULL + TURN + SETTLE),
-      window.setTimeout(onOpen, PULL + TURN + SETTLE + HINGE - 60),
+        runHinge(hinge);
+      }, pull + turn + settleMs),
+      window.setTimeout(onOpen, pull + turn + settleMs + hinge - 60 * k),
     );
   };
+
 
   /* The interior waits underneath from the moment the booklet lies flat, so the
      hinge reveals it rather than cross-fading to it. */
@@ -385,7 +392,7 @@ export function PassportBook({
                 height: leafH,
                 perspective: "1500px",
                 transform: `translateX(-50%) translateY(${phase === "closed" || phase === "pull" ? leafH / 2 : 0}px)`,
-                transition: `transform ${TURN}ms cubic-bezier(0.5,0.02,0.24,1)`,
+                transition: `transform ${TURN * speed}ms cubic-bezier(0.5,0.02,0.24,1)`,
                 ...(phase === "hinge"
                   ? { opacity: Math.max(0, Math.min(1, (HINGE_END - hingeA) / 22)) }
                   : null),
@@ -496,13 +503,21 @@ export function PassportBook({
   );
 }
 
-/** One physical leaf: warm stock, grain, gutter shading, scrollable content. */
+/** One physical leaf: warm stock, grain, gutter shading. Never scrollable —
+ *  a real page cannot scroll, so every spread is laid out to fit. */
 function Leaf({ side, children }: { side: "top" | "bottom"; children: ReactNode }) {
   return (
     <div className="pp-paper pp-grain relative h-full w-full overflow-hidden">
-      <div className="relative z-10 h-full w-full overflow-y-auto overscroll-contain scrollbar-none px-4 py-3.5">
+      {/* extra room on the gutter side, so nothing sits under the spine shading */}
+      <div
+        className={`relative z-10 h-full w-full overflow-hidden px-4 ${
+          side === "top" ? "pb-6 pt-3.5" : "pb-3.5 pt-6"
+        }`}
+      >
+
         {children}
       </div>
+
       <div
         aria-hidden
         className={`pointer-events-none absolute inset-0 z-20 ${side === "top" ? "pp-shade-t" : "pp-shade-b"}`}
