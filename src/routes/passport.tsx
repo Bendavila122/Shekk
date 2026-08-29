@@ -147,6 +147,7 @@ function PassportApp() {
                 return;
               }
               setOpening(true);
+              playPageFlick(1);
               window.setTimeout(() => setOpen(true), 560);
             }}
             className="pp-cover tap-icon relative aspect-[3/4.3] w-full max-w-[19rem] overflow-hidden rounded-[1.4rem] text-left"
