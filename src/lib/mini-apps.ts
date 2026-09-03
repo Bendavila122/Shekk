@@ -348,6 +348,13 @@ export const MINI_APPS: MiniApp[] = [
  */
 export const MONEY_MINI_APP_IDS = new Set(["exchange"]);
 
+/**
+ * Mini apps that are archived: kept in MINI_APPS (routes and data stay live
+ * for anyone with a direct link) but pulled out of the app library, search
+ * and every other discovery surface.
+ */
+export const ARCHIVED_MINI_APP_IDS = new Set(["been-there"]);
+
 /** Pure: the library a member should see for a given money-flag state. */
 export function visibleMiniApps(moneyEnabled: boolean, apps: MiniApp[] = MINI_APPS): MiniApp[] {
   return moneyEnabled ? apps : apps.filter((a) => !MONEY_MINI_APP_IDS.has(a.id));
@@ -362,7 +369,7 @@ export function searchMiniApps(apps: MiniApp[], query: string): MiniApp[] {
 
 /** Every mini app a member can open right now, in launch order. */
 export function miniApps(): MiniApp[] {
-  return visibleMiniApps(MONEY_ENABLED);
+  return visibleMiniApps(MONEY_ENABLED).filter((a) => !ARCHIVED_MINI_APP_IDS.has(a.id));
 }
 
 

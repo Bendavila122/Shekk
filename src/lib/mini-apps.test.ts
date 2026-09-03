@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MINI_APPS, searchMiniApps, visibleMiniApps } from "./mini-apps";
+import { MINI_APPS, miniApps, searchMiniApps, visibleMiniApps } from "./mini-apps";
 import { filterMoneyRecents } from "./recents";
 
 describe("visibleMiniApps", () => {
@@ -12,6 +12,13 @@ describe("visibleMiniApps", () => {
   it("returns everything once money is enabled", () => {
     expect(visibleMiniApps(true)).toHaveLength(MINI_APPS.length);
     expect(visibleMiniApps(true).map((a) => a.id)).toContain("exchange");
+  });
+});
+
+describe("miniApps", () => {
+  it("hides archived mini apps but keeps them in MINI_APPS", () => {
+    expect(miniApps().map((a) => a.id)).not.toContain("been-there");
+    expect(MINI_APPS.map((a) => a.id)).toContain("been-there");
   });
 });
 

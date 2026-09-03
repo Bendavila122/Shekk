@@ -133,11 +133,20 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
 ];
 
 
+/**
+ * Services archived from the consumer app: kept in SERVICE_CATEGORIES (so the
+ * admin console and a direct /explore/service/:id link still work) but pulled
+ * out of the home directory, "recently used" and search.
+ */
+export const ARCHIVED_SERVICE_IDS = new Set(["beenthere"]);
+
 export const FEATURED_SERVICES: Service[] = SERVICE_CATEGORIES.flatMap((c) => c.services).filter(
-  (s) => s.featured,
+  (s) => s.featured && !ARCHIVED_SERVICE_IDS.has(s.id),
 );
 
-export const ALL_SERVICES: Service[] = SERVICE_CATEGORIES.flatMap((c) => c.services);
+export const ALL_SERVICES: Service[] = SERVICE_CATEGORIES.flatMap((c) => c.services).filter(
+  (s) => !ARCHIVED_SERVICE_IDS.has(s.id),
+);
 
 export function findService(id: string) {
   for (const category of SERVICE_CATEGORIES) {

@@ -1302,7 +1302,6 @@ export const GUIDES: Guide[] = [
             text: "Most nature reserves take card and many want an advance booking on chagim and Chol HaMoed. Booking through Shekk keeps the group on one ticket and applies student pricing where it exists.",
           },
           { kind: "link", label: "Open Maps", sub: "Trailheads, bus stops and drive times", to: "/explore/maps" },
-          { kind: "link", label: "Been There", sub: "Mark off where you've travelled", to: "/explore/map" },
         ],
       },
     ],
