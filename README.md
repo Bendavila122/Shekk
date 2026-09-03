@@ -164,25 +164,19 @@ mock payment/verification flows. Demo the complete journey end to end: sign up
 
 a re-verification reminder.
 
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://shekel-connect.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/6065ce33-b491-4791-8952-2276228ed967).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+**Live app**: https://shekk.app
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
+git clone https://github.com/Bendavila122/shekk.git
+cd shekk
 npm i
 npm run dev
 ```
+
+## Deployment
+
+Hosted on Vercel (project `shekk`), connected to this GitHub repo. Every push to `main` auto-deploys straight to production — there's no PR/preview gate, so test locally (`npm run build && npm run dev`) before pushing.

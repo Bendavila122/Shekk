@@ -22,7 +22,7 @@ export const CREAM = '#FDFCF8'
 export const MUTED = '#5B6B85'
 export const BORDER = '#E7E3D8'
 
-export const LOGO_URL = 'https://shekel-connect.lovable.app/logo.png'
+export const LOGO_URL = 'https://shekk.app/logo.png'
 
 export const main = {
   backgroundColor: '#ffffff',

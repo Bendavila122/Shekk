@@ -4,8 +4,8 @@
  * Shekk is a regulated money account, not a browsable site: nothing behind the
  * door is visible until someone has an account. This wraps the whole app and
  * sends anyone without a session to sign up, keeping only the handful of
- * routes that must work signed-out — auth, password reset, the terms and the
- * OAuth/consent plumbing — open.
+ * routes that must work signed-out — auth, password reset, and the terms —
+ * open.
  */
 
 import { useEffect } from "react";
@@ -22,9 +22,6 @@ const OPEN_PREFIXES = [
   "/welcome",
   "/admin",
   "/api",
-  "/mcp",
-  "/.well-known",
-  "/.lovable",
   "/sitemap.xml",
 ];
 
