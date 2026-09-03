@@ -25,6 +25,9 @@ import {
   type PassportState,
 } from "@/lib/passport";
 
+/** Ashdod and Ashkelon both slice to "As" — the only collision in the roster. */
+const CITY_ABBR: Partial<Record<string, string>> = { ashdod: "Ad", ashkelon: "Ak" };
+
 function Doodle({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
   return (
     <svg viewBox="0 0 60 24" className={className} style={style} fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
