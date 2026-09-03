@@ -153,12 +153,15 @@ function PassportApp() {
       <span className="grid place-items-center">
         <svg viewBox="0 0 100 100" className="w-20 text-ink-foreground/85" fill="none" aria-hidden>
           <circle cx="50" cy="50" r="34" stroke="currentColor" strokeWidth="1.6" strokeDasharray="4 3" />
+          {/* compass rose, not a globe — a symmetric cross + two lens curves reads as a basketball at this size */}
           <path
-            d="M50 20 v60 M20 50 h60 M28 30 q22 20 0 40 M72 30 q-22 20 0 40"
+            d="M50 18 L57 43 L82 50 L57 57 L50 82 L43 57 L18 50 L43 43 Z"
             stroke="currentColor"
             strokeWidth="1.2"
-            opacity="0.7"
+            strokeLinejoin="round"
+            opacity="0.75"
           />
+          <circle cx="50" cy="50" r="2.5" fill="currentColor" opacity="0.85" />
         </svg>
       </span>
       <span className="block">
