@@ -90,7 +90,7 @@ export const PASSPORT_CITIES: PassportCity[] = [
     wash: "oklch(0.94 0.035 40)",
     lat: 29.5577,
     lng: 34.9519,
-    map: { x: 55, y: 94 },
+    map: { x: 52, y: 94 },
   },
   {
     id: "tiberias",
