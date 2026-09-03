@@ -17,7 +17,6 @@ import { Route as CardRouteImport } from './routes/card'
 import { Route as ExchangeRouteImport } from './routes/exchange'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as IsraelRouteImport } from './routes/israel'
-import { Route as McpRouteImport } from './routes/mcp'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as MoneyRouteImport } from './routes/money'
@@ -35,8 +34,6 @@ import { Route as TopupRouteImport } from './routes/topup'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as WelcomeRouteImport } from './routes/welcome'
-import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminAccountsRouteImport } from './routes/admin/accounts'
 import { Route as AdminAppsRouteImport } from './routes/admin/apps'
@@ -90,8 +87,6 @@ import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
 import { Route as SocialIndexRouteImport } from './routes/social/index'
 import { Route as SocialConversationIdRouteImport } from './routes/social/$conversationId'
 import { Route as WhatsOnIndexRouteImport } from './routes/whats-on.index'
-import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
-import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as ExploreEventIdRouteImport } from './routes/explore/event.$id'
 import { Route as ExploreFitnessIndexRouteImport } from './routes/explore/fitness.index'
 import { Route as ExploreFitnessIdRouteImport } from './routes/explore/fitness.$id'
@@ -148,11 +143,6 @@ const HelpRoute = HelpRouteImport.update({
 const IsraelRoute = IsraelRouteImport.update({
   id: '/israel',
   path: '/israel',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MeRoute = MeRouteImport.update({
@@ -240,18 +230,6 @@ const WelcomeRoute = WelcomeRouteImport.update({
   path: '/welcome',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Char91DotmcpChar93ListToolsRoute =
-  Char91DotmcpChar93ListToolsRouteImport.update({
-    id: '/.mcp/list-tools',
-    path: '/.mcp/list-tools',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -517,17 +495,6 @@ const WhatsOnIndexRoute = WhatsOnIndexRouteImport.update({
   path: '/whats-on/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
-  id: '/.lovable/oauth/consent',
-  path: '/.lovable/oauth/consent',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Char91DotmcpChar93InvokeToolToolRoute =
-  Char91DotmcpChar93InvokeToolToolRouteImport.update({
-    id: '/.mcp/invoke-tool/$tool',
-    path: '/.mcp/invoke-tool/$tool',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const ExploreEventIdRoute = ExploreEventIdRouteImport.update({
   id: '/explore/event/$id',
   path: '/explore/event/$id',
@@ -626,7 +593,6 @@ export interface FileRoutesByFullPath {
   '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
   '/israel': typeof IsraelRoute
-  '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
   '/money': typeof MoneyRoute
@@ -644,8 +610,6 @@ export interface FileRoutesByFullPath {
   '/verify': typeof VerifyRoute
   '/wallet': typeof WalletRoute
   '/welcome': typeof WelcomeRoute
-  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/apps': typeof AdminAppsRoute
   '/admin/controls': typeof AdminControlsRoute
@@ -699,8 +663,6 @@ export interface FileRoutesByFullPath {
   '/siddur/': typeof SiddurIndexRoute
   '/social/': typeof SocialIndexRoute
   '/whats-on/': typeof WhatsOnIndexRoute
-  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
-  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
@@ -727,7 +689,6 @@ export interface FileRoutesByTo {
   '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
   '/israel': typeof IsraelRoute
-  '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
   '/money': typeof MoneyRoute
@@ -744,8 +705,6 @@ export interface FileRoutesByTo {
   '/verify': typeof VerifyRoute
   '/wallet': typeof WalletRoute
   '/welcome': typeof WelcomeRoute
-  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/apps': typeof AdminAppsRoute
   '/admin/controls': typeof AdminControlsRoute
@@ -799,8 +758,6 @@ export interface FileRoutesByTo {
   '/siddur': typeof SiddurIndexRoute
   '/social': typeof SocialIndexRoute
   '/whats-on': typeof WhatsOnIndexRoute
-  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
-  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
@@ -829,7 +786,6 @@ export interface FileRoutesById {
   '/exchange': typeof ExchangeRoute
   '/help': typeof HelpRoute
   '/israel': typeof IsraelRoute
-  '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/membership': typeof MembershipRoute
   '/money': typeof MoneyRoute
@@ -847,8 +803,6 @@ export interface FileRoutesById {
   '/verify': typeof VerifyRoute
   '/wallet': typeof WalletRoute
   '/welcome': typeof WelcomeRoute
-  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/apps': typeof AdminAppsRoute
   '/admin/controls': typeof AdminControlsRoute
@@ -902,8 +856,6 @@ export interface FileRoutesById {
   '/siddur/': typeof SiddurIndexRoute
   '/social/': typeof SocialIndexRoute
   '/whats-on/': typeof WhatsOnIndexRoute
-  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
-  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
@@ -933,7 +885,6 @@ export interface FileRouteTypes {
     | '/exchange'
     | '/help'
     | '/israel'
-    | '/mcp'
     | '/me'
     | '/membership'
     | '/money'
@@ -951,8 +902,6 @@ export interface FileRouteTypes {
     | '/verify'
     | '/wallet'
     | '/welcome'
-    | '/.mcp/list-tools'
-    | '/.well-known/oauth-protected-resource'
     | '/admin/accounts'
     | '/admin/apps'
     | '/admin/controls'
@@ -1006,8 +955,6 @@ export interface FileRouteTypes {
     | '/siddur/'
     | '/social/'
     | '/whats-on/'
-    | '/.lovable/oauth/consent'
-    | '/.mcp/invoke-tool/$tool'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
     | '/explore/idf/$unitId'
@@ -1034,7 +981,6 @@ export interface FileRouteTypes {
     | '/exchange'
     | '/help'
     | '/israel'
-    | '/mcp'
     | '/me'
     | '/membership'
     | '/money'
@@ -1051,8 +997,6 @@ export interface FileRouteTypes {
     | '/verify'
     | '/wallet'
     | '/welcome'
-    | '/.mcp/list-tools'
-    | '/.well-known/oauth-protected-resource'
     | '/admin/accounts'
     | '/admin/apps'
     | '/admin/controls'
@@ -1106,8 +1050,6 @@ export interface FileRouteTypes {
     | '/siddur'
     | '/social'
     | '/whats-on'
-    | '/.lovable/oauth/consent'
-    | '/.mcp/invoke-tool/$tool'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
     | '/explore/idf/$unitId'
@@ -1135,7 +1077,6 @@ export interface FileRouteTypes {
     | '/exchange'
     | '/help'
     | '/israel'
-    | '/mcp'
     | '/me'
     | '/membership'
     | '/money'
@@ -1153,8 +1094,6 @@ export interface FileRouteTypes {
     | '/verify'
     | '/wallet'
     | '/welcome'
-    | '/.mcp/list-tools'
-    | '/.well-known/oauth-protected-resource'
     | '/admin/accounts'
     | '/admin/apps'
     | '/admin/controls'
@@ -1208,8 +1147,6 @@ export interface FileRouteTypes {
     | '/siddur/'
     | '/social/'
     | '/whats-on/'
-    | '/.lovable/oauth/consent'
-    | '/.mcp/invoke-tool/$tool'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
     | '/explore/idf/$unitId'
@@ -1238,7 +1175,6 @@ export interface RootRouteChildren {
   ExchangeRoute: typeof ExchangeRoute
   HelpRoute: typeof HelpRoute
   IsraelRoute: typeof IsraelRoute
-  McpRoute: typeof McpRoute
   MeRoute: typeof MeRoute
   MembershipRoute: typeof MembershipRoute
   MoneyRoute: typeof MoneyRoute
@@ -1256,8 +1192,6 @@ export interface RootRouteChildren {
   VerifyRoute: typeof VerifyRoute
   WalletRoute: typeof WalletRoute
   WelcomeRoute: typeof WelcomeRoute
-  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
-  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   BeforeYouFlyEsimRoute: typeof BeforeYouFlyEsimRoute
   BeforeYouFlyInsuranceRoute: typeof BeforeYouFlyInsuranceRoute
   BenefitsIdRoute: typeof BenefitsIdRoute
@@ -1295,8 +1229,6 @@ export interface RootRouteChildren {
   SiddurIndexRoute: typeof SiddurIndexRoute
   SocialIndexRoute: typeof SocialIndexRoute
   WhatsOnIndexRoute: typeof WhatsOnIndexRoute
-  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
-  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ExploreEventIdRoute: typeof ExploreEventIdRoute
   ExploreFitnessIdRoute: typeof ExploreFitnessIdRoute
   ExploreIdfUnitIdRoute: typeof ExploreIdfUnitIdRoute
@@ -1372,13 +1304,6 @@ declare module '@tanstack/react-router' {
       path: '/israel'
       fullPath: '/israel'
       preLoaderRoute: typeof IsraelRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/me': {
@@ -1498,20 +1423,6 @@ declare module '@tanstack/react-router' {
       path: '/welcome'
       fullPath: '/welcome'
       preLoaderRoute: typeof WelcomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/.mcp/list-tools': {
-      id: '/.mcp/list-tools'
-      path: '/.mcp/list-tools'
-      fullPath: '/.mcp/list-tools'
-      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -1885,20 +1796,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WhatsOnIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.lovable/oauth/consent': {
-      id: '/.lovable/oauth/consent'
-      path: '/.lovable/oauth/consent'
-      fullPath: '/.lovable/oauth/consent'
-      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/.mcp/invoke-tool/$tool': {
-      id: '/.mcp/invoke-tool/$tool'
-      path: '/.mcp/invoke-tool/$tool'
-      fullPath: '/.mcp/invoke-tool/$tool'
-      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/explore/event/$id': {
       id: '/explore/event/$id'
       path: '/explore/event/$id'
@@ -2082,7 +1979,6 @@ const rootRouteChildren: RootRouteChildren = {
   ExchangeRoute: ExchangeRoute,
   HelpRoute: HelpRoute,
   IsraelRoute: IsraelRoute,
-  McpRoute: McpRoute,
   MeRoute: MeRoute,
   MembershipRoute: MembershipRoute,
   MoneyRoute: MoneyRoute,
@@ -2100,9 +1996,6 @@ const rootRouteChildren: RootRouteChildren = {
   VerifyRoute: VerifyRoute,
   WalletRoute: WalletRoute,
   WelcomeRoute: WelcomeRoute,
-  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
-  Char91DotwellKnownChar93OauthProtectedResourceRoute:
-    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   BeforeYouFlyEsimRoute: BeforeYouFlyEsimRoute,
   BeforeYouFlyInsuranceRoute: BeforeYouFlyInsuranceRoute,
   BenefitsIdRoute: BenefitsIdRoute,
@@ -2140,8 +2033,6 @@ const rootRouteChildren: RootRouteChildren = {
   SiddurIndexRoute: SiddurIndexRoute,
   SocialIndexRoute: SocialIndexRoute,
   WhatsOnIndexRoute: WhatsOnIndexRoute,
-  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
-  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ExploreEventIdRoute: ExploreEventIdRoute,
   ExploreFitnessIdRoute: ExploreFitnessIdRoute,
   ExploreIdfUnitIdRoute: ExploreIdfUnitIdRoute,
