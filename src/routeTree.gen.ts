@@ -87,6 +87,7 @@ import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
 import { Route as SocialIndexRouteImport } from './routes/social/index'
 import { Route as SocialConversationIdRouteImport } from './routes/social/$conversationId'
 import { Route as WhatsOnIndexRouteImport } from './routes/whats-on.index'
+import { Route as ApiAuthEmailWebhookRouteImport } from './routes/api/auth/email-webhook'
 import { Route as ExploreEventIdRouteImport } from './routes/explore/event.$id'
 import { Route as ExploreFitnessIndexRouteImport } from './routes/explore/fitness.index'
 import { Route as ExploreFitnessIdRouteImport } from './routes/explore/fitness.$id'
@@ -101,9 +102,6 @@ import { Route as ServicesEsimMineRouteImport } from './routes/services/esim.min
 import { Route as WhatsOnEventIdRouteImport } from './routes/whats-on.event.$id'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicWebhooksAirwallexRouteImport } from './routes/api/public/webhooks/airwallex'
-import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
-import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
-import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -495,6 +493,11 @@ const WhatsOnIndexRoute = WhatsOnIndexRouteImport.update({
   path: '/whats-on/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthEmailWebhookRoute = ApiAuthEmailWebhookRouteImport.update({
+  id: '/api/auth/email-webhook',
+  path: '/api/auth/email-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreEventIdRoute = ExploreEventIdRouteImport.update({
   id: '/explore/event/$id',
   path: '/explore/event/$id',
@@ -565,22 +568,6 @@ const ApiPublicWebhooksAirwallexRoute =
   ApiPublicWebhooksAirwallexRouteImport.update({
     id: '/api/public/webhooks/airwallex',
     path: '/api/public/webhooks/airwallex',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
-  id: '/lovable/email/auth/preview',
-  path: '/lovable/email/auth/preview',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
-  id: '/lovable/email/auth/webhook',
-  path: '/lovable/email/auth/webhook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LovableEmailTransactionalPreviewRoute =
-  LovableEmailTransactionalPreviewRouteImport.update({
-    id: '/lovable/email/transactional/preview',
-    path: '/lovable/email/transactional/preview',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -663,6 +650,7 @@ export interface FileRoutesByFullPath {
   '/siddur/': typeof SiddurIndexRoute
   '/social/': typeof SocialIndexRoute
   '/whats-on/': typeof WhatsOnIndexRoute
+  '/api/auth/email-webhook': typeof ApiAuthEmailWebhookRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
@@ -677,9 +665,6 @@ export interface FileRoutesByFullPath {
   '/services/esim/': typeof ServicesEsimIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
-  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
-  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
-  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -758,6 +743,7 @@ export interface FileRoutesByTo {
   '/siddur': typeof SiddurIndexRoute
   '/social': typeof SocialIndexRoute
   '/whats-on': typeof WhatsOnIndexRoute
+  '/api/auth/email-webhook': typeof ApiAuthEmailWebhookRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
@@ -772,9 +758,6 @@ export interface FileRoutesByTo {
   '/services/esim': typeof ServicesEsimIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
-  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
-  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
-  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -856,6 +839,7 @@ export interface FileRoutesById {
   '/siddur/': typeof SiddurIndexRoute
   '/social/': typeof SocialIndexRoute
   '/whats-on/': typeof WhatsOnIndexRoute
+  '/api/auth/email-webhook': typeof ApiAuthEmailWebhookRoute
   '/explore/event/$id': typeof ExploreEventIdRoute
   '/explore/fitness/$id': typeof ExploreFitnessIdRoute
   '/explore/idf/$unitId': typeof ExploreIdfUnitIdRoute
@@ -870,9 +854,6 @@ export interface FileRoutesById {
   '/services/esim/': typeof ServicesEsimIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/webhooks/airwallex': typeof ApiPublicWebhooksAirwallexRoute
-  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
-  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
-  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -955,6 +936,7 @@ export interface FileRouteTypes {
     | '/siddur/'
     | '/social/'
     | '/whats-on/'
+    | '/api/auth/email-webhook'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
     | '/explore/idf/$unitId'
@@ -969,9 +951,6 @@ export interface FileRouteTypes {
     | '/services/esim/'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
-    | '/lovable/email/auth/preview'
-    | '/lovable/email/auth/webhook'
-    | '/lovable/email/transactional/preview'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1050,6 +1029,7 @@ export interface FileRouteTypes {
     | '/siddur'
     | '/social'
     | '/whats-on'
+    | '/api/auth/email-webhook'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
     | '/explore/idf/$unitId'
@@ -1064,9 +1044,6 @@ export interface FileRouteTypes {
     | '/services/esim'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
-    | '/lovable/email/auth/preview'
-    | '/lovable/email/auth/webhook'
-    | '/lovable/email/transactional/preview'
   id:
     | '__root__'
     | '/'
@@ -1147,6 +1124,7 @@ export interface FileRouteTypes {
     | '/siddur/'
     | '/social/'
     | '/whats-on/'
+    | '/api/auth/email-webhook'
     | '/explore/event/$id'
     | '/explore/fitness/$id'
     | '/explore/idf/$unitId'
@@ -1161,9 +1139,6 @@ export interface FileRouteTypes {
     | '/services/esim/'
     | '/api/public/payments/webhook'
     | '/api/public/webhooks/airwallex'
-    | '/lovable/email/auth/preview'
-    | '/lovable/email/auth/webhook'
-    | '/lovable/email/transactional/preview'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1229,6 +1204,7 @@ export interface RootRouteChildren {
   SiddurIndexRoute: typeof SiddurIndexRoute
   SocialIndexRoute: typeof SocialIndexRoute
   WhatsOnIndexRoute: typeof WhatsOnIndexRoute
+  ApiAuthEmailWebhookRoute: typeof ApiAuthEmailWebhookRoute
   ExploreEventIdRoute: typeof ExploreEventIdRoute
   ExploreFitnessIdRoute: typeof ExploreFitnessIdRoute
   ExploreIdfUnitIdRoute: typeof ExploreIdfUnitIdRoute
@@ -1243,9 +1219,6 @@ export interface RootRouteChildren {
   ServicesEsimIndexRoute: typeof ServicesEsimIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicWebhooksAirwallexRoute: typeof ApiPublicWebhooksAirwallexRoute
-  LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
-  LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
-  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1796,6 +1769,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WhatsOnIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/email-webhook': {
+      id: '/api/auth/email-webhook'
+      path: '/api/auth/email-webhook'
+      fullPath: '/api/auth/email-webhook'
+      preLoaderRoute: typeof ApiAuthEmailWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore/event/$id': {
       id: '/explore/event/$id'
       path: '/explore/event/$id'
@@ -1892,27 +1872,6 @@ declare module '@tanstack/react-router' {
       path: '/api/public/webhooks/airwallex'
       fullPath: '/api/public/webhooks/airwallex'
       preLoaderRoute: typeof ApiPublicWebhooksAirwallexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/auth/preview': {
-      id: '/lovable/email/auth/preview'
-      path: '/lovable/email/auth/preview'
-      fullPath: '/lovable/email/auth/preview'
-      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/auth/webhook': {
-      id: '/lovable/email/auth/webhook'
-      path: '/lovable/email/auth/webhook'
-      fullPath: '/lovable/email/auth/webhook'
-      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/transactional/preview': {
-      id: '/lovable/email/transactional/preview'
-      path: '/lovable/email/transactional/preview'
-      fullPath: '/lovable/email/transactional/preview'
-      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -2033,6 +1992,7 @@ const rootRouteChildren: RootRouteChildren = {
   SiddurIndexRoute: SiddurIndexRoute,
   SocialIndexRoute: SocialIndexRoute,
   WhatsOnIndexRoute: WhatsOnIndexRoute,
+  ApiAuthEmailWebhookRoute: ApiAuthEmailWebhookRoute,
   ExploreEventIdRoute: ExploreEventIdRoute,
   ExploreFitnessIdRoute: ExploreFitnessIdRoute,
   ExploreIdfUnitIdRoute: ExploreIdfUnitIdRoute,
@@ -2047,9 +2007,6 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesEsimIndexRoute: ServicesEsimIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicWebhooksAirwallexRoute: ApiPublicWebhooksAirwallexRoute,
-  LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
-  LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
-  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
