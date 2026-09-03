@@ -26,7 +26,7 @@ import {
 } from "@/lib/passport";
 
 /** Ashdod and Ashkelon both slice to "As" — the only collision in the roster. */
-const CITY_ABBR: Partial<Record<string, string>> = { ashdod: "Ad", ashkelon: "Ak" };
+const CITY_ABBR: Partial<Record<string, string>> = { ashkelon: "Sk" };
 
 function Doodle({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
   return (
