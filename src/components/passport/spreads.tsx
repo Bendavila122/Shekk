@@ -105,7 +105,7 @@ export function frontMatterSpread({
                     backgroundColor: on ? `color-mix(in oklab, ${c.ink} 12%, transparent)` : "transparent",
                   }}
                 >
-                  {c.name.slice(0, 2)}
+                  {CITY_ABBR[c.id] ?? c.name.slice(0, 2)}
                 </span>
               );
             })}
