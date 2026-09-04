@@ -9,103 +9,208 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as WalletRouteImport } from './routes/wallet'
+import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as TopupRouteImport } from './routes/topup'
+import { Route as TicketsRouteImport } from './routes/tickets'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SetupRouteImport } from './routes/setup'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ReverifyRouteImport } from './routes/reverify'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ProgrammeRouteImport } from './routes/programme'
+import { Route as PassportRouteImport } from './routes/passport'
+import { Route as NewsRouteImport } from './routes/news'
+import { Route as MoneyRouteImport } from './routes/money'
+import { Route as MembershipRouteImport } from './routes/membership'
+import { Route as MeRouteImport } from './routes/me'
+import { Route as IsraelRouteImport } from './routes/israel'
+import { Route as HelpRouteImport } from './routes/help'
+import { Route as ExchangeRouteImport } from './routes/exchange'
+import { Route as CardRouteImport } from './routes/card'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as CardRouteImport } from './routes/card'
-import { Route as ExchangeRouteImport } from './routes/exchange'
-import { Route as HelpRouteImport } from './routes/help'
-import { Route as IsraelRouteImport } from './routes/israel'
-import { Route as MeRouteImport } from './routes/me'
-import { Route as MembershipRouteImport } from './routes/membership'
-import { Route as MoneyRouteImport } from './routes/money'
-import { Route as NewsRouteImport } from './routes/news'
-import { Route as PassportRouteImport } from './routes/passport'
-import { Route as ProgrammeRouteImport } from './routes/programme'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as ReverifyRouteImport } from './routes/reverify'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as SetupRouteImport } from './routes/setup'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as TicketsRouteImport } from './routes/tickets'
-import { Route as TopupRouteImport } from './routes/topup'
-import { Route as VerifyRouteImport } from './routes/verify'
-import { Route as WalletRouteImport } from './routes/wallet'
-import { Route as WelcomeRouteImport } from './routes/welcome'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as AdminAccountsRouteImport } from './routes/admin/accounts'
-import { Route as AdminAppsRouteImport } from './routes/admin/apps'
-import { Route as AdminControlsRouteImport } from './routes/admin/controls'
-import { Route as AdminEventsRouteImport } from './routes/admin/events'
-import { Route as AdminMembershipsRouteImport } from './routes/admin/memberships'
-import { Route as AdminMoneyRouteImport } from './routes/admin/money'
-import { Route as AdminPlacesRouteImport } from './routes/admin/places'
-import { Route as AdminProgrammesRouteImport } from './routes/admin/programmes'
-import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
-import { Route as AdminSimRouteImport } from './routes/admin/sim'
-import { Route as BeforeYouFlyIndexRouteImport } from './routes/before-you-fly/index'
-import { Route as BeforeYouFlyEsimRouteImport } from './routes/before-you-fly/esim'
-import { Route as BeforeYouFlyInsuranceRouteImport } from './routes/before-you-fly/insurance'
-import { Route as BenefitsIndexRouteImport } from './routes/benefits/index'
-import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
-import { Route as ExploreIndexRouteImport } from './routes/explore/index'
-import { Route as ExploreArmyRouteImport } from './routes/explore/army'
-import { Route as ExploreBudgetRouteImport } from './routes/explore/budget'
-import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
-import { Route as ExploreCostOfLivingRouteImport } from './routes/explore/cost-of-living'
-import { Route as ExploreDocumentsRouteImport } from './routes/explore/documents'
-import { Route as ExploreEventsRouteImport } from './routes/explore/events'
-import { Route as ExploreFoodRouteImport } from './routes/explore/food'
-import { Route as ExploreHealthRouteImport } from './routes/explore/health'
-import { Route as ExploreHousingRouteImport } from './routes/explore/housing'
-import { Route as ExploreLoneSoldierRouteImport } from './routes/explore/lone-soldier'
-import { Route as ExploreMapsRouteImport } from './routes/explore/maps'
-import { Route as ExploreMoneyPlannerRouteImport } from './routes/explore/money-planner'
-import { Route as ExploreReserveRouteImport } from './routes/explore/reserve'
-import { Route as ExploreRidesRouteImport } from './routes/explore/rides'
-import { Route as ExploreShopsRouteImport } from './routes/explore/shops'
-import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
-import { Route as ExploreUlpanRouteImport } from './routes/explore/ulpan'
-import { Route as ExploreUniRouteImport } from './routes/explore/uni'
-import { Route as ExploreUniFinderRouteImport } from './routes/explore/uni-finder'
-import { Route as ExploreVisaRouteImport } from './routes/explore/visa'
-import { Route as GuidesIndexRouteImport } from './routes/guides/index'
-import { Route as GuidesIdRouteImport } from './routes/guides/$id'
-import { Route as JoinCodeRouteImport } from './routes/join.$code'
-import { Route as ProgrammeIndexRouteImport } from './routes/programme.index'
-import { Route as ProgrammeInboxRouteImport } from './routes/programme.inbox'
-import { Route as ProgrammeInfoRouteImport } from './routes/programme.info'
-import { Route as ProgrammeScheduleRouteImport } from './routes/programme.schedule'
-import { Route as ProgrammeStaffRouteImport } from './routes/programme.staff'
-import { Route as ServicesIndexRouteImport } from './routes/services/index'
-import { Route as ServicesInsuranceRouteImport } from './routes/services/insurance'
-import { Route as ServicesOffersRouteImport } from './routes/services/offers'
-import { Route as SiddurIndexRouteImport } from './routes/siddur/index'
-import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
-import { Route as SocialIndexRouteImport } from './routes/social/index'
-import { Route as SocialConversationIdRouteImport } from './routes/social/$conversationId'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as WhatsOnIndexRouteImport } from './routes/whats-on.index'
-import { Route as ApiAuthEmailWebhookRouteImport } from './routes/api/auth/email-webhook'
-import { Route as ExploreEventIdRouteImport } from './routes/explore/event.$id'
-import { Route as ExploreFitnessIndexRouteImport } from './routes/explore/fitness.index'
-import { Route as ExploreFitnessIdRouteImport } from './routes/explore/fitness.$id'
-import { Route as ExploreIdfIndexRouteImport } from './routes/explore/idf.index'
-import { Route as ExploreIdfUnitIdRouteImport } from './routes/explore/idf.$unitId'
-import { Route as ExploreMapIndexRouteImport } from './routes/explore/map.index'
-import { Route as ExploreMapIdRouteImport } from './routes/explore/map.$id'
-import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
+import { Route as SocialIndexRouteImport } from './routes/social/index'
+import { Route as SiddurIndexRouteImport } from './routes/siddur/index'
+import { Route as ServicesIndexRouteImport } from './routes/services/index'
+import { Route as ProgrammeIndexRouteImport } from './routes/programme.index'
+import { Route as GuidesIndexRouteImport } from './routes/guides/index'
+import { Route as ExploreIndexRouteImport } from './routes/explore/index'
+import { Route as BenefitsIndexRouteImport } from './routes/benefits/index'
+import { Route as BeforeYouFlyIndexRouteImport } from './routes/before-you-fly/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as SocialConversationIdRouteImport } from './routes/social/$conversationId'
+import { Route as SiddurIdRouteImport } from './routes/siddur/$id'
+import { Route as ServicesOffersRouteImport } from './routes/services/offers'
+import { Route as ServicesInsuranceRouteImport } from './routes/services/insurance'
+import { Route as ProgrammeStaffRouteImport } from './routes/programme.staff'
+import { Route as ProgrammeScheduleRouteImport } from './routes/programme.schedule'
+import { Route as ProgrammeInfoRouteImport } from './routes/programme.info'
+import { Route as ProgrammeInboxRouteImport } from './routes/programme.inbox'
+import { Route as JoinCodeRouteImport } from './routes/join.$code'
+import { Route as GuidesIdRouteImport } from './routes/guides/$id'
+import { Route as ExploreVisaRouteImport } from './routes/explore/visa'
+import { Route as ExploreUniFinderRouteImport } from './routes/explore/uni-finder'
+import { Route as ExploreUniRouteImport } from './routes/explore/uni'
+import { Route as ExploreUlpanRouteImport } from './routes/explore/ulpan'
+import { Route as ExploreTransitRouteImport } from './routes/explore/transit'
+import { Route as ExploreShopsRouteImport } from './routes/explore/shops'
+import { Route as ExploreRidesRouteImport } from './routes/explore/rides'
+import { Route as ExploreReserveRouteImport } from './routes/explore/reserve'
+import { Route as ExploreMoneyPlannerRouteImport } from './routes/explore/money-planner'
+import { Route as ExploreMapsRouteImport } from './routes/explore/maps'
+import { Route as ExploreLoneSoldierRouteImport } from './routes/explore/lone-soldier'
+import { Route as ExploreHousingRouteImport } from './routes/explore/housing'
+import { Route as ExploreHealthRouteImport } from './routes/explore/health'
+import { Route as ExploreFoodRouteImport } from './routes/explore/food'
+import { Route as ExploreEventsRouteImport } from './routes/explore/events'
+import { Route as ExploreDocumentsRouteImport } from './routes/explore/documents'
+import { Route as ExploreCostOfLivingRouteImport } from './routes/explore/cost-of-living'
+import { Route as ExploreCommunityRouteImport } from './routes/explore/community'
+import { Route as ExploreBudgetRouteImport } from './routes/explore/budget'
+import { Route as ExploreArmyRouteImport } from './routes/explore/army'
+import { Route as BenefitsIdRouteImport } from './routes/benefits/$id'
+import { Route as BeforeYouFlyInsuranceRouteImport } from './routes/before-you-fly/insurance'
+import { Route as BeforeYouFlyEsimRouteImport } from './routes/before-you-fly/esim'
+import { Route as AdminSimRouteImport } from './routes/admin/sim'
+import { Route as AdminPromotionsRouteImport } from './routes/admin/promotions'
+import { Route as AdminProgrammesRouteImport } from './routes/admin/programmes'
+import { Route as AdminPlacesRouteImport } from './routes/admin/places'
+import { Route as AdminMoneyRouteImport } from './routes/admin/money'
+import { Route as AdminMembershipsRouteImport } from './routes/admin/memberships'
+import { Route as AdminEventsRouteImport } from './routes/admin/events'
+import { Route as AdminControlsRouteImport } from './routes/admin/controls'
+import { Route as AdminAppsRouteImport } from './routes/admin/apps'
+import { Route as AdminAccountsRouteImport } from './routes/admin/accounts'
 import { Route as ServicesEsimIndexRouteImport } from './routes/services/esim.index'
-import { Route as ServicesEsimPlanIdRouteImport } from './routes/services/esim.$planId'
-import { Route as ServicesEsimMineRouteImport } from './routes/services/esim.mine'
+import { Route as ExploreMapIndexRouteImport } from './routes/explore/map.index'
+import { Route as ExploreIdfIndexRouteImport } from './routes/explore/idf.index'
+import { Route as ExploreFitnessIndexRouteImport } from './routes/explore/fitness.index'
 import { Route as WhatsOnEventIdRouteImport } from './routes/whats-on.event.$id'
-import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
+import { Route as ServicesEsimMineRouteImport } from './routes/services/esim.mine'
+import { Route as ServicesEsimPlanIdRouteImport } from './routes/services/esim.$planId'
+import { Route as ExploreServiceIdRouteImport } from './routes/explore/service.$id'
+import { Route as ExploreMapIdRouteImport } from './routes/explore/map.$id'
+import { Route as ExploreIdfUnitIdRouteImport } from './routes/explore/idf.$unitId'
+import { Route as ExploreFitnessIdRouteImport } from './routes/explore/fitness.$id'
+import { Route as ExploreEventIdRouteImport } from './routes/explore/event.$id'
+import { Route as ApiAuthEmailWebhookRouteImport } from './routes/api/auth/email-webhook'
 import { Route as ApiPublicWebhooksAirwallexRouteImport } from './routes/api/public/webhooks/airwallex'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WalletRoute = WalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TopupRoute = TopupRouteImport.update({
+  id: '/topup',
+  path: '/topup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TicketsRoute = TicketsRouteImport.update({
+  id: '/tickets',
+  path: '/tickets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SetupRoute = SetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReverifyRoute = ReverifyRouteImport.update({
+  id: '/reverify',
+  path: '/reverify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgrammeRoute = ProgrammeRouteImport.update({
+  id: '/programme',
+  path: '/programme',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PassportRoute = PassportRouteImport.update({
+  id: '/passport',
+  path: '/passport',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MoneyRoute = MoneyRouteImport.update({
+  id: '/money',
+  path: '/money',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MembershipRoute = MembershipRouteImport.update({
+  id: '/membership',
+  path: '/membership',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeRoute = MeRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IsraelRoute = IsraelRouteImport.update({
+  id: '/israel',
+  path: '/israel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExchangeRoute = ExchangeRouteImport.update({
+  id: '/exchange',
+  path: '/exchange',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CardRoute = CardRouteImport.update({
+  id: '/card',
+  path: '/card',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ActivityRoute = ActivityRouteImport.update({
@@ -118,374 +223,9 @@ const AdminRouteRoute = AdminRouteRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CardRoute = CardRouteImport.update({
-  id: '/card',
-  path: '/card',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExchangeRoute = ExchangeRouteImport.update({
-  id: '/exchange',
-  path: '/exchange',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HelpRoute = HelpRouteImport.update({
-  id: '/help',
-  path: '/help',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IsraelRoute = IsraelRouteImport.update({
-  id: '/israel',
-  path: '/israel',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MeRoute = MeRouteImport.update({
-  id: '/me',
-  path: '/me',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MembershipRoute = MembershipRouteImport.update({
-  id: '/membership',
-  path: '/membership',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MoneyRoute = MoneyRouteImport.update({
-  id: '/money',
-  path: '/money',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NewsRoute = NewsRouteImport.update({
-  id: '/news',
-  path: '/news',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PassportRoute = PassportRouteImport.update({
-  id: '/passport',
-  path: '/passport',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProgrammeRoute = ProgrammeRouteImport.update({
-  id: '/programme',
-  path: '/programme',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReverifyRoute = ReverifyRouteImport.update({
-  id: '/reverify',
-  path: '/reverify',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SetupRoute = SetupRouteImport.update({
-  id: '/setup',
-  path: '/setup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TicketsRoute = TicketsRouteImport.update({
-  id: '/tickets',
-  path: '/tickets',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TopupRoute = TopupRouteImport.update({
-  id: '/topup',
-  path: '/topup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VerifyRoute = VerifyRouteImport.update({
-  id: '/verify',
-  path: '/verify',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WalletRoute = WalletRouteImport.update({
-  id: '/wallet',
-  path: '/wallet',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WelcomeRoute = WelcomeRouteImport.update({
-  id: '/welcome',
-  path: '/welcome',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminAccountsRoute = AdminAccountsRouteImport.update({
-  id: '/accounts',
-  path: '/accounts',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminAppsRoute = AdminAppsRouteImport.update({
-  id: '/apps',
-  path: '/apps',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminControlsRoute = AdminControlsRouteImport.update({
-  id: '/controls',
-  path: '/controls',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminEventsRoute = AdminEventsRouteImport.update({
-  id: '/events',
-  path: '/events',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminMembershipsRoute = AdminMembershipsRouteImport.update({
-  id: '/memberships',
-  path: '/memberships',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminMoneyRoute = AdminMoneyRouteImport.update({
-  id: '/money',
-  path: '/money',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminPlacesRoute = AdminPlacesRouteImport.update({
-  id: '/places',
-  path: '/places',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminProgrammesRoute = AdminProgrammesRouteImport.update({
-  id: '/programmes',
-  path: '/programmes',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminPromotionsRoute = AdminPromotionsRouteImport.update({
-  id: '/promotions',
-  path: '/promotions',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const AdminSimRoute = AdminSimRouteImport.update({
-  id: '/sim',
-  path: '/sim',
-  getParentRoute: () => AdminRouteRoute,
-} as any)
-const BeforeYouFlyIndexRoute = BeforeYouFlyIndexRouteImport.update({
-  id: '/before-you-fly/',
-  path: '/before-you-fly/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BeforeYouFlyEsimRoute = BeforeYouFlyEsimRouteImport.update({
-  id: '/before-you-fly/esim',
-  path: '/before-you-fly/esim',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BeforeYouFlyInsuranceRoute = BeforeYouFlyInsuranceRouteImport.update({
-  id: '/before-you-fly/insurance',
-  path: '/before-you-fly/insurance',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BenefitsIndexRoute = BenefitsIndexRouteImport.update({
-  id: '/benefits/',
-  path: '/benefits/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BenefitsIdRoute = BenefitsIdRouteImport.update({
-  id: '/benefits/$id',
-  path: '/benefits/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreIndexRoute = ExploreIndexRouteImport.update({
-  id: '/explore/',
-  path: '/explore/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreArmyRoute = ExploreArmyRouteImport.update({
-  id: '/explore/army',
-  path: '/explore/army',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreBudgetRoute = ExploreBudgetRouteImport.update({
-  id: '/explore/budget',
-  path: '/explore/budget',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreCommunityRoute = ExploreCommunityRouteImport.update({
-  id: '/explore/community',
-  path: '/explore/community',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreCostOfLivingRoute = ExploreCostOfLivingRouteImport.update({
-  id: '/explore/cost-of-living',
-  path: '/explore/cost-of-living',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreDocumentsRoute = ExploreDocumentsRouteImport.update({
-  id: '/explore/documents',
-  path: '/explore/documents',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreEventsRoute = ExploreEventsRouteImport.update({
-  id: '/explore/events',
-  path: '/explore/events',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreFoodRoute = ExploreFoodRouteImport.update({
-  id: '/explore/food',
-  path: '/explore/food',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreHealthRoute = ExploreHealthRouteImport.update({
-  id: '/explore/health',
-  path: '/explore/health',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreHousingRoute = ExploreHousingRouteImport.update({
-  id: '/explore/housing',
-  path: '/explore/housing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreLoneSoldierRoute = ExploreLoneSoldierRouteImport.update({
-  id: '/explore/lone-soldier',
-  path: '/explore/lone-soldier',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreMapsRoute = ExploreMapsRouteImport.update({
-  id: '/explore/maps',
-  path: '/explore/maps',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreMoneyPlannerRoute = ExploreMoneyPlannerRouteImport.update({
-  id: '/explore/money-planner',
-  path: '/explore/money-planner',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreReserveRoute = ExploreReserveRouteImport.update({
-  id: '/explore/reserve',
-  path: '/explore/reserve',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreRidesRoute = ExploreRidesRouteImport.update({
-  id: '/explore/rides',
-  path: '/explore/rides',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreShopsRoute = ExploreShopsRouteImport.update({
-  id: '/explore/shops',
-  path: '/explore/shops',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreTransitRoute = ExploreTransitRouteImport.update({
-  id: '/explore/transit',
-  path: '/explore/transit',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreUlpanRoute = ExploreUlpanRouteImport.update({
-  id: '/explore/ulpan',
-  path: '/explore/ulpan',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreUniRoute = ExploreUniRouteImport.update({
-  id: '/explore/uni',
-  path: '/explore/uni',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreUniFinderRoute = ExploreUniFinderRouteImport.update({
-  id: '/explore/uni-finder',
-  path: '/explore/uni-finder',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExploreVisaRoute = ExploreVisaRouteImport.update({
-  id: '/explore/visa',
-  path: '/explore/visa',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GuidesIndexRoute = GuidesIndexRouteImport.update({
-  id: '/guides/',
-  path: '/guides/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GuidesIdRoute = GuidesIdRouteImport.update({
-  id: '/guides/$id',
-  path: '/guides/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JoinCodeRoute = JoinCodeRouteImport.update({
-  id: '/join/$code',
-  path: '/join/$code',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProgrammeIndexRoute = ProgrammeIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ProgrammeRoute,
-} as any)
-const ProgrammeInboxRoute = ProgrammeInboxRouteImport.update({
-  id: '/inbox',
-  path: '/inbox',
-  getParentRoute: () => ProgrammeRoute,
-} as any)
-const ProgrammeInfoRoute = ProgrammeInfoRouteImport.update({
-  id: '/info',
-  path: '/info',
-  getParentRoute: () => ProgrammeRoute,
-} as any)
-const ProgrammeScheduleRoute = ProgrammeScheduleRouteImport.update({
-  id: '/schedule',
-  path: '/schedule',
-  getParentRoute: () => ProgrammeRoute,
-} as any)
-const ProgrammeStaffRoute = ProgrammeStaffRouteImport.update({
-  id: '/staff',
-  path: '/staff',
-  getParentRoute: () => ProgrammeRoute,
-} as any)
-const ServicesIndexRoute = ServicesIndexRouteImport.update({
-  id: '/services/',
-  path: '/services/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ServicesInsuranceRoute = ServicesInsuranceRouteImport.update({
-  id: '/services/insurance',
-  path: '/services/insurance',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ServicesOffersRoute = ServicesOffersRouteImport.update({
-  id: '/services/offers',
-  path: '/services/offers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SiddurIndexRoute = SiddurIndexRouteImport.update({
-  id: '/siddur/',
-  path: '/siddur/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SiddurIdRoute = SiddurIdRouteImport.update({
-  id: '/siddur/$id',
-  path: '/siddur/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SocialIndexRoute = SocialIndexRouteImport.update({
-  id: '/social/',
-  path: '/social/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SocialConversationIdRoute = SocialConversationIdRouteImport.update({
-  id: '/social/$conversationId',
-  path: '/social/$conversationId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WhatsOnIndexRoute = WhatsOnIndexRouteImport.update({
@@ -493,34 +233,269 @@ const WhatsOnIndexRoute = WhatsOnIndexRouteImport.update({
   path: '/whats-on/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiAuthEmailWebhookRoute = ApiAuthEmailWebhookRouteImport.update({
-  id: '/api/auth/email-webhook',
-  path: '/api/auth/email-webhook',
+const SocialIndexRoute = SocialIndexRouteImport.update({
+  id: '/social/',
+  path: '/social/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExploreEventIdRoute = ExploreEventIdRouteImport.update({
-  id: '/explore/event/$id',
-  path: '/explore/event/$id',
+const SiddurIndexRoute = SiddurIndexRouteImport.update({
+  id: '/siddur/',
+  path: '/siddur/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExploreFitnessIndexRoute = ExploreFitnessIndexRouteImport.update({
-  id: '/explore/fitness/',
-  path: '/explore/fitness/',
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExploreFitnessIdRoute = ExploreFitnessIdRouteImport.update({
-  id: '/explore/fitness/$id',
-  path: '/explore/fitness/$id',
+const ProgrammeIndexRoute = ProgrammeIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProgrammeRoute,
+} as any)
+const GuidesIndexRoute = GuidesIndexRouteImport.update({
+  id: '/guides/',
+  path: '/guides/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExploreIdfIndexRoute = ExploreIdfIndexRouteImport.update({
-  id: '/explore/idf/',
-  path: '/explore/idf/',
+const ExploreIndexRoute = ExploreIndexRouteImport.update({
+  id: '/explore/',
+  path: '/explore/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExploreIdfUnitIdRoute = ExploreIdfUnitIdRouteImport.update({
-  id: '/explore/idf/$unitId',
-  path: '/explore/idf/$unitId',
+const BenefitsIndexRoute = BenefitsIndexRouteImport.update({
+  id: '/benefits/',
+  path: '/benefits/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BeforeYouFlyIndexRoute = BeforeYouFlyIndexRouteImport.update({
+  id: '/before-you-fly/',
+  path: '/before-you-fly/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const SocialConversationIdRoute = SocialConversationIdRouteImport.update({
+  id: '/social/$conversationId',
+  path: '/social/$conversationId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SiddurIdRoute = SiddurIdRouteImport.update({
+  id: '/siddur/$id',
+  path: '/siddur/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesOffersRoute = ServicesOffersRouteImport.update({
+  id: '/services/offers',
+  path: '/services/offers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesInsuranceRoute = ServicesInsuranceRouteImport.update({
+  id: '/services/insurance',
+  path: '/services/insurance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgrammeStaffRoute = ProgrammeStaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => ProgrammeRoute,
+} as any)
+const ProgrammeScheduleRoute = ProgrammeScheduleRouteImport.update({
+  id: '/schedule',
+  path: '/schedule',
+  getParentRoute: () => ProgrammeRoute,
+} as any)
+const ProgrammeInfoRoute = ProgrammeInfoRouteImport.update({
+  id: '/info',
+  path: '/info',
+  getParentRoute: () => ProgrammeRoute,
+} as any)
+const ProgrammeInboxRoute = ProgrammeInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => ProgrammeRoute,
+} as any)
+const JoinCodeRoute = JoinCodeRouteImport.update({
+  id: '/join/$code',
+  path: '/join/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesIdRoute = GuidesIdRouteImport.update({
+  id: '/guides/$id',
+  path: '/guides/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreVisaRoute = ExploreVisaRouteImport.update({
+  id: '/explore/visa',
+  path: '/explore/visa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreUniFinderRoute = ExploreUniFinderRouteImport.update({
+  id: '/explore/uni-finder',
+  path: '/explore/uni-finder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreUniRoute = ExploreUniRouteImport.update({
+  id: '/explore/uni',
+  path: '/explore/uni',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreUlpanRoute = ExploreUlpanRouteImport.update({
+  id: '/explore/ulpan',
+  path: '/explore/ulpan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreTransitRoute = ExploreTransitRouteImport.update({
+  id: '/explore/transit',
+  path: '/explore/transit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreShopsRoute = ExploreShopsRouteImport.update({
+  id: '/explore/shops',
+  path: '/explore/shops',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreRidesRoute = ExploreRidesRouteImport.update({
+  id: '/explore/rides',
+  path: '/explore/rides',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreReserveRoute = ExploreReserveRouteImport.update({
+  id: '/explore/reserve',
+  path: '/explore/reserve',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreMoneyPlannerRoute = ExploreMoneyPlannerRouteImport.update({
+  id: '/explore/money-planner',
+  path: '/explore/money-planner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreMapsRoute = ExploreMapsRouteImport.update({
+  id: '/explore/maps',
+  path: '/explore/maps',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreLoneSoldierRoute = ExploreLoneSoldierRouteImport.update({
+  id: '/explore/lone-soldier',
+  path: '/explore/lone-soldier',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreHousingRoute = ExploreHousingRouteImport.update({
+  id: '/explore/housing',
+  path: '/explore/housing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreHealthRoute = ExploreHealthRouteImport.update({
+  id: '/explore/health',
+  path: '/explore/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreFoodRoute = ExploreFoodRouteImport.update({
+  id: '/explore/food',
+  path: '/explore/food',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreEventsRoute = ExploreEventsRouteImport.update({
+  id: '/explore/events',
+  path: '/explore/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreDocumentsRoute = ExploreDocumentsRouteImport.update({
+  id: '/explore/documents',
+  path: '/explore/documents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreCostOfLivingRoute = ExploreCostOfLivingRouteImport.update({
+  id: '/explore/cost-of-living',
+  path: '/explore/cost-of-living',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreCommunityRoute = ExploreCommunityRouteImport.update({
+  id: '/explore/community',
+  path: '/explore/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreBudgetRoute = ExploreBudgetRouteImport.update({
+  id: '/explore/budget',
+  path: '/explore/budget',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreArmyRoute = ExploreArmyRouteImport.update({
+  id: '/explore/army',
+  path: '/explore/army',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BenefitsIdRoute = BenefitsIdRouteImport.update({
+  id: '/benefits/$id',
+  path: '/benefits/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BeforeYouFlyInsuranceRoute = BeforeYouFlyInsuranceRouteImport.update({
+  id: '/before-you-fly/insurance',
+  path: '/before-you-fly/insurance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BeforeYouFlyEsimRoute = BeforeYouFlyEsimRouteImport.update({
+  id: '/before-you-fly/esim',
+  path: '/before-you-fly/esim',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSimRoute = AdminSimRouteImport.update({
+  id: '/sim',
+  path: '/sim',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminPromotionsRoute = AdminPromotionsRouteImport.update({
+  id: '/promotions',
+  path: '/promotions',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminProgrammesRoute = AdminProgrammesRouteImport.update({
+  id: '/programmes',
+  path: '/programmes',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminPlacesRoute = AdminPlacesRouteImport.update({
+  id: '/places',
+  path: '/places',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminMoneyRoute = AdminMoneyRouteImport.update({
+  id: '/money',
+  path: '/money',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminMembershipsRoute = AdminMembershipsRouteImport.update({
+  id: '/memberships',
+  path: '/memberships',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminEventsRoute = AdminEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminControlsRoute = AdminControlsRouteImport.update({
+  id: '/controls',
+  path: '/controls',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminAppsRoute = AdminAppsRouteImport.update({
+  id: '/apps',
+  path: '/apps',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminAccountsRoute = AdminAccountsRouteImport.update({
+  id: '/accounts',
+  path: '/accounts',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const ServicesEsimIndexRoute = ServicesEsimIndexRouteImport.update({
+  id: '/services/esim/',
+  path: '/services/esim/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreMapIndexRoute = ExploreMapIndexRouteImport.update({
@@ -528,29 +503,14 @@ const ExploreMapIndexRoute = ExploreMapIndexRouteImport.update({
   path: '/explore/map/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExploreMapIdRoute = ExploreMapIdRouteImport.update({
-  id: '/explore/map/$id',
-  path: '/explore/map/$id',
+const ExploreIdfIndexRoute = ExploreIdfIndexRouteImport.update({
+  id: '/explore/idf/',
+  path: '/explore/idf/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
-  id: '/explore/service/$id',
-  path: '/explore/service/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ServicesEsimIndexRoute = ServicesEsimIndexRouteImport.update({
-  id: '/services/esim/',
-  path: '/services/esim/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ServicesEsimPlanIdRoute = ServicesEsimPlanIdRouteImport.update({
-  id: '/services/esim/$planId',
-  path: '/services/esim/$planId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ServicesEsimMineRoute = ServicesEsimMineRouteImport.update({
-  id: '/services/esim/mine',
-  path: '/services/esim/mine',
+const ExploreFitnessIndexRoute = ExploreFitnessIndexRouteImport.update({
+  id: '/explore/fitness/',
+  path: '/explore/fitness/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WhatsOnEventIdRoute = WhatsOnEventIdRouteImport.update({
@@ -558,16 +518,56 @@ const WhatsOnEventIdRoute = WhatsOnEventIdRouteImport.update({
   path: '/whats-on/event/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicPaymentsWebhookRoute =
-  ApiPublicPaymentsWebhookRouteImport.update({
-    id: '/api/public/payments/webhook',
-    path: '/api/public/payments/webhook',
-    getParentRoute: () => rootRouteImport,
-  } as any)
+const ServicesEsimMineRoute = ServicesEsimMineRouteImport.update({
+  id: '/services/esim/mine',
+  path: '/services/esim/mine',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesEsimPlanIdRoute = ServicesEsimPlanIdRouteImport.update({
+  id: '/services/esim/$planId',
+  path: '/services/esim/$planId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreServiceIdRoute = ExploreServiceIdRouteImport.update({
+  id: '/explore/service/$id',
+  path: '/explore/service/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreMapIdRoute = ExploreMapIdRouteImport.update({
+  id: '/explore/map/$id',
+  path: '/explore/map/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreIdfUnitIdRoute = ExploreIdfUnitIdRouteImport.update({
+  id: '/explore/idf/$unitId',
+  path: '/explore/idf/$unitId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreFitnessIdRoute = ExploreFitnessIdRouteImport.update({
+  id: '/explore/fitness/$id',
+  path: '/explore/fitness/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreEventIdRoute = ExploreEventIdRouteImport.update({
+  id: '/explore/event/$id',
+  path: '/explore/event/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthEmailWebhookRoute = ApiAuthEmailWebhookRouteImport.update({
+  id: '/api/auth/email-webhook',
+  path: '/api/auth/email-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicWebhooksAirwallexRoute =
   ApiPublicWebhooksAirwallexRouteImport.update({
     id: '/api/public/webhooks/airwallex',
     path: '/api/public/webhooks/airwallex',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -1223,11 +1223,158 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wallet': {
+      id: '/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/topup': {
+      id: '/topup'
+      path: '/topup'
+      fullPath: '/topup'
+      preLoaderRoute: typeof TopupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tickets': {
+      id: '/tickets'
+      path: '/tickets'
+      fullPath: '/tickets'
+      preLoaderRoute: typeof TicketsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/setup': {
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reverify': {
+      id: '/reverify'
+      path: '/reverify'
+      fullPath: '/reverify'
+      preLoaderRoute: typeof ReverifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/programme': {
+      id: '/programme'
+      path: '/programme'
+      fullPath: '/programme'
+      preLoaderRoute: typeof ProgrammeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/passport': {
+      id: '/passport'
+      path: '/passport'
+      fullPath: '/passport'
+      preLoaderRoute: typeof PassportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/money': {
+      id: '/money'
+      path: '/money'
+      fullPath: '/money'
+      preLoaderRoute: typeof MoneyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/membership': {
+      id: '/membership'
+      path: '/membership'
+      fullPath: '/membership'
+      preLoaderRoute: typeof MembershipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/me': {
+      id: '/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/israel': {
+      id: '/israel'
+      path: '/israel'
+      fullPath: '/israel'
+      preLoaderRoute: typeof IsraelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exchange': {
+      id: '/exchange'
+      path: '/exchange'
+      fullPath: '/exchange'
+      preLoaderRoute: typeof ExchangeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/card': {
+      id: '/card'
+      path: '/card'
+      fullPath: '/card'
+      preLoaderRoute: typeof CardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/activity': {
@@ -1244,522 +1391,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/card': {
-      id: '/card'
-      path: '/card'
-      fullPath: '/card'
-      preLoaderRoute: typeof CardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/exchange': {
-      id: '/exchange'
-      path: '/exchange'
-      fullPath: '/exchange'
-      preLoaderRoute: typeof ExchangeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/help': {
-      id: '/help'
-      path: '/help'
-      fullPath: '/help'
-      preLoaderRoute: typeof HelpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/israel': {
-      id: '/israel'
-      path: '/israel'
-      fullPath: '/israel'
-      preLoaderRoute: typeof IsraelRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/me': {
-      id: '/me'
-      path: '/me'
-      fullPath: '/me'
-      preLoaderRoute: typeof MeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/membership': {
-      id: '/membership'
-      path: '/membership'
-      fullPath: '/membership'
-      preLoaderRoute: typeof MembershipRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/money': {
-      id: '/money'
-      path: '/money'
-      fullPath: '/money'
-      preLoaderRoute: typeof MoneyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/news': {
-      id: '/news'
-      path: '/news'
-      fullPath: '/news'
-      preLoaderRoute: typeof NewsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/passport': {
-      id: '/passport'
-      path: '/passport'
-      fullPath: '/passport'
-      preLoaderRoute: typeof PassportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/programme': {
-      id: '/programme'
-      path: '/programme'
-      fullPath: '/programme'
-      preLoaderRoute: typeof ProgrammeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reverify': {
-      id: '/reverify'
-      path: '/reverify'
-      fullPath: '/reverify'
-      preLoaderRoute: typeof ReverifyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/setup': {
-      id: '/setup'
-      path: '/setup'
-      fullPath: '/setup'
-      preLoaderRoute: typeof SetupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tickets': {
-      id: '/tickets'
-      path: '/tickets'
-      fullPath: '/tickets'
-      preLoaderRoute: typeof TicketsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/topup': {
-      id: '/topup'
-      path: '/topup'
-      fullPath: '/topup'
-      preLoaderRoute: typeof TopupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/verify': {
-      id: '/verify'
-      path: '/verify'
-      fullPath: '/verify'
-      preLoaderRoute: typeof VerifyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/wallet': {
-      id: '/wallet'
-      path: '/wallet'
-      fullPath: '/wallet'
-      preLoaderRoute: typeof WalletRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/welcome': {
-      id: '/welcome'
-      path: '/welcome'
-      fullPath: '/welcome'
-      preLoaderRoute: typeof WelcomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/': {
-      id: '/admin/'
+    '/': {
+      id: '/'
       path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/accounts': {
-      id: '/admin/accounts'
-      path: '/accounts'
-      fullPath: '/admin/accounts'
-      preLoaderRoute: typeof AdminAccountsRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/apps': {
-      id: '/admin/apps'
-      path: '/apps'
-      fullPath: '/admin/apps'
-      preLoaderRoute: typeof AdminAppsRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/controls': {
-      id: '/admin/controls'
-      path: '/controls'
-      fullPath: '/admin/controls'
-      preLoaderRoute: typeof AdminControlsRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/events': {
-      id: '/admin/events'
-      path: '/events'
-      fullPath: '/admin/events'
-      preLoaderRoute: typeof AdminEventsRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/memberships': {
-      id: '/admin/memberships'
-      path: '/memberships'
-      fullPath: '/admin/memberships'
-      preLoaderRoute: typeof AdminMembershipsRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/money': {
-      id: '/admin/money'
-      path: '/money'
-      fullPath: '/admin/money'
-      preLoaderRoute: typeof AdminMoneyRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/places': {
-      id: '/admin/places'
-      path: '/places'
-      fullPath: '/admin/places'
-      preLoaderRoute: typeof AdminPlacesRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/programmes': {
-      id: '/admin/programmes'
-      path: '/programmes'
-      fullPath: '/admin/programmes'
-      preLoaderRoute: typeof AdminProgrammesRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/promotions': {
-      id: '/admin/promotions'
-      path: '/promotions'
-      fullPath: '/admin/promotions'
-      preLoaderRoute: typeof AdminPromotionsRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/admin/sim': {
-      id: '/admin/sim'
-      path: '/sim'
-      fullPath: '/admin/sim'
-      preLoaderRoute: typeof AdminSimRouteImport
-      parentRoute: typeof AdminRouteRoute
-    }
-    '/before-you-fly/': {
-      id: '/before-you-fly/'
-      path: '/before-you-fly'
-      fullPath: '/before-you-fly/'
-      preLoaderRoute: typeof BeforeYouFlyIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/before-you-fly/esim': {
-      id: '/before-you-fly/esim'
-      path: '/before-you-fly/esim'
-      fullPath: '/before-you-fly/esim'
-      preLoaderRoute: typeof BeforeYouFlyEsimRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/before-you-fly/insurance': {
-      id: '/before-you-fly/insurance'
-      path: '/before-you-fly/insurance'
-      fullPath: '/before-you-fly/insurance'
-      preLoaderRoute: typeof BeforeYouFlyInsuranceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/benefits/': {
-      id: '/benefits/'
-      path: '/benefits'
-      fullPath: '/benefits/'
-      preLoaderRoute: typeof BenefitsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/benefits/$id': {
-      id: '/benefits/$id'
-      path: '/benefits/$id'
-      fullPath: '/benefits/$id'
-      preLoaderRoute: typeof BenefitsIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/': {
-      id: '/explore/'
-      path: '/explore'
-      fullPath: '/explore/'
-      preLoaderRoute: typeof ExploreIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/army': {
-      id: '/explore/army'
-      path: '/explore/army'
-      fullPath: '/explore/army'
-      preLoaderRoute: typeof ExploreArmyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/budget': {
-      id: '/explore/budget'
-      path: '/explore/budget'
-      fullPath: '/explore/budget'
-      preLoaderRoute: typeof ExploreBudgetRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/community': {
-      id: '/explore/community'
-      path: '/explore/community'
-      fullPath: '/explore/community'
-      preLoaderRoute: typeof ExploreCommunityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/cost-of-living': {
-      id: '/explore/cost-of-living'
-      path: '/explore/cost-of-living'
-      fullPath: '/explore/cost-of-living'
-      preLoaderRoute: typeof ExploreCostOfLivingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/documents': {
-      id: '/explore/documents'
-      path: '/explore/documents'
-      fullPath: '/explore/documents'
-      preLoaderRoute: typeof ExploreDocumentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/events': {
-      id: '/explore/events'
-      path: '/explore/events'
-      fullPath: '/explore/events'
-      preLoaderRoute: typeof ExploreEventsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/food': {
-      id: '/explore/food'
-      path: '/explore/food'
-      fullPath: '/explore/food'
-      preLoaderRoute: typeof ExploreFoodRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/health': {
-      id: '/explore/health'
-      path: '/explore/health'
-      fullPath: '/explore/health'
-      preLoaderRoute: typeof ExploreHealthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/housing': {
-      id: '/explore/housing'
-      path: '/explore/housing'
-      fullPath: '/explore/housing'
-      preLoaderRoute: typeof ExploreHousingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/lone-soldier': {
-      id: '/explore/lone-soldier'
-      path: '/explore/lone-soldier'
-      fullPath: '/explore/lone-soldier'
-      preLoaderRoute: typeof ExploreLoneSoldierRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/maps': {
-      id: '/explore/maps'
-      path: '/explore/maps'
-      fullPath: '/explore/maps'
-      preLoaderRoute: typeof ExploreMapsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/money-planner': {
-      id: '/explore/money-planner'
-      path: '/explore/money-planner'
-      fullPath: '/explore/money-planner'
-      preLoaderRoute: typeof ExploreMoneyPlannerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/reserve': {
-      id: '/explore/reserve'
-      path: '/explore/reserve'
-      fullPath: '/explore/reserve'
-      preLoaderRoute: typeof ExploreReserveRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/rides': {
-      id: '/explore/rides'
-      path: '/explore/rides'
-      fullPath: '/explore/rides'
-      preLoaderRoute: typeof ExploreRidesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/shops': {
-      id: '/explore/shops'
-      path: '/explore/shops'
-      fullPath: '/explore/shops'
-      preLoaderRoute: typeof ExploreShopsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/transit': {
-      id: '/explore/transit'
-      path: '/explore/transit'
-      fullPath: '/explore/transit'
-      preLoaderRoute: typeof ExploreTransitRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/ulpan': {
-      id: '/explore/ulpan'
-      path: '/explore/ulpan'
-      fullPath: '/explore/ulpan'
-      preLoaderRoute: typeof ExploreUlpanRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/uni': {
-      id: '/explore/uni'
-      path: '/explore/uni'
-      fullPath: '/explore/uni'
-      preLoaderRoute: typeof ExploreUniRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/uni-finder': {
-      id: '/explore/uni-finder'
-      path: '/explore/uni-finder'
-      fullPath: '/explore/uni-finder'
-      preLoaderRoute: typeof ExploreUniFinderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/explore/visa': {
-      id: '/explore/visa'
-      path: '/explore/visa'
-      fullPath: '/explore/visa'
-      preLoaderRoute: typeof ExploreVisaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/guides/': {
-      id: '/guides/'
-      path: '/guides'
-      fullPath: '/guides/'
-      preLoaderRoute: typeof GuidesIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/guides/$id': {
-      id: '/guides/$id'
-      path: '/guides/$id'
-      fullPath: '/guides/$id'
-      preLoaderRoute: typeof GuidesIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/join/$code': {
-      id: '/join/$code'
-      path: '/join/$code'
-      fullPath: '/join/$code'
-      preLoaderRoute: typeof JoinCodeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/programme/': {
-      id: '/programme/'
-      path: '/'
-      fullPath: '/programme/'
-      preLoaderRoute: typeof ProgrammeIndexRouteImport
-      parentRoute: typeof ProgrammeRoute
-    }
-    '/programme/inbox': {
-      id: '/programme/inbox'
-      path: '/inbox'
-      fullPath: '/programme/inbox'
-      preLoaderRoute: typeof ProgrammeInboxRouteImport
-      parentRoute: typeof ProgrammeRoute
-    }
-    '/programme/info': {
-      id: '/programme/info'
-      path: '/info'
-      fullPath: '/programme/info'
-      preLoaderRoute: typeof ProgrammeInfoRouteImport
-      parentRoute: typeof ProgrammeRoute
-    }
-    '/programme/schedule': {
-      id: '/programme/schedule'
-      path: '/schedule'
-      fullPath: '/programme/schedule'
-      preLoaderRoute: typeof ProgrammeScheduleRouteImport
-      parentRoute: typeof ProgrammeRoute
-    }
-    '/programme/staff': {
-      id: '/programme/staff'
-      path: '/staff'
-      fullPath: '/programme/staff'
-      preLoaderRoute: typeof ProgrammeStaffRouteImport
-      parentRoute: typeof ProgrammeRoute
-    }
-    '/services/': {
-      id: '/services/'
-      path: '/services'
-      fullPath: '/services/'
-      preLoaderRoute: typeof ServicesIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/services/insurance': {
-      id: '/services/insurance'
-      path: '/services/insurance'
-      fullPath: '/services/insurance'
-      preLoaderRoute: typeof ServicesInsuranceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/services/offers': {
-      id: '/services/offers'
-      path: '/services/offers'
-      fullPath: '/services/offers'
-      preLoaderRoute: typeof ServicesOffersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/siddur/': {
-      id: '/siddur/'
-      path: '/siddur'
-      fullPath: '/siddur/'
-      preLoaderRoute: typeof SiddurIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/siddur/$id': {
-      id: '/siddur/$id'
-      path: '/siddur/$id'
-      fullPath: '/siddur/$id'
-      preLoaderRoute: typeof SiddurIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/social/': {
-      id: '/social/'
-      path: '/social'
-      fullPath: '/social/'
-      preLoaderRoute: typeof SocialIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/social/$conversationId': {
-      id: '/social/$conversationId'
-      path: '/social/$conversationId'
-      fullPath: '/social/$conversationId'
-      preLoaderRoute: typeof SocialConversationIdRouteImport
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/whats-on/': {
@@ -1769,46 +1405,375 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WhatsOnIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/auth/email-webhook': {
-      id: '/api/auth/email-webhook'
-      path: '/api/auth/email-webhook'
-      fullPath: '/api/auth/email-webhook'
-      preLoaderRoute: typeof ApiAuthEmailWebhookRouteImport
+    '/social/': {
+      id: '/social/'
+      path: '/social'
+      fullPath: '/social/'
+      preLoaderRoute: typeof SocialIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/explore/event/$id': {
-      id: '/explore/event/$id'
-      path: '/explore/event/$id'
-      fullPath: '/explore/event/$id'
-      preLoaderRoute: typeof ExploreEventIdRouteImport
+    '/siddur/': {
+      id: '/siddur/'
+      path: '/siddur'
+      fullPath: '/siddur/'
+      preLoaderRoute: typeof SiddurIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/explore/fitness/': {
-      id: '/explore/fitness/'
-      path: '/explore/fitness'
-      fullPath: '/explore/fitness/'
-      preLoaderRoute: typeof ExploreFitnessIndexRouteImport
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/explore/fitness/$id': {
-      id: '/explore/fitness/$id'
-      path: '/explore/fitness/$id'
-      fullPath: '/explore/fitness/$id'
-      preLoaderRoute: typeof ExploreFitnessIdRouteImport
+    '/programme/': {
+      id: '/programme/'
+      path: '/'
+      fullPath: '/programme/'
+      preLoaderRoute: typeof ProgrammeIndexRouteImport
+      parentRoute: typeof ProgrammeRoute
+    }
+    '/guides/': {
+      id: '/guides/'
+      path: '/guides'
+      fullPath: '/guides/'
+      preLoaderRoute: typeof GuidesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/explore/idf/': {
-      id: '/explore/idf/'
-      path: '/explore/idf'
-      fullPath: '/explore/idf/'
-      preLoaderRoute: typeof ExploreIdfIndexRouteImport
+    '/explore/': {
+      id: '/explore/'
+      path: '/explore'
+      fullPath: '/explore/'
+      preLoaderRoute: typeof ExploreIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/explore/idf/$unitId': {
-      id: '/explore/idf/$unitId'
-      path: '/explore/idf/$unitId'
-      fullPath: '/explore/idf/$unitId'
-      preLoaderRoute: typeof ExploreIdfUnitIdRouteImport
+    '/benefits/': {
+      id: '/benefits/'
+      path: '/benefits'
+      fullPath: '/benefits/'
+      preLoaderRoute: typeof BenefitsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/before-you-fly/': {
+      id: '/before-you-fly/'
+      path: '/before-you-fly'
+      fullPath: '/before-you-fly/'
+      preLoaderRoute: typeof BeforeYouFlyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/social/$conversationId': {
+      id: '/social/$conversationId'
+      path: '/social/$conversationId'
+      fullPath: '/social/$conversationId'
+      preLoaderRoute: typeof SocialConversationIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/siddur/$id': {
+      id: '/siddur/$id'
+      path: '/siddur/$id'
+      fullPath: '/siddur/$id'
+      preLoaderRoute: typeof SiddurIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/offers': {
+      id: '/services/offers'
+      path: '/services/offers'
+      fullPath: '/services/offers'
+      preLoaderRoute: typeof ServicesOffersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/insurance': {
+      id: '/services/insurance'
+      path: '/services/insurance'
+      fullPath: '/services/insurance'
+      preLoaderRoute: typeof ServicesInsuranceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/programme/staff': {
+      id: '/programme/staff'
+      path: '/staff'
+      fullPath: '/programme/staff'
+      preLoaderRoute: typeof ProgrammeStaffRouteImport
+      parentRoute: typeof ProgrammeRoute
+    }
+    '/programme/schedule': {
+      id: '/programme/schedule'
+      path: '/schedule'
+      fullPath: '/programme/schedule'
+      preLoaderRoute: typeof ProgrammeScheduleRouteImport
+      parentRoute: typeof ProgrammeRoute
+    }
+    '/programme/info': {
+      id: '/programme/info'
+      path: '/info'
+      fullPath: '/programme/info'
+      preLoaderRoute: typeof ProgrammeInfoRouteImport
+      parentRoute: typeof ProgrammeRoute
+    }
+    '/programme/inbox': {
+      id: '/programme/inbox'
+      path: '/inbox'
+      fullPath: '/programme/inbox'
+      preLoaderRoute: typeof ProgrammeInboxRouteImport
+      parentRoute: typeof ProgrammeRoute
+    }
+    '/join/$code': {
+      id: '/join/$code'
+      path: '/join/$code'
+      fullPath: '/join/$code'
+      preLoaderRoute: typeof JoinCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/$id': {
+      id: '/guides/$id'
+      path: '/guides/$id'
+      fullPath: '/guides/$id'
+      preLoaderRoute: typeof GuidesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/visa': {
+      id: '/explore/visa'
+      path: '/explore/visa'
+      fullPath: '/explore/visa'
+      preLoaderRoute: typeof ExploreVisaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/uni-finder': {
+      id: '/explore/uni-finder'
+      path: '/explore/uni-finder'
+      fullPath: '/explore/uni-finder'
+      preLoaderRoute: typeof ExploreUniFinderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/uni': {
+      id: '/explore/uni'
+      path: '/explore/uni'
+      fullPath: '/explore/uni'
+      preLoaderRoute: typeof ExploreUniRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/ulpan': {
+      id: '/explore/ulpan'
+      path: '/explore/ulpan'
+      fullPath: '/explore/ulpan'
+      preLoaderRoute: typeof ExploreUlpanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/transit': {
+      id: '/explore/transit'
+      path: '/explore/transit'
+      fullPath: '/explore/transit'
+      preLoaderRoute: typeof ExploreTransitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/shops': {
+      id: '/explore/shops'
+      path: '/explore/shops'
+      fullPath: '/explore/shops'
+      preLoaderRoute: typeof ExploreShopsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/rides': {
+      id: '/explore/rides'
+      path: '/explore/rides'
+      fullPath: '/explore/rides'
+      preLoaderRoute: typeof ExploreRidesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/reserve': {
+      id: '/explore/reserve'
+      path: '/explore/reserve'
+      fullPath: '/explore/reserve'
+      preLoaderRoute: typeof ExploreReserveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/money-planner': {
+      id: '/explore/money-planner'
+      path: '/explore/money-planner'
+      fullPath: '/explore/money-planner'
+      preLoaderRoute: typeof ExploreMoneyPlannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/maps': {
+      id: '/explore/maps'
+      path: '/explore/maps'
+      fullPath: '/explore/maps'
+      preLoaderRoute: typeof ExploreMapsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/lone-soldier': {
+      id: '/explore/lone-soldier'
+      path: '/explore/lone-soldier'
+      fullPath: '/explore/lone-soldier'
+      preLoaderRoute: typeof ExploreLoneSoldierRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/housing': {
+      id: '/explore/housing'
+      path: '/explore/housing'
+      fullPath: '/explore/housing'
+      preLoaderRoute: typeof ExploreHousingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/health': {
+      id: '/explore/health'
+      path: '/explore/health'
+      fullPath: '/explore/health'
+      preLoaderRoute: typeof ExploreHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/food': {
+      id: '/explore/food'
+      path: '/explore/food'
+      fullPath: '/explore/food'
+      preLoaderRoute: typeof ExploreFoodRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/events': {
+      id: '/explore/events'
+      path: '/explore/events'
+      fullPath: '/explore/events'
+      preLoaderRoute: typeof ExploreEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/documents': {
+      id: '/explore/documents'
+      path: '/explore/documents'
+      fullPath: '/explore/documents'
+      preLoaderRoute: typeof ExploreDocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/cost-of-living': {
+      id: '/explore/cost-of-living'
+      path: '/explore/cost-of-living'
+      fullPath: '/explore/cost-of-living'
+      preLoaderRoute: typeof ExploreCostOfLivingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/community': {
+      id: '/explore/community'
+      path: '/explore/community'
+      fullPath: '/explore/community'
+      preLoaderRoute: typeof ExploreCommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/budget': {
+      id: '/explore/budget'
+      path: '/explore/budget'
+      fullPath: '/explore/budget'
+      preLoaderRoute: typeof ExploreBudgetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/army': {
+      id: '/explore/army'
+      path: '/explore/army'
+      fullPath: '/explore/army'
+      preLoaderRoute: typeof ExploreArmyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/benefits/$id': {
+      id: '/benefits/$id'
+      path: '/benefits/$id'
+      fullPath: '/benefits/$id'
+      preLoaderRoute: typeof BenefitsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/before-you-fly/insurance': {
+      id: '/before-you-fly/insurance'
+      path: '/before-you-fly/insurance'
+      fullPath: '/before-you-fly/insurance'
+      preLoaderRoute: typeof BeforeYouFlyInsuranceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/before-you-fly/esim': {
+      id: '/before-you-fly/esim'
+      path: '/before-you-fly/esim'
+      fullPath: '/before-you-fly/esim'
+      preLoaderRoute: typeof BeforeYouFlyEsimRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/sim': {
+      id: '/admin/sim'
+      path: '/sim'
+      fullPath: '/admin/sim'
+      preLoaderRoute: typeof AdminSimRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/promotions': {
+      id: '/admin/promotions'
+      path: '/promotions'
+      fullPath: '/admin/promotions'
+      preLoaderRoute: typeof AdminPromotionsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/programmes': {
+      id: '/admin/programmes'
+      path: '/programmes'
+      fullPath: '/admin/programmes'
+      preLoaderRoute: typeof AdminProgrammesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/places': {
+      id: '/admin/places'
+      path: '/places'
+      fullPath: '/admin/places'
+      preLoaderRoute: typeof AdminPlacesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/money': {
+      id: '/admin/money'
+      path: '/money'
+      fullPath: '/admin/money'
+      preLoaderRoute: typeof AdminMoneyRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/memberships': {
+      id: '/admin/memberships'
+      path: '/memberships'
+      fullPath: '/admin/memberships'
+      preLoaderRoute: typeof AdminMembershipsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/events': {
+      id: '/admin/events'
+      path: '/events'
+      fullPath: '/admin/events'
+      preLoaderRoute: typeof AdminEventsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/controls': {
+      id: '/admin/controls'
+      path: '/controls'
+      fullPath: '/admin/controls'
+      preLoaderRoute: typeof AdminControlsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/apps': {
+      id: '/admin/apps'
+      path: '/apps'
+      fullPath: '/admin/apps'
+      preLoaderRoute: typeof AdminAppsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/accounts': {
+      id: '/admin/accounts'
+      path: '/accounts'
+      fullPath: '/admin/accounts'
+      preLoaderRoute: typeof AdminAccountsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/services/esim/': {
+      id: '/services/esim/'
+      path: '/services/esim'
+      fullPath: '/services/esim/'
+      preLoaderRoute: typeof ServicesEsimIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore/map/': {
@@ -1818,39 +1783,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreMapIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/explore/map/$id': {
-      id: '/explore/map/$id'
-      path: '/explore/map/$id'
-      fullPath: '/explore/map/$id'
-      preLoaderRoute: typeof ExploreMapIdRouteImport
+    '/explore/idf/': {
+      id: '/explore/idf/'
+      path: '/explore/idf'
+      fullPath: '/explore/idf/'
+      preLoaderRoute: typeof ExploreIdfIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/explore/service/$id': {
-      id: '/explore/service/$id'
-      path: '/explore/service/$id'
-      fullPath: '/explore/service/$id'
-      preLoaderRoute: typeof ExploreServiceIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/services/esim/': {
-      id: '/services/esim/'
-      path: '/services/esim'
-      fullPath: '/services/esim/'
-      preLoaderRoute: typeof ServicesEsimIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/services/esim/$planId': {
-      id: '/services/esim/$planId'
-      path: '/services/esim/$planId'
-      fullPath: '/services/esim/$planId'
-      preLoaderRoute: typeof ServicesEsimPlanIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/services/esim/mine': {
-      id: '/services/esim/mine'
-      path: '/services/esim/mine'
-      fullPath: '/services/esim/mine'
-      preLoaderRoute: typeof ServicesEsimMineRouteImport
+    '/explore/fitness/': {
+      id: '/explore/fitness/'
+      path: '/explore/fitness'
+      fullPath: '/explore/fitness/'
+      preLoaderRoute: typeof ExploreFitnessIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/whats-on/event/$id': {
@@ -1860,11 +1804,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WhatsOnEventIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/payments/webhook': {
-      id: '/api/public/payments/webhook'
-      path: '/api/public/payments/webhook'
-      fullPath: '/api/public/payments/webhook'
-      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+    '/services/esim/mine': {
+      id: '/services/esim/mine'
+      path: '/services/esim/mine'
+      fullPath: '/services/esim/mine'
+      preLoaderRoute: typeof ServicesEsimMineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/esim/$planId': {
+      id: '/services/esim/$planId'
+      path: '/services/esim/$planId'
+      fullPath: '/services/esim/$planId'
+      preLoaderRoute: typeof ServicesEsimPlanIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/service/$id': {
+      id: '/explore/service/$id'
+      path: '/explore/service/$id'
+      fullPath: '/explore/service/$id'
+      preLoaderRoute: typeof ExploreServiceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/map/$id': {
+      id: '/explore/map/$id'
+      path: '/explore/map/$id'
+      fullPath: '/explore/map/$id'
+      preLoaderRoute: typeof ExploreMapIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/idf/$unitId': {
+      id: '/explore/idf/$unitId'
+      path: '/explore/idf/$unitId'
+      fullPath: '/explore/idf/$unitId'
+      preLoaderRoute: typeof ExploreIdfUnitIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/fitness/$id': {
+      id: '/explore/fitness/$id'
+      path: '/explore/fitness/$id'
+      fullPath: '/explore/fitness/$id'
+      preLoaderRoute: typeof ExploreFitnessIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explore/event/$id': {
+      id: '/explore/event/$id'
+      path: '/explore/event/$id'
+      fullPath: '/explore/event/$id'
+      preLoaderRoute: typeof ExploreEventIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/email-webhook': {
+      id: '/api/auth/email-webhook'
+      path: '/api/auth/email-webhook'
+      fullPath: '/api/auth/email-webhook'
+      preLoaderRoute: typeof ApiAuthEmailWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/webhooks/airwallex': {
@@ -1872,6 +1865,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/webhooks/airwallex'
       fullPath: '/api/public/webhooks/airwallex'
       preLoaderRoute: typeof ApiPublicWebhooksAirwallexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
